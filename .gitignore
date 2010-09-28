@@ -1,0 +1,12 @@
+.DS_Store
+Config
+config.inc.php
+Rakefile
+Makefile
+eclipse
+build
+*.svn*
+*.CVS*
+*output*
+*_coverage_report*
+*cache*
