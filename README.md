@@ -45,8 +45,8 @@ The source tree for includes the following files and directories:
   prefixed with `Amazon`.
 * `utilities` -- Contains any utility-type methods that the SDK uses. Includes extensions to built-in PHP
   classes, as well as new functionality that is entirely custom. These classes are always prefixed with `CF`.
-* `CHANGELOG`, `CLOUDFUSION_CONTRIBUTORS`, `LICENSE`, `NOTICE`, `README` -- File names that are all-caps are
-  informational documents; the contents of which should be fairly self-explanatory.
+* `CHANGELOG`, `CONTRIBUTORS`, `LICENSE`, `NOTICE`, `README` -- File names that are all-caps are informational
+  documents; the contents of which should be fairly self-explanatory.
 * `config-sample.inc.php` -- A sample configuration file that should be filled out and renamed to `config.inc.php`.
 * `sdk.class.php` -- The SDK loader that you would include in your projects. Contains the base functionality
   that the rest of the SDK depends on.
@@ -64,8 +64,8 @@ The source tree for includes the following files and directories:
 * [cURL](http://php.net/curl) extension (compiled with [OpenSSL](http://openssl.org) for HTTPS support)
 * Ability to write to the file system
 
-We've included an SDK Compatibility Test that you can run to determine whether or not your PHP environment
-meets the minimum requirements.
+We've included an [SDK Compatibility Test](http://github.com/amazonwebservices/aws-sdk-for-php/tree/master/_compatibility_test/)
+that you can run to determine whether or not your PHP environment meets the minimum requirements.
 
 
 ## Installation
@@ -94,7 +94,7 @@ Here's how you would check out the source code from GitHub:
 ### Via PEAR
 
 Amazon Web Services also publishes releases of the AWS SDK for PHP to a self-hosted
-[PEAR repository](http://pear.php.net).
+[PEAR repository](http://pear.amazonwebservices.com).
 
 If you're unfamiliar with how to install PEAR packages, check out
 [Command line installer](http://pear.php.net/manual/en/guide.users.commandline.cli.php) in the PEAR user guide.
@@ -104,7 +104,7 @@ If you're unfamiliar with how to install PEAR packages, check out
 
 ### Configuration
 
-1. Copy the contents of <https://github.com/amazonwebservices/aws-sdk-for-php/raw/master/config-sample.inc.php>
+1. Copy the contents of [config-sample.inc.php](https://github.com/amazonwebservices/aws-sdk-for-php/raw/master/config-sample.inc.php)
    and add your credentials as instructed in the file.
 2. Move your file to `~/.aws/sdk/config.inc.php`.
 3. Make sure that `getenv('HOME')` points to your user directory. If not you'll need to set
