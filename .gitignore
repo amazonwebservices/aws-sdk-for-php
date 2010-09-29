@@ -9,4 +9,3 @@ build
 *.CVS*
 *output*
 *_coverage_report*
-*cache*
