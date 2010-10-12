@@ -40,7 +40,7 @@
  * 	legal protections still apply.
  *
  * Version:
- * 	Mon Sep 27 19:43:09 PDT 2010
+ * 	Thu Sep 30 17:32:01 PDT 2010
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.

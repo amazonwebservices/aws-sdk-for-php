@@ -358,7 +358,7 @@ function fnLoadPngs() {
 		</div>
 		<div class="chunk">
 			<h3>What's Next?</h3>
-			<p>You can download the latest version of the <a href="http://aws.amazon.com/sdkforphp"><strong>AWS SDK for PHP</strong></a> and install it by <a href="http://aws.amazon.com/sdkforphp/getting-started">following the instructions</a>. Also, check out our library of <a href="http://aws.amazon.com/sdkforphp/tutorials">screencasts and tutorials</a>.</p>
+			<p>You can download the latest version of the <a href="http://aws.amazon.com/sdkforphp"><strong>AWS SDK for PHP</strong></a> and install it by <a href="http://aws.amazon.com/sdkforphp/getting-started">following the instructions</a>. Also, check out our library of <a href="http://developer.amazonwebservices.com/connect/entry.jspa?externalID=4262">screencasts and tutorials</a>.</p>
 			<p>Take the time to read <a href="http://aws.amazon.com/sdkforphp/getting-started">"Getting Started"</a> to make sure you're prepared to use the AWS SDK for PHP. No seriously, read it.</p>
 		</div>
 		<?php elseif ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok): ?>
@@ -368,7 +368,7 @@ function fnLoadPngs() {
 		</div>
 		<div class="chunk">
 			<h3>What's Next?</h3>
-			<p>You can download the latest version of the <a href="http://aws.amazon.com/sdkforphp"><strong>AWS SDK for PHP</strong></a> and install it by <a href="http://aws.amazon.com/sdkforphp/getting-started">following the instructions</a>. Also, check out our library of <a href="http://aws.amazon.com/sdkforphp/tutorials">screencasts and tutorials</a>.</p>
+			<p>You can download the latest version of the <a href="http://aws.amazon.com/sdkforphp"><strong>AWS SDK for PHP</strong></a> and install it by <a href="http://aws.amazon.com/sdkforphp/getting-started">following the instructions</a>. Also, check out our library of <a href="http://developer.amazonwebservices.com/connect/entry.jspa?externalID=4262">screencasts and tutorials</a>.</p>
 			<p>Take the time to read <a href="http://aws.amazon.com/sdkforphp/getting-started">"Getting Started"</a> to make sure you're prepared to use the AWS SDK for PHP. No seriously, read it.</p>
 		</div>
 		<?php else: ?>
@@ -379,7 +379,7 @@ function fnLoadPngs() {
 		<div class="chunk">
 			<h3>What's Next?</h3>
 			<p>If you're using a shared hosting plan, it may be a good idea to contact your web host and ask them to install a more recent version of PHP and relevant extensions.</p>
-			<p>If you have control over your PHP environment, we recommended that you upgrade your PHP environment. Check out <a href="">"Installing your PHP environment"</a> for more information.</p>
+			<p>If you have control over your PHP environment, we recommended that you upgrade your PHP environment. Check out the "Set Up Your Environment" section of the <a href="http://developer.amazonwebservices.com/connect/entry.jspa?externalID=4261&categoryID=329">Getting Started Guide</a> for more information.</p>
 		</div>
 		<?php endif; ?>
 

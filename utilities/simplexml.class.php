@@ -19,13 +19,14 @@
  * 	Wrapper for SimpleXMLElement.
  *
  * Version:
- * 	2010.08.06
+ * 	2010.10.03
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
  *
  * See Also:
  * 	[PHP Developer Center](http://aws.amazon.com/php/)
+ * 	[SimpleXML](http://php.net/SimpleXML)
  */
 
 
@@ -34,9 +35,9 @@
 
 /**
  * Class: CFSimpleXML
- * 	Wrapper for SimpleXMLElement.
+ * 	Wrapper for SimpleXMLIterator.
  */
-class CFSimpleXML extends SimpleXMLElement
+class CFSimpleXML extends SimpleXMLIterator
 {
 	/**
 	 * Property: xml_ns
@@ -72,21 +73,8 @@ class CFSimpleXML extends SimpleXMLElement
 		// Re-base the XML
 		$self = new CFSimpleXML($self->asXML());
 
-		// If the namespace hasn't yet been determined...
-		if (!$self->xml_ns_url)
-		{
-			$namespaces = $self->getDocNamespaces();
-
-			if (isset($namespaces['']))
-			{
-				$self->xml_ns = 'ns:';
-				$self->xml_ns_url = $namespaces[''];
-				$self->registerXPathNamespace('ns', $self->xml_ns_url);
-			}
-		}
-
 		// Determine XPath query
-		$self->xpath_expression = '//' . $self->xml_ns . $name;
+		$self->xpath_expression = '//' . $name;
 
 		// Get the results and augment with CFArray
 		$results = $self->xpath($self->xpath_expression);
@@ -105,5 +93,95 @@ class CFSimpleXML extends SimpleXMLElement
 		}
 
 		return $results;
+	}
+
+	/**
+	 * Method: query()
+	 * 	Wraps the results of an XPath query in a <CFArray> object.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$expr - _string_ (Required) The XPath expression to use to query the XML response.
+	 *
+	 * Returns:
+	 * 	_CFArray_ A <CFArray> object containing the results of the XPath query.
+	 */
+	public function query($expr)
+	{
+		return new CFArray($this->xpath($expr));
+	}
+
+	/**
+	 * Method: parent()
+	 * 	Gets the parent or a preferred ancestor of the current element.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$node - _string_ (Optional) Name of the ancestor element to match and return.
+	 *
+	 * Returns:
+	 * 	_CFSimpleXML_ A <CFSimpleXML> object containing the requested node.
+	 */
+	public function parent($node = null)
+	{
+		if ($node)
+		{
+			$parents = $this->xpath('ancestor-or-self::' . $node);
+		}
+		else
+		{
+			$parents = $this->xpath('parent::*');
+		}
+
+		return $parents[0];
+	}
+
+	/**
+	 * Method: stringify()
+	 * 	Gets the current XML node as a true string.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Returns:
+	 * 	_string_ The current XML node as a true string.
+	 */
+	public function stringify()
+	{
+		return (string) $this;
+	}
+
+	/**
+	 * Method: is()
+	 * 	Whether or not the current node exactly matches the compared value.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Returns:
+	 * 	_boolean_ Whether or not the current node exactly matches the compared value.
+	 */
+	public function is($value)
+	{
+		return ((string) $this === $value);
+	}
+
+	/**
+	 * Method: contains()
+	 * 	Whether or not the current node contains the compared value.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Returns:
+	 * 	_boolean_ Whether or not the current node contains the compared value.
+	 */
+	public function contains($value)
+	{
+		return (stripos((string) $this, $value) !== false);
 	}
 }

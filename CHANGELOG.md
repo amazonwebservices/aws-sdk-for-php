@@ -1,4 +1,72 @@
+# Changelog: 1.0.1
+
+Launched Tuesday, October 12, 2010
+
+This is a complete list of changes since 1.0.
+
+
+## New Features & Highlights
+* Improved support for running XPath queries against the service response bodies.
+* Added support for request retries and exponential backoff.
+* Added support for HTTP request/response header logging.
+* Bug fixes and enhancements:
+	* [Bug in Samples](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=52748)
+	* [Can't set ACL on object using the SDK](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=52305)
+	* [Range requests for S3 - status codes 200, 206](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=52738)
+	* [S3 change_storage_redundancy() function clears public-read ACL](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=52652)
+
+
+## Base/Runtime class
+* **New:** Added support for request retries and exponential backoff for all `500` and `503` HTTP status codes.
+* **New:** Added the `enable_debug_mode()` method to enable HTTP request/response header logging to `STDERR`.
+
+
+## Service Classes
+### AmazonS3
+* **Fixed:** Lots of tweaks to the documentation.
+* **Fixed:** The `change_content_type()`, `change_storage_redundancy()`, `set_object_acl()`, and `update_object()` methods now respect the existing content-type, storage redundancy, and ACL settings when updating.
+* **New:** Added the `get_object_metadata()` method has been added as a singular interface for obtaining all available metadata for an object.
+
+
+## Utility Classes
+### CFArray
+* **New:** Added the `each()` method which accepts a callback function to execute for each entry in the array. Works similarly to [jQuery's each()](http://api.jquery.com/each).
+* **New:** Added the `map()` method which accepts a callback function to execute for each entry in the array. Works similarly to [jQuery's map()](http://api.jquery.com/map).
+* **New:** Added the `reduce()` method which accepts a callback function to execute for each entry in the array. Works similarly to [DomCrawler reduce()](http://github.com/symfony/symfony/blob/master/src/Symfony/Component/DomCrawler/Crawler.php) from the [Symfony 2](http://symfony-reloaded.org) Preview Release.
+* **New:** Added the `first()` and `last()` methods to return the first and last nodes in the array, respectively.
+
+### CFInfo
+* **New:** Retrieves information about the current installation of the AWS SDK for PHP.
+
+### CFSimpleXML
+* **New:** Added the `query()` method, which allows for XPath queries while the results are wrapped in a `CFArray` response.
+* **New:** Added the `parent()` method, which allows for traversing back up the document tree.
+* **New:** Added the `stringify()` method, which typecasts the value as a string.
+* **New:** Added the `is()` and `contains()` methods, which allow for testing whether the XML value is or contains a given value, respectively.
+* **Changed:** Now extends the `SimpleXMLIterator` class, which in-turn extends the `SimpleXMLElement` class. This adds new iterator methods to the `CFSimpleXML` class.
+
+
+## Third-party Libraries
+### CacheCore
+* **New:** Upgraded to version 1.2.
+* **New:** Added a static `init` method that allows for chainable cache initialization (5.3+).
+
+### RequestCore
+* **New:** Added `206` as a successful status code (i.e., Range GET).
+
+
+## Compatibility Test
+* **Fixed:** Some of the links in the compatibility test were missing. These have been fixed.
+
+
+(Aeris)
+
+
+----
+
 # Changelog: AWS SDK for PHP 1.0
+
+Launched Tuesday, September 28, 2010
 
 This is a complete list of changes since we forked from the CloudFusion 2.5.x trunk build.
 

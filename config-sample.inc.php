@@ -4,7 +4,7 @@
  * 	Stores your AWS account information. Add your account information, and then rename this file to 'config.inc.php'.
  *
  * Version:
- * 	2010.08.23
+ * 	2010.09.30
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -17,13 +17,13 @@
 
 /**
  * Constant: AWS_KEY
- * 	Amazon Web Services Key. Found in the AWS Security Credentials.
+ * 	Amazon Web Services Key. Found in the AWS Security Credentials. You can also pass this value as the first parameter to a service constructor.
  */
 define('AWS_KEY', '');
 
 /**
  * Constant: AWS_SECRET_KEY
- * 	Amazon Web Services Secret Key. Found in the AWS Security Credentials.
+ * 	Amazon Web Services Secret Key. Found in the AWS Security Credentials. You can also pass this value as the second parameter to a service constructor.
  */
 define('AWS_SECRET_KEY', '');
 
@@ -53,13 +53,13 @@ define('AWS_MFA_SERIAL', '');
 
 /**
  * Constant: AWS_CLOUDFRONT_KEYPAIR_ID
- * 	Amazon CloudFront key-pair to use for signing private URLs. Found in the AWS Security Credentials.
+ * 	Amazon CloudFront key-pair to use for signing private URLs. Found in the AWS Security Credentials. This can be set programmatically with AmazonCloudFront::set_keypair_id().
  */
 define('AWS_CLOUDFRONT_KEYPAIR_ID', '');
 
 /**
  * Constant: AWS_PRIVATE_KEY_PEM
- * 	The contents of the *.pem private key that matches with the CloudFront key-pair ID. Found in the AWS Security Credentials.
+ * 	The contents of the *.pem private key that matches with the CloudFront key-pair ID. Found in the AWS Security Credentials. This can be set programmatically with AmazonCloudFront::set_private_key().
  */
 define('AWS_CLOUDFRONT_PRIVATE_KEY_PEM', '');
 
