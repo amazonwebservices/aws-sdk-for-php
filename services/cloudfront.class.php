@@ -25,7 +25,7 @@
  * 	of your files.
  *
  * Version:
- * 	2010.09.27
+ * 	2010.10.11
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -165,6 +165,7 @@ class AmazonCloudFront extends CFRuntime
 	 * 	$opt - _array_ (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
 	 * 	$xml - _string_ (Optional) The XML body content to send along in the request.
 	 * 	$etag - _string_ (Optional) The ETag value to pass along with the If-Match HTTP header.
+	 * 	$redirects - _integer_ (Do Not Use) Used internally by this function on occasions when Amazon S3 returns a redirect code and it needs to call itself recursively.
 	 *
 	 * Returns:
 	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
@@ -172,7 +173,7 @@ class AmazonCloudFront extends CFRuntime
 	 * See Also:
 	 * 	[Authentication](http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/RESTAuthentication.html)
 	 */
-	public function authenticate($method = 'GET', $path = null, $opt = null, $xml = null, $etag = null)
+	public function authenticate($method = 'GET', $path = null, $opt = null, $xml = null, $etag = null, $redirects = 0)
 	{
 		if (!$opt) $opt = array();
 		$querystring = null;
@@ -230,6 +231,14 @@ class AmazonCloudFront extends CFRuntime
 		$request->request_class = $this->request_class;
 		$request->response_class = $this->response_class;
 
+		// Enable debug headers
+		if ($this->debug_mode)
+		{
+			$request->set_curlopts(array(
+				CURLOPT_VERBOSE => true
+			));
+		}
+
 		// Generate required headers.
 		$request->set_method($method);
 		$canonical_date = gmdate($this->util->konst($this->util, 'DATE_FORMAT_RFC2616'));
@@ -272,7 +281,21 @@ class AmazonCloudFront extends CFRuntime
 		$headers = $request->get_response_header();
 		if ($xml) $headers['x-aws-body'] = $xml;
 
-		return new $this->response_class($headers, $this->parse_callback($request->get_response_body()), $request->get_response_code());
+		$data =  new $this->response_class($headers, $this->parse_callback($request->get_response_body()), $request->get_response_code());
+
+		// Was it Amazon's fault the request failed? Retry the request until we reach $max_retries.
+		if ((integer) $request->get_response_code() === 500 || (integer) $request->get_response_code() === 503)
+		{
+			if ($redirects <= $this->max_retries)
+			{
+				// Exponential backoff
+				$delay = (integer) (pow(4, $redirects) * 100000);
+				usleep($delay);
+				$data = $this->authenticate($method, $path, $opt, $xml, $etag, ++$redirects);
+			}
+		}
+
+		return $data;
 	}
 
 	/**

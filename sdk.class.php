@@ -19,7 +19,7 @@
  * 	Core functionality and default settings shared across all SDK classes. All methods and properties in this class are inherited by the service-specific classes.
  *
  * Version:
- * 	2010.09.27
+ * 	2010.10.11
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -117,9 +117,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.0');
+define('CFRUNTIME_VERSION', '1.0.1');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20100928014006');
+define('CFRUNTIME_BUILD', '20101012191025');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . php_uname('s') . '/' . php_uname('r') . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -339,10 +339,16 @@ class CFRuntime
 	public $delete_cache = false;
 
 	/**
-	 * Property: logging_location
-	 * 	The location to log HTTP requests/responses to.
+	 * Property: debug_mode
+	 * 	The state of the debug mode setting.
 	 */
-	public $logging_location = false;
+	public $debug_mode = false;
+
+	/**
+	 * Property: max_retries
+	 * 	The number of times to retry failed requests.
+	 */
+	public $max_retries = 3;
 
 
 	/*%******************************************************************************************%*/
@@ -579,6 +585,44 @@ class CFRuntime
 	}
 
 	/**
+	 * Method: enable_debug_mode()
+	 * 	Enables HTTP request/response header logging to `STDERR`.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$enabled - _boolean_ (Optional) Whether or not to enable debug mode. Defaults to `true`.
+	 *
+	 * Returns:
+	 * 	`$this` A reference to the current instance.
+	 */
+	public function enable_debug_mode($enabled = true)
+	{
+		$this->debug_mode = $enabled;
+		return $this;
+	}
+
+	/**
+	 * Method: set_max_retries()
+	 * 	Sets the maximum number of times to retry failed requests.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$retries - _integer_ (Optional) The maximum number of times to retry failed requests. Defaults to `3`.
+	 *
+	 * Returns:
+	 * 	`$this` A reference to the current instance.
+	 */
+	public function set_max_retries($retries = 3)
+	{
+		$this->max_retries = $retries;
+		return $this;
+	}
+
+	/**
 	 * Method: set_cache_config()
 	 * 	Set the caching configuration to use for response caching.
 	 *
@@ -764,11 +808,12 @@ class CFRuntime
 	 * 	$opt - _array_ (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
 	 * 	$domain - _string_ (Optional) The URL of the queue to perform the action on.
 	 * 	$signature_version - _string_ (Optional) The signature version to use. Defaults to 2.
+	 * 	$redirects - _integer_ (Do Not Use) Used internally by this function on occasions when Amazon S3 returns a redirect code and it needs to call itself recursively.
 	 *
 	 * Returns:
 	 * 	<CFResponse> Object containing a parsed HTTP response.
 	 */
-	public function authenticate($action, $opt = null, $domain = null, $signature_version = 2)
+	public function authenticate($action, $opt = null, $domain = null, $signature_version = 2, $redirects = 0)
 	{
 		// Handle nulls
 		if (is_null($signature_version))
@@ -895,6 +940,14 @@ class CFRuntime
 		$request->set_method('POST');
 		$request->set_body($querystring);
 
+		// Enable debug headers
+		if ($this->debug_mode)
+		{
+			$request->set_curlopts(array(
+				CURLOPT_VERBOSE => true
+			));
+		}
+
 		// Add authentication headers
 		if ($signature_version === 3)
 		{
@@ -908,20 +961,6 @@ class CFRuntime
 		// Update RequestCore settings
 		$request->request_class = $this->request_class;
 		$request->response_class = $this->response_class;
-
-		if ($this->logging_location)
-		{
-			$curlopts = array(
-				CURLOPT_VERBOSE => true
-			);
-
-			if (!is_bool($this->logging_location))
-			{
-				$curlopts[CURLOPT_STDERR] = fopen($this->logging_location, 'w+');
-			}
-
-			$request->set_curlopts($curlopts);
-		}
 
 		// Manage the (newer) batch request API or the (older) returnCurlHandle setting.
 		if ($this->use_batch_flow)
@@ -945,7 +984,21 @@ class CFRuntime
 		$headers['x-aws-stringtosign'] = $string_to_sign;
 		$headers['x-aws-body'] = $querystring;
 
-		return new $this->response_class($headers, $this->parse_callback($request->get_response_body()), $request->get_response_code());
+		$data = new $this->response_class($headers, $this->parse_callback($request->get_response_body()), $request->get_response_code());
+
+		// Was it Amazon's fault the request failed? Retry the request until we reach $max_retries.
+		if ((integer) $request->get_response_code() === 500 || (integer) $request->get_response_code() === 503)
+		{
+			if ($redirects <= $this->max_retries)
+			{
+				// Exponential backoff
+				$delay = (integer) (pow(4, $redirects) * 100000);
+				usleep($delay);
+				$data = $this->authenticate($action, $opt, $domain, $signature_version, ++$redirects);
+			}
+		}
+
+		return $data;
 	}
 
 
@@ -1095,6 +1148,9 @@ class CFRuntime
 			preg_match('/^<(\w*) xmlns="http(s?):\/\/(\w*).amazonaws.com/im', $body)
 		)
 		{
+			// Strip the default XML namespace to simplify XPath expressions
+			$body = str_replace("xmlns=", "ns=", $body);
+
 			// Parse the XML body
 			$body = new $this->parser_class($body);
 		}

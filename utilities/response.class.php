@@ -19,7 +19,7 @@
  * 	Wrapper for ResponseCore.
  *
  * Version:
- * 	2010.07.13
+ * 	2010.10.11
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.

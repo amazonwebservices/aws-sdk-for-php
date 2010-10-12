@@ -30,7 +30,7 @@
  * 	Visit [http://aws.amazon.com/ec2/](http://aws.amazon.com/ec2/) for more information.
  *
  * Version:
- * 	Mon Sep 27 19:42:00 PDT 2010
+ * 	Mon Oct 04 15:46:33 PDT 2010
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
@@ -400,7 +400,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	ReservedInstancesId - _string_|_array_ (Optional) The optional list of Reserved Instance IDs to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified ReservedInstances. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for ReservedInstances. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -448,7 +448,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	ZoneName - _string_|_array_ (Optional) A list of the availability zone names to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified AvailabilityZones. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for AvailabilityZones. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -552,7 +552,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	InstanceId - _string_|_array_ (Optional) An optional list of the instances to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified Instances. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Instances. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -629,7 +629,7 @@ class AmazonEC2 extends CFRuntime
 	 *	ImageId - _string_|_array_ (Optional) An optional list of the AMI IDs to describe. If not specified, all AMIs will be described. Pass a string for a single value, or an indexed array for multiple values..
 	 *	Owner - _string_|_array_ (Optional) The optional list of owners for the described AMIs. The IDs amazon, self, and explicit can be used to include AMIs owned by Amazon, AMIs owned by the user, and AMIs for which the user has explicit launch permissions, respectively. Pass a string for a single value, or an indexed array for multiple values..
 	 *	ExecutableBy - _string_|_array_ (Optional) The optional list of users with explicit launch permissions for the described AMIs. The user ID can be a user's account ID, 'self' to return AMIs for which the sender of the request has explicit launch permissions, or 'all' to return AMIs with public launch permissions. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified Images. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Images. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -755,7 +755,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Parameters:
 	 *	$instance_id - _string_ (Required) The ID of the instance whose attribute is being modified.
-	 *	$attribute - _string_ (Required) The name of the attribute being modified. Available attribute names: kernel, ramdisk, userData, blockDeviceMapping, disableApiTermination, instanceInitiatedShutdownBehavior
+	 *	$attribute - _string_ (Required) The name of the attribute being modified. Available attribute names: instanceType, kernel, ramdisk, userData, disableApiTermination, instanceInitiatedShutdownBehavior, rootDevice, blockDeviceMapping
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -914,7 +914,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	SpotInstanceRequestId - _string_|_array_ (Optional) The ID of the request. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified SpotInstances. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for SpotInstances. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -1106,7 +1106,7 @@ class AmazonEC2 extends CFRuntime
 	 *	EndTime - _string_ (Optional) The end date and time of the Spot Instance price history data. Accepts any value that `strtotime()` understands.
 	 *	InstanceType - _string_|_array_ (Optional) Specifies the instance type to return. Pass a string for a single value, or an indexed array for multiple values..
 	 *	ProductDescription - _string_|_array_ (Optional) The description of the AMI. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified SpotPriceHistory. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for SpotPriceHistory. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -1204,7 +1204,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	RegionName - _string_|_array_ (Optional) The optional list of regions to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified Regions. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Regions. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -1278,7 +1278,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	GroupName - _string_|_array_ (Optional) The optional list of Amazon EC2 security groups to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified SecurityGroups. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for SecurityGroups. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -1527,7 +1527,7 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified tags. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for tags. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -1655,7 +1655,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	LicenseId - _string_|_array_ (Optional) Specifies the license registration for which details are to be returned. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified Licenses. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Licenses. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2038,7 +2038,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	PublicIp - _string_|_array_ (Optional) The optional list of Elastic IP addresses to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified Addresses. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Addresses. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2083,7 +2083,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	KeyName - _string_|_array_ (Optional) The optional list of key pair names to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified KeyPairs. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for KeyPairs. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2219,7 +2219,7 @@ class AmazonEC2 extends CFRuntime
 	 *	InstanceType - _string_ (Optional) The instance type on which the Reserved Instance can be used. [Allowed values: `t1.micro`, `m1.small`, `m1.large`, `m1.xlarge`, `m2.xlarge`, `m2.2xlarge`, `m2.4xlarge`, `c1.medium`, `c1.xlarge`, `cc1.4xlarge`]
 	 *	AvailabilityZone - _string_ (Optional) The Availability Zone in which the Reserved Instance can be used.
 	 *	ProductDescription - _string_ (Optional) The Reserved Instance product description.
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified ReservedInstanceesOfferings. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for ReservedInstancesOfferings. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2263,7 +2263,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	VolumeId - _string_|_array_ (Optional) The optional list of EBS volumes to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified Volumes. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Volumes. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2417,7 +2417,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	BundleId - _string_|_array_ (Optional) The list of bundle task IDs to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified BundleTasks. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for BundleTasks. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2821,7 +2821,7 @@ class AmazonEC2 extends CFRuntime
 	 *	SnapshotId - _string_|_array_ (Optional) The optional list of EBS snapshot IDs to describe. Pass a string for a single value, or an indexed array for multiple values..
 	 *	Owner - _string_|_array_ (Optional) The optional list of EBS snapshot owners. Pass a string for a single value, or an indexed array for multiple values..
 	 *	RestorableBy - _string_|_array_ (Optional) The optional list of users who have permission to create volumes from the described EBS snapshots. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match tags associated with the specified Snapshots. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Snapshots. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2951,4 +2951,3 @@ class AmazonEC2 extends CFRuntime
 		return $this->authenticate('DescribeInstanceAttribute', $opt, $this->hostname);
 	}
 }
-

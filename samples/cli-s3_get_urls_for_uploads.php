@@ -57,7 +57,7 @@
 	$bucket = 'php-sdk-getting-started-' . strtolower($s3->key) . '-' . time();
 
 	// Create our new bucket in the US-West region.
-	$create_bucket_response = $s3->create_bucket($bucket, $s3::REGION_US_W1);
+	$create_bucket_response = $s3->create_bucket($bucket, AmazonS3::REGION_US_W1);
 
 	// Provided that the bucket was created successfully...
 	if ($create_bucket_response->isOK())
