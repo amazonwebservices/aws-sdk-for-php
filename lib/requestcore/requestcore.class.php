@@ -4,7 +4,7 @@
  * 	Handles all HTTP requests using cURL and manages the responses.
  *
  * Version:
- * 	2010.09.27
+ * 	2010.10.11
  *
  * Copyright:
  * 	2006-2010 Ryan Parman, Foleeo Inc., and contributors.
@@ -632,7 +632,7 @@ class RequestCore
 
 			if ($curl_handle && $response)
 			{
-				return new $this->response_class($this->response_headers, $this->response_body, $this->response_code);
+				return new $this->response_class($this->response_headers, $this->response_body, $this->response_code, $this->curl_handle);
 			}
 		}
 
@@ -894,7 +894,7 @@ class ResponseCore
 	 * Returns:
 	 * 	_boolean_ Whether we received the expected status code or not.
 	 */
-	public function isOK($codes = array(200, 201, 204))
+	public function isOK($codes = array(200, 201, 204, 206))
 	{
 		if (is_array($codes))
 		{

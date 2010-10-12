@@ -38,7 +38,7 @@
  * 	Visit <http://aws.amazon.com/s3/> for more information.
  *
  * Version:
- * 	2010.09.27
+ * 	2010.10.11
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -322,20 +322,33 @@ class AmazonS3 extends CFRuntime
 	 * See Also:
 	 * 	[REST authentication](http://docs.amazonwebservices.com/AmazonS3/latest/RESTAuthentication.html)
 	 */
-	public function authenticate($bucket, $opt = null, $location = null, $redirects = 0)
+	public function authenticate($bucket, $opt = null, $location = null, $redirects = 0, $nothing = null)
 	{
-		/**
-		 * resource
-		 * sub_resource
-		 * query_string
-		 * headers
-		 * body
-		 * verb
-		 * qsa
-		 * curlopts
-		 * versionId
-		 * fileUpload
-		 * fileDownload
+		/*
+		 * Overriding or extending this class? You can pass the following "magic" keys into $opt.
+		 *
+		 * ## verb, resource, sub_resource and query_string ##
+		 * 	<verb> /<resource>?<sub_resource>&<query_string>
+		 * 	GET /filename.txt?versions&prefix=abc&max-items=1
+		 *
+		 * ## versionId ##
+		 * 	versionId doesn't follow the same rules as above, in that the versionId needs to be
+		 * 	signed, while other query_string values do not.
+		 *
+		 * ## curlopts, fileUpload and fileDownload ##
+		 * 	These values get passed directly to the cURL methods in RequestCore.
+		 *
+		 * ## headers ##
+		 * 	$opt['headers'] is an array, whose keys are HTTP headers to be sent.
+		 *
+		 * ## body ##
+		 * 	This is the request body that is sent to the server via POST.
+		 *
+		 * ## preauth ##
+		 * 	This is a hook that tells authenticate() to generate a pre-authenticated URL.
+		 *
+		 * ## returnCurlHandle ##
+		 * 	Tells authenticate() to return the cURL handle for the request instead of executing it.
 		 */
 
 		/**
@@ -470,6 +483,14 @@ class AmazonS3 extends CFRuntime
 		// Update RequestCore settings
 		$request->request_class = $this->request_class;
 		$request->response_class = $this->response_class;
+
+		// Enable debug headers
+		if ($this->debug_mode)
+		{
+			$request->set_curlopts(array(
+				CURLOPT_VERBOSE => true
+			));
+		}
 
 		// Streaming uploads
 		if (isset($opt['fileUpload']))
@@ -607,13 +628,21 @@ class AmazonS3 extends CFRuntime
 
 		// Did Amazon tell us to redirect? Typically happens for multiple rapid requests EU datacenters.
 		// @see: http://docs.amazonwebservices.com/AmazonS3/latest/Redirects.html
-		if ((int) $request->get_response_code() === 307) // Temporary redirect to new endpoint.
+		if ((integer) $request->get_response_code() === 307) // Temporary redirect to new endpoint.
 		{
-			$redirects++;
-			$data = $this->authenticate($bucket,
-				$opt,
-				$headers['location'],
-				$redirects);
+			$data = $this->authenticate($bucket, $opt, $headers['location'], ++$redirects);
+		}
+
+		// Was it Amazon's fault the request failed? Retry the request until we reach $max_retries.
+		elseif ((integer) $request->get_response_code() === 500 || (integer) $request->get_response_code() === 503)
+		{
+			if ($redirects <= $this->max_retries)
+			{
+				// Exponential backoff
+				$delay = (integer) (pow(4, $redirects) * 100000);
+				usleep($delay);
+				$data = $this->authenticate($bucket, $opt, null, ++$redirects);
+			}
 		}
 
 		// Return!
@@ -632,7 +661,7 @@ class AmazonS3 extends CFRuntime
 	 * 	$bucket - _string_ (Required) The name of the bucket to validate.
 	 *
 	 * Returns:
-	 * 	_boolean_ Whether or not the specified Amazon S3 bucket name is valid for DNS-style access. A value of `true` means that the bucket name is valid. A valuf of `false` means that the bucket name is invalid.
+	 * 	_boolean_ Whether or not the specified Amazon S3 bucket name is valid for DNS-style access. A value of `true` means that the bucket name is valid. A value of `false` means that the bucket name is invalid.
 	 */
 	public function validate_bucketname_create($bucket)
 	{
@@ -731,7 +760,7 @@ class AmazonS3 extends CFRuntime
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$region - _string_ (Required) The region to use for subsequent Amazon S3 operations. Accepts the following constants: <REGION_US_E1>, <REGION_US_W1>, <REGION_EU_W1> or <REGION_APAC_SE1>.
+	 * 	$region - _string_ (Required) The region to use for subsequent Amazon S3 operations. [Allowed values: `AmazonS3::REGION_US_E1 `, `AmazonS3::REGION_US_W1`, `AmazonS3::REGION_EU_W1`, `AmazonS3::REGION_APAC_SE1`]
 	 *
 	 * Returns:
 	 * 	`$this` A reference to the current instance.
@@ -797,8 +826,8 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * Parameters:
 	 * 	$bucket - _string_ (Required) The name of the bucket to create.
-	 * 	$region - _string_ (Required) The preferred geographical location for the bucket. Accepts the following constants: <REGION_US_E1>, <REGION_US_W1>, <REGION_EU_W1> or <REGION_APAC_SE1>.
-	 * 	$acl - _string_ (Optional) The ACL settings for the specified bucket. Accepts the following constants: <ACL_PRIVATE>, <ACL_PUBLIC>, <ACL_OPEN>, <ACL_AUTH_READ>, <ACL_OWNER_READ> or <ACL_OWNER_FULL_CONTROL>. The default value is <ACL_PRIVATE>.
+	 * 	$region - _string_ (Required) The preferred geographical location for the bucket. [Allowed values: `AmazonS3::REGION_US_E1 `, `AmazonS3::REGION_US_W1`, `AmazonS3::REGION_EU_W1`, `AmazonS3::REGION_APAC_SE1`]
+	 * 	$acl - _string_ (Optional) The ACL settings for the specified bucket. [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. The default value is <ACL_PRIVATE>.
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -1035,7 +1064,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * Parameters:
 	 * 	$bucket - _string_ (Required) The name of the bucket to use.
-	 * 	$acl - _string_ (Optional) The ACL settings for the specified bucket. Accepts any of the following constants: <ACL_PRIVATE>, <ACL_PUBLIC>, <ACL_OPEN>, <ACL_AUTH_READ>, <ACL_OWNER_READ> or <ACL_OWNER_FULL_CONTROL>. Alternatively, an array of associative arrays. Each associative array contains an `id` and a `permission`. The default value is <ACL_PRIVATE>.
+	 * 	$acl - _string_ (Optional) The ACL settings for the specified bucket. [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. Alternatively, an array of associative arrays. Each associative array contains an `id` and a `permission` key. The default value is <ACL_PRIVATE>.
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -1103,10 +1132,10 @@ class AmazonS3 extends CFRuntime
 	 * 	body - _string_ (Required; Conditional) The data to be stored in the object. Either this parameter or `fileUpload` must be specified.
 	 * 	fileUpload - _string_ (Required; Conditional) Upload this file instead of the body data. Either this parameter or `body` is required.
 	 * 	contentType - _string_ (Optional) The type of content that is being sent in the body. If a file is being uploaded via `fileUpload`, it will attempt to determine the correct mime-type based on the file extension. The default value is `application/octet-stream`.
-	 * 	acl - _string_ (Optional) The ACL settings for the specified object. Accepts the following constants: <ACL_PRIVATE>, <ACL_PUBLIC>, <ACL_OPEN>, <ACL_AUTH_READ>, <ACL_OWNER_READ> or <ACL_OWNER_FULL_CONTROL>. The default value is <ACL_PRIVATE>.
-	 * 	storage - _string_ (Optional) Whether to use Standard or Reduced Redundancy storage. Accepts either of the following constants: <STORAGE_STANDARD> or <STORAGE_REDUCED>. The default value is <STORAGE_STANDARD>.
+	 * 	acl - _string_ (Optional) The ACL settings for the specified object. [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. The default value is <ACL_PRIVATE>.
+	 * 	storage - _string_ (Optional) Whether to use Standard or Reduced Redundancy storage. [Allowed values: `AmazonS3::STORAGE_STANDARD`, `AmazonS3::STORAGE_REDUCED`]. The default value is <STORAGE_STANDARD>.
 	 * 	headers - _array_ (Optional) The standard HTTP headers to send along in the request.
-	 * 	meta - _array_ (Optional) An associative array of key-value pairs. Represented by x-amz-meta-: Any header starting with this prefix is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.
+	 * 	meta - _array_ (Optional) An associative array of key-value pairs. Represented by `x-amz-meta-:` Any header starting with this prefix is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -1341,15 +1370,15 @@ class AmazonS3 extends CFRuntime
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 * 	acl - _string_ (Optional) The ACL settings for the specified object. Accepts the following constants: <ACL_PRIVATE>, <ACL_PUBLIC>, <ACL_OPEN>, <ACL_AUTH_READ>, <ACL_OWNER_READ> or <ACL_OWNER_FULL_CONTROL>. The default value is <ACL_PRIVATE>.
-	 * 	storage - _string_ (Optional) Whether to use Standard or Reduced Redundancy storage. Accepts either of the following constants: <STORAGE_STANDARD> or <STORAGE_REDUCED>. The default value is <STORAGE_STANDARD>.
+	 * 	acl - _string_ (Optional) The ACL settings for the specified object. [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. Alternatively, an array of associative arrays. Each associative array contains an `id` and a `permission` key. The default value is <ACL_PRIVATE>.
+	 * 	storage - _string_ (Optional) Whether to use Standard or Reduced Redundancy storage. [Allowed values: `AmazonS3::STORAGE_STANDARD`, `AmazonS3::STORAGE_REDUCED`]. The default value is <STORAGE_STANDARD>.
 	 * 	versionId - _string_ (Optional) The version of the object to copy. Version IDs are returned in the `x-amz-version-id` header of any previous object-related request.
-	 * 	ifMatch - _string_ (Optional) The ETag header from a previous request. Copies the object if its entity tag (ETag) matches the specified tag; otherwise, the request returns a 412 HTTP status code error (precondition failed). Used in conjunction with `ifUnmodifiedSince`.
-	 * 	ifUnmodifiedSince - _string_ (Optional) The LastModified header from a previous request. Copies the object if it hasn't been modified since the specified time; otherwise, the request returns a 412 HTTP status code error (precondition failed). Used in conjunction with `ifMatch`.
-	 * 	ifNoneMatch - _string_ (Optional) The ETag header from a previous request. Copies the object if its entity tag (ETag) is different than the specified ETag; otherwise, the request returns a 412 HTTP status code error (failed condition). Used in conjunction with `ifModifiedSince`.
-	 * 	ifModifiedSince - _string_ (Optional) The LastModified header from a previous request. Copies the object if it has been modified since the specified time; otherwise, the request returns a 412 HTTP status code error (failed condition). Used in conjunction with `ifNoneMatch`.
+	 * 	ifMatch - _string_ (Optional) The ETag header from a previous request. Copies the object if its entity tag (ETag) matches the specified tag; otherwise, the request returns a `412` HTTP status code error (precondition failed). Used in conjunction with `ifUnmodifiedSince`.
+	 * 	ifUnmodifiedSince - _string_ (Optional) The LastModified header from a previous request. Copies the object if it hasn't been modified since the specified time; otherwise, the request returns a `412` HTTP status code error (precondition failed). Used in conjunction with `ifMatch`.
+	 * 	ifNoneMatch - _string_ (Optional) The ETag header from a previous request. Copies the object if its entity tag (ETag) is different than the specified ETag; otherwise, the request returns a `412` HTTP status code error (failed condition). Used in conjunction with `ifModifiedSince`.
+	 * 	ifModifiedSince - _string_ (Optional) The LastModified header from a previous request. Copies the object if it has been modified since the specified time; otherwise, the request returns a `412` HTTP status code error (failed condition). Used in conjunction with `ifNoneMatch`.
 	 * 	headers - _array_ (Optional) Standard HTTP headers to send along in the request.
-	 * 	meta - _array_ (Optional) Associative array of key-value pairs. Represented by x-amz-meta-: Any header starting with this prefix is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.
+	 * 	meta - _array_ (Optional) Associative array of key-value pairs. Represented by `x-amz-meta-:` Any header starting with this prefix is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.
 	 * 	metadataDirective - _string_ (Optional) Accepts either COPY or REPLACE. You will likely never need to use this, as it manages itself with no issues.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
@@ -1362,6 +1391,7 @@ class AmazonS3 extends CFRuntime
 	public function copy_object($source, $dest, $opt = null)
 	{
 		if (!$opt) $opt = array();
+		$batch = array();
 
 		// Add this to our request
 		$opt['verb'] = 'PUT';
@@ -1373,6 +1403,13 @@ class AmazonS3 extends CFRuntime
 			$opt['headers']['x-amz-copy-source'] = '/' . $source['bucket'] . '/' . rawurlencode($source['filename'])
 				. (isset($opt['versionId']) ? ('?' . 'versionId=' . rawurlencode($opt['versionId'])) : ''); // Append the versionId to copy, if available
 			unset($opt['versionId']);
+
+			// Determine if we need to lookup the pre-existing content-type.
+			if (!in_array(strtolower('content-type'), array_map('strtolower', array_keys($opt['headers']))))
+			{
+				$response = $this->get_object_headers($source['bucket'], $source['filename']);
+				$opt['headers']['Content-Type'] = $response->header['content-type'];
+			}
 		}
 
 		// Handle metadata directive
@@ -1387,8 +1424,15 @@ class AmazonS3 extends CFRuntime
 			unset($opt['metadataDirective']);
 		}
 
-		// Handle Access Control Lists. Can also be passed as an HTTP header.
-		if (isset($opt['acl']))
+		// Handle Access Control Lists. Can also pass canned ACLs as an HTTP header.
+		if (isset($opt['acl']) && is_array($opt['acl']))
+		{
+			$batch[] = $this->set_object_acl($dest['bucket'], $dest['filename'], $opt['acl'], array(
+				'returnCurlHandle' => true
+			));
+			unset($opt['acl']);
+		}
+		elseif (isset($opt['acl']))
 		{
 			$opt['headers']['x-amz-acl'] = $opt['acl'];
 			unset($opt['acl']);
@@ -1435,7 +1479,13 @@ class AmazonS3 extends CFRuntime
 		}
 
 		// Authenticate to S3
-		return $this->authenticate($dest['bucket'], $opt);
+		$response = $this->authenticate($dest['bucket'], $opt);
+
+		// Attempt to reset ACLs
+		$http = new RequestCore();
+		$http->send_multi_request($batch);
+
+		return $response;
 	}
 
 	/**
@@ -1454,7 +1504,7 @@ class AmazonS3 extends CFRuntime
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 * 	acl - _string_ (Optional) The ACL settings for the specified object. Accepts the following constants: <ACL_PRIVATE>, <ACL_PUBLIC>, <ACL_OPEN>, <ACL_AUTH_READ>, <ACL_OWNER_READ> or <ACL_OWNER_FULL_CONTROL>. The default value is <ACL_PRIVATE>.
+	 * 	acl - _string_ (Optional) The ACL settings for the specified object. [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. The default value is <ACL_PRIVATE>.
 	 * 	headers - _array_ (Optional) The standard HTTP headers to update the Amazon S3 object with.
 	 * 	meta - _array_ (Optional) An associative array of key-value pairs. Any header with the `x-amz-meta-` prefix is considered user metadata and is stored with the Amazon S3 object. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -1527,7 +1577,7 @@ class AmazonS3 extends CFRuntime
 	 * Parameters:
 	 * 	$bucket - _string_ (Required) The name of the bucket to use.
 	 * 	$filename - _string_ (Required) The file name for the object.
-	 * 	$acl - _string_ (Optional) The ACL settings for the specified object. Accepts any of the following constants: <ACL_PRIVATE>, <ACL_PUBLIC>, <ACL_OPEN>, <ACL_AUTH_READ>, <ACL_OWNER_READ> or <ACL_OWNER_FULL_CONTROL>. Alternatively, an array of associative arrays. Each associative array contains an `id` and a `permission`. The default value is <ACL_PRIVATE>.
+	 * 	$acl - _string_ (Optional) The ACL settings for the specified object. Accepts any of the following constants: [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. Alternatively, an array of associative arrays. Each associative array contains an `id` and a `permission` key. The default value is <ACL_PRIVATE>.
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -1545,6 +1595,18 @@ class AmazonS3 extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['verb'] = 'PUT';
 		$opt['resource'] = $filename;
+		$opt['sub_resource'] = 'acl';
+
+		// Retrieve the original metadata
+		$metadata = $this->get_object_metadata($bucket, $filename);
+		if ($metadata['ContentType'])
+		{
+			$opt['headers']['Content-Type'] = $metadata['ContentType'];
+		}
+		if ($metadata['StorageClass'])
+		{
+			$opt['headers']['x-amz-storage-class'] = $metadata['StorageClass'];
+		}
 
 		// Make sure these are defined.
 		if (!defined('AWS_CANONICAL_ID') || !defined('AWS_CANONICAL_NAME'))
@@ -2004,6 +2066,17 @@ class AmazonS3 extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 
+		// Retrieve the original metadata
+		$metadata = $this->get_object_metadata($bucket, $filename);
+		if ($metadata['ACL'])
+		{
+			$opt['acl'] = $metadata['ACL'];
+		}
+		if ($metadata['StorageClass'])
+		{
+			$opt['headers']['x-amz-storage-class'] = $metadata['StorageClass'];
+		}
+
 		// Merge optional parameters
 		$opt = array_merge(array(
 			'headers' => array(
@@ -2029,7 +2102,7 @@ class AmazonS3 extends CFRuntime
 	 * Parameters:
 	 * 	$bucket - _string_ (Required) The name of the bucket to use.
 	 * 	$filename - _string_ (Required) The file name for the object.
-	 * 	$storage - _string_ (Required) The storage setting to apply to the object. Accepts either of the following constants: <STORAGE_STANDARD> or <STORAGE_REDUCED>.
+	 * 	$storage - _string_ (Required) The storage setting to apply to the object. [Allowed values: `AmazonS3::STORAGE_STANDARD`, `AmazonS3::STORAGE_REDUCED`]
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -2041,6 +2114,17 @@ class AmazonS3 extends CFRuntime
 	public function change_storage_redundancy($bucket, $filename, $storage, $opt = null)
 	{
 		if (!$opt) $opt = array();
+
+		// Retrieve the original metadata
+		$metadata = $this->get_object_metadata($bucket, $filename);
+		if ($metadata['ACL'])
+		{
+			$opt['acl'] = $metadata['ACL'];
+		}
+		if ($metadata['ContentType'])
+		{
+			$opt['headers']['Content-Type'] = $metadata['ContentType'];
+		}
 
 		// Merge optional parameters
 		$opt = array_merge(array(
@@ -2249,6 +2333,72 @@ class AmazonS3 extends CFRuntime
 		}
 
 		return $this->batch($q)->send();
+	}
+
+	/**
+	 * Method: get_object_metadata()
+	 * 	Gets the collective metadata for the given Amazon S3 object.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$bucket - _string_ (Required) The name of the bucket to use.
+	 * 	$filename - _string_ (Required) The file name for the Amazon S3 object.
+	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 * 	versionId - _string_ (Optional) The version of the object to retrieve. Version IDs are returned in the `x-amz-version-id` header of any previous object-related request.
+	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 * 	_array_ The collective metadata for the Amazon S3 object.
+	 */
+	public function get_object_metadata($bucket, $filename, $opt = null)
+	{
+		$batch = new CFBatchRequest();
+		$this->batch($batch)->get_object_acl($bucket, $filename); // Get ACL info
+		$this->batch($batch)->get_object_headers($bucket, $filename); // Get content-type
+		$this->batch($batch)->list_objects($bucket, array( // Get other metadata
+			'max-keys' => 1,
+			'prefix' => $filename
+		));
+		$response = $this->batch($batch)->send();
+
+		$data = array(
+			'ACL' => array(),
+			'ContentType' => null,
+			'ETag' => null,
+			'Key' => null,
+			'LastModified' => null,
+			'Owner' => array(),
+			'Size' => null,
+			'StorageClass' => null,
+		);
+
+		// Add the content type
+		$data['ContentType'] = (string) $response[1]->header['content-type'];
+
+		// Add the other metadata (including storage type)
+		$contents = json_decode(json_encode($response[2]->body->query('descendant-or-self::Contents')->first()), true);
+		$data = array_merge($data, (is_array($contents) ? $contents : array()));
+
+		// Add ACL info
+		$grants = $response[0]->body->query('descendant-or-self::Grant');
+		$max = count($grants);
+
+		// for ($i = 0; $i < $max; $i++)
+		foreach ($grants as $grant)
+		{
+			$dgrant = array(
+				'id' => (string) $this->util->try_these(array('ID', 'URI'), $grant->Grantee),
+				'permission' => (string) $grant->Permission
+			);
+
+			$data['ACL'][] = $dgrant;
+		}
+
+		return $data;
 	}
 
 

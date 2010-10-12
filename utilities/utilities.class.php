@@ -19,7 +19,7 @@
  * 	Utilities for connecting to, and working with, AWS.
  *
  * Version:
- * 	2010.09.10
+ * 	2010.09.30
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -321,7 +321,7 @@ class CFUtilities
 
 	/**
 	 * Method: try_these()
-	 * 	Returns the first value that is set. Based on Try.these() from Prototype <http://prototypejs.org>.
+	 * 	Returns the first value that is set. Based on [Try.these()](http://api.prototypejs.org/language/try/these/) from [Prototype](http://prototypejs.org).
 	 *
 	 * Access:
 	 * 	public

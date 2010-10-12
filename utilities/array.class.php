@@ -19,13 +19,14 @@
  * 	Wrapper for ArrayObject.
  *
  * Version:
- * 	2010.08.18
+ * 	2010.10.03
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
  *
  * See Also:
  * 	[PHP Developer Center](http://aws.amazon.com/php/)
+ * 	[ArrayObject](http://php.net/ArrayObject)
  */
 
 
@@ -142,5 +143,124 @@ class CFArray extends ArrayObject
 		}
 
 		return (array_search(false, $dlist, true) !== false) ? false : true;
+	}
+
+	/**
+	 * Method: each()
+	 * 	Iterates over a <CFArray> object, and executes a function for each matched element.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$callback - _string_ (Required) The callback function to execute. PHP 5.3 or newer can use an anonymous function.
+	 * 	$bind - _mixed_ (Optional) A variable from the calling scope to pass-by-reference into the local scope of the callback function.
+	 *
+	 * Returns:
+	 * 	_CFArray_ The original <CFArray> object.
+	 */
+	public function each($callback, &$bind = null)
+	{
+		$items = $this->getArrayCopy();
+		$max = count($items);
+
+		for ($i = 0; $i < $max; $i++)
+		{
+			$callback($items[$i], $i, $bind);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Method: map()
+	 * 	Passes each element in the current <CFArray> object through a function, and produces a new <CFArray> object containing the return values.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$callback - _string_ (Required) The callback function to execute. PHP 5.3 or newer can use an anonymous function.
+	 * 	$bind - _mixed_ (Optional) A variable from the calling scope to pass-by-reference into the local scope of the callback function.
+	 *
+	 * Returns:
+	 * 	_CFArray_ A new <CFArray> object containing the return values.
+	 */
+	public function map($callback, &$bind = null)
+	{
+		$items = $this->getArrayCopy();
+		$max = count($items);
+		$collect = array();
+
+		for ($i = 0; $i < $max; $i++)
+		{
+			$collect[] = $callback($items[$i], $i, $bind);
+		}
+
+		return new CFArray($collect);
+	}
+
+	/**
+	 * Method: reduce()
+	 * 	Reduces the list of nodes by passing each value in the current <CFArray> object through a function. The node will be removed if the function returns `false`.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$callback - _string_ (Required) The callback function to execute. PHP 5.3 or newer can use an anonymous function.
+	 * 	$bind - _mixed_ (Optional) A variable from the calling scope to pass-by-reference into the local scope of the callback function.
+	 *
+	 * Returns:
+	 * 	_CFArray_ A new <CFArray> object containing the return values.
+	 */
+	public function reduce($callback, &$bind = null)
+	{
+		$items = $this->getArrayCopy();
+		$max = count($items);
+		$collect = array();
+
+		for ($i = 0; $i < $max; $i++)
+		{
+			if ($callback($items[$i], $i, $bind) !== false)
+			{
+				$collect[] = $items[$i];
+			}
+		}
+
+		return new CFArray($collect);
+	}
+
+	/**
+	 * Method: first()
+	 * 	Gets the first result in the array.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Returns:
+	 * 	_mixed_ The first result in the <CFArray> object. Returns `false` if there are no items in the array.
+	 */
+	public function first()
+	{
+		$items = $this->getArrayCopy();
+		return count($items) ? $items[0] : false;
+	}
+
+	/**
+	 * Method: last()
+	 * 	Gets the last result in the array.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Returns:
+	 * 	_mixed_ The last result in the <CFArray> object. Returns `false` if there are no items in the array.
+	 */
+	public function last()
+	{
+		$items = $this->getArrayCopy();
+		$last = count($items) - 1;
+		return count($items) ? $items[$last] : false;
 	}
 }
