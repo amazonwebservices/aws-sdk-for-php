@@ -19,7 +19,7 @@
  * 	Wrapper for SimpleXMLElement.
  *
  * Version:
- * 	2010.10.03
+ * 	2010.11.08
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -74,7 +74,7 @@ class CFSimpleXML extends SimpleXMLIterator
 		$self = new CFSimpleXML($self->asXML());
 
 		// Determine XPath query
-		$self->xpath_expression = '//' . $name;
+		$self->xpath_expression = 'descendant-or-self::' . $name;
 
 		// Get the results and augment with CFArray
 		$results = $self->xpath($self->xpath_expression);
@@ -141,7 +141,7 @@ class CFSimpleXML extends SimpleXMLIterator
 	}
 
 	/**
-	 * Method: stringify()
+	 * Method: to_string()
 	 * 	Gets the current XML node as a true string.
 	 *
 	 * Access:
@@ -150,9 +150,24 @@ class CFSimpleXML extends SimpleXMLIterator
 	 * Returns:
 	 * 	_string_ The current XML node as a true string.
 	 */
-	public function stringify()
+	public function to_string()
 	{
 		return (string) $this;
+	}
+
+	/**
+	 * Method: to_array()
+	 * 	Gets the current XML node as a true array.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Returns:
+	 * 	_array_ The current XML node as a true array.
+	 */
+	public function to_array()
+	{
+		return new CFArray(json_decode(json_encode($this), true));
 	}
 
 	/**

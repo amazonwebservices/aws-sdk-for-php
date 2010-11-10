@@ -4,7 +4,7 @@
  * 	Handles all HTTP requests using cURL and manages the responses.
  *
  * Version:
- * 	2010.10.11
+ * 	2010.11.02
  *
  * Copyright:
  * 	2006-2010 Ryan Parman, Foleeo Inc., and contributors.
@@ -37,103 +37,103 @@ class RequestCore
 	 * Property: request_url
 	 * 	The URL being requested.
 	 */
-	var $request_url;
+	public $request_url;
 
 	/**
 	 * Property: request_headers
 	 * 	The headers being sent in the request.
 	 */
-	var $request_headers;
+	public $request_headers;
 
 	/**
 	 * Property: request_body
 	 * 	The body being sent in the request.
 	 */
-	var $request_body;
+	public $request_body;
 
 	/**
 	 * Property: response
 	 * 	The response returned by the request.
 	 */
-	var $response;
+	public $response;
 
 	/**
 	 * Property: response_headers
 	 * 	The headers returned by the request.
 	 */
-	var $response_headers;
+	public $response_headers;
 
 	/**
 	 * Property: response_body
 	 * 	The body returned by the request.
 	 */
-	var $response_body;
+	public $response_body;
 
 	/**
 	 * Property: response_code
 	 * 	The HTTP status code returned by the request.
 	 */
-	var $response_code;
+	public $response_code;
 
 	/**
 	 * Property: response_info
 	 * 	Additional response data.
 	 */
-	var $response_info;
+	public $response_info;
 
 	/**
 	 * Property: curl_handle
 	 * 	The handle for the cURL object.
 	 */
-	var $curl_handle;
+	public $curl_handle;
 
 	/**
 	 * Property: method
 	 * 	The method by which the request is being made.
 	 */
-	var $method;
+	public $method;
 
 	/**
 	 * Property: proxy
 	 * 	Stores the proxy settings to use for the request.
 	 */
-	var $proxy = null;
+	public $proxy = null;
 
 	/**
 	 * Property: username
 	 * 	The username to use for the request.
 	 */
-	var $username = null;
+	public $username = null;
 
 	/**
 	 * Property: password
 	 * 	The password to use for the request.
 	 */
-	var $password = null;
+	public $password = null;
 
 	/**
 	 * Property: curlopts
 	 * 	Custom CURLOPT settings.
 	 */
-	var $curlopts = null;
+	public $curlopts = null;
 
 	/**
 	 * Property: request_class
 	 * 	The default class to use for HTTP Requests (defaults to <RequestCore>).
 	 */
-	var $request_class = 'RequestCore';
+	public $request_class = 'RequestCore';
 
 	/**
 	 * Property: response_class
 	 * 	The default class to use for HTTP Responses (defaults to <ResponseCore>).
 	 */
-	var $response_class = 'ResponseCore';
+	public $response_class = 'ResponseCore';
 
 	/**
 	 * Property: useragent
 	 * 	Default useragent string to use.
 	 */
-	var $useragent = 'RequestCore/1.2';
+	public $useragent = 'RequestCore/1.3';
 
 	/**
 	 * Property: read_file
@@ -142,10 +142,34 @@ class RequestCore
 	var $read_file = null;
 
 	/**
+	 * Property: read_stream
+	 *  The resource to read from while streaming up.
+	 */
+	var $read_stream = null;
+
+	/**
+	 * Property: read_stream_size
+	 *  The size of the stream to read from.
+	 */
+	var $read_stream_size = null;
+
+	/**
 	 * Property: write_file
 	 * 	File to write to while streaming down.
 	 */
 	var $write_file = null;
+
+	/**
+	 * Property: write_stream
+	 *  The resource to write to while streaming down.
+	 */
+	var $write_stream = null;
+
+	/**
+	 * Property: seek_position
+	 * 	Stores the intended starting seek position.
+	 */
+	public $seek_position = 0;
 
 
 	/*%******************************************************************************************%*/
@@ -391,6 +415,50 @@ class RequestCore
 	}
 
 	/**
+	 * Method: set_read_stream()
+	 * 	Sets the resource to read from while streaming up. Reads the stream from it's current position until
+	 * 	EOF or `$size` bytes have been read. If `$size` is not given it will be determined by fstat() and
+	 * 	ftell().
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$resource - _resource_ (Required) The readable resource to read from.
+	 * 	$size - _integer_ (Optional) The size of the stream to read.
+	 *
+	 * Returns:
+	 * 	`$this`
+	 */
+	public function set_read_stream($resource, $size = -1)
+	{
+		if ($size < 0)
+		{
+			$stats = fstat($resource);
+
+			if ($stats && $stats['size'] >= 0)
+			{
+				$position = ftell($resource);
+
+				if ($position !== false && $position >= 0)
+				{
+					$size = $stats['size'] - $position;
+				}
+			}
+		}
+
+		if ($size < 0)
+		{
+			throw new RequestCore_Exception('Stream size for upload cannot be determined');
+		}
+
+		$this->read_stream = $resource;
+		$this->read_stream_size = $size;
+
+		return $this;
+	}
+
+	/**
 	 * Method: set_read_file()
 	 * 	Sets the file to read from while streaming up.
 	 *
@@ -406,6 +474,28 @@ class RequestCore
 	public function set_read_file($location)
 	{
 		$this->read_file = $location;
+		// @todo: Close this connection!
+		$read_file_handle = fopen($location, 'r');
+
+		return $this->set_read_stream($read_file_handle);
+	}
+
+	/**
+	 * Method: set_write_stream()
+	 * 	Sets the resource to write to while streaming down.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$resource - _resource_ (Required) The writeable resource to write to.
+	 *
+	 * Returns:
+	 * 	`$this`
+	 */
+	public function set_write_stream($resource)
+	{
+		$this->write_stream = $resource;
 		return $this;
 	}
 
@@ -417,7 +507,7 @@ class RequestCore
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$location - _string_ (Required) The file system location to read from.
+	 * 	$location - _string_ (Required) The file system location to write to.
 	 *
 	 * Returns:
 	 * 	`$this`
@@ -425,7 +515,9 @@ class RequestCore
 	public function set_write_file($location)
 	{
 		$this->write_file = $location;
-		return $this;
+		$write_file_handle = fopen($location, 'w');
+
+		return $this->set_write_stream($write_file_handle);
 	}
 
 	/**
@@ -436,7 +528,7 @@ class RequestCore
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$proxy - _string_ (Optional) The faux-url to use for proxy settings. Takes the following format: `proxy://user:pass@hostname:port`
+	 * 	$proxy - _string_ (Required) The faux-url to use for proxy settings. Takes the following format: `proxy://user:pass@hostname:port`
 	 *
 	 * Returns:
 	 * 	`$this`
@@ -451,9 +543,65 @@ class RequestCore
 		return $this;
 	}
 
+	/**
+	 * Method: set_seek_position()
+	 * 	Set the intended starting seek position.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$position - _integer_ (Required) The byte-position of the file to begin reading from.
+	 *
+	 * Returns:
+	 * 	`$this`
+	 */
+	public function set_seek_position($position)
+	{
+		$this->seek_position = (integer) $position;
+		return $this;
+	}
+
 
 	/*%******************************************************************************************%*/
 	// PREPARE, SEND, AND PROCESS REQUEST
+
+	/**
+	 * Method: streaming_read_callback()
+	 * 	A callback function that is invoked by cURL for streaming.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$curl_handle - _resource_ (Required) The cURL handle for the request.
+	 * 	$file_handle - _resource_ (Required) The open file handle resource.
+	 * 	$length - _integer_ (Required) The maximum number of bytes to read.
+	 *
+	 * Returns:
+	 * 	_binary_ Binary data from a file.
+	 */
+	public function streaming_read_callback($curl_handle, $file_handle, $length)
+	{
+		$info = curl_getinfo($curl_handle);
+
+		// Once we've sent as much as we're supposed to send...
+		if ($info['size_upload'] >= $info['upload_content_length'])
+		{
+			// Send EOF
+			return 0;
+		}
+
+		// If we're not in the middle of an upload...
+		if ((integer) $info['size_upload'] === 0)
+		{
+			fseek($file_handle, (integer) $this->seek_position);
+		}
+
+		// echo ftell($file_handle) . '/' . $info['size_upload'] . PHP_EOL;
+
+		return fread($file_handle, 16384); // 16KB chunks
+	}
 
 	/**
 	 * Method: prep_request()
@@ -486,6 +634,8 @@ class RequestCore
 		curl_setopt($curl_handle, CURLOPT_REFERER, $this->request_url);
 		curl_setopt($curl_handle, CURLOPT_USERAGENT, $this->useragent);
 		curl_setopt($curl_handle, CURLOPT_LOW_SPEED_LIMIT, 1);
+		curl_setopt($curl_handle, CURLOPT_LOW_SPEED_TIME, 10);
+		curl_setopt($curl_handle, CURLOPT_READFUNCTION, array($this, 'streaming_read_callback'));
 
 		// Enable a proxy connection if requested.
 		if ($this->proxy)
@@ -532,14 +682,15 @@ class RequestCore
 		{
 			case self::HTTP_PUT:
 				curl_setopt($curl_handle, CURLOPT_CUSTOMREQUEST, 'PUT');
-				curl_setopt($curl_handle, CURLOPT_POSTFIELDS, $this->request_body);
-				if ($this->read_file)
+				if (isset($this->read_stream))
 				{
-					// @todo: Close this connection!
-					$read_file_handle = fopen($this->read_file, 'r');
-					curl_setopt($curl_handle, CURLOPT_INFILE, $read_file_handle);
-					curl_setopt($curl_handle, CURLOPT_INFILESIZE, filesize($this->read_file));
+					curl_setopt($curl_handle, CURLOPT_INFILE, $this->read_stream);
+					curl_setopt($curl_handle, CURLOPT_INFILESIZE, $this->read_stream_size);
 					curl_setopt($curl_handle, CURLOPT_UPLOAD, true);
+				}
+				else
+				{
+					curl_setopt($curl_handle, CURLOPT_POSTFIELDS, $this->request_body);
 				}
 				break;
 
@@ -555,13 +706,14 @@ class RequestCore
 
 			default: // Assumed GET
 				curl_setopt($curl_handle, CURLOPT_CUSTOMREQUEST, $this->method);
-				curl_setopt($curl_handle, CURLOPT_POSTFIELDS, $this->request_body);
-				if ($this->write_file)
+				if (isset($this->write_stream))
 				{
-					// @todo: Close this connection!
-					$write_file_handle = fopen($this->write_file, 'w+');
-					curl_setopt($curl_handle, CURLOPT_FILE, $write_file_handle);
+					curl_setopt($curl_handle, CURLOPT_FILE, $this->write_stream);
 					curl_setopt($curl_handle, CURLOPT_HEADER, false);
+				}
+				else
+				{
+					curl_setopt($curl_handle, CURLOPT_POSTFIELDS, $this->request_body);
 				}
 				break;
 		}
@@ -659,6 +811,12 @@ class RequestCore
 
 		$curl_handle = $this->prep_request();
 		$this->response = curl_exec($curl_handle);
+
+		if ($this->response === false)
+		{
+			throw new RequestCore_Exception('cURL resource: ' . (string) $curl_handle . '; cURL error: ' . curl_error($curl_handle) . ' (' . curl_errno($curl_handle) . ')');
+		}
+
 		$parsed_response = $this->process_response($curl_handle, $this->response);
 
 		curl_close($curl_handle);
@@ -691,6 +849,8 @@ class RequestCore
 	 */
 	public function send_multi_request($handles, $opt = null)
 	{
+		set_time_limit(0);
+
 		// Skip everything if there are no handles to process.
 		if (count($handles) === 0) return array();
 
@@ -843,19 +1003,19 @@ class ResponseCore
 	 * Property: header
 	 * Stores the HTTP header information.
 	 */
-	var $header;
+	public $header;
 
 	/**
 	 * Property: body
 	 * Stores the SimpleXML response.
 	 */
-	var $body;
+	public $body;
 
 	/**
 	 * Property: status
 	 * Stores the HTTP response code.
 	 */
-	var $status;
+	public $status;
 
 	/**
 	 * Method: __construct()

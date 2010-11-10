@@ -30,7 +30,7 @@
 
 	TO RUN:
 	* Run this file on your web server by loading it in your browser, OR...
-	* Run this file from the command line with `php s3_get_urls_for_uploads.php`.
+	* Run this file from the command line with `php cli-s3_get_urls_for_uploads.php`.
 */
 
 

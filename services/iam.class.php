@@ -40,7 +40,7 @@
  * 	legal protections still apply.
  *
  * Version:
- * 	Thu Sep 30 17:32:01 PDT 2010
+ * 	Tue Nov 09 21:01:38 PST 2010
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
@@ -80,28 +80,6 @@ class AmazonIAM extends CFRuntime
 	 */
 	const DEFAULT_URL = 'iam.amazonaws.com';
 
-
-	/*%******************************************************************************************%*/
-	// SETTERS
-
-	/**
-	 * Method: set_region()
-	 * 	This allows you to explicitly sets the region for the service to use.
-	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$region - _string_ (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_EU_W1>, or <REGION_APAC_SE1>.
-	 *
-	 * Returns:
-	 * 	`$this`
-	 */
-	public function set_region($region)
-	{
-		$this->set_hostname($region);
-		return $this;
-	}
 
 
 	/*%******************************************************************************************%*/

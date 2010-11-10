@@ -237,7 +237,11 @@ class CFUtilities
 
 	/**
 	 * Method: size_readable()
-	 * 	Return human readable file sizes. Original function by Aidan Lister <aidan@php.net>, modified by Ryan Parman.
+	 * 	Return human readable file sizes.
+	 *
+	 * Author:
+	 * 	Aidan Lister <aidan@php.net>
+	 * 	Ryan Parman <ryan@getcloudfusion.com>
 	 *
 	 * Access:
 	 * 	public
@@ -476,6 +480,12 @@ class CFUtilities
 	/**
 	 * Method: generate_guid()
 	 * 	Generates a random GUID.
+	 *
+	 * Author:
+	 * 	Alix Axel <http://www.php.net/manual/en/function.com-create-guid.php#99425>
+	 *
+	 * License:
+	 * 	[PHP License](http://www.php.net/license/3_01.txt)
 	 *
 	 * Access:
 	 * 	public
