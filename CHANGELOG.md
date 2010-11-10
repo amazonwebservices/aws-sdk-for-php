@@ -1,11 +1,89 @@
+# Changelog: 1.1
+
+Launched Wednesday, November 10, 2010
+
+
+## New Features & Highlights (Summary)
+* Support for Amazon ELB, Amazon RDS and Amazon VPC has been added to the SDK.
+* Support for the Amazon S3 multipart upload feature has been added to the SDK. This feature enables developers upload large objects in a series of requests for improved upload reliability.
+* Support for the Amazon CloudFront custom origin (2010-11-01 release) feature has been added to the SDK. This feature enables developers to use custom domains as sources for Amazon CloudFront distributions.
+* The `AmazonS3` class now supports reading from and writing to open file resources in addition to the already-supported file system paths.
+* You can now seek to a specific byte-position within a file or file resource and begin streaming from that point when uploading or downloading objects.
+* The methods `get_bucket_filesize()`, `get_object_list()`, `delete_all_objects()` and `delete_all_object_versions()` are no longer limited to 1000 entries and will work correctly for all entries.
+* Requests that have errors at the cURL level now throw exceptions containing the error message and error code returned by cURL.
+* Bug fixes and enhancements:
+	* [Bug in Samples](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=52748)
+	* [EU Region DNS problem](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=53028)
+	* [AmazonS3 get_bucket_object_count](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=52976)
+	* [S3: get_object_list() fatal error](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=53418)
+	* [S3 get_object_metadata() problems](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=54244)
+	* [Bug in authenticate in sdk.class.php](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=53117)
+	* [How to use Prefix with "get_object_list"?](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=52987)
+	* [SignatureDoesNotMatch with utf-8 in SimpleDB](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=52798)
+	* [Suggestion for the PHP SDK concerning streaming](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=52787)
+	* [get_bucket_filesize only returns filesize for first 1000 objects](http://developer.amazonwebservices.com/connect/thread.jspa?threadID=53786)
+
+
+## Base/Runtime class
+* **New:** Added `to_string()` and `to_array()` methods to the `CFSimpleXML` class.
+* **Changed:** Port numbers other than 80 and 443 are now part of the signature.
+* **Changed:** When putting UTF-8 characters via HTTP `POST`, a `SignatureDoesNotMatch` error would be returned. This was resolved by specifying the character set in the `Content-Type` header.
+
+
+## Service Classes
+### AmazonCloudFront
+* **New:** Support for the Amazon CloudFront non-S3 origin feature (2010-11-01 release) has been added to the SDK. This feature enables developers to use non-S3 domains as sources for Amazon CloudFront distributions.
+
+### AmazonEC2
+* **New:** Support for Amazon Virtual Private Cloud has been added to the SDK.
+
+### AmazonELB
+* **New:** Support for Amazon Elastic Load Balancing Service has been added to the SDK.
+
+### AmazonIAM
+* **Fixed:** Removed `set_region()` as IAM only supports a single endpoint.
+
+### AmazonRDS
+* **New:** Support for Amazon Relational Database Service has been added to the SDK.
+
+### AmazonS3
+* **New:** Support for the Amazon S3 multipart upload feature has been added to the SDK. This feature enables developers upload large objects in a series of requests for improved upload reliability.
+* **New:** The `fileUpload` and `fileDownload` options now support reading from and writing to open file resources in addition to the already-supported file system paths.
+* **Fixed:** In Amazon S3, requests directly to the eu-west endpoint must use the path-style URI. The set_region() method now takes this into account.
+* **Fixed:** As of version 1.0.1, CFSimpleXML extends SimpleXMLIterator instead of SimpleXMLElement. This prevented the `__call()` magic method from firing when `get_object_list()` was used.
+* **Fixed:** The `preauth` option for the `get_object_list()` method has been removed from the documentation as it is not supported.
+* **Fixed:** The methods `get_bucket_filesize()`, `get_object_list()`, `delete_all_objects()` and `delete_all_object_versions()` are no longer limited to 1000 entries and will work correctly for all entries.
+* **Fixed:** Using `delete_bucket()` to force-delete a bucket now works correctly for buckets with more than 1000 versions.
+* **Fixed:** The response from the `get_object_metadata()` method now includes all supported HTTP headers, including metadata stored in `x-amz-meta-` headers.
+* **Fixed:** Previously, if the `get_object_metadata()` method was called on a non-existant object, metadata for the alphabetically-next object would be returned.
+
+### AmazonSQS
+* **New:** The `get_queue_arn()` method has been added to the `AmazonSQS` class, which converts a queue URI to a queue ARN.
+
+
+## Third-party Libraries
+### RequestCore
+* **New:** Upgraded to version 1.3.
+* **New:** Added `set_seek_position()` for seeking to a byte-position in a file or file resource before starting an upload.
+* **New:** Added support for reading from and writing to open file resources.
+* **Fixed:** Improved the reporting for cURL errors.
+
+
+## Compatibility Test
+* **Fixed:** Fixed the links to the Getting Started Guide.
+
+
+(Barret)
+
+
+----
+
 # Changelog: 1.0.1
 
 Launched Tuesday, October 12, 2010
 
-This is a complete list of changes since 1.0.
 
-
-## New Features & Highlights
+## New Features & Highlights (Summary)
 * Improved support for running XPath queries against the service response bodies.
 * Added support for request retries and exponential backoff.
 * Added support for HTTP request/response header logging.
@@ -71,7 +149,7 @@ Launched Tuesday, September 28, 2010
 This is a complete list of changes since we forked from the CloudFusion 2.5.x trunk build.
 
 
-## New Features & Highlights
+## New Features & Highlights (Summary)
 * The new file to include is `sdk.class.php` rather than `cloudfusion.class.php`.
 * Because of the increased reliance on [JSON](http://json.org) across AWS services, the minimum supported version is now PHP 5.2 ([Released in November 2006](http://www.php.net/ChangeLog-5.php#5.2.0); Justified by these [WordPress usage statistics](http://wpdevel.wordpress.com/2010/07/09/suggest-topics-for-the-july-15-2010-dev/comment-page-1/#comment-8542) and the fact that [PHP 5.2 has been end-of-life'd](http://www.php.net/archive/2010.php#id2010-07-22-1) in favor of 5.3).
 * Up-to-date service support for [EC2](http://aws.amazon.com/ec2), [S3](http://aws.amazon.com/s3), [SQS](http://aws.amazon.com/sqs), [SimpleDB](http://aws.amazon.com/simpledb), [CloudWatch](http://aws.amazon.com/cloudwatch), [CloudFront](http://aws.amazon.com/cloudfront) and the [Product Advertising API](https://affiliate-program.amazon.com/gp/advertising/api/detail/main.html).

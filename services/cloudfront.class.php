@@ -25,7 +25,7 @@
  * 	of your files.
  *
  * Version:
- * 	2010.10.11
+ * 	2010.11.03
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -117,7 +117,7 @@ class AmazonCloudFront extends CFRuntime
 	 */
 	public function __construct($key = null, $secret_key = null)
 	{
-		$this->api_version = '2010-08-01';
+		$this->api_version = '2010-11-01';
 		$this->hostname = self::DEFAULT_URL;
 
 		$this->base_xml = '<?xml version="1.0" encoding="UTF-8"?><%s xmlns="http://cloudfront.amazonaws.com/doc/' . $this->api_version . '/"></%1$s>';
@@ -231,14 +231,6 @@ class AmazonCloudFront extends CFRuntime
 		$request->request_class = $this->request_class;
 		$request->response_class = $this->response_class;
 
-		// Enable debug headers
-		if ($this->debug_mode)
-		{
-			$request->set_curlopts(array(
-				CURLOPT_VERBOSE => true
-			));
-		}
-
 		// Generate required headers.
 		$request->set_method($method);
 		$canonical_date = gmdate($this->util->konst($this->util, 'DATE_FORMAT_RFC2616'));
@@ -258,6 +250,26 @@ class AmazonCloudFront extends CFRuntime
 		if ($etag)
 		{
 			$request->add_header('If-Match', $etag);
+		}
+
+		$curlopts = array();
+
+		// Debug mode
+		if ($this->debug_mode)
+		{
+			$curlopts = array_merge($curlopts, array(CURLOPT_VERBOSE => true));
+		}
+
+		// Set custom CURLOPT settings
+		if (isset($opt['curlopts']))
+		{
+			$curlopts = array_merge($curlopts, $opt['curlopts']);
+			unset($opt['curlopts']);
+		}
+
+		if (count($curlopts))
+		{
+			$request->set_curlopts($curlopts);
 		}
 
 		// Manage the (newer) batch request API or the (older) returnCurlHandle setting.
@@ -403,7 +415,7 @@ class AmazonCloudFront extends CFRuntime
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$origin - _string_ (Required) The source Amazon S3 bucket to use for the Amazon CloudFront distribution.
+	 * 	$origin - _string_ (Required) The source to use for the Amazon CloudFront distribution. Use an Amazon S3 bucket name, or a fully-qualified non-S3 domain name prefixed with `http://` or `https://`.
 	 * 	$caller_reference - _string_ (Required) A unique identifier for the request. A timestamp-appended string is recommended.
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
@@ -411,10 +423,11 @@ class AmazonCloudFront extends CFRuntime
 	 * 	CNAME - _string_|_array_ (Optional) A DNS CNAME to use to map to the Amazon CloudFront distribution. If setting more than one, use an indexed array. Supports 1-10 CNAMEs.
 	 * 	Comment - _string_ (Optional) A comment to apply to the distribution. Cannot exceed 128 characters.
 	 * 	DefaultRootObject - _string_ (Optional) The file to load when someone accesses the root of your Amazon CloudFront domain (e.g., `index.html`).
-	 * 	Enabled - _string_ (Optional) A value of `true` enables the distribution. A value of `false` disables it. Defaults to `true`.
+	 * 	Enabled - _string_ (Optional) A value of `true` enables the distribution. A value of `false` disables it. The default value is `true`.
 	 * 	Logging - _array_ (Optional) An array that contains two keys: `Bucket`, specifying where logs are written to, and `Prefix`, specifying a prefix to append to log file names.
-	 * 	OriginAccessIdentity - _string_ (Optional) The origin access identity (OAI) associated with this distribution. Use the Identity ID from the OAI, not the `CanonicalId`.
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. Defaults to `false`.
+	 * 	OriginAccessIdentity - _string_ (Optional) The origin access identity (OAI) associated with this distribution. Use the Identity ID from the OAI, not the `CanonicalId`. Requires an S3 origin.
+	 * 	OriginProtocolPolicy - _string_ (Optional) The origin protocol policy to apply to your origin. If you specify `http-only`, CloudFront will use HTTP only to access the origin. If you specify `match-viewer`, CloudFront will fetch from your origin using HTTP or HTTPS, based on the protocol of the viewer request. It has a default value of `match-viewer`. [Allowed values: `http-only`, `match-viewer`]
+	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. The default value is `false`.
 	 * 	TrustedSigners - _array_ (Optional) An array of AWS account numbers for users who are trusted signers. Explicity add the value `Self` to the array to add your own account as a trusted signer.
 	 *
 	 * Returns:
@@ -427,8 +440,33 @@ class AmazonCloudFront extends CFRuntime
 			(isset($opt['Streaming']) && $opt['Streaming'] == (bool) true) ? 'StreamingDistributionConfig' : 'DistributionConfig')
 		));
 
-		// Origin
-		$xml->addChild('Origin', $origin . ((stripos($origin, '.s3.amazonaws.com') === false) ? '.s3.amazonaws.com' : ''));
+		if (substr($origin, 0, 7) === 'http://' || substr($origin, 0, 8) === 'https://')
+		{
+			// Custom Origin
+			$custom_origin = $xml->addChild('CustomOrigin');
+			$custom_origin->addChild('DNSName', str_replace(array('http://', 'https://'), '', $origin));
+
+			if (isset($opt['OriginProtocolPolicy']))
+			{
+				$custom_origin->addChild('OriginProtocolPolicy', $opt['OriginProtocolPolicy']);
+			}
+			else
+			{
+				$custom_origin->addChild('OriginProtocolPolicy', 'match-viewer');
+			}
+		}
+		else
+		{
+			// S3 Origin
+			$s3_origin = $xml->addChild('S3Origin');
+			$s3_origin->addChild('DNSName', $origin . ((stripos($origin, '.s3.amazonaws.com') === false) ? '.s3.amazonaws.com' : ''));
+
+			// Origin Access Identity
+			if (isset($opt['OriginAccessIdentity']))
+			{
+				$s3_origin->addChild('OriginAccessIdentity', 'origin-access-identity/cloudfront/' . $opt['OriginAccessIdentity']);
+			}
+		}
 
 		// CallerReference
 		$xml->addChild('CallerReference', $caller_reference);
@@ -489,12 +527,6 @@ class AmazonCloudFront extends CFRuntime
 			$required_protocols->addChild('Protocol', $opt['RequiredProtocols']);
 		}
 
-		// origin access identity
-		if (isset($opt['OriginAccessIdentity']))
-		{
-			$xml->addChild('OriginAccessIdentity', 'origin-access-identity/cloudfront/' . $opt['OriginAccessIdentity']);
-		}
-
 		// Trusted Signers
 		if (isset($opt['TrustedSigners']))
 		{
@@ -544,7 +576,7 @@ class AmazonCloudFront extends CFRuntime
 	 * 	CNAME - _string_|_array_ (Optional) The value or values to add to the existing list of CNAME values. If setting more than one, use an indexed array. Supports up to 10 CNAMEs.
 	 * 	Comment - _string_ (Optional) A comment to apply to the distribution. Cannot exceed 128 characters.
 	 * 	DefaultRootObject - _string_ (Optional) The file to load when someone accesses the root of your Amazon CloudFront domain (e.g., `index.html`).
-	 * 	Enabled - _string_ (Optional) A value of `true` enables the distribution. A value of `false` disables it. Defaults to `true`.
+	 * 	Enabled - _string_ (Optional) A value of `true` enables the distribution. A value of `false` disables it. The default value is `true`.
 	 * 	Logging - _array_ (Optional) An array that contains two keys: `Bucket`, specifying where logs are written to, and `Prefix`, specifying a prefix to append to log file names.
 	 * 	OriginAccessIdentity - _string_ (Optional) The origin access identity (OAI) associated with this distribution. Use the Identity ID from the OAI, not the `CanonicalId`.
 	 * 	TrustedSigners - _array_ (Optional) An array of AWS account numbers for users who are trusted signers. Explicity add the value `Self` to the array to add your own account as a trusted signer.
@@ -572,7 +604,16 @@ class AmazonCloudFront extends CFRuntime
 		), $this->parser_class);
 
 		// These can't change.
-		$update->addChild('Origin', $xml->Origin);
+		if (isset($xml->S3Origin))
+		{
+			$origin = $update->addChild('S3Origin');
+			$origin->addChild('DNSName', $xml->S3Origin->DNSName);
+		}
+		elseif (isset($xml->CustomOrigin))
+		{
+			$origin = $update->addChild('CustomOrigin');
+			$origin->addChild('DNSName', $xml->CustomOrigin->DNSName);
+		}
 		$update->addChild('CallerReference', $xml->CallerReference);
 
 		// Add existing CNAME values
@@ -858,7 +899,7 @@ class AmazonCloudFront extends CFRuntime
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 * 	Paths - _string_|_array_ (Optional) One or more paths to set for invalidation. Pass a string for a single value, or an indexed array for multiple values..
+	 * 	Paths - _string_|_array_ (Optional) One or more paths to set for invalidation. Pass a string for a single value, or an indexed array for multiple values.
 	 *
 	 * Returns:
 	 * 	_string_ An XML document to be used as the Invalidation configuration.
@@ -878,6 +919,7 @@ class AmazonCloudFront extends CFRuntime
 
 			foreach ($paths as $path)
 			{
+				$path = str_replace('%2F', '/', rawurlencode($path));
 				$path = (substr($path, 0, 1) === '/') ? $path : ('/' . $path);
 				$xml->addChild('Path', $path);
 			}
@@ -902,7 +944,7 @@ class AmazonCloudFront extends CFRuntime
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$origin - _string_ (Required) The source S3 bucket to use for the Amazon CloudFront distribution.
+	 * 	$origin - _string_ (Required) The source to use for the Amazon CloudFront distribution. Use an Amazon S3 bucket name, or a fully-qualified non-S3 domain name prefixed with `http://` or `https://`.
 	 * 	$caller_reference - _string_ (Required) A unique identifier for the request. A timestamp-appended string is recommended.
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
@@ -910,9 +952,10 @@ class AmazonCloudFront extends CFRuntime
 	 * 	CNAME - _string_|_array_ (Optional) A DNS CNAME to use to map to the Amazon CloudFront distribution. If setting more than one, use an indexed array. Supports 1-10 CNAMEs.
 	 * 	Comment - _string_ (Optional) A comment to apply to the distribution. Cannot exceed 128 characters.
 	 * 	DefaultRootObject - _string_ (Optional) The file to load when someone accesses the root of the Amazon CloudFront domain (e.g., `index.html`).
-	 * 	Enabled - _string_ (Optional) A value of `true` will enable the distribution. A value of `false` will disable it. Defaults to `true`.
-	 * 	OriginAccessIdentity - _string_ (Optional) The origin access identity (OAI) associated with this distribution. Use the Identity ID from the OAI, not the `CanonicalId`.
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` creates a streaming distribution. A value of `false` creates a standard distribution. Defaults to `false`.
+	 * 	Enabled - _string_ (Optional) A value of `true` will enable the distribution. A value of `false` will disable it. The default value is `true`.
+	 * 	OriginAccessIdentity - _string_ (Optional) The origin access identity (OAI) associated with this distribution. Use the Identity ID from the OAI, not the `CanonicalId`. Requires an S3 origin.
+	 * 	OriginProtocolPolicy - _string_ (Optional) The origin protocol policy to apply to your origin. If you specify `http-only`, CloudFront will use HTTP only to access the origin. If you specify `match-viewer`, CloudFront will fetch from your origin using HTTP or HTTPS, based on the protocol of the viewer request. [Allowed values: `http-only`, `match-viewer`]. The default value is `match-viewer`. Requires a non-S3 origin.
+	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` creates a streaming distribution. A value of `false` creates a standard distribution. The default value is `false`.
 	 * 	TrustedSigners - _array_ (Optional) An array of AWS account numbers for users who are trusted signers. Explicity add the value `Self` to the array to add your own account as a trusted signer.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
@@ -950,7 +993,7 @@ class AmazonCloudFront extends CFRuntime
 	 * Keys for the $opt parameter:
 	 * 	Marker - _string_ (Optional) Use this setting when paginating results to indicate where in your list of distributions to begin. The results include distributions in the list that occur after the marker. To get the next page of results, set the `Marker` to the value of the `NextMarker` from the current page's response (which is also the ID of the last distribution on that page).
 	 * 	MaxItems - _integer_ (Optional) The maximum number of distributions you want in the response body. Maximum of 100.
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. Defaults to `false`.
+	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. The default value is `false`.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -994,7 +1037,7 @@ class AmazonCloudFront extends CFRuntime
 	 * 	$opt - _array_ (Optional) Associative array of parameters which can have the following keys:
 	 *
 	 * Keys for the $opt parameter:
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. Defaults to `false`.
+	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. The default value is `false`.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -1032,7 +1075,7 @@ class AmazonCloudFront extends CFRuntime
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. Defaults to `false`.
+	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. The default value is `false`.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -1067,7 +1110,7 @@ class AmazonCloudFront extends CFRuntime
 	 * 	$opt - _array_ (Optional) Associative array of parameters which can have the following keys:
 	 *
 	 * Keys for the $opt parameter:
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. Defaults to `false`.
+	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. The default value is `false`.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -1104,7 +1147,7 @@ class AmazonCloudFront extends CFRuntime
 	 * 	$opt - _array_ (Optional) Associative array of parameters which can have the following keys:
 	 *
 	 * Keys for the $opt parameter:
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. Defaults to `false`.
+	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. The default value is `false`.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -1555,7 +1598,7 @@ class AmazonCloudFront extends CFRuntime
 	 * Keys for the $opt parameter:
 	 *	BecomeAvailable - _integer_|_string_ (Optional) The time when the private URL becomes active. Can be expressed either as a number of seconds since UNIX Epoch, or any string that `strtotime()` can understand.
 	 *	IPAddress - _string_ (Optional) A single IP address to restrict the access to.
-	 * 	Secure - _boolean_ (Optional) Whether or not to use HTTPS as the protocol scheme. A value of `true` uses `https`. A value of `false` uses `http`. Defaults to `false`.
+	 * 	Secure - _boolean_ (Optional) Whether or not to use HTTPS as the protocol scheme. A value of `true` uses `https`. A value of `false` uses `http`. The default value is `false`.
 	 *
 	 * Returns:
 	 * 	_string_ The file URL with authentication parameters.

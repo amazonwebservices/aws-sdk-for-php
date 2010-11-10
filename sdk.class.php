@@ -19,7 +19,7 @@
  * 	Core functionality and default settings shared across all SDK classes. All methods and properties in this class are inherited by the service-specific classes.
  *
  * Version:
- * 	2010.10.11
+ * 	2010.11.09
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -117,9 +117,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.0.1');
+define('CFRUNTIME_VERSION', '1.1');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20101012191025');
+define('CFRUNTIME_BUILD', '20101110062756');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . php_uname('s') . '/' . php_uname('r') . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -412,7 +412,7 @@ class CFRuntime
 			return true;
 		}
 		// If neither are passed in, look for the constants instead.
-		else if (defined('AWS_KEY') && defined('AWS_SECRET_KEY'))
+		elseif (defined('AWS_KEY') && defined('AWS_SECRET_KEY'))
 		{
 			$this->key = AWS_KEY;
 			$this->secret_key = AWS_SECRET_KEY;
@@ -898,7 +898,14 @@ class CFRuntime
 		$parsed_url = parse_url('http://' . $domain);
 
 		// Set the proper host header.
-		$host_header = strtolower($parsed_url['host']);
+		if (isset($parsed_url['port']) && (integer) $parsed_url['port'] !== 80 && (integer) $parsed_url['port'] !== 443)
+		{
+			$host_header = strtolower($parsed_url['host']) . ':' . $parsed_url['port'];
+		}
+		else
+		{
+			$host_header = strtolower($parsed_url['host']);
+		}
 
 		// Set the proper request URI.
 		$request_uri = isset($parsed_url['path']) ? $parsed_url['path'] : '/';
@@ -938,15 +945,8 @@ class CFRuntime
 		// Instantiate the request class
 		$request = new $this->request_class($request_url, $this->proxy, $helpers);
 		$request->set_method('POST');
+		$request->add_header('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8');
 		$request->set_body($querystring);
-
-		// Enable debug headers
-		if ($this->debug_mode)
-		{
-			$request->set_curlopts(array(
-				CURLOPT_VERBOSE => true
-			));
-		}
 
 		// Add authentication headers
 		if ($signature_version === 3)
@@ -961,6 +961,26 @@ class CFRuntime
 		// Update RequestCore settings
 		$request->request_class = $this->request_class;
 		$request->response_class = $this->response_class;
+
+		$curlopts = array();
+
+		// Debug mode
+		if ($this->debug_mode)
+		{
+			$curlopts = array_merge($curlopts, array(CURLOPT_VERBOSE => true));
+		}
+
+		// Set custom CURLOPT settings
+		if (isset($opt['curlopts']))
+		{
+			$curlopts = array_merge($curlopts, $opt['curlopts']);
+			unset($opt['curlopts']);
+		}
+
+		if (count($curlopts))
+		{
+			$request->set_curlopts($curlopts);
+		}
 
 		// Manage the (newer) batch request API or the (older) returnCurlHandle setting.
 		if ($this->use_batch_flow)
@@ -1102,6 +1122,10 @@ class CFRuntime
 			// End!
 			return $parsed_data;
 		}
+
+		// Load the class
+		$null = new CFBatchRequest();
+		unset($null);
 
 		throw new CFBatchRequest_Exception('You must use $object->batch()->send()');
 	}

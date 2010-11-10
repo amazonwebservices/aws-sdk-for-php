@@ -6,6 +6,9 @@ Contributions were provided under the Apache 2.0 License, as appropriate.
 
 The following people have provided ideas, support and bug fixes:
 
+* [antischnorrer](http://developer.amazonwebservices.com/connect/profile.jspa?userID=152443) (bug fixes)
+* [arech8](http://developer.amazonwebservices.com/connect/profile.jspa?userID=154435) (bug fixes)
+* [Jeremy Archuleta](http://code.google.com/u/jeremy.archuleta/) (bug fixes)
 * [Peter Bowen](http://github.com/pzb) (feedback, bug reports)
 
 
