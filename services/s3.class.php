@@ -38,7 +38,7 @@
  * 	Visit <http://aws.amazon.com/s3/> for more information.
  *
  * Version:
- * 	2010.10.11
+ * 	2010.11.09
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -250,6 +250,12 @@ class AmazonS3 extends CFRuntime
 	public $base_versioning_xml;
 
 	/**
+	 * Property: complete_mpu_xml
+	 * 	The base XML elements to use for completing a multipart upload.
+	 */
+	public $complete_mpu_xml;
+
+	/**
 	 * Property: path_style
 	 * 	The DNS vs. Path-style setting.
 	 */
@@ -280,10 +286,11 @@ class AmazonS3 extends CFRuntime
 		$this->hostname = self::DEFAULT_URL;
 
 		$this->base_acp_xml = '<?xml version="1.0" encoding="UTF-8"?><AccessControlPolicy xmlns="http://s3.amazonaws.com/doc/latest/"></AccessControlPolicy>';
-		$this->base_location_constraint = '<?xml version="1.0" encoding="UTF-8"?><CreateBucketConfiguration><LocationConstraint></LocationConstraint></CreateBucketConfiguration>';
+		$this->base_location_constraint = '<?xml version="1.0" encoding="UTF-8"?><CreateBucketConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LocationConstraint></LocationConstraint></CreateBucketConfiguration>';
 		$this->base_logging_xml = '<?xml version="1.0" encoding="utf-8"?><BucketLoggingStatus xmlns="http://doc.s3.amazonaws.com/' . $this->api_version . '"></BucketLoggingStatus>';
 		$this->base_notification_xml = '<?xml version="1.0" encoding="utf-8"?><NotificationConfiguration></NotificationConfiguration>';
 		$this->base_versioning_xml = '<?xml version="1.0" encoding="utf-8"?><VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"></VersioningConfiguration>';
+		$this->complete_mpu_xml = '<?xml version="1.0" encoding="utf-8"?><CompleteMultipartUpload></CompleteMultipartUpload>';
 
 		if (!$key && !defined('AWS_KEY'))
 		{
@@ -331,18 +338,21 @@ class AmazonS3 extends CFRuntime
 		 * 	<verb> /<resource>?<sub_resource>&<query_string>
 		 * 	GET /filename.txt?versions&prefix=abc&max-items=1
 		 *
-		 * ## versionId ##
-		 * 	versionId doesn't follow the same rules as above, in that the versionId needs to be
-		 * 	signed, while other query_string values do not.
+		 * ## versionId, uploadId, partNumber ##
+		 * 	These don't follow the same rules as above, in that the they needs to be signed, while
+		 * 	other query_string values do not.
 		 *
-		 * ## curlopts, fileUpload and fileDownload ##
+		 * ## curlopts ##
 		 * 	These values get passed directly to the cURL methods in RequestCore.
+		 *
+		 * ## fileUpload, fileDownload, seekTo, length ##
+		 * 	These are slightly modified and then passed to the cURL methods in RequestCore.
 		 *
 		 * ## headers ##
 		 * 	$opt['headers'] is an array, whose keys are HTTP headers to be sent.
 		 *
 		 * ## body ##
-		 * 	This is the request body that is sent to the server via POST.
+		 * 	This is the request body that is sent to the server via PUT/POST.
 		 *
 		 * ## preauth ##
 		 * 	This is a hook that tells authenticate() to generate a pre-authenticated URL.
@@ -444,11 +454,20 @@ class AmazonS3 extends CFRuntime
 		}
 		$query_string = $this->util->to_query_string($query_string_params);
 
-		// Merge the signable query string values
+		// Merge the signable query string values. Must be alphabetical.
+		if (isset($opt['partNumber']))
+		{
+			$signable_query_string_params['partNumber'] = rawurlencode($opt['partNumber']);
+		}
+		if (isset($opt['uploadId']))
+		{
+			$signable_query_string_params['uploadId'] = rawurlencode($opt['uploadId']);
+		}
 		if (isset($opt['versionId']))
 		{
 			$signable_query_string_params['versionId'] = rawurlencode($opt['versionId']);
 		}
+		// ksort($signable_query_string_params);
 		$signable_query_string = $this->util->to_query_string($signable_query_string_params);
 
 		// Merge the HTTP headers
@@ -470,10 +489,12 @@ class AmazonS3 extends CFRuntime
 		if ($signable_query_string !== '')
 		{
 			$signable_resource .= $conjunction . $signable_query_string;
+			$conjunction = '&';
 		}
 		if ($query_string !== '')
 		{
 			$non_signable_resource .= $conjunction . $query_string;
+			$conjunction = '&';
 		}
 		$this->request_url = $scheme . $hostname . $signable_resource . $non_signable_resource;
 
@@ -484,40 +505,86 @@ class AmazonS3 extends CFRuntime
 		$request->request_class = $this->request_class;
 		$request->response_class = $this->response_class;
 
-		// Enable debug headers
-		if ($this->debug_mode)
-		{
-			$request->set_curlopts(array(
-				CURLOPT_VERBOSE => true
-			));
-		}
-
 		// Streaming uploads
 		if (isset($opt['fileUpload']))
 		{
-			$request->set_read_file($opt['fileUpload']);
-
-			// Attempt to guess the correct mime-type
-			if ($headers['Content-Type'] === 'application/x-www-form-urlencoded')
+			if (is_resource($opt['fileUpload']))
 			{
-				$extension = explode('.', $opt['fileUpload']);
-				$extension = array_pop($extension);
-				$mime_type = CFMimeTypes::get_mimetype($extension);
-				$headers['Content-Type'] = $mime_type;
+				$request->set_read_stream($opt['fileUpload'], isset($opt['length']) ? $opt['length'] : -1);
+
+				if ($headers['Content-Type'] === 'application/x-www-form-urlencoded')
+				{
+					$headers['Content-Type'] = 'application/octet-stream';
+				}
 			}
+			else
+			{
+				$request->set_read_file($opt['fileUpload']);
+
+				// Attempt to guess the correct mime-type
+				if ($headers['Content-Type'] === 'application/x-www-form-urlencoded')
+				{
+					$extension = explode('.', $opt['fileUpload']);
+					$extension = array_pop($extension);
+					$mime_type = CFMimeTypes::get_mimetype($extension);
+					$headers['Content-Type'] = $mime_type;
+				}
+			}
+
+			$headers['Content-Length'] = $request->read_stream_size;
+			$curlopts[CURLOPT_INFILESIZE] = $headers['Content-Length'];
+			$headers['Content-MD5'] = '';
 		}
 
 		// Streaming downloads
 		if (isset($opt['fileDownload']))
 		{
-			$request->set_write_file($opt['fileDownload']);
+			if (is_resource($opt['fileDownload']))
+			{
+				$request->set_write_stream($opt['fileDownload']);
+			}
+			else
+			{
+				$request->set_write_file($opt['fileDownload']);
+			}
+		}
+
+		$curlopts = array();
+
+		// Debug mode
+		if ($this->debug_mode)
+		{
+			$curlopts = array_merge($curlopts, array(CURLOPT_VERBOSE => true));
 		}
 
 		// Set custom CURLOPT settings
 		if (isset($opt['curlopts']))
 		{
-			$request->set_curlopts($opt['curlopts']);
+			$curlopts = array_merge($curlopts, $opt['curlopts']);
 			unset($opt['curlopts']);
+		}
+
+		// Handle streaming file offsets
+		if (isset($opt['seekTo']))
+		{
+			// Pass the seek position to RequestCore
+			$request->set_seek_position((integer) $opt['seekTo']);
+
+			$headers['Content-Length'] = (!is_resource($opt['fileUpload']) ? (filesize($opt['fileUpload']) - (integer) $opt['seekTo']) : -1);
+			$curlopts[CURLOPT_INFILESIZE] = $headers['Content-Length'];
+		}
+
+		// Override the content length
+		if (isset($opt['length']))
+		{
+			$headers['Content-Length'] = (integer) $opt['length'];
+			$curlopts[CURLOPT_INFILESIZE] = $headers['Content-Length'];
+		}
+
+		// Set the curl options.
+		if (count($curlopts))
+		{
+			$request->set_curlopts($curlopts);
 		}
 
 		// Do we have a verb?
@@ -532,7 +599,16 @@ class AmazonS3 extends CFRuntime
 		{
 			$request->set_body($opt['body']);
 			$headers['Content-Length'] = strlen($opt['body']);
-			$headers['Content-MD5'] = $this->util->hex_to_base64(md5($opt['body']));
+
+			if ($headers['Content-Type'] === 'application/x-www-form-urlencoded')
+			{
+				$headers['Content-Type'] = 'application/octet-stream';
+			}
+
+			if (!isset($opt['NoContentMD5']) || $opt['NoContentMD5'] !== true)
+			{
+				$headers['Content-MD5'] = $this->util->hex_to_base64(md5($opt['body']));
+			}
 		}
 
 		// Handle query-string authentication
@@ -754,7 +830,8 @@ class AmazonS3 extends CFRuntime
 
 	/**
 	 * Method: set_region()
-	 * 	Sets the region to use for subsequent Amazon S3 operations.
+	 * 	Sets the region to use for subsequent Amazon S3 operations. This will also reset any prior use of
+	 * 	<enable_path_style()>.
 	 *
 	 * Access:
 	 * 	public
@@ -772,15 +849,18 @@ class AmazonS3 extends CFRuntime
 			case self::REGION_US_W1: // Northern California
 			case self::REGION_APAC_SE1: // Singapore
 				$this->set_hostname('s3-' . $region . '.amazonaws.com');
+				$this->enable_path_style(false);
 				break;
 
 			case self::REGION_EU_W1: // Ireland
 				$this->set_hostname('s3-eu-west-1.amazonaws.com');
+				$this->enable_path_style(); // Always use path-style access for EU endpoint.
 				break;
 
 			default:
 				// REGION_US_E1 // Northern Virginia
 				$this->set_hostname(self::DEFAULT_URL);
+				$this->enable_path_style(false);
 				break;
 		}
 
@@ -806,6 +886,25 @@ class AmazonS3 extends CFRuntime
 	public function set_vhost($vhost)
 	{
 		$this->vhost = $vhost;
+		return $this;
+	}
+
+	/**
+	 * Method: enable_path_style()
+	 * 	Enables the use of the older path-style URI access for all requests.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$style - _string_ (Optional) Whether or not to enable path-style URI access for all requests. The default value is `true`.
+	 *
+	 * Returns:
+	 * 	`$this` A reference to the current instance.
+	 */
+	public function enable_path_style($style = true)
+	{
+		$this->path_style = $style;
 		return $this;
 	}
 
@@ -877,7 +976,7 @@ class AmazonS3 extends CFRuntime
 				break;
 
 			case self::REGION_EU_W1:    // Ireland
-				$this->path_style = true; // DNS-style doesn't seem to work for creation, only in EU. Switch over to path-style.
+				$this->enable_path_style(); // DNS-style doesn't seem to work for creation, only in EU. Switch over to path-style.
 				$xml->LocationConstraint = $region;
 				$opt['body'] = $xml->asXML();
 				break;
@@ -888,7 +987,7 @@ class AmazonS3 extends CFRuntime
 		}
 
 		$response = $this->authenticate($bucket, $opt);
-		$this->path_style = false;
+		$this->enable_path_style(false);
 
 		return $response;
 	}
@@ -1130,12 +1229,12 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 * 	body - _string_ (Required; Conditional) The data to be stored in the object. Either this parameter or `fileUpload` must be specified.
-	 * 	fileUpload - _string_ (Required; Conditional) Upload this file instead of the body data. Either this parameter or `body` is required.
-	 * 	contentType - _string_ (Optional) The type of content that is being sent in the body. If a file is being uploaded via `fileUpload`, it will attempt to determine the correct mime-type based on the file extension. The default value is `application/octet-stream`.
+	 * 	fileUpload - _string_|_resource_ (Required; Conditional) The file system path for the local file to upload, or an open file resource. Either this parameter or `body` is required.
 	 * 	acl - _string_ (Optional) The ACL settings for the specified object. [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. The default value is <ACL_PRIVATE>.
-	 * 	storage - _string_ (Optional) Whether to use Standard or Reduced Redundancy storage. [Allowed values: `AmazonS3::STORAGE_STANDARD`, `AmazonS3::STORAGE_REDUCED`]. The default value is <STORAGE_STANDARD>.
+	 * 	contentType - _string_ (Optional) The type of content that is being sent in the body. If a file is being uploaded via `fileUpload` as a file system path, it will attempt to determine the correct mime-type based on the file extension. The default value is `application/octet-stream`.
 	 * 	headers - _array_ (Optional) The standard HTTP headers to send along in the request.
 	 * 	meta - _array_ (Optional) An associative array of key-value pairs. Represented by `x-amz-meta-:` Any header starting with this prefix is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.
+	 * 	storage - _string_ (Optional) Whether to use Standard or Reduced Redundancy storage. [Allowed values: `AmazonS3::STORAGE_STANDARD`, `AmazonS3::STORAGE_REDUCED`]. The default value is <STORAGE_STANDARD>.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -1185,9 +1284,7 @@ class AmazonS3 extends CFRuntime
 		}
 
 		// Authenticate to S3
-		$response = $this->authenticate($bucket, $opt);
-
-		return $response;
+		return $this->authenticate($bucket, $opt);
 	}
 
 	/**
@@ -1203,12 +1300,13 @@ class AmazonS3 extends CFRuntime
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 * 	fileDownload - _string_ (Optional) The file system location to download the file to. Must be a server-writable location.
-	 * 	versionId - _string_ (Optional) The version of the object to retrieve. Version IDs are returned in the `x-amz-version-id` header of any previous object-related request.
-	 * 	lastmodified - _string_ (Optional) The `LastModified` header passed in from a previous request. If specified, request `etag` option must be specified as well. Will trigger a `304 Not Modified` status code if the file hasn't changed.
 	 * 	etag - _string_ (Optional) The `ETag` header passed in from a previous request. If specified, request `lastmodified` option must be specified as well. Will trigger a `304 Not Modified` status code if the file hasn't changed.
-	 * 	range - _string_ (Optional) The range of bytes to fetch from the object. Specify this parameter when downloading partial bits or completing incomplete object downloads. The specified range must be notated with a hyphen (e.g., 0-10485759). Defaults to the byte range of the complete Amazon S3 object.
+	 * 	fileDownload - _string_|_resource_ (Optional) The file system location to download the file to, or an open file resource. Must be a server-writable location.
+	 * 	headers - _array_ (Optional) Standard HTTP headers to send along in the request.
+	 * 	lastmodified - _string_ (Optional) The `LastModified` header passed in from a previous request. If specified, request `etag` option must be specified as well. Will trigger a `304 Not Modified` status code if the file hasn't changed.
 	 * 	preauth - _integer_|_string_ (Optional) Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with `strtotime()`.
+	 * 	range - _string_ (Optional) The range of bytes to fetch from the object. Specify this parameter when downloading partial bits or completing incomplete object downloads. The specified range must be notated with a hyphen (e.g., 0-10485759). Defaults to the byte range of the complete Amazon S3 object.
+	 * 	versionId - _string_ (Optional) The version of the object to retrieve. Version IDs are returned in the `x-amz-version-id` header of any previous object-related request.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -1221,7 +1319,11 @@ class AmazonS3 extends CFRuntime
 		// Add this to our request
 		$opt['verb'] = 'GET';
 		$opt['resource'] = $filename;
-		$opt['headers'] = array();
+
+		if (!isset($opt['headers']) || !is_array($opt['headers']))
+		{
+			$opt['headers'] = array();
+		}
 
 		// Are we checking for changes?
 		if (isset($opt['lastmodified']) && isset($opt['etag']))
@@ -1327,7 +1429,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 * 	delimiter - _string_ (Optional) Keys that contain the same string between the prefix and the first occurrence of the delimiter will be rolled up into a single result element in the CommonPrefixes collection.
-	 * 	marker - _string_ (Optional) Restricts the response to contain results that occur only alphabetically after the value of the marker.
+	 * 	marker - _string_ (Optional) Restricts the response to contain results that only occur alphabetically after the value of the marker.
 	 * 	max-keys - _string_ (Optional) The maximum number of results returned by the method call. The returned list will contain no more results than the specified value, but may return less.
 	 * 	preauth - _integer_|_string_ (Optional) Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with `strtotime()`.
 	 * 	prefix - _string_ (Optional) Restricts the response to contain results that begin only with the specified prefix.
@@ -1599,11 +1701,11 @@ class AmazonS3 extends CFRuntime
 
 		// Retrieve the original metadata
 		$metadata = $this->get_object_metadata($bucket, $filename);
-		if ($metadata['ContentType'])
+		if ($metadata && $metadata['ContentType'])
 		{
 			$opt['headers']['Content-Type'] = $metadata['ContentType'];
 		}
-		if ($metadata['StorageClass'])
+		if ($metadata && $metadata['StorageClass'])
 		{
 			$opt['headers']['x-amz-storage-class'] = $metadata['StorageClass'];
 		}
@@ -1999,7 +2101,20 @@ class AmazonS3 extends CFRuntime
 
 		foreach ($list->body->Contents as $filename)
 		{
-			$filesize += (int) $filename->Size;
+			$filesize += (integer) $filename->Size;
+		}
+
+		while ((string) $list->body->IsTruncated === 'true')
+		{
+			$body = (array) $list->body;
+			$list = $this->list_objects($bucket, array(
+				'marker' => (string) end($body['Contents'])->Key
+			));
+
+			foreach ($list->body->Contents as $object)
+			{
+				$filesize += (integer) $object->Size;
+			}
 		}
 
 		if ($friendly_format)
@@ -2068,11 +2183,11 @@ class AmazonS3 extends CFRuntime
 
 		// Retrieve the original metadata
 		$metadata = $this->get_object_metadata($bucket, $filename);
-		if ($metadata['ACL'])
+		if ($metadata && $metadata['ACL'])
 		{
 			$opt['acl'] = $metadata['ACL'];
 		}
-		if ($metadata['StorageClass'])
+		if ($metadata && $metadata['StorageClass'])
 		{
 			$opt['headers']['x-amz-storage-class'] = $metadata['StorageClass'];
 		}
@@ -2117,11 +2232,11 @@ class AmazonS3 extends CFRuntime
 
 		// Retrieve the original metadata
 		$metadata = $this->get_object_metadata($bucket, $filename);
-		if ($metadata['ACL'])
+		if ($metadata && $metadata['ACL'])
 		{
 			$opt['acl'] = $metadata['ACL'];
 		}
-		if ($metadata['ContentType'])
+		if ($metadata && $metadata['ContentType'])
 		{
 			$opt['headers']['Content-Type'] = $metadata['ContentType'];
 		}
@@ -2164,7 +2279,7 @@ class AmazonS3 extends CFRuntime
 
 		// Get a list of buckets.
 		$list = $this->list_buckets();
-		if ($list = $list->body->Name())
+		if ($list = $list->body->query('descendant-or-self::Name'))
 		{
 			$list = $list->map_string($pcre);
 			return $list;
@@ -2186,10 +2301,9 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 * 	delimiter - _string_ (Optional) Keys that contain the same string between the prefix and the first occurrence of the delimiter will be rolled up into a single result element in the CommonPrefixes collection.
-	 * 	marker - _string_ (Optional) Restricts the response to contain results that occur only alphabetically after the value of the marker.
+	 * 	marker - _string_ (Optional) Restricts the response to contain results that only occur alphabetically after the value of the marker.
 	 * 	max-keys - _string_ (Optional) The maximum number of results returned by the method call. The returned list will contain no more results than the specified value, but may return less.
 	 * 	pcre - _string_ (Optional) A Perl-Compatible Regular Expression (PCRE) to filter the names against. This is applied only AFTER any native Amazon S3 filtering from specified `prefix`, `marker`, `max-keys`, or `delimiter` values are applied.
-	 * 	preauth - _integer_|_string_ (Optional) Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with `strtotime()`.
 	 * 	prefix - _string_ (Optional) Restricts the response to contain results that begin only with the specified prefix.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
@@ -2206,15 +2320,36 @@ class AmazonS3 extends CFRuntime
 			throw new S3_Exception(__FUNCTION__ . '() cannot be batch requested');
 		}
 
+		if (!$opt) $opt = array();
+
 		// Set some default values
 		$pcre = isset($opt['pcre']) ? $opt['pcre'] : null;
+		$objects = array();
 
 		// Get a list of files.
 		$list = $this->list_objects($bucket, $opt);
-		if ($list = $list->body->Key())
+		if ($keys = $list->body->query('descendant-or-self::Key'))
 		{
-			$list = $list->map_string($pcre);
-			return $list;
+			$objects = $keys->map_string($pcre);
+		}
+
+		while ((string) $list->body->IsTruncated === 'true')
+		{
+			$body = (array) $list->body;
+			$_opt = array_merge($opt, array(
+				'marker' => (string) end($body['Contents'])->Key
+			));
+
+			$list = $this->list_objects($bucket, $_opt);
+			if ($keys = $list->body->query('descendant-or-self::Key'))
+			{
+				$objects = array_merge($objects, $keys->map_string($pcre));
+			}
+		}
+
+		if (count($objects) > 0)
+		{
+			return $objects;
 		}
 
 		return array();
@@ -2312,6 +2447,27 @@ class AmazonS3 extends CFRuntime
 			$markers = array();
 		}
 
+		while ((string) $response->body->IsTruncated === 'true')
+		{
+			$response = $this->list_bucket_object_versions($bucket, array(
+				'key-marker' => (string) $response->body->NextKeyMarker
+			));
+
+			// Gather all nodes together into a single array
+			if ($response->body->DeleteMarker() && $response->body->Version())
+			{
+				$markers = array_merge($markers, $response->body->DeleteMarker()->getArrayCopy(), $response->body->Version()->getArrayCopy());
+			}
+			elseif ($response->body->DeleteMarker())
+			{
+				$markers = array_merge($markers, $response->body->DeleteMarker()->getArrayCopy());
+			}
+			elseif ($response->body->Version())
+			{
+				$markers = array_merge($markers, $response->body->Version()->getArrayCopy());
+			}
+		}
+
 		// Loop through markers
 		foreach ($markers as $marker)
 		{
@@ -2352,7 +2508,7 @@ class AmazonS3 extends CFRuntime
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
-	 * 	_array_ The collective metadata for the Amazon S3 object.
+	 * 	_mixed_ If the object exists, the method returns the collective metadata for the Amazon S3 object. If the object does not exist, the method returns boolean `false`.
 	 */
 	public function get_object_metadata($bucket, $filename, $opt = null)
 	{
@@ -2365,10 +2521,17 @@ class AmazonS3 extends CFRuntime
 		));
 		$response = $this->batch($batch)->send();
 
+		// Fail if any requests were unsuccessful
+		if (!$response->areOK())
+		{
+			return false;
+		}
+
 		$data = array(
 			'ACL' => array(),
 			'ContentType' => null,
 			'ETag' => null,
+			'Headers' => null,
 			'Key' => null,
 			'LastModified' => null,
 			'Owner' => array(),
@@ -2387,7 +2550,14 @@ class AmazonS3 extends CFRuntime
 		$grants = $response[0]->body->query('descendant-or-self::Grant');
 		$max = count($grants);
 
-		// for ($i = 0; $i < $max; $i++)
+		// Add raw header info
+		$data['Headers'] = $response[1]->header;
+		foreach (array('_info', 'x-amz-id-2', 'x-amz-request-id', 'cneonction', 'server', 'content-length', 'content-type', 'etag') as $header)
+		{
+			unset($data['Headers'][$header]);
+		}
+		ksort($data['Headers']);
+
 		foreach ($grants as $grant)
 		{
 			$dgrant = array(
@@ -2513,6 +2683,9 @@ class AmazonS3 extends CFRuntime
 		// Add this to our request
 		$opt['verb'] = 'PUT';
 		$opt['sub_resource'] = 'versioning';
+		$opt['headers'] = array(
+			'Content-Type' => 'application/xml'
+		);
 
 		$xml = simplexml_load_string($this->base_versioning_xml);
 		$xml->addChild('Status', 'Enabled');
@@ -2522,9 +2695,7 @@ class AmazonS3 extends CFRuntime
 		{
 			$xml->addChild('MfaDelete', $opt['MFAStatus']);
 
-			$opt['headers'] = array(
-				'x-amz-mfa' => ($opt['MFASerial'] . ' ' . $opt['MFAToken'])
-			);
+			$opt['headers']['x-amz-mfa'] = ($opt['MFASerial'] . ' ' . $opt['MFAToken']);
 		}
 
 		$opt['body'] = $xml->asXML();
@@ -2563,6 +2734,9 @@ class AmazonS3 extends CFRuntime
 		// Add this to our request
 		$opt['verb'] = 'PUT';
 		$opt['sub_resource'] = 'versioning';
+		$opt['headers'] = array(
+			'Content-Type' => 'application/xml'
+		);
 
 		$xml = simplexml_load_string($this->base_versioning_xml);
 		$xml->addChild('Status', 'Suspended');
@@ -2572,9 +2746,7 @@ class AmazonS3 extends CFRuntime
 		{
 			$xml->addChild('MfaDelete', $opt['MFAStatus']);
 
-			$opt['headers'] = array(
-				'x-amz-mfa' => ($opt['MFASerial'] . ' ' . $opt['MFAToken'])
-			);
+			$opt['headers']['x-amz-mfa'] = ($opt['MFASerial'] . ' ' . $opt['MFAToken']);
 		}
 
 		$opt['body'] = $xml->asXML();
@@ -2624,10 +2796,10 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 * 	delimiter - _string_ (Optional) Unicode string parameter. Keys that contain the same string between the prefix and the first occurrence of the delimiter will be rolled up into a single result element in the CommonPrefixes collection.
-	 * 	key-marker - _string_ (Optional) Specifies the key in the bucket that you want to start listing from.
+	 * 	key-marker - _string_ (Optional) Restricts the response to contain results that only occur alphabetically after the value of the `key-marker`.
 	 * 	max-keys - _string_ (Optional) Limits the number of results returned in response to your query. Will return no more than this number of results, but possibly less.
 	 * 	prefix - _string_ (Optional) Restricts the response to only contain results that begin with the specified prefix.
-	 * 	version-id-marker - _string_ (Optional) Specifies the object version you want to start listing from.
+	 * 	version-id-marker - _string_ (Optional) Restricts the response to contain results that only occur alphabetically after the value of the `version-id-marker`.
 	 * 	preauth - _integer_|_string_ (Optional) Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with `strtotime()`.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
@@ -2804,6 +2976,9 @@ class AmazonS3 extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['verb'] = 'PUT';
 		$opt['sub_resource'] = 'notification';
+		$opt['headers'] = array(
+			'Content-Type' => 'application/xml'
+		);
 
 		$xml = simplexml_load_string($this->base_notification_xml);
 		$topic_config = $xml->addChild('TopicConfiguration');
@@ -2885,6 +3060,510 @@ class AmazonS3 extends CFRuntime
 
 		// Authenticate to S3
 		return $this->authenticate($bucket, $opt);
+	}
+
+
+	/*%******************************************************************************************%*/
+	// MULTIPART UPLOAD
+
+	/**
+	 * Method: get_multipart_counts()
+	 * 	Calculates the correct values for sequentially reading a file for multipart upload. This method should
+	 * 	be used in conjunction with <upload_part()>.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$filesize - _integer_ (Required) The size in bytes of the entire file.
+	 * 	$part_size - _integer_ (Required) The size in bytes of the part of the file to send.
+	 *
+	 * Returns:
+	 * 	_array_ An array containing key-value pairs. The keys are `seekTo` and `length`.
+	 */
+	public function get_multipart_counts($filesize, $part_size)
+	{
+		$i = 0;
+		$sizecount = $filesize;
+		$values = array();
+
+		while ($sizecount > 0)
+		{
+			$sizecount -= $part_size;
+			$values[] = array(
+				'seekTo' => ($part_size * $i),
+				'length' => (($sizecount > 0) ? $part_size : ($sizecount + $part_size)),
+			);
+			$i++;
+		}
+
+		return $values;
+	}
+
+	/**
+	 * Method: initiate_multipart_upload()
+	 * 	Initiates a multipart upload and returns an `UploadId`.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$bucket - _string_ (Required) The name of the bucket to use.
+	 * 	$filename - _string_ (Required) The file name for the object.
+	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 * 	acl - _string_ (Optional) The ACL settings for the specified object. [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. The default value is <ACL_PRIVATE>.
+	 * 	contentType - _string_ (Optional) The type of content that is being sent. The default value is `application/octet-stream`.
+	 * 	headers - _array_ (Optional) The standard HTTP headers to send along in the request.
+	 * 	meta - _array_ (Optional) An associative array of key-value pairs. Any header starting with `x-amz-meta-:` is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.
+	 * 	storage - _string_ (Optional) Whether to use Standard or Reduced Redundancy storage. [Allowed values: `AmazonS3::STORAGE_STANDARD`, `AmazonS3::STORAGE_REDUCED`]. The default value is <STORAGE_STANDARD>.
+	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 *
+	 * See Also:
+	 * 	[REST Access Control Policy](http://docs.amazonwebservices.com/AmazonS3/latest/RESTAccessPolicy.html)
+	 */
+	public function initiate_multipart_upload($bucket, $filename, $opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Add this to our request
+		$opt['verb'] = 'POST';
+		$opt['resource'] = $filename;
+		$opt['sub_resource'] = 'uploads';
+
+		// Handle content type. Can also be passed as an HTTP header.
+		if (isset($opt['contentType']))
+		{
+			$opt['headers']['Content-Type'] = $opt['contentType'];
+			unset($opt['contentType']);
+		}
+
+		// Handle Access Control Lists. Can also be passed as an HTTP header.
+		if (isset($opt['acl']))
+		{
+			$opt['headers']['x-amz-acl'] = $opt['acl'];
+			unset($opt['acl']);
+		}
+
+		// Handle storage settings. Can also be passed as an HTTP header.
+		if (isset($opt['storage']))
+		{
+			$opt['headers']['x-amz-storage-class'] = $opt['storage'];
+			unset($opt['storage']);
+		}
+
+		// Handle meta tags. Can also be passed as an HTTP header.
+		if (isset($opt['meta']))
+		{
+			foreach ($opt['meta'] as $meta_key => $meta_value)
+			{
+				// e.g., `My Meta Header` is converted to `x-amz-meta-my-meta-header`.
+				$opt['headers']['x-amz-meta-' . strtolower(str_replace(' ', '-', $meta_key))] = $meta_value;
+			}
+			unset($opt['meta']);
+		}
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+	/**
+	 * Method: upload_part()
+	 * 	Uploads a single part of a multipart upload. The part size cannot be smaller than 5 MB
+	 * 	or larger than 5 GB. A multipart upload can have no more than 10,000 parts.
+	 *
+	 * 	Amazon S3 charges for storage as well as requests to the service. Smaller part sizes (and more
+	 * 	requests) allow for faster failures and better upload reliability. Larger part sizes (and fewer
+	 * 	requests) costs slightly less but has lower upload reliability.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$bucket - _string_ (Required) The name of the bucket to use.
+	 * 	$filename - _string_ (Required) The file name for the object.
+	 * 	$upload_id - _string_ (Required) The upload ID identifying the multipart upload whose parts are being listed. The upload ID is retrieved from a call to <initiate_multipart_upload()>.
+	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 * 	fileUpload - _string_|_resource_ (Required) The file system path for the local file to upload or an open file resource.
+	 * 	partNumber - _integer_ (Required) The part number order of the multipart upload.
+	 * 	expect - _string_ (Optional) Specifies that the SDK not send the request body until it receives an acknowledgement. If the message is rejected based on the headers, the body of the message is not sent. For more information, see [RFC 2616, section 14.20](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.20). The value can also be passed to the `header` option as `Expect`. [Allowed values: `100-continue`]
+	 * 	headers - _array_ (Optional) The standard HTTP headers to send along in the request.
+	 * 	length - _integer_ (Optional) The size of the part in bytes. For more information, see [RFC 2616, section 14.13](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.13). The value can also be passed to the `header` option as `Content-Length`.
+	 * 	md5 - _string_ (Optional) The base64 encoded 128-bit MD5 digest of the part data. This header can be used as a message integrity check to verify that the part data is the same data that was originally sent. Although it is optional, we recommend using this mechanism as an end-to-end integrity check. For more information, see [RFC 1864](http://www.ietf.org/rfc/rfc1864.txt). The value can also be passed to the `header` option as `Content-MD5`.
+	 * 	seekTo - _integer_ (Optional) The starting position in bytes for the piece of the file to upload.
+	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function upload_part($bucket, $filename, $upload_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Add this to our request
+		$opt['verb'] = 'PUT';
+		$opt['resource'] = $filename;
+		$opt['uploadId'] = $upload_id;
+
+		if (!isset($opt['fileUpload']) || !isset($opt['partNumber']))
+		{
+			throw new S3_Exception('The `fileUpload` and `partNumber` options are both required in ' . __FUNCTION__ . '().');
+		}
+
+		// Handle expectation. Can also be passed as an HTTP header.
+		if (isset($opt['expect']))
+		{
+			$opt['headers']['Expect'] = $opt['expect'];
+			unset($opt['expect']);
+		}
+
+		// Handle content md5. Can also be passed as an HTTP header.
+		if (isset($opt['md5']))
+		{
+			$opt['headers']['Content-MD5'] = $opt['md5'];
+			unset($opt['md5']);
+		}
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+	/**
+	 * Method: list_parts()
+	 * 	Lists the completed parts of an in-progress multipart upload.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$bucket - _string_ (Required) The name of the bucket to use.
+	 * 	$filename - _string_ (Required) The file name for the object.
+	 * 	$upload_id - _string_ (Required) The upload ID identifying the multipart upload whose parts are being listed. The upload ID is retrieved from a call to <initiate_multipart_upload()>.
+	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 * 	max-parts - _string_ (Optional) The maximum number of parts to return in the response body.
+	 * 	part-number-marker - _string_ (Optional) Restricts the response to contain results that only occur numerically after the value of the `part-number-marker`.
+	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function list_parts($bucket, $filename, $upload_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Add this to our request
+		$opt['verb'] = 'GET';
+		$opt['resource'] = $filename;
+		$opt['uploadId'] = $upload_id;
+		$opt['query_string'] = array();
+
+		foreach (array('max-parts', 'part-number-marker') as $param)
+		{
+			if (isset($opt[$param]))
+			{
+				$opt['query_string'][$param] = $opt[$param];
+				unset($opt[$param]);
+			}
+		}
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+	/**
+	 * Method: abort_multipart_upload()
+	 * 	Aborts an in-progress multipart upload. This operation cannot be reversed.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$bucket - _string_ (Required) The name of the bucket to use.
+	 * 	$filename - _string_ (Required) The file name for the object.
+	 * 	$upload_id - _string_ (Required) The upload ID identifying the multipart upload whose parts are being listed. The upload ID is retrieved from a call to <initiate_multipart_upload()>.
+	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function abort_multipart_upload($bucket, $filename, $upload_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Add this to our request
+		$opt['verb'] = 'DELETE';
+		$opt['resource'] = $filename;
+		$opt['uploadId'] = $upload_id;
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+	/**
+	 * Method: complete_multipart_upload()
+	 * 	Completes an in-progress multipart upload.
+	 *
+	 * 	A multipart upload is completed by describing the part numbers and corresponding ETag values in order, and submitting that data to Amazon S3 as an XML document.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$bucket - _string_ (Required) The name of the bucket to use.
+	 * 	$filename - _string_ (Required) The file name for the object.
+	 * 	$upload_id - _string_ (Required) The upload ID identifying the multipart upload whose parts are being listed. The upload ID is retrieved from a call to <initiate_multipart_upload()>.
+	 * 	$parts - _string_|_array_|_SimpleXMLElement_|_CFResponse_ (Required) The completion XML document. This document can be provided in multiple ways; as a string of XML, as a `SimpleXMLElement` object representing the XML document, as an indexed array of associative arrays where the keys are `PartNumber` and `ETag`, or as a `CFResponse` object returned by <list_parts()>.
+	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function complete_multipart_upload($bucket, $filename, $upload_id, $parts, $opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Add this to our request
+		$opt['verb'] = 'POST';
+		$opt['resource'] = $filename;
+		$opt['uploadId'] = $upload_id;
+		$opt['headers'] = array(
+			'Content-Type' => 'application/xml'
+		);
+
+		// Disable Content-MD5 calculation for this operation
+		$opt['NoContentMD5'] = true;
+
+		if (is_string($parts))
+		{
+			// Assume it's the intended XML.
+			$opt['body'] = $xml;
+		}
+		elseif ($parts instanceof SimpleXMLElement)
+		{
+			// Assume it's a SimpleXMLElement object representing the XML.
+			$opt['body'] = $xml->asXML();
+		}
+		elseif (is_array($parts) || $parts instanceof CFResponse)
+		{
+			$xml = simplexml_load_string($this->complete_mpu_xml);
+
+			if (is_array($parts))
+			{
+				// Generate the appropriate XML.
+				foreach ($parts as $node)
+				{
+					$part = $xml->addChild('Part');
+					$part->addChild('PartNumber', $node['PartNumber']);
+					$part->addChild('ETag', $node['ETag']);
+				}
+
+			}
+			elseif ($parts instanceof CFResponse)
+			{
+				// Assume it's a response from list_parts().
+				foreach ($parts->body->Part as $node)
+				{
+					$part = $xml->addChild('Part');
+					$part->addChild('PartNumber', (string) $node->PartNumber);
+					$part->addChild('ETag', (string) $node->ETag);
+				}
+			}
+
+			$opt['body'] = $xml->asXML();
+		}
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+	/**
+	 * Method: list_multipart_uploads()
+	 * 	Lists the in-progress multipart uploads.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$bucket - _string_ (Required) The name of the bucket to use.
+	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 * 	key-marker - _string_ (Optional) Restricts the response to contain results that only occur alphabetically after the value of the `key-marker`. If used in conjunction with `upload-id-marker`, the results will be filtered to include keys whose upload ID is alphabetically after the value of `upload-id-marker`.
+	 * 	max-uploads - _integer_ (Optional) The maximum number of multipart uploads to return in the response body.
+	 * 	upload-id-marker - _string_ (Optional) Restricts the response to contain results that only occur alphabetically after the value of the `upload-id-marker`. Must be used in conjunction with `key-marker`.
+	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function list_multipart_uploads($bucket, $opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Add this to our request
+		$opt['verb'] = 'GET';
+		$opt['sub_resource'] = 'uploads';
+
+		foreach (array('key-marker', 'max-uploads', 'upload-id-marker') as $param)
+		{
+			if (isset($opt[$param]))
+			{
+				$opt['query_string'][$param] = $opt[$param];
+				unset($opt[$param]);
+			}
+		}
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+	/**
+	 * Method: create_mpu_object()
+	 * 	Creates an Amazon S3 object using the multipart upload APIs. It is analogous to <create_object()>.
+	 *
+	 * 	While each individual part of a multipart upload can hold up to 5 GB of data, this method limits the
+	 * 	part size to a maximum of 500 MB. The combined size of all parts can not exceed 5 GB of data. When an
+	 * 	object is stored in Amazon S3, the data is streamed to multiple storage servers in multiple data
+	 * 	centers. This ensures the data remains available in the event of internal network or hardware failure.
+	 *
+	 * 	Amazon S3 charges for storage as well as requests to the service. Smaller part sizes (and more
+	 * 	requests) allow for faster failures and better upload reliability. Larger part sizes (and fewer
+	 * 	requests) costs slightly less but has lower upload reliability.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$bucket - _string_ (Required) The name of the bucket to use.
+	 * 	$filename - _string_ (Required) The file name for the object.
+	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 * 	fileUpload - _string_|_resource_ (Required) The file system path for the local file to upload or an open file resource.
+	 * 	acl - _string_ (Optional) The ACL settings for the specified object. [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. The default value is <ACL_PRIVATE>.
+	 * 	contentType - _string_ (Optional) The type of content that is being sent in the body. The default value is `application/octet-stream`.
+	 * 	headers - _array_ (Optional) The standard HTTP headers to send along in the request.
+	 * 	meta - _array_ (Optional) An associative array of key-value pairs. Any header starting with `x-amz-meta-:` is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.
+	 * 	partSize - _integer_ (Optional) The size of an individual part. The size may not be smaller than 5 MB or larger than 500 MB. The default value is 50 MB.
+	 * 	storage - _string_ (Optional) Whether to use Standard or Reduced Redundancy storage. [Allowed values: `AmazonS3::STORAGE_STANDARD`, `AmazonS3::STORAGE_REDUCED`]. The default value is <STORAGE_STANDARD>.
+	 * 	uploadId - _string_ (Optional) An upload ID identifying an existing multipart upload to use. If this option is not set, one will be created automatically.
+	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 *
+	 * See Also:
+	 * 	[REST Access Control Policy](http://docs.amazonwebservices.com/AmazonS3/latest/RESTAccessPolicy.html)
+	 */
+	public function create_mpu_object($bucket, $filename, $opt = null)
+	{
+		// Don't timeout!
+		set_time_limit(0);
+
+		if (!isset($opt['fileUpload']))
+		{
+			throw new S3_Exception('The `fileUpload` option is required in ' . __FUNCTION__ . '().');
+		}
+
+		// Handle part size
+		if (isset($opt['partSize']))
+		{
+			// If less that 5 MB...
+			if ((integer) $opt['partSize'] < 5242880)
+			{
+				$opt['partSize'] = 5242880; // 5 MB
+			}
+			// If more than 500 MB...
+			elseif ((integer) $opt['partSize'] > 524288000)
+			{
+				$opt['partSize'] = 524288000; // 500 MB
+			}
+		}
+		else
+		{
+			$opt['partSize'] = 52428800; // 50 MB
+		}
+
+		$upload_filesize = filesize($opt['fileUpload']);
+
+		// If the upload size is smaller than the piece size, failover to create_object().
+		if ($upload_filesize < $opt['partSize'])
+		{
+			return $this->create_object($bucket, $filename, $opt);
+		}
+
+		// Initiate multipart upload
+		if (isset($opt['uploadId']))
+		{
+			$upload_id = $opt['uploadId'];
+		}
+		else
+		{
+			// Compose options for initiate_multipart_upload().
+			$_opt = array();
+			foreach (array('contentType', 'acl', 'storage', 'headers', 'meta') as $param)
+			{
+				if (isset($opt[$param]))
+				{
+					$_opt[$param] = $opt[$param];
+				}
+			}
+
+			$upload = $this->initiate_multipart_upload($bucket, $filename, $_opt);
+			if (!$upload->isOK())
+			{
+				return false;
+			}
+
+			// Fetch the UploadId
+			$upload_id = (string) $upload->body->UploadId;
+		}
+
+		// Get the list of pieces
+		$pieces = $this->get_multipart_counts($upload_filesize, (integer) $opt['partSize']);
+
+		// Queue batch requests
+		$batch = new CFBatchRequest();
+		foreach ($pieces as $i => $piece)
+		{
+			$this->batch($batch)->upload_part($bucket, $filename, $upload_id, array(
+				'expect' => '100-continue',
+				'fileUpload' => $opt['fileUpload'],
+				'partNumber' => ($i + 1),
+				'seekTo' => (integer) $piece['seekTo'],
+				'length' => (integer) $piece['length'],
+			));
+		}
+
+		// Send batch requests
+		$batch_responses = $this->batch($batch)->send();
+		if (!$batch_responses->areOK())
+		{
+			return false;
+		}
+
+		// Compose completion XML
+		$parts = array();
+		foreach ($batch_responses as $i => $response)
+		{
+			$parts[] = array('PartNumber' => ($i + 1), 'ETag' => $response->header['etag']);
+		}
+
+		return $this->complete_multipart_upload($bucket, $filename, $upload_id, $parts);
 	}
 
 

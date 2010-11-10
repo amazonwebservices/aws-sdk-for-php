@@ -19,7 +19,7 @@
  *
  *
  * Version:
- * 	Tue Oct 05 13:40:50 PDT 2010
+ * 	Tue Nov 09 20:58:09 PST 2010
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
@@ -224,3 +224,4 @@ class AmazonCloudWatch extends CFRuntime
 		return $this->authenticate('GetMetricStatistics', $opt, $this->hostname);
 	}
 }
+

@@ -19,7 +19,7 @@
  * 	Wrapper for ArrayObject.
  *
  * Version:
- * 	2010.10.03
+ * 	2010.11.02
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -105,6 +105,7 @@ class CFArray extends ArrayObject
 	public function map_string($pcre = null)
 	{
 		$list = array_map('strval', $this->getArrayCopy());
+		$dlist = array();
 
 		if ($pcre)
 		{
@@ -260,7 +261,6 @@ class CFArray extends ArrayObject
 	public function last()
 	{
 		$items = $this->getArrayCopy();
-		$last = count($items) - 1;
-		return count($items) ? $items[$last] : false;
+		return count($items) ? end($items) : false;
 	}
 }

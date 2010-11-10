@@ -31,7 +31,7 @@
  * 	Visit [http://aws.amazon.com/sqs/](http://aws.amazon.com/sqs/) for more information.
  *
  * Version:
- * 	Thu Sep 30 17:33:34 PDT 2010
+ * 	Tue Nov 09 21:03:53 PST 2010
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
@@ -121,6 +121,28 @@ class AmazonSQS extends CFRuntime
 
 	/*%******************************************************************************************%*/
 	// CONVENIENCE METHODS
+
+	/**
+	 * Method: get_queue_arn()
+	 * 	Converts a queue URI into a queue ARN.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$queue_url - _string_ (Required) The queue URL to perform the action on. Retrieved when the queue is first created.
+	 *
+	 * Returns:
+	 * 	_string_ An ARN representation of the queue URI.
+	 */
+	function get_queue_arn($queue_url)
+	{
+		return str_replace(
+			array('http://',  'https://', '.amazonaws.com', '/', '.'),
+			array('arn:aws:', 'arn:aws:', '',               ':', ':'),
+			$queue_url
+		);
+	}
 
 	/**
 	 * Method: get_queue_size()
@@ -257,7 +279,7 @@ class AmazonSQS extends CFRuntime
 	 *
 	 * Parameters:
 	 *	$queue_url - _string_ (Required)
-	 *	$attribute - _ComplexList_ (Required) A list of attributes to set. A **required** ComplexList is an indexed array of ComplexTypes -- each of which must be set by passing a nested associative array with the following `Attribute`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	$attribute - _ComplexList_ (Required) A list of attributes to set. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs which must be set by passing an associative array. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $attribute parameter:
@@ -402,7 +424,7 @@ class AmazonSQS extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	AttributeName - _string_|_array_ (Optional) A list of attributes to get. Pass a string for a single value, or an indexed array for multiple values..
+	 *	AttributeName - _string_|_array_ (Optional) A list of attributes to get. Pass a string for a single value, or an indexed array for multiple values.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -439,8 +461,8 @@ class AmazonSQS extends CFRuntime
 	 * Parameters:
 	 *	$queue_url - _string_ (Required)
 	 *	$label - _string_ (Required)
-	 *	$account_id - _string_|_array_ (Required) The AWS account number of the principal who will be given permission. The principal must have an AWS account, but does not need to be signed up for Amazon SQS. Pass a string for a single value, or an indexed array for multiple values..
-	 *	$action_name - _string_|_array_ (Required) The action the client wants to allow for the specified principal. Pass a string for a single value, or an indexed array for multiple values..
+	 *	$account_id - _string_|_array_ (Required) The AWS account number of the principal who will be given permission. The principal must have an AWS account, but does not need to be signed up for Amazon SQS. Pass a string for a single value, or an indexed array for multiple values.
+	 *	$action_name - _string_|_array_ (Required) The action the client wants to allow for the specified principal. Pass a string for a single value, or an indexed array for multiple values.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -563,7 +585,7 @@ class AmazonSQS extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	AttributeName - _string_|_array_ (Optional) A list of attributes to get. Pass a string for a single value, or an indexed array for multiple values..
+	 *	AttributeName - _string_|_array_ (Optional) A list of attributes to get. Pass a string for a single value, or an indexed array for multiple values.
 	 *	MaxNumberOfMessages - _integer_ (Optional) The maximum number of messages to return. Amazon SQS never returns more messages than this value but may return fewer. All of the messages are not necessarily returned.
 	 *	VisibilityTimeout - _integer_ (Optional) The duration (in seconds) that the received messages are hidden from subsequent retrieve requests after being retrieved by a ReceiveMessage request.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.

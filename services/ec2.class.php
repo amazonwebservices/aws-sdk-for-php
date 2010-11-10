@@ -30,7 +30,7 @@
  * 	Visit [http://aws.amazon.com/ec2/](http://aws.amazon.com/ec2/) for more information.
  *
  * Version:
- * 	Mon Oct 04 15:46:33 PDT 2010
+ * 	Tue Nov 09 20:58:50 PST 2010
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
@@ -204,7 +204,7 @@ class AmazonEC2 extends CFRuntime
 	 *	public
 	 *
 	 * Parameters:
-	 *	$instance_id - _string_|_array_ (Required) The list of instances to terminate. Pass a string for a single value, or an indexed array for multiple values..
+	 *	$instance_id - _string_|_array_ (Required) The list of instances to terminate. Pass a string for a single value, or an indexed array for multiple values.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -236,8 +236,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	GroupName - _string_|_array_ (Optional) The name of the `PlacementGroup`. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional)  A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	GroupName - _string_|_array_ (Optional) The name of the `PlacementGroup`. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional)  A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -319,15 +319,15 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	KeyName - _string_ (Optional) The name of the key pair.
-	 *	SecurityGroup - _string_|_array_ (Optional) The names of the security groups into which the instances will be launched. Pass a string for a single value, or an indexed array for multiple values..
+	 *	SecurityGroup - _string_|_array_ (Optional) The names of the security groups into which the instances will be launched. Pass a string for a single value, or an indexed array for multiple values.
 	 *	UserData - _string_ (Optional) Specifies additional information to make available to the instance(s).
 	 *	InstanceType - _string_ (Optional) Specifies the instance type for the launched instances. [Allowed values: `t1.micro`, `m1.small`, `m1.large`, `m1.xlarge`, `m2.xlarge`, `m2.2xlarge`, `m2.4xlarge`, `c1.medium`, `c1.xlarge`, `cc1.4xlarge`]
-	 *	Placement - _ComplexType_ (Optional) Specifies the placement constraints (Availability Zones) for launching the instances. A ComplexType can be set two ways: by setting each individual `Placement` subtype (documented next), or by passing a nested associative array with the following `Placement`-prefixed entries as keys.
+	 *	Placement - _ComplexType_ (Optional) Specifies the placement constraints (Availability Zones) for launching the instances. A ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Placement` subtype (documented next), or by passing an associative array with the following `Placement`-prefixed entries as keys. See below for a list and a usage example.
 	 *	Placement.AvailabilityZone - _string_ (Optional) The availability zone in which an Amazon EC2 instance runs.
 	 *	Placement.GroupName - _string_ (Optional) The name of a PlacementGroup.
 	 *	KernelId - _string_ (Optional) The ID of the kernel with which to launch the instance.
 	 *	RamdiskId - _string_ (Optional) The ID of the RAM disk with which to launch the instance. Some kernels require additional drivers at launch. Check the kernel requirements for information on whether you need to specify a RAM disk. To find kernel requirements, go to the Resource Center and search for the kernel ID.
-	 *	BlockDeviceMapping - _ComplexList_ (Optional)  A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `BlockDeviceMapping` subtype (documented next), or by passing a nested associative array with the following `BlockDeviceMapping`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	BlockDeviceMapping - _ComplexList_ (Optional)  A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `BlockDeviceMapping` subtype (documented next), or by passing an associative array with the following `BlockDeviceMapping`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	BlockDeviceMapping.x.VirtualName - _string_ (Optional) Specifies the virtual device name.
 	 *	BlockDeviceMapping.x.DeviceName - _string_ (Optional) Specifies the device name (e.g., /dev/sdh).
 	 *	BlockDeviceMapping.x.Ebs.SnapshotId - _string_ (Optional) The ID of the snapshot from which the volume will be created.
@@ -338,10 +338,11 @@ class AmazonEC2 extends CFRuntime
 	 *	SubnetId - _string_ (Optional) Specifies the subnet ID within which to launch the instance(s) for Amazon Virtual Private Cloud.
 	 *	DisableApiTermination - _boolean_ (Optional) Specifies whether the instance can be terminated using the APIs. You must modify this attribute before you can terminate any "locked" instances from the APIs.
 	 *	InstanceInitiatedShutdownBehavior - _string_ (Optional) Specifies whether the instance's Amazon EBS volumes are stopped or terminated when the instance is shut down.
-	 *	License - _ComplexType_ (Optional) Specifies active licenses in use and attached to an Amazon EC2 instance. A ComplexType can be set two ways: by setting each individual `License` subtype (documented next), or by passing a nested associative array with the following `License`-prefixed entries as keys.
+	 *	License - _ComplexType_ (Optional) Specifies active licenses in use and attached to an Amazon EC2 instance. A ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `License` subtype (documented next), or by passing an associative array with the following `License`-prefixed entries as keys. See below for a list and a usage example.
 	 *	License.Pool - _string_ (Optional) The license pool from which to take a license when starting Amazon EC2 instances in the associated `RunInstances` request.
 	 *	PrivateIpAddress - _string_ (Optional) If you're using Amazon Virtual Private Cloud, you can optionally use this parameter to assign the instance a specific available IP address from the subnet.
 	 *	ClientToken - _string_ (Optional)
+	 *	AdditionalInfo - _string_ (Optional)
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -399,8 +400,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	ReservedInstancesId - _string_|_array_ (Optional) The optional list of Reserved Instance IDs to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for ReservedInstances. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	ReservedInstancesId - _string_|_array_ (Optional) The optional list of Reserved Instance IDs to describe. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for ReservedInstances. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -432,6 +433,55 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * Method: describe_subnets()
+	 * 	Gives you information about your subnets. You can filter the results to return information only
+	 * 	about subnets that match criteria you specify. For example, you could ask to get information about a
+	 * 	particular subnet (or all) only if the subnet's state is available. You can specify multiple filters
+	 * 	(e.g., the subnet is in a particular VPC, and the subnet's state is available). The result includes
+	 * 	information for a particular subnet only if the subnet matches all your filters. If there's no
+	 * 	match, no special message is returned; the response is simply empty. The following table shows the
+	 * 	available filters.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	SubnetId - _string_|_array_ (Optional) A set of one or more subnet IDs. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional)  A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
+	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
+	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_subnets($opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Optional parameter
+		if (isset($opt['SubnetId']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'SubnetId' => (is_array($opt['SubnetId']) ? $opt['SubnetId'] : array($opt['SubnetId']))
+			)));
+			unset($opt['SubnetId']);
+		}
+
+		// Optional parameter
+		if (isset($opt['Filter']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			unset($opt['Filter']);
+		}
+
+		return $this->authenticate('DescribeSubnets', $opt, $this->hostname);
+	}
+
+	/**
 	 * Method: describe_availability_zones()
 	 * 	The DescribeAvailabilityZones operation describes availability zones that are currently available to
 	 * 	the account and their states.
@@ -447,8 +497,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	ZoneName - _string_|_array_ (Optional) A list of the availability zone names to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for AvailabilityZones. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	ZoneName - _string_|_array_ (Optional) A list of the availability zone names to describe. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for AvailabilityZones. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -551,8 +601,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	InstanceId - _string_|_array_ (Optional) An optional list of the instances to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Instances. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	InstanceId - _string_|_array_ (Optional) An optional list of the instances to describe. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Instances. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -626,10 +676,10 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	ImageId - _string_|_array_ (Optional) An optional list of the AMI IDs to describe. If not specified, all AMIs will be described. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Owner - _string_|_array_ (Optional) The optional list of owners for the described AMIs. The IDs amazon, self, and explicit can be used to include AMIs owned by Amazon, AMIs owned by the user, and AMIs for which the user has explicit launch permissions, respectively. Pass a string for a single value, or an indexed array for multiple values..
-	 *	ExecutableBy - _string_|_array_ (Optional) The optional list of users with explicit launch permissions for the described AMIs. The user ID can be a user's account ID, 'self' to return AMIs for which the sender of the request has explicit launch permissions, or 'all' to return AMIs with public launch permissions. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Images. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	ImageId - _string_|_array_ (Optional) An optional list of the AMI IDs to describe. If not specified, all AMIs will be described. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Owner - _string_|_array_ (Optional) The optional list of owners for the described AMIs. The IDs amazon, self, and explicit can be used to include AMIs owned by Amazon, AMIs owned by the user, and AMIs for which the user has explicit launch permissions, respectively. Pass a string for a single value, or an indexed array for multiple values.
+	 *	ExecutableBy - _string_|_array_ (Optional) The optional list of users with explicit launch permissions for the described AMIs. The user ID can be a user's account ID, 'self' to return AMIs for which the sender of the request has explicit launch permissions, or 'all' to return AMIs with public launch permissions. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Images. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -696,7 +746,7 @@ class AmazonEC2 extends CFRuntime
 	 *	public
 	 *
 	 * Parameters:
-	 *	$instance_id - _string_|_array_ (Required) The list of Amazon EC2 instances to start. Pass a string for a single value, or an indexed array for multiple values..
+	 *	$instance_id - _string_|_array_ (Required) The list of Amazon EC2 instances to start. Pass a string for a single value, or an indexed array for multiple values.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -725,7 +775,7 @@ class AmazonEC2 extends CFRuntime
 	 *	public
 	 *
 	 * Parameters:
-	 *	$instance_id - _string_|_array_ (Required) The list of Amazon EC2 instances on which to disable monitoring. Pass a string for a single value, or an indexed array for multiple values..
+	 *	$instance_id - _string_|_array_ (Required) The list of Amazon EC2 instances on which to disable monitoring. Pass a string for a single value, or an indexed array for multiple values.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -747,6 +797,35 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * Method: attach_vpn_gateway()
+	 * 	Attaches a VPN gateway to a VPC. This is the last step required to get your VPC fully connected to
+	 * 	your data center before launching instances in it. For more information, go to Process for Using
+	 * 	Amazon VPC in the Amazon Virtual Private Cloud Developer Guide.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$vpn_gateway_id - _string_ (Required) The ID of the VPN gateway to attach to the VPC.
+	 *	$vpc_id - _string_ (Required) The ID of the VPC to attach to the VPN gateway.
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function attach_vpn_gateway($vpn_gateway_id, $vpc_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['VpnGatewayId'] = $vpn_gateway_id;
+		$opt['VpcId'] = $vpc_id;
+
+		return $this->authenticate('AttachVpnGateway', $opt, $this->hostname);
+	}
+
+	/**
 	 * Method: modify_instance_attribute()
 	 * 	Modifies an attribute of an instance.
 	 *
@@ -760,7 +839,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	Value - _string_ (Optional) The new value of the instance attribute being modified. Only valid when kernel, ramdisk, userData disableApiTermination, or instanceInitiateShutdownBehavior is specified as the attribute being modified.
-	 *	BlockDeviceMapping - _ComplexList_ (Optional) The new block device mappings for the instance whose attributes are being modified. Only valid when blockDeviceMapping is specified as the attribute being modified. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `BlockDeviceMapping` subtype (documented next), or by passing a nested associative array with the following `BlockDeviceMapping`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	BlockDeviceMapping - _ComplexList_ (Optional) The new block device mappings for the instance whose attributes are being modified. Only valid when blockDeviceMapping is specified as the attribute being modified. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `BlockDeviceMapping` subtype (documented next), or by passing an associative array with the following `BlockDeviceMapping`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	BlockDeviceMapping.x.DeviceName - _string_ (Optional) The device name (e.g., /dev/sdh) at which the block device is exposed on the instance.
 	 *	BlockDeviceMapping.x.Ebs.VolumeId - _string_ (Optional) The ID of the EBS volume that should be mounted as a block device on an Amazon EC2 instance.
 	 *	BlockDeviceMapping.x.Ebs.DeleteOnTermination - _boolean_ (Optional) Specifies whether the Amazon EBS volume is deleted on instance termination.
@@ -785,6 +864,33 @@ class AmazonEC2 extends CFRuntime
 		}
 
 		return $this->authenticate('ModifyInstanceAttribute', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: delete_dhcp_options()
+	 * 	Deletes a set of DHCP options that you specify. Amazon VPC returns an error if the set of options
+	 * 	you specify is currently associated with a VPC. You can disassociate the set of options by
+	 * 	associating either a new set of options or the default options with the VPC.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$dhcp_options_id - _string_ (Required) The ID of the DHCP options set to delete.
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_dhcp_options($dhcp_options_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['DhcpOptionsId'] = $dhcp_options_id;
+
+		return $this->authenticate('DeleteDhcpOptions', $opt, $this->hostname);
 	}
 
 	/**
@@ -875,7 +981,7 @@ class AmazonEC2 extends CFRuntime
 	 *	FromPort - _integer_ (Optional) Deprecated - use the list of IP permissions to specify this information instead. Start of port range for the TCP and UDP protocols, or an ICMP type number. An ICMP type number of -1 indicates a wildcard (i.e., any ICMP type number).
 	 *	ToPort - _integer_ (Optional) Deprecated - use the list of IP permissions to specify this information instead. End of port range for the TCP and UDP protocols, or an ICMP code. An ICMP code of -1 indicates a wildcard (i.e., any ICMP code).
 	 *	CidrIp - _string_ (Optional) Deprecated - use the list of IP permissions to specify this information instead. CIDR range.
-	 *	IpPermissions - _ComplexList_ (Optional) List of IP permissions to authorize on the specified security group. Specifying permissions through IP permissions is the preferred way of authorizing permissions since it offers more flexibility and control. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `IpPermissions` subtype (documented next), or by passing a nested associative array with the following `IpPermissions`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	IpPermissions - _ComplexList_ (Optional) List of IP permissions to authorize on the specified security group. Specifying permissions through IP permissions is the preferred way of authorizing permissions since it offers more flexibility and control. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `IpPermissions` subtype (documented next), or by passing an associative array with the following `IpPermissions`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	IpPermissions.x.IpProtocol - _string_ (Optional) The IP protocol of this permission. Valid protocol values: tpc, upd, icmp
 	 *	IpPermissions.x.FromPort - _integer_ (Optional) Start of port range for the TCP and UDP protocols, or an ICMP type number. An ICMP type number of -1 indicates a wildcard (i.e., any ICMP type number).
 	 *	IpPermissions.x.ToPort - _integer_ (Optional) End of port range for the TCP and UDP protocols, or an ICMP code. An ICMP code of -1 indicates a wildcard (i.e., any ICMP code).
@@ -913,8 +1019,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	SpotInstanceRequestId - _string_|_array_ (Optional) The ID of the request. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for SpotInstances. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	SpotInstanceRequestId - _string_|_array_ (Optional) The ID of the request. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for SpotInstances. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -943,6 +1049,38 @@ class AmazonEC2 extends CFRuntime
 		}
 
 		return $this->authenticate('DescribeSpotInstanceRequests', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: associate_dhcp_options()
+	 * 	Associates a set of DHCP options (that you've previously created) with the specified VPC. Or,
+	 * 	associates the default DHCP options with the VPC. The default set consists of the standard EC2 host
+	 * 	name, no domain name, no DNS server, no NTP server, and no NetBIOS server or node type. After you
+	 * 	associate the options with the VPC, any existing instances and all new instances that you launch in
+	 * 	that VPC use the options. For more information about the supported DHCP options and using them with
+	 * 	Amazon VPC, go to Using DHCP Options in the Amazon Virtual Private Cloud Developer Guide.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$dhcp_options_id - _string_ (Required) The ID of the DHCP options to associate with the VPC. Specify "default" to associate the default DHCP options with the VPC.
+	 *	$vpc_id - _string_ (Required) The ID of the VPC to associate the DHCP options with.
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function associate_dhcp_options($dhcp_options_id, $vpc_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['DhcpOptionsId'] = $dhcp_options_id;
+		$opt['VpcId'] = $vpc_id;
+
+		return $this->authenticate('AssociateDhcpOptions', $opt, $this->hostname);
 	}
 
 	/**
@@ -1005,6 +1143,37 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * Method: create_vpc()
+	 * 	Creates a VPC with the CIDR block you specify. The smallest VPC you can create uses a /28 netmask
+	 * 	(16 IP addresses), and the largest uses a /18 netmask (16,384 IP addresses). To help you decide how
+	 * 	big to make your VPC, go to the topic about creating VPCs in the Amazon Virtual Private Cloud
+	 * 	Developer Guide.
+	 *
+	 * 	By default, each instance you launch in the VPC has the default DHCP options (the standard EC2 host
+	 * 	name, no domain name, no DNS server, no NTP server, and no NetBIOS server or node type).
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$cidr_block - _string_ (Required) A valid CIDR block.
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_vpc($cidr_block, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['CidrBlock'] = $cidr_block;
+
+		return $this->authenticate('CreateVpc', $opt, $this->hostname);
+	}
+
+	/**
 	 * Method: stop_instances()
 	 * 	Stops an instance that uses an Amazon EBS volume as its root device. Instances that use Amazon EBS
 	 * 	volumes as their root devices can be quickly stopped and started. When an instance is stopped, the
@@ -1022,7 +1191,7 @@ class AmazonEC2 extends CFRuntime
 	 *	public
 	 *
 	 * Parameters:
-	 *	$instance_id - _string_|_array_ (Required) The list of Amazon EC2 instances to stop. Pass a string for a single value, or an indexed array for multiple values..
+	 *	$instance_id - _string_|_array_ (Required) The list of Amazon EC2 instances to stop. Pass a string for a single value, or an indexed array for multiple values.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -1042,6 +1211,56 @@ class AmazonEC2 extends CFRuntime
 		)));
 
 		return $this->authenticate('StopInstances', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: describe_customer_gateways()
+	 * 	Gives you information about your customer gateways. You can filter the results to return information
+	 * 	only about customer gateways that match criteria you specify. For example, you could ask to get
+	 * 	information about a particular customer gateway (or all) only if the gateway's state is pending or
+	 * 	available. You can specify multiple filters (e.g., the customer gateway has a particular IP address
+	 * 	for the Internet-routable external interface, and the gateway's state is pending or available). The
+	 * 	result includes information for a particular customer gateway only if the gateway matches all your
+	 * 	filters. If there's no match, no special message is returned; the response is simply empty. The
+	 * 	following table shows the available filters.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	CustomerGatewayId - _string_|_array_ (Optional) A set of one or more customer gateway IDs. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional)  A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
+	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
+	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_customer_gateways($opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Optional parameter
+		if (isset($opt['CustomerGatewayId']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'CustomerGatewayId' => (is_array($opt['CustomerGatewayId']) ? $opt['CustomerGatewayId'] : array($opt['CustomerGatewayId']))
+			)));
+			unset($opt['CustomerGatewayId']);
+		}
+
+		// Optional parameter
+		if (isset($opt['Filter']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			unset($opt['Filter']);
+		}
+
+		return $this->authenticate('DescribeCustomerGateways', $opt, $this->hostname);
 	}
 
 	/**
@@ -1104,9 +1323,9 @@ class AmazonEC2 extends CFRuntime
 	 * Keys for the $opt parameter:
 	 *	StartTime - _string_ (Optional) The start date and time of the Spot Instance price history data. Accepts any value that `strtotime()` understands.
 	 *	EndTime - _string_ (Optional) The end date and time of the Spot Instance price history data. Accepts any value that `strtotime()` understands.
-	 *	InstanceType - _string_|_array_ (Optional) Specifies the instance type to return. Pass a string for a single value, or an indexed array for multiple values..
-	 *	ProductDescription - _string_|_array_ (Optional) The description of the AMI. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for SpotPriceHistory. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	InstanceType - _string_|_array_ (Optional) Specifies the instance type to return. Pass a string for a single value, or an indexed array for multiple values.
+	 *	ProductDescription - _string_|_array_ (Optional) The description of the AMI. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for SpotPriceHistory. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -1203,8 +1422,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	RegionName - _string_|_array_ (Optional) The optional list of regions to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Regions. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	RegionName - _string_|_array_ (Optional) The optional list of regions to describe. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Regions. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -1233,6 +1452,42 @@ class AmazonEC2 extends CFRuntime
 		}
 
 		return $this->authenticate('DescribeRegions', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: create_dhcp_options()
+	 * 	Creates a set of DHCP options that you can then associate with one or more VPCs, causing all
+	 * 	existing and new instances that you launch in those VPCs to use the set of DHCP options. The
+	 * 	following table lists the individual DHCP options you can specify. For more information about the
+	 * 	options, go to http://www.ietf.org/rfc/rfc2132.txt
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$dhcp_configuration - _ComplexList_ (Required) A set of one or more DHCP configurations. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs which must be set by passing an associative array. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`.
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $dhcp_configuration parameter:
+	 *	Key - _string_ (Optional) Contains the name of a DHCP option.
+	 *	Value - _string_|_array_ (Optional) Contains a set of values for a DHCP option. Pass a string for a single value, or an indexed array for multiple values.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_dhcp_options($dhcp_configuration, $opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Required parameter
+		$opt = array_merge($opt, CFComplexType::map(array(
+			'DhcpConfiguration' => (is_array($dhcp_configuration) ? $dhcp_configuration : array($dhcp_configuration))
+		)));
+
+		return $this->authenticate('CreateDhcpOptions', $opt, $this->hostname);
 	}
 
 	/**
@@ -1277,8 +1532,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	GroupName - _string_|_array_ (Optional) The optional list of Amazon EC2 security groups to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for SecurityGroups. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	GroupName - _string_|_array_ (Optional) The optional list of Amazon EC2 security groups to describe. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for SecurityGroups. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -1334,7 +1589,7 @@ class AmazonEC2 extends CFRuntime
 	 *	ValidUntil - _string_ (Optional) End date of the request. If this is a one-time request, the request remains active until all instances launch, the request is canceled, or this date is reached. If the request is persistent, it remains active until it is canceled or this date and time is reached. Accepts any value that `strtotime()` understands.
 	 *	LaunchGroup - _string_ (Optional) Specifies the instance launch group. Launch groups are Spot Instances that launch and terminate together.
 	 *	AvailabilityZoneGroup - _string_ (Optional) Specifies the Availability Zone group. When specifying the same Availability Zone group for all Spot Instance requests, all Spot Instances are launched in the same Availability Zone.
-	 *	LaunchSpecification - _ComplexType_ (Optional) Specifies additional launch instance information. A ComplexType can be set two ways: by setting each individual `LaunchSpecification` subtype (documented next), or by passing a nested associative array with the following `LaunchSpecification`-prefixed entries as keys.
+	 *	LaunchSpecification - _ComplexType_ (Optional) Specifies additional launch instance information. A ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `LaunchSpecification` subtype (documented next), or by passing an associative array with the following `LaunchSpecification`-prefixed entries as keys. See below for a list and a usage example.
 	 *	LaunchSpecification.ImageId - _string_ (Optional) The AMI ID.
 	 *	LaunchSpecification.KeyName - _string_ (Optional) The name of the key pair.
 	 *	LaunchSpecification.SecurityGroup.x - _string_ (Optional)
@@ -1394,8 +1649,8 @@ class AmazonEC2 extends CFRuntime
 	 *	public
 	 *
 	 * Parameters:
-	 *	$resource_id - _string_|_array_ (Required) One or more IDs of resources to tag. This could be the ID of an AMI, an instance, an EBS volume, or snapshot, etc. Pass a string for a single value, or an indexed array for multiple values..
-	 *	$tag - _ComplexList_ (Required) The tags to add or overwrite for the specified resources. Each tag item consists of a key-value pair. A **required** ComplexList is an indexed array of ComplexTypes -- each of which must be set by passing a nested associative array with the following `Tag`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	$resource_id - _string_|_array_ (Required) One or more IDs of resources to tag. This could be the ID of an AMI, an instance, an EBS volume, or snapshot, etc. Pass a string for a single value, or an indexed array for multiple values.
+	 *	$tag - _ComplexList_ (Required) The tags to add or overwrite for the specified resources. Each tag item consists of a key-value pair. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs which must be set by passing an associative array. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $tag parameter:
@@ -1423,6 +1678,38 @@ class AmazonEC2 extends CFRuntime
 		)));
 
 		return $this->authenticate('CreateTags', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: detach_vpn_gateway()
+	 * 	Detaches a VPN gateway from a VPC. You do this if you're planning to turn off the VPC and not use it
+	 * 	anymore. You can confirm a VPN gateway has been completely detached from a VPC by describing the VPN
+	 * 	gateway (any attachments to the VPN gateway are also described).
+	 *
+	 * 	You must wait for the attachment's state to switch to detached before you can delete the VPC or
+	 * 	attach a different VPC to the VPN gateway.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$vpn_gateway_id - _string_ (Required) The ID of the VPN gateway to detach from the VPC.
+	 *	$vpc_id - _string_ (Required) The ID of the VPC to detach the VPN gateway from.
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function detach_vpn_gateway($vpn_gateway_id, $vpc_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['VpnGatewayId'] = $vpn_gateway_id;
+		$opt['VpcId'] = $vpc_id;
+
+		return $this->authenticate('DetachVpnGateway', $opt, $this->hostname);
 	}
 
 	/**
@@ -1485,11 +1772,11 @@ class AmazonEC2 extends CFRuntime
 	 *	public
 	 *
 	 * Parameters:
-	 *	$resource_id - _string_|_array_ (Required) A list of one or more resource IDs. This could be the ID of an AMI, an instance, an EBS volume, or snapshot, etc. Pass a string for a single value, or an indexed array for multiple values..
+	 *	$resource_id - _string_|_array_ (Required) A list of one or more resource IDs. This could be the ID of an AMI, an instance, an EBS volume, or snapshot, etc. Pass a string for a single value, or an indexed array for multiple values.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	Tag - _ComplexList_ (Optional) The tags to delete from the specified resources. Each tag item consists of a key-value pair. If a tag is specified without a value, the tag and all of its values are deleted. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Tag` subtype (documented next), or by passing a nested associative array with the following `Tag`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Tag - _ComplexList_ (Optional) The tags to delete from the specified resources. Each tag item consists of a key-value pair. If a tag is specified without a value, the tag and all of its values are deleted. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Tag` subtype (documented next), or by passing an associative array with the following `Tag`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Tag.x.Key - _string_ (Optional) The tag's key.
 	 *	Tag.x.Value - _string_ (Optional) The tag's value.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -1527,7 +1814,7 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for tags. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for tags. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -1547,6 +1834,59 @@ class AmazonEC2 extends CFRuntime
 		}
 
 		return $this->authenticate('DescribeTags', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: delete_subnet()
+	 * 	Deletes a subnet from a VPC. You must terminate all running instances in the subnet before deleting
+	 * 	it, otherwise Amazon VPC returns an error.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$subnet_id - _string_ (Required)
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_subnet($subnet_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['SubnetId'] = $subnet_id;
+
+		return $this->authenticate('DeleteSubnet', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: create_vpn_gateway()
+	 * 	Creates a new VPN gateway. A VPN gateway is the VPC-side endpoint for your VPN connection. You can
+	 * 	create a VPN gateway before creating the VPC itself.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$type - _string_ (Required) The type of VPN connection this VPN gateway supports.
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	AvailabilityZone - _string_ (Optional) The Availability Zone in which to create the VPN gateway.
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_vpn_gateway($type, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['Type'] = $type;
+
+		return $this->authenticate('CreateVpnGateway', $opt, $this->hostname);
 	}
 
 	/**
@@ -1578,6 +1918,34 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * Method: delete_vpn_gateway()
+	 * 	Deletes a VPN gateway. Use this when you want to delete a VPC and all its associated components
+	 * 	because you no longer need them. We recommend that before you delete a VPN gateway, you detach it
+	 * 	from the VPC and delete the VPN connection. Note that you don't need to delete the VPN gateway if
+	 * 	you just want to delete and re-create the VPN connection between your VPC and data center.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$vpn_gateway_id - _string_ (Required) The ID of the VPN gateway to delete.
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_vpn_gateway($vpn_gateway_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['VpnGatewayId'] = $vpn_gateway_id;
+
+		return $this->authenticate('DeleteVpnGateway', $opt, $this->hostname);
+	}
+
+	/**
 	 * Method: cancel_spot_instance_requests()
 	 * 	Cancels one or more Spot Instance requests.
 	 *
@@ -1592,7 +1960,7 @@ class AmazonEC2 extends CFRuntime
 	 *	public
 	 *
 	 * Parameters:
-	 *	$spot_instance_request_id - _string_|_array_ (Required) Specifies the ID of the Spot Instance request. Pass a string for a single value, or an indexed array for multiple values..
+	 *	$spot_instance_request_id - _string_|_array_ (Required) Specifies the ID of the Spot Instance request. Pass a string for a single value, or an indexed array for multiple values.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -1654,8 +2022,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	LicenseId - _string_|_array_ (Optional) Specifies the license registration for which details are to be returned. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Licenses. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	LicenseId - _string_|_array_ (Optional) Specifies the license registration for which details are to be returned. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Licenses. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -1774,6 +2142,60 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * Method: describe_vpn_connections()
+	 * 	Gives you information about your VPN connections.
+	 *
+	 * 	We strongly recommend you use HTTPS when calling this operation because the response contains
+	 * 	sensitive cryptographic information for configuring your customer gateway.
+	 *
+	 * 	You can filter the results to return information only about VPN connections that match criteria you
+	 * 	specify. For example, you could ask to get information about a particular VPN connection (or all)
+	 * 	only if the VPN's state is pending or available. You can specify multiple filters (e.g., the VPN
+	 * 	connection is associated with a particular VPN gateway, and the gateway's state is pending or
+	 * 	available). The result includes information for a particular VPN connection only if the VPN
+	 * 	connection matches all your filters. If there's no match, no special message is returned; the
+	 * 	response is simply empty. The following table shows the available filters.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	VpnConnectionId - _string_|_array_ (Optional) A VPN connection ID. More than one may be specified per request. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional)  A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
+	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
+	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_vpn_connections($opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Optional parameter
+		if (isset($opt['VpnConnectionId']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'VpnConnectionId' => (is_array($opt['VpnConnectionId']) ? $opt['VpnConnectionId'] : array($opt['VpnConnectionId']))
+			)));
+			unset($opt['VpnConnectionId']);
+		}
+
+		// Optional parameter
+		if (isset($opt['Filter']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			unset($opt['Filter']);
+		}
+
+		return $this->authenticate('DescribeVpnConnections', $opt, $this->hostname);
+	}
+
+	/**
 	 * Method: create_snapshot()
 	 * 	Create a snapshot of the volume identified by volume ID. A volume does not have to be detached at
 	 * 	the time the snapshot is taken.
@@ -1847,8 +2269,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	UserId - _string_|_array_ (Optional) The AWS user IDs to add to or remove from the list of users that have permission to create EBS volumes from the specified snapshot. Currently supports "all". Only valid when the createVolumePermission attribute is being modified. Pass a string for a single value, or an indexed array for multiple values..
-	 *	UserGroup - _string_|_array_ (Optional) The AWS group names to add to or remove from the list of groups that have permission to create EBS volumes from the specified snapshot. Currently supports "all". Only valid when the `createVolumePermission` attribute is being modified. Pass a string for a single value, or an indexed array for multiple values..
+	 *	UserId - _string_|_array_ (Optional) The AWS user IDs to add to or remove from the list of users that have permission to create EBS volumes from the specified snapshot. Currently supports "all". Only valid when the createVolumePermission attribute is being modified. Pass a string for a single value, or an indexed array for multiple values.
+	 *	UserGroup - _string_|_array_ (Optional) The AWS group names to add to or remove from the list of groups that have permission to create EBS volumes from the specified snapshot. Currently supports "all". Only valid when the `createVolumePermission` attribute is being modified. Pass a string for a single value, or an indexed array for multiple values.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -1893,7 +2315,7 @@ class AmazonEC2 extends CFRuntime
 	 *	public
 	 *
 	 * Parameters:
-	 *	$instance_id - _string_|_array_ (Required) The list of instances to terminate. Pass a string for a single value, or an indexed array for multiple values..
+	 *	$instance_id - _string_|_array_ (Required) The list of instances to terminate. Pass a string for a single value, or an indexed array for multiple values.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -1938,6 +2360,55 @@ class AmazonEC2 extends CFRuntime
 		if (!$opt) $opt = array();
 
 		return $this->authenticate('DeleteSpotDatafeedSubscription', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: describe_vpcs()
+	 * 	Gives you information about your VPCs. You can filter the results to return information only about
+	 * 	VPCs that match criteria you specify. For example, you could ask to get information about a
+	 * 	particular VPC or VPCs (or all your VPCs) only if the VPC's state is available. You can specify
+	 * 	multiple filters (e.g., the VPC uses one of several sets of DHCP options, and the VPC's state is
+	 * 	available). The result includes information for a particular VPC only if the VPC matches all your
+	 * 	filters. If there's no match, no special message is returned; the response is simply empty. The
+	 * 	following table shows the available filters.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	VpcId - _string_|_array_ (Optional) A set of one or more IDs of VPCs to describe. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional)  A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
+	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
+	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_vpcs($opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Optional parameter
+		if (isset($opt['VpcId']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'VpcId' => (is_array($opt['VpcId']) ? $opt['VpcId'] : array($opt['VpcId']))
+			)));
+			unset($opt['VpcId']);
+		}
+
+		// Optional parameter
+		if (isset($opt['Filter']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			unset($opt['Filter']);
+		}
+
+		return $this->authenticate('DescribeVpcs', $opt, $this->hostname);
 	}
 
 	/**
@@ -2027,6 +2498,35 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * Method: delete_customer_gateway()
+	 * 	Deletes a customer gateway. You must delete the VPN connection before deleting the customer gateway.
+	 *
+	 * 	You can have a single active customer gateway per AWS account (active means that you've created a
+	 * 	VPN connection with that customer gateway). AWS might delete any customer gateway you leave inactive
+	 * 	for an extended period of time.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$customer_gateway_id - _string_ (Required) The ID of the customer gateway to delete.
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_customer_gateway($customer_gateway_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['CustomerGatewayId'] = $customer_gateway_id;
+
+		return $this->authenticate('DeleteCustomerGateway', $opt, $this->hostname);
+	}
+
+	/**
 	 * Method: describe_addresses()
 	 * 	The DescribeAddresses operation lists elastic IP addresses assigned to your account.
 	 *
@@ -2037,8 +2537,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	PublicIp - _string_|_array_ (Optional) The optional list of Elastic IP addresses to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Addresses. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	PublicIp - _string_|_array_ (Optional) The optional list of Elastic IP addresses to describe. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Addresses. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2082,8 +2582,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	KeyName - _string_|_array_ (Optional) The optional list of key pair names to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for KeyPairs. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	KeyName - _string_|_array_ (Optional) The optional list of key pair names to describe. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for KeyPairs. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2202,6 +2702,93 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * Method: describe_vpn_gateways()
+	 * 	Gives you information about your VPN gateways. You can filter the results to return information only
+	 * 	about VPN gateways that match criteria you specify. For example, you could ask to get information
+	 * 	about a particular VPN gateway (or all) only if the gateway's state is pending or available. You can
+	 * 	specify multiple filters (e.g., the VPN gateway is in a particular Availability Zone and the
+	 * 	gateway's state is pending or available). The result includes information for a particular VPN
+	 * 	gateway only if the gateway matches all your filters. If there's no match, no special message is
+	 * 	returned; the response is simply empty. The following table shows the available filters.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	VpnGatewayId - _string_|_array_ (Optional) A set of one or more VPN Gateway IDs. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional)  A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
+	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
+	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_vpn_gateways($opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Optional parameter
+		if (isset($opt['VpnGatewayId']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'VpnGatewayId' => (is_array($opt['VpnGatewayId']) ? $opt['VpnGatewayId'] : array($opt['VpnGatewayId']))
+			)));
+			unset($opt['VpnGatewayId']);
+		}
+
+		// Optional parameter
+		if (isset($opt['Filter']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			unset($opt['Filter']);
+		}
+
+		return $this->authenticate('DescribeVpnGateways', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: create_subnet()
+	 * 	Creates a subnet in an existing VPC. You can create up to 20 subnets in a VPC. If you add more than
+	 * 	one subnet to a VPC, they're set up in a star topology with a logical router in the middle. When you
+	 * 	create each subnet, you provide the VPC ID and the CIDR block you want for the subnet. Once you
+	 * 	create a subnet, you can't change its CIDR block. The subnet's CIDR block can be the same as the
+	 * 	VPC's CIDR block (assuming you want only a single subnet in the VPC), or a subset of the VPC's CIDR
+	 * 	block. If you create more than one subnet in a VPC, the subnets' CIDR blocks must not overlap. The
+	 * 	smallest subnet (and VPC) you can create uses a /28 netmask (16 IP addresses), and the largest uses
+	 * 	a /18 netmask (16,384 IP addresses).
+	 *
+	 * 	AWS reserves both the first four and the last IP address in each subnet's CIDR block. They're not
+	 * 	available for use.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$vpc_id - _string_ (Required) The ID of the VPC to create the subnet in.
+	 *	$cidr_block - _string_ (Required) The CIDR block the subnet is to cover.
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	AvailabilityZone - _string_ (Optional) The Availability Zone to create the subnet in.
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_subnet($vpc_id, $cidr_block, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['VpcId'] = $vpc_id;
+		$opt['CidrBlock'] = $cidr_block;
+
+		return $this->authenticate('CreateSubnet', $opt, $this->hostname);
+	}
+
+	/**
 	 * Method: describe_reserved_instances_offerings()
 	 * 	The DescribeReservedInstancesOfferings operation describes Reserved Instance offerings that are
 	 * 	available for purchase. With Amazon EC2 Reserved Instances, you purchase the right to launch Amazon
@@ -2215,11 +2802,11 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	ReservedInstancesOfferingId - _string_|_array_ (Optional) An optional list of the unique IDs of the Reserved Instance offerings to describe. Pass a string for a single value, or an indexed array for multiple values..
+	 *	ReservedInstancesOfferingId - _string_|_array_ (Optional) An optional list of the unique IDs of the Reserved Instance offerings to describe. Pass a string for a single value, or an indexed array for multiple values.
 	 *	InstanceType - _string_ (Optional) The instance type on which the Reserved Instance can be used. [Allowed values: `t1.micro`, `m1.small`, `m1.large`, `m1.xlarge`, `m2.xlarge`, `m2.2xlarge`, `m2.4xlarge`, `c1.medium`, `c1.xlarge`, `cc1.4xlarge`]
 	 *	AvailabilityZone - _string_ (Optional) The Availability Zone in which the Reserved Instance can be used.
 	 *	ProductDescription - _string_ (Optional) The Reserved Instance product description.
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for ReservedInstancesOfferings. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for ReservedInstancesOfferings. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2262,8 +2849,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	VolumeId - _string_|_array_ (Optional) The optional list of EBS volumes to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Volumes. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	VolumeId - _string_|_array_ (Optional) The optional list of EBS volumes to describe. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Volumes. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2320,6 +2907,55 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * Method: describe_dhcp_options()
+	 * 	Gives you information about one or more sets of DHCP options. You can specify one or more DHCP
+	 * 	options set IDs, or no IDs (to describe all your sets of DHCP options). The returned information
+	 * 	consists of:
+	 *
+	 * 	- The DHCP options set ID
+	 *
+	 * 	- The options
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	DhcpOptionsId - _string_|_array_ (Optional)  Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for DhcpOptions. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
+	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
+	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_dhcp_options($opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Optional parameter
+		if (isset($opt['DhcpOptionsId']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'DhcpOptionsId' => (is_array($opt['DhcpOptionsId']) ? $opt['DhcpOptionsId'] : array($opt['DhcpOptionsId']))
+			)));
+			unset($opt['DhcpOptionsId']);
+		}
+
+		// Optional parameter
+		if (isset($opt['Filter']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			unset($opt['Filter']);
+		}
+
+		return $this->authenticate('DescribeDhcpOptions', $opt, $this->hostname);
+	}
+
+	/**
 	 * Method: monitor_instances()
 	 * 	Enables monitoring for a running instance.
 	 *
@@ -2327,7 +2963,7 @@ class AmazonEC2 extends CFRuntime
 	 *	public
 	 *
 	 * Parameters:
-	 *	$instance_id - _string_|_array_ (Required) The list of Amazon EC2 instances on which to enable monitoring. Pass a string for a single value, or an indexed array for multiple values..
+	 *	$instance_id - _string_|_array_ (Required) The list of Amazon EC2 instances on which to enable monitoring. Pass a string for a single value, or an indexed array for multiple values.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -2416,8 +3052,8 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	BundleId - _string_|_array_ (Optional) The list of bundle task IDs to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for BundleTasks. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	BundleId - _string_|_array_ (Optional) The list of bundle task IDs to describe. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for BundleTasks. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2539,7 +3175,7 @@ class AmazonEC2 extends CFRuntime
 	 *	FromPort - _integer_ (Optional) Deprecated - use the list of IP permissions to specify this information instead. Start of port range for the TCP and UDP protocols, or an ICMP type number. An ICMP type number of -1 indicates a wildcard (i.e., any ICMP type number).
 	 *	ToPort - _integer_ (Optional) Deprecated - use the list of IP permissions to specify this information instead. End of port range for the TCP and UDP protocols, or an ICMP code. An ICMP code of -1 indicates a wildcard (i.e., any ICMP code).
 	 *	CidrIp - _string_ (Optional) Deprecated - use the list of IP permissions to specify this information instead. CIDR range.
-	 *	IpPermissions - _ComplexList_ (Optional) List of IP permissions to revoke on the specified security group. For an IP permission to be removed, it must exactly match one of the IP permissions you specify in this list. Specifying permissions through IP permissions is the preferred way of revoking permissions since it offers more flexibility and control. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `IpPermissions` subtype (documented next), or by passing a nested associative array with the following `IpPermissions`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	IpPermissions - _ComplexList_ (Optional) List of IP permissions to revoke on the specified security group. For an IP permission to be removed, it must exactly match one of the IP permissions you specify in this list. Specifying permissions through IP permissions is the preferred way of revoking permissions since it offers more flexibility and control. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `IpPermissions` subtype (documented next), or by passing an associative array with the following `IpPermissions`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	IpPermissions.x.IpProtocol - _string_ (Optional) The IP protocol of this permission. Valid protocol values: tpc, upd, icmp
 	 *	IpPermissions.x.FromPort - _integer_ (Optional) Start of port range for the TCP and UDP protocols, or an ICMP type number. An ICMP type number of -1 indicates a wildcard (i.e., any ICMP type number).
 	 *	IpPermissions.x.ToPort - _integer_ (Optional) End of port range for the TCP and UDP protocols, or an ICMP code. An ICMP code of -1 indicates a wildcard (i.e., any ICMP code).
@@ -2564,6 +3200,32 @@ class AmazonEC2 extends CFRuntime
 		}
 
 		return $this->authenticate('RevokeSecurityGroupIngress', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: delete_vpc()
+	 * 	Deletes a VPC. You must terminate all running instances and delete all subnets before deleting the
+	 * 	VPC, otherwise Amazon VPC returns an error.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$vpc_id - _string_ (Required)
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_vpc($vpc_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['VpcId'] = $vpc_id;
+
+		return $this->authenticate('DeleteVpc', $opt, $this->hostname);
 	}
 
 	/**
@@ -2640,9 +3302,9 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	OperationType - _string_ (Optional) The type of operation being requested. Available operation types: add, remove
-	 *	UserId - _string_|_array_ (Optional) The AWS user ID being added to or removed from the list of users with launch permissions for this AMI. Only valid when the launchPermission attribute is being modified. Pass a string for a single value, or an indexed array for multiple values..
-	 *	UserGroup - _string_|_array_ (Optional) The user group being added to or removed from the list of user groups with launch permissions for this AMI. Only valid when the launchPermission attribute is being modified. Available user groups: all Pass a string for a single value, or an indexed array for multiple values..
-	 *	ProductCode - _string_|_array_ (Optional) The list of product codes being added to or removed from the specified AMI. Only valid when the productCodes attribute is being modified. Pass a string for a single value, or an indexed array for multiple values..
+	 *	UserId - _string_|_array_ (Optional) The AWS user ID being added to or removed from the list of users with launch permissions for this AMI. Only valid when the launchPermission attribute is being modified. Pass a string for a single value, or an indexed array for multiple values.
+	 *	UserGroup - _string_|_array_ (Optional) The user group being added to or removed from the list of user groups with launch permissions for this AMI. Only valid when the launchPermission attribute is being modified. Available user groups: all Pass a string for a single value, or an indexed array for multiple values.
+	 *	ProductCode - _string_|_array_ (Optional) The list of product codes being added to or removed from the specified AMI. Only valid when the productCodes attribute is being modified. Pass a string for a single value, or an indexed array for multiple values.
 	 *	Value - _string_ (Optional) The value of the attribute being modified. Only valid when the description attribute is being modified.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
@@ -2718,6 +3380,48 @@ class AmazonEC2 extends CFRuntime
 		$opt['PublicIp'] = $public_ip;
 
 		return $this->authenticate('ReleaseAddress', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: create_customer_gateway()
+	 * 	Provides information to AWS about your customer gateway device. The customer gateway is the
+	 * 	appliance at your end of the VPN connection (compared to the VPN gateway, which is the device at the
+	 * 	AWS side of the VPN connection). You can have a single active customer gateway per AWS account
+	 * 	(active means that you've created a VPN connection to use with the customer gateway). AWS might
+	 * 	delete any customer gateway that you create with this operation if you leave it inactive for an
+	 * 	extended period of time.
+	 *
+	 * 	You must provide the Internet-routable IP address of the customer gateway's external interface. The
+	 * 	IP address must be static.
+	 *
+	 * 	You must also provide the device's Border Gateway Protocol (BGP) Autonomous System Number (ASN).
+	 * 	You can use an existing ASN assigned to your network. If you don't have an ASN already, you can use
+	 * 	a private ASN (in the 64512 - 65534 range). For more information about ASNs, go to [
+	 * 	i/Autonomous_system_%28Internet%29](http://en.wikipedia.org/wiki/Autonomous_system_%28Internet%29.).
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$type - _string_ (Required) The type of VPN connection this customer gateway supports.
+	 *	$ip_address - _string_ (Required)
+	 *	$bgp_asn - _integer_ (Required) The customer gateway's Border Gateway Protocol (BGP) Autonomous System Number (ASN).
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_customer_gateway($type, $ip_address, $bgp_asn, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['Type'] = $type;
+		$opt['IpAddress'] = $ip_address;
+		$opt['BgpAsn'] = $bgp_asn;
+
+		return $this->authenticate('CreateCustomerGateway', $opt, $this->hostname);
 	}
 
 	/**
@@ -2818,10 +3522,10 @@ class AmazonEC2 extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	SnapshotId - _string_|_array_ (Optional) The optional list of EBS snapshot IDs to describe. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Owner - _string_|_array_ (Optional) The optional list of EBS snapshot owners. Pass a string for a single value, or an indexed array for multiple values..
-	 *	RestorableBy - _string_|_array_ (Optional) The optional list of users who have permission to create volumes from the described EBS snapshots. Pass a string for a single value, or an indexed array for multiple values..
-	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Snapshots. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `Filter` subtype (documented next), or by passing a nested associative array with the following `Filter`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	SnapshotId - _string_|_array_ (Optional) The optional list of EBS snapshot IDs to describe. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Owner - _string_|_array_ (Optional) The optional list of EBS snapshot owners. Pass a string for a single value, or an indexed array for multiple values.
+	 *	RestorableBy - _string_|_array_ (Optional) The optional list of users who have permission to create volumes from the described EBS snapshots. Pass a string for a single value, or an indexed array for multiple values.
+	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for Snapshots. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	Filter.x.Name - _string_ (Optional) Specifies the name of the filter.
 	 *	Filter.x.Value.y - _string_ (Optional) Contains one or more values for the filter.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
@@ -2897,7 +3601,7 @@ class AmazonEC2 extends CFRuntime
 	 *	KernelId - _string_ (Optional) The optional ID of a specific kernel to register with the new AMI.
 	 *	RamdiskId - _string_ (Optional) The optional ID of a specific ramdisk to register with the new AMI. Some kernels require additional drivers at launch. Check the kernel requirements for information on whether you need to specify a RAM disk.
 	 *	RootDeviceName - _string_ (Optional) The root device name (e.g., /dev/sda1).
-	 *	BlockDeviceMapping - _ComplexList_ (Optional) The block device mappings for the new AMI, which specify how different block devices (ex: EBS volumes and ephemeral drives) will be exposed on instances launched from the new image. A ComplexList is an indexed array of ComplexTypes -- each of which can be set two ways: by setting each individual `BlockDeviceMapping` subtype (documented next), or by passing a nested associative array with the following `BlockDeviceMapping`-prefixed entries as keys. `x`/`y`/`z` should be integers, starting at `1`.
+	 *	BlockDeviceMapping - _ComplexList_ (Optional) The block device mappings for the new AMI, which specify how different block devices (ex: EBS volumes and ephemeral drives) will be exposed on instances launched from the new image. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `BlockDeviceMapping` subtype (documented next), or by passing an associative array with the following `BlockDeviceMapping`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
 	 *	BlockDeviceMapping.x.VirtualName - _string_ (Optional) Specifies the virtual device name.
 	 *	BlockDeviceMapping.x.DeviceName - _string_ (Optional) Specifies the device name (e.g., /dev/sdh).
 	 *	BlockDeviceMapping.x.Ebs.SnapshotId - _string_ (Optional) The ID of the snapshot from which the volume will be created.
@@ -2922,6 +3626,81 @@ class AmazonEC2 extends CFRuntime
 		}
 
 		return $this->authenticate('RegisterImage', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: delete_vpn_connection()
+	 * 	Deletes a VPN connection. Use this if you want to delete a VPC and all its associated components.
+	 * 	Another reason to use this operation is if you believe the tunnel credentials for your VPN
+	 * 	connection have been compromised. In that situation, you can delete the VPN connection and create a
+	 * 	new one that has new keys, without needing to delete the VPC or VPN gateway. If you create a new VPN
+	 * 	connection, you must reconfigure the customer gateway using the new configuration information
+	 * 	returned with the new VPN connection ID.
+	 *
+	 * 	If you're deleting the VPC and all its associated parts, we recommend you detach the VPN gateway
+	 * 	from the VPC and delete the VPC before deleting the VPN connection.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$vpn_connection_id - _string_ (Required) The ID of the VPN connection to delete
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_vpn_connection($vpn_connection_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['VpnConnectionId'] = $vpn_connection_id;
+
+		return $this->authenticate('DeleteVpnConnection', $opt, $this->hostname);
+	}
+
+	/**
+	 * Method: create_vpn_connection()
+	 * 	Creates a new VPN connection between an existing VPN gateway and customer gateway. The only
+	 * 	supported connection type is ipsec.1.
+	 *
+	 * 	The response includes information that you need to configure your customer gateway, in XML format.
+	 * 	We recommend you use the command line version of this operation (ec2-create-vpn-connection), which
+	 * 	takes an -f option (for format) and returns configuration information formatted as expected by the
+	 * 	vendor you specified, or in a generic, human readable format. For information about the command, go
+	 * 	to ec2-create-vpn-connection in the Amazon Virtual Private Cloud Command Line Reference.
+	 *
+	 * 	We strongly recommend you use HTTPS when calling this operation because the response contains
+	 * 	sensitive cryptographic information for configuring your customer gateway.
+	 *
+	 * 	If you decide to shut down your VPN connection for any reason and then create a new one, you must
+	 * 	re-configure your customer gateway with the new information returned from this call.
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$type - _string_ (Required) The type of VPN connection.
+	 *	$customer_gateway_id - _string_ (Required) The ID of the customer gateway.
+	 *	$vpn_gateway_id - _string_ (Required) The ID of the VPN gateway.
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $opt parameter:
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_vpn_connection($type, $customer_gateway_id, $vpn_gateway_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['Type'] = $type;
+		$opt['CustomerGatewayId'] = $customer_gateway_id;
+		$opt['VpnGatewayId'] = $vpn_gateway_id;
+
+		return $this->authenticate('CreateVpnConnection', $opt, $this->hostname);
 	}
 
 	/**
@@ -2951,3 +3730,4 @@ class AmazonEC2 extends CFRuntime
 		return $this->authenticate('DescribeInstanceAttribute', $opt, $this->hostname);
 	}
 }
+

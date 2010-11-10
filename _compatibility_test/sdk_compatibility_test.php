@@ -200,33 +200,6 @@ div.important h3 {
 }
 </style>
 
-<script type="text/javascript">
-// Sleight - Alpha transparency PNG's in Internet Explorer 5.5/6.0
-// (c) 2001, Aaron Boodman; http://www.youngpup.net
-
-if (navigator.platform == "Win32" && navigator.appName == "Microsoft Internet Explorer" && window.attachEvent) {
-	document.writeln('<style type="text/css">img, input.image { visibility:hidden; } </style>');
-	window.attachEvent("onload", fnLoadPngs);
-}
-
-function fnLoadPngs() {
-	var rslt = navigator.appVersion.match(/MSIE (\d+\.\d+)/, '');
-	var itsAllGood = (rslt != null && Number(rslt[1]) >= 5.5);
-
-	for (var i = document.images.length - 1, img = null; (img = document.images[i]); i--) {
-		if (itsAllGood && img.src.match(/\png$/i) != null) {
-			var src = img.src;
-			var div = document.createElement("DIV");
-			div.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + src + "', sizing='scale')";
-			div.style.width = img.width + "px";
-			div.style.height = img.height + "px";
-			img.replaceNode(div);
-		}
-		img.style.visibility = "visible";
-	}
-}
-</script>
-
 </head>
 
 <body>
@@ -235,7 +208,7 @@ function fnLoadPngs() {
 	<div id="content">
 
 		<div class="chunk">
-			<h2 style="text-align:center;"><img src="<?php echo pathinfo(__FILE__, PATHINFO_BASENAME); ?>?logopng" alt="SimplePie Compatibility Test" title="SimplePie Compatibility Test" /></h2>
+			<h2 style="text-align:center;"><img src="<?php echo pathinfo(__FILE__, PATHINFO_BASENAME); ?>?logopng" alt="SDK Compatibility Test" title="SDK Compatibility Test" /></h2>
 
 			<h3>Minimum Requirements</h3>
 			<table cellpadding="0" cellspacing="0" border="0" width="100%" id="chart">
@@ -358,8 +331,8 @@ function fnLoadPngs() {
 		</div>
 		<div class="chunk">
 			<h3>What's Next?</h3>
-			<p>You can download the latest version of the <a href="http://aws.amazon.com/sdkforphp"><strong>AWS SDK for PHP</strong></a> and install it by <a href="http://aws.amazon.com/sdkforphp/getting-started">following the instructions</a>. Also, check out our library of <a href="http://developer.amazonwebservices.com/connect/entry.jspa?externalID=4262">screencasts and tutorials</a>.</p>
-			<p>Take the time to read <a href="http://aws.amazon.com/sdkforphp/getting-started">"Getting Started"</a> to make sure you're prepared to use the AWS SDK for PHP. No seriously, read it.</p>
+			<p>You can download the latest version of the <a href="http://aws.amazon.com/sdkforphp"><strong>AWS SDK for PHP</strong></a> and install it by <a href="http://aws.amazon.com/articles/4261">following the instructions</a>. Also, check out our library of <a href="http://aws.amazon.com/articles/4262">screencasts and tutorials</a>.</p>
+			<p>Take the time to read <a href="http://aws.amazon.com/articles/4261">"Getting Started"</a> to make sure you're prepared to use the AWS SDK for PHP. No seriously, read it.</p>
 		</div>
 		<?php elseif ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok): ?>
 		<div class="chunk important ok">
@@ -368,8 +341,8 @@ function fnLoadPngs() {
 		</div>
 		<div class="chunk">
 			<h3>What's Next?</h3>
-			<p>You can download the latest version of the <a href="http://aws.amazon.com/sdkforphp"><strong>AWS SDK for PHP</strong></a> and install it by <a href="http://aws.amazon.com/sdkforphp/getting-started">following the instructions</a>. Also, check out our library of <a href="http://developer.amazonwebservices.com/connect/entry.jspa?externalID=4262">screencasts and tutorials</a>.</p>
-			<p>Take the time to read <a href="http://aws.amazon.com/sdkforphp/getting-started">"Getting Started"</a> to make sure you're prepared to use the AWS SDK for PHP. No seriously, read it.</p>
+			<p>You can download the latest version of the <a href="http://aws.amazon.com/sdkforphp"><strong>AWS SDK for PHP</strong></a> and install it by <a href="http://aws.amazon.com/articles/4261">following the instructions</a>. Also, check out our library of <a href="http://aws.amazon.com/articles/4262">screencasts and tutorials</a>.</p>
+			<p>Take the time to read <a href="http://aws.amazon.com/articles/4261">"Getting Started"</a> to make sure you're prepared to use the AWS SDK for PHP. No seriously, read it.</p>
 		</div>
 		<?php else: ?>
 		<div class="chunk important error">
@@ -379,7 +352,7 @@ function fnLoadPngs() {
 		<div class="chunk">
 			<h3>What's Next?</h3>
 			<p>If you're using a shared hosting plan, it may be a good idea to contact your web host and ask them to install a more recent version of PHP and relevant extensions.</p>
-			<p>If you have control over your PHP environment, we recommended that you upgrade your PHP environment. Check out the "Set Up Your Environment" section of the <a href="http://developer.amazonwebservices.com/connect/entry.jspa?externalID=4261&categoryID=329">Getting Started Guide</a> for more information.</p>
+			<p>If you have control over your PHP environment, we recommended that you upgrade your PHP environment. Check out the "Set Up Your Environment" section of the <a href="http://aws.amazon.com/articles/4261">Getting Started Guide</a> for more information.</p>
 		</div>
 		<?php endif; ?>
 
