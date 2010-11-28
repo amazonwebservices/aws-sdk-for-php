@@ -551,17 +551,17 @@ class AmazonS3 extends CFRuntime
 
 		$curlopts = array();
 
-		// Debug mode
-		if ($this->debug_mode)
-		{
-			$curlopts = array_merge($curlopts, array(CURLOPT_VERBOSE => true));
-		}
-
 		// Set custom CURLOPT settings
 		if (isset($opt['curlopts']))
 		{
-			$curlopts = array_merge($curlopts, $opt['curlopts']);
+			$curlopts = $opt['curlopts'];
 			unset($opt['curlopts']);
+		}
+
+		// Debug mode
+		if ($this->debug_mode)
+		{
+			$curlopts[CURLOPT_VERBOSE] = true;
 		}
 
 		// Handle streaming file offsets
@@ -987,7 +987,6 @@ class AmazonS3 extends CFRuntime
 		}
 
 		$response = $this->authenticate($bucket, $opt);
-		$this->enable_path_style(false);
 
 		return $response;
 	}

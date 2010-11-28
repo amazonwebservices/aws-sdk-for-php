@@ -964,17 +964,17 @@ class CFRuntime
 
 		$curlopts = array();
 
-		// Debug mode
-		if ($this->debug_mode)
-		{
-			$curlopts = array_merge($curlopts, array(CURLOPT_VERBOSE => true));
-		}
-
 		// Set custom CURLOPT settings
 		if (isset($opt['curlopts']))
 		{
-			$curlopts = array_merge($curlopts, $opt['curlopts']);
+			$curlopts = $opt['curlopts'];
 			unset($opt['curlopts']);
+		}
+
+		// Debug mode
+		if ($this->debug_mode)
+		{
+			$curlopts[CURLOPT_VERBOSE] = true;
 		}
 
 		if (count($curlopts))
