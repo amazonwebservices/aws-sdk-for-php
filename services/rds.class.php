@@ -29,7 +29,7 @@
  * 	Amazon Web Services, there are no up-front investments, and you pay only for the resources you use.
  *
  * Version:
- * 	Tue Nov 09 21:02:14 PST 2010
+ * 	Fri Dec 03 16:26:47 PST 2010
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
@@ -247,8 +247,8 @@ class AmazonRDS extends CFRuntime
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'Parameters.member' => (is_array($parameters) ? $parameters : array($parameters))
-		)));
+			'Parameters' => (is_array($parameters) ? $parameters : array($parameters))
+		), 'member'));
 
 		return $this->authenticate('ModifyDBParameterGroup', $opt, $this->hostname);
 	}
@@ -786,8 +786,8 @@ class AmazonRDS extends CFRuntime
 		if (isset($opt['DBSecurityGroups']))
 		{
 			$opt = array_merge($opt, CFComplexType::map(array(
-				'DBSecurityGroups.member' => (is_array($opt['DBSecurityGroups']) ? $opt['DBSecurityGroups'] : array($opt['DBSecurityGroups']))
-			)));
+				'DBSecurityGroups' => (is_array($opt['DBSecurityGroups']) ? $opt['DBSecurityGroups'] : array($opt['DBSecurityGroups']))
+			), 'member'));
 			unset($opt['DBSecurityGroups']);
 		}
 
@@ -835,7 +835,9 @@ class AmazonRDS extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Parameters']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Parameters.member' => $opt['Parameters'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Parameters' => $opt['Parameters']
+			), 'member'));
 			unset($opt['Parameters']);
 		}
 
@@ -883,8 +885,8 @@ class AmazonRDS extends CFRuntime
 		if (isset($opt['DBSecurityGroups']))
 		{
 			$opt = array_merge($opt, CFComplexType::map(array(
-				'DBSecurityGroups.member' => (is_array($opt['DBSecurityGroups']) ? $opt['DBSecurityGroups'] : array($opt['DBSecurityGroups']))
-			)));
+				'DBSecurityGroups' => (is_array($opt['DBSecurityGroups']) ? $opt['DBSecurityGroups'] : array($opt['DBSecurityGroups']))
+			), 'member'));
 			unset($opt['DBSecurityGroups']);
 		}
 

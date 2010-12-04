@@ -38,7 +38,7 @@
  * 	Visit <http://aws.amazon.com/s3/> for more information.
  *
  * Version:
- * 	2010.11.09
+ * 	2010.12.02
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -551,17 +551,17 @@ class AmazonS3 extends CFRuntime
 
 		$curlopts = array();
 
-		// Debug mode
-		if ($this->debug_mode)
-		{
-			$curlopts = array_merge($curlopts, array(CURLOPT_VERBOSE => true));
-		}
-
 		// Set custom CURLOPT settings
 		if (isset($opt['curlopts']))
 		{
-			$curlopts = array_merge($curlopts, $opt['curlopts']);
+			$curlopts = $opt['curlopts'];
 			unset($opt['curlopts']);
+		}
+
+		// Debug mode
+		if ($this->debug_mode)
+		{
+			$curlopts[CURLOPT_VERBOSE] = true;
 		}
 
 		// Handle streaming file offsets
@@ -987,7 +987,6 @@ class AmazonS3 extends CFRuntime
 		}
 
 		$response = $this->authenticate($bucket, $opt);
-		$this->enable_path_style(false);
 
 		return $response;
 	}
@@ -1467,9 +1466,17 @@ class AmazonS3 extends CFRuntime
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$source - _array_ (Required) An associative array containing two keys: `bucket`, specifying the name of the bucket containing the source object, and `filename`, specifying the file name of the source object to copy.
-	 * 	$dest - _array_ (Required) An associative array containing two keys: `bucket`, specifying the name of the bucket to store the destination object in, and `filename`, specifying the file name of the destination object name.
+	 * 	$source - _ComplexType_ (Required) The bucket and file name to copy from. A required ComplexType is a set of key-value pairs which must be set by passing an associative array with certain entries as keys. See below for a list.
+	 * 	$dest - _ComplexType_ (Required) The bucket and file name to copy to. A required ComplexType is a set of key-value pairs which must be set by passing an associative array with certain entries as keys. See below for a list.
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $source parameter:
+	 *	bucket - _string_ (Required) Specifies the name of the bucket containing the source object.
+	 *	filename - _string_ (Required) Specifies the file name of the source object to copy.
+	 *
+	 * Keys for the $dest parameter:
+	 *	bucket - _string_ (Required) Specifies the name of the bucket to copy the object to.
+	 *	filename - _string_ (Required) Specifies the file name to copy the object to.
 	 *
 	 * Keys for the $opt parameter:
 	 * 	acl - _string_ (Optional) The ACL settings for the specified object. [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. Alternatively, an array of associative arrays. Each associative array contains an `id` and a `permission` key. The default value is <ACL_PRIVATE>.
@@ -1507,10 +1514,16 @@ class AmazonS3 extends CFRuntime
 			unset($opt['versionId']);
 
 			// Determine if we need to lookup the pre-existing content-type.
-			if (!in_array(strtolower('content-type'), array_map('strtolower', array_keys($opt['headers']))))
+			if (
+				(!$this->use_batch_flow && !isset($opt['returnCurlHandle'])) &&
+				!in_array(strtolower('content-type'), array_map('strtolower', array_keys($opt['headers'])))
+			)
 			{
 				$response = $this->get_object_headers($source['bucket'], $source['filename']);
-				$opt['headers']['Content-Type'] = $response->header['content-type'];
+				if ($response->isOK())
+				{
+					$opt['headers']['Content-Type'] = $response->header['content-type'];
+				}
 			}
 		}
 
@@ -2324,27 +2337,54 @@ class AmazonS3 extends CFRuntime
 
 		// Set some default values
 		$pcre = isset($opt['pcre']) ? $opt['pcre'] : null;
+		$max_keys = isset($opt['max-keys']) ? (integer) $opt['max-keys'] : 'all';
 		$objects = array();
 
-		// Get a list of files.
-		$list = $this->list_objects($bucket, $opt);
-		if ($keys = $list->body->query('descendant-or-self::Key'))
+		if ($max_keys === 'all')
 		{
-			$objects = $keys->map_string($pcre);
-		}
-
-		while ((string) $list->body->IsTruncated === 'true')
-		{
-			$body = (array) $list->body;
-			$_opt = array_merge($opt, array(
-				'marker' => (string) end($body['Contents'])->Key
-			));
-
-			$list = $this->list_objects($bucket, $_opt);
-			if ($keys = $list->body->query('descendant-or-self::Key'))
+			do
 			{
-				$objects = array_merge($objects, $keys->map_string($pcre));
+				$list = $this->list_objects($bucket, $opt);
+				if ($keys = $list->body->query('descendant-or-self::Key')->map_string($pcre))
+				{
+					$objects = array_merge($objects, $keys);
+				}
+
+				$body = (array) $list->body;
+				$opt = array_merge($opt, array(
+					'marker' => (isset($body['Contents']) && is_array($body['Contents'])) ?
+						((string) end($body['Contents'])->Key) :
+						((string) $list->body->Contents->Key)
+				));
 			}
+			while ((string) $list->body->IsTruncated === 'true');
+		}
+		else
+		{
+			$loops = ceil($max_keys / 1000);
+
+			do
+			{
+				$list = $this->list_objects($bucket, $opt);
+				if ($keys = $list->body->query('descendant-or-self::Key')->map_string($pcre))
+				{
+					$objects = array_merge($objects, $keys);
+				}
+
+				if ($max_keys > 1000)
+				{
+					$max_keys -= 1000;
+				}
+
+				$body = (array) $list->body;
+				$opt = array_merge($opt, array(
+					'max-keys' => $max_keys,
+					'marker' => (isset($body['Contents']) && is_array($body['Contents'])) ?
+						((string) end($body['Contents'])->Key) :
+						((string) $list->body->Contents->Key)
+				));
+			}
+			while (--$loops);
 		}
 
 		if (count($objects) > 0)
@@ -3402,8 +3442,8 @@ class AmazonS3 extends CFRuntime
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
+	 * 	delimiter - _string_ (Optional) Keys that contain the same string between the prefix and the first occurrence of the delimiter will be rolled up into a single result element in the CommonPrefixes collection.
 	 * 	key-marker - _string_ (Optional) Restricts the response to contain results that only occur alphabetically after the value of the `key-marker`. If used in conjunction with `upload-id-marker`, the results will be filtered to include keys whose upload ID is alphabetically after the value of `upload-id-marker`.
-	 * 	max-uploads - _integer_ (Optional) The maximum number of multipart uploads to return in the response body.
 	 * 	upload-id-marker - _string_ (Optional) Restricts the response to contain results that only occur alphabetically after the value of the `upload-id-marker`. Must be used in conjunction with `key-marker`.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *

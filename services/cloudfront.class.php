@@ -25,7 +25,7 @@
  * 	of your files.
  *
  * Version:
- * 	2010.11.03
+ * 	2010.11.24
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -254,17 +254,17 @@ class AmazonCloudFront extends CFRuntime
 
 		$curlopts = array();
 
-		// Debug mode
-		if ($this->debug_mode)
-		{
-			$curlopts = array_merge($curlopts, array(CURLOPT_VERBOSE => true));
-		}
-
 		// Set custom CURLOPT settings
 		if (isset($opt['curlopts']))
 		{
-			$curlopts = array_merge($curlopts, $opt['curlopts']);
+			$curlopts = $opt['curlopts'];
 			unset($opt['curlopts']);
+		}
+
+		// Debug mode
+		if ($this->debug_mode)
+		{
+			$curlopts[CURLOPT_VERBOSE] = true;
 		}
 
 		if (count($curlopts))
@@ -547,7 +547,7 @@ class AmazonCloudFront extends CFRuntime
 				}
 				else
 				{
-					$trusted_signers->addChild('AWSAccountNumber', $signer);
+					$trusted_signers->addChild('AwsAccountNumber', $signer);
 				}
 			}
 		}
@@ -719,7 +719,7 @@ class AmazonCloudFront extends CFRuntime
 				}
 				else
 				{
-					$trusted_signers->addChild('AWSAccountNumber', $signer);
+					$trusted_signers->addChild('AwsAccountNumber', $signer);
 				}
 			}
 		}
@@ -736,7 +736,7 @@ class AmazonCloudFront extends CFRuntime
 				}
 				else
 				{
-					$trusted_signers->addChild('AWSAccountNumber', (string) $signer_value);
+					$trusted_signers->addChild('AwsAccountNumber', (string) $signer_value);
 				}
 			}
 		}
