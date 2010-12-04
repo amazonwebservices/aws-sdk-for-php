@@ -341,12 +341,12 @@ class CachePDO extends CacheCore implements ICacheCore
 	 * 	Returns a timestamp value apropriate to the current database type.
 	 *
 	 * Access:
-	 * 	private
+	 * 	protected
 	 *
 	 * Returns:
 	 * 	_mixed_ Timestamp for MySQL and PostgreSQL, integer value for SQLite.
 	 */
-	private function generate_timestamp()
+	protected function generate_timestamp()
 	{
 		// Define 'expires' settings differently.
 		switch ($this->dsn['scheme'])

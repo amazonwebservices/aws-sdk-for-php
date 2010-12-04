@@ -22,7 +22,7 @@
  * 	redundancy and supports traffic growth of your application.
  *
  * Version:
- * 	Tue Nov 09 20:59:49 PST 2010
+ * 	Fri Dec 03 16:24:35 PST 2010
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
@@ -182,8 +182,8 @@ class AmazonELB extends CFRuntime
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'Listeners.member' => (is_array($listeners) ? $listeners : array($listeners))
-		)));
+			'Listeners' => (is_array($listeners) ? $listeners : array($listeners))
+		), 'member'));
 
 		return $this->authenticate('CreateLoadBalancerListeners', $opt, $this->hostname);
 	}
@@ -261,7 +261,7 @@ class AmazonELB extends CFRuntime
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'HealthCheck' => (is_array($health_check) ? $health_check : array($health_check))
-		)));
+		), 'member'));
 
 		return $this->authenticate('ConfigureHealthCheck', $opt, $this->hostname);
 	}
@@ -297,8 +297,8 @@ class AmazonELB extends CFRuntime
 		if (isset($opt['LoadBalancerNames']))
 		{
 			$opt = array_merge($opt, CFComplexType::map(array(
-				'LoadBalancerNames.member' => (is_array($opt['LoadBalancerNames']) ? $opt['LoadBalancerNames'] : array($opt['LoadBalancerNames']))
-			)));
+				'LoadBalancerNames' => (is_array($opt['LoadBalancerNames']) ? $opt['LoadBalancerNames'] : array($opt['LoadBalancerNames']))
+			), 'member'));
 			unset($opt['LoadBalancerNames']);
 		}
 
@@ -385,13 +385,13 @@ class AmazonELB extends CFRuntime
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'Listeners.member' => (is_array($listeners) ? $listeners : array($listeners))
-		)));
+			'Listeners' => (is_array($listeners) ? $listeners : array($listeners))
+		), 'member'));
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'AvailabilityZones.member' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
-		)));
+			'AvailabilityZones' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
+		), 'member'));
 
 		return $this->authenticate('CreateLoadBalancer', $opt, $this->hostname);
 	}
@@ -428,8 +428,8 @@ class AmazonELB extends CFRuntime
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'AvailabilityZones.member' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
-		)));
+			'AvailabilityZones' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
+		), 'member'));
 
 		return $this->authenticate('EnableAvailabilityZonesForLoadBalancer', $opt, $this->hostname);
 	}
@@ -466,7 +466,9 @@ class AmazonELB extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Instances']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Instances.member' => $opt['Instances'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Instances' => $opt['Instances']
+			), 'member'));
 			unset($opt['Instances']);
 		}
 
@@ -536,8 +538,8 @@ class AmazonELB extends CFRuntime
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'AvailabilityZones.member' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
-		)));
+			'AvailabilityZones' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
+		), 'member'));
 
 		return $this->authenticate('DisableAvailabilityZonesForLoadBalancer', $opt, $this->hostname);
 	}
@@ -574,8 +576,8 @@ class AmazonELB extends CFRuntime
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'Instances.member' => (is_array($instances) ? $instances : array($instances))
-		)));
+			'Instances' => (is_array($instances) ? $instances : array($instances))
+		), 'member'));
 
 		return $this->authenticate('DeregisterInstancesFromLoadBalancer', $opt, $this->hostname);
 	}
@@ -605,8 +607,8 @@ class AmazonELB extends CFRuntime
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'LoadBalancerPorts.member' => (is_array($load_balancer_ports) ? $load_balancer_ports : array($load_balancer_ports))
-		)));
+			'LoadBalancerPorts' => (is_array($load_balancer_ports) ? $load_balancer_ports : array($load_balancer_ports))
+		), 'member'));
 
 		return $this->authenticate('DeleteLoadBalancerListeners', $opt, $this->hostname);
 	}
@@ -725,8 +727,8 @@ class AmazonELB extends CFRuntime
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'Instances.member' => (is_array($instances) ? $instances : array($instances))
-		)));
+			'Instances' => (is_array($instances) ? $instances : array($instances))
+		), 'member'));
 
 		return $this->authenticate('RegisterInstancesWithLoadBalancer', $opt, $this->hostname);
 	}
@@ -759,8 +761,8 @@ class AmazonELB extends CFRuntime
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'PolicyNames.member' => (is_array($policy_names) ? $policy_names : array($policy_names))
-		)));
+			'PolicyNames' => (is_array($policy_names) ? $policy_names : array($policy_names))
+		), 'member'));
 
 		return $this->authenticate('SetLoadBalancerPoliciesOfListener', $opt, $this->hostname);
 	}

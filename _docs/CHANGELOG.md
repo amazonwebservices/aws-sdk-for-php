@@ -1,4 +1,77 @@
-# Changelog: 1.1
+# Changelog: 1.2 "Cloud"
+
+Launched Friday, December 3, 2010
+
+
+## New Features & Highlights (Summary)
+* Support for Amazon AutoScaling, Amazon Elastic MapReduce, and Amazon Import/Export Service has been added to the SDK.
+* Support for metric alarms has been added to Amazon CloudWatch.
+* Support for batch deletion has been added to Amazon SimpleDB.
+* Bug fixes and enhancements:
+	* [EU Region DNS problem](https://forums.aws.amazon.com/thread.jspa?threadID=53028)
+	* [[SimpleDB] Conditional PUT](https://forums.aws.amazon.com/thread.jspa?threadID=55884)
+	* [Suggestions for the PHP SDK](https://forums.aws.amazon.com/thread.jspa?threadID=55210)
+	* [Updating a distribution config](https://forums.aws.amazon.com/thread.jspa?threadID=54888)
+	* [Problem with curlopt parameter in S3](https://forums.aws.amazon.com/thread.jspa?threadID=54532)
+	* [AmazonS3::get_object_list() doesn't consider max-keys option](https://forums.aws.amazon.com/thread.jspa?threadID=55169)
+
+## Base/Runtime class
+* **New:** Added support for an alternate approach to instantiating classes which allows for method chaining (PHP 5.3+).
+* **Changed:** Moved `CHANGELOG.md`, `CONTRIBUTORS.md`, `LICENSE.md` and `NOTICE.md` into a new `_docs` folder.
+* **Changed:** Renamed the `samples` directory to `_samples`.
+* **Changed:** Changed the permissions for the SDK files from `0755` to `0644`.
+* **Fixed:** Resolved an issue where attempting to merge cURL options would fail.
+
+## Service Classes
+### AmazonAS
+* **New:** Support for the Amazon AutoScaling Service has been added to the SDK.
+
+### AmazonCloudFront
+* **Fixed:** Resolved an issue where the incorrect formatting of an XML element prevented the ability to update the list of trusted signers.
+
+### AmazonCloudWatch
+* **New:** Support for the Amazon CloudWatch <code>2010-08-01</code> service release expands Amazon's cloud monitoring offerings with custom alarms.
+* **Changed:** The changes made to the `get_metric_statistics()` method are backwards-incompatible with the previous release. The `Namespace` and `Period` parameters are now required and the parameter order has changed.
+
+### AmazonEMR
+* **New:** Support for the Amazon Elastic MapReduce Service has been added to the SDK.
+
+### AmazonImportExport
+* **New:** Support for the Amazon Import/Export Service has been added to the SDK.
+
+### AmazonS3
+* **Fixed:** Resolved an issue in the `create_bucket()` method that caused the regional endpoint to be reset to US-Standard.
+* **Fixed:** Resolved an issue in the `get_object_list()` method where the `max-keys` parameter was ignored.
+
+### AmazonSDB
+* **New:** Support for `BatchDeleteAttributes` has been added to the SDK.
+* **Fixed:** Resolved an issue where the `Expected` condition was not respected by `put_attributes()` or `delete_attributes()`.
+
+
+## Utility classes
+### CFComplexType
+* **New:** You can now assign a `member` parameter to prefix all list identifiers.
+* **Changed:** The `option_group()` method is now `public` instead of `private`.
+* **Changed:** Rewrote the `to_query_string()` method to avoid the use of PHP's `http_build_query()` function because it uses `urlencode()` internally instead of `rawurlencode()`.
+
+### CFHadoopStep
+* **New:** Simplifies the process of working with Hadoop steps in Amazon EMR.
+
+### CFManifest
+* **New:** Simplifies the process of constructing YAML manifest documents for Amazon Import/Export Service.
+
+### CFStepConfig
+* **New:** Simplifies the process of working with step configuration in Amazon EMR.
+
+
+## Third-party Libraries
+### CacheCore
+* **Changed:** The `generate_timestamp()` method is now `protected` instead of `private`.
+
+
+----
+
+# Changelog: 1.1 "Barret"
 
 Launched Wednesday, November 10, 2010
 
@@ -25,7 +98,6 @@ Launched Wednesday, November 10, 2010
 
 
 ## Base/Runtime class
-* **New:** Added `to_string()` and `to_array()` methods to the `CFSimpleXML` class.
 * **Changed:** Port numbers other than 80 and 443 are now part of the signature.
 * **Changed:** When putting UTF-8 characters via HTTP `POST`, a `SignatureDoesNotMatch` error would be returned. This was resolved by specifying the character set in the `Content-Type` header.
 
@@ -61,6 +133,11 @@ Launched Wednesday, November 10, 2010
 * **New:** The `get_queue_arn()` method has been added to the `AmazonSQS` class, which converts a queue URI to a queue ARN.
 
 
+## Utility classes
+### CFSimpleXML
+* **New:** Added `to_string()` and `to_array()` methods.
+
+
 ## Third-party Libraries
 ### RequestCore
 * **New:** Upgraded to version 1.3.
@@ -73,12 +150,9 @@ Launched Wednesday, November 10, 2010
 * **Fixed:** Fixed the links to the Getting Started Guide.
 
 
-(Barret)
-
-
 ----
 
-# Changelog: 1.0.1
+# Changelog: 1.0.1 "Aeris"
 
 Launched Tuesday, October 12, 2010
 
@@ -137,9 +211,6 @@ Launched Tuesday, October 12, 2010
 * **Fixed:** Some of the links in the compatibility test were missing. These have been fixed.
 
 
-(Aeris)
-
-
 ----
 
 # Changelog: AWS SDK for PHP 1.0
@@ -152,7 +223,7 @@ This is a complete list of changes since we forked from the CloudFusion 2.5.x tr
 ## New Features & Highlights (Summary)
 * The new file to include is `sdk.class.php` rather than `cloudfusion.class.php`.
 * Because of the increased reliance on [JSON](http://json.org) across AWS services, the minimum supported version is now PHP 5.2 ([Released in November 2006](http://www.php.net/ChangeLog-5.php#5.2.0); Justified by these [WordPress usage statistics](http://wpdevel.wordpress.com/2010/07/09/suggest-topics-for-the-july-15-2010-dev/comment-page-1/#comment-8542) and the fact that [PHP 5.2 has been end-of-life'd](http://www.php.net/archive/2010.php#id2010-07-22-1) in favor of 5.3).
-* Up-to-date service support for [EC2](http://aws.amazon.com/ec2), [S3](http://aws.amazon.com/s3), [SQS](http://aws.amazon.com/sqs), [SimpleDB](http://aws.amazon.com/simpledb), [CloudWatch](http://aws.amazon.com/cloudwatch), [CloudFront](http://aws.amazon.com/cloudfront) and the [Product Advertising API](https://affiliate-program.amazon.com/gp/advertising/api/detail/main.html).
+* Up-to-date service support for [EC2](http://aws.amazon.com/ec2), [S3](http://aws.amazon.com/s3), [SQS](http://aws.amazon.com/sqs), [SimpleDB](http://aws.amazon.com/simpledb), [CloudWatch](http://aws.amazon.com/cloudwatch), and [CloudFront](http://aws.amazon.com/cloudfront).
 * Added service support for [SNS](http://aws.amazon.com/sns).
 * Limited testing for third-party API-compatible services such as [Eucalyptus](http://open.eucalyptus.com), [Walrus](http://open.eucalyptus.com) and [Google Storage](http://sandbox.google.com/storage).
 * Improved the consistency of setting complex data types across services. (Required some backwards-incompatible changes.)
