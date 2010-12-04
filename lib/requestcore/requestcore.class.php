@@ -207,7 +207,7 @@ class RequestCore
 
 
 	/*%******************************************************************************************%*/
-	// CONSTRUCTOR
+	// CONSTRUCTOR / DESTRUCTOR
 
 	/**
 	 * Method: __construct()
@@ -247,6 +247,31 @@ class RequestCore
 		if ($proxy)
 		{
 			$this->set_proxy($proxy);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Method: __destruct()
+	 * 	The destructor. Closes opened file handles.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Returns:
+	 * 	`$this`
+	 */
+	public function __destruct()
+	{
+		if (isset($this->read_file) && isset($this->read_stream))
+		{
+			fclose($this->read_stream);
+		}
+
+		if (isset($this->write_file) && isset($this->write_stream))
+		{
+			fclose($this->write_stream);
 		}
 
 		return $this;
@@ -493,7 +518,6 @@ class RequestCore
 	public function set_read_file($location)
 	{
 		$this->read_file = $location;
-		// @todo: Close this connection!
 		$read_file_handle = fopen($location, 'r');
 
 		return $this->set_read_stream($read_file_handle);
@@ -534,7 +558,6 @@ class RequestCore
 	public function set_write_file($location)
 	{
 		$this->write_file = $location;
-		// @todo: Close this connection!
 		$write_file_handle = fopen($location, 'w');
 
 		return $this->set_write_stream($write_file_handle);
