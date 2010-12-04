@@ -615,10 +615,10 @@ class RequestCore
 		// If we're not in the middle of an upload...
 		if ((integer) $info['size_upload'] === 0 && $this->seek_position >= 0)
 		{
-			fseek($file_handle, (integer) $this->seek_position);
+			fseek($this->read_stream, (integer) $this->seek_position);
 		}
 
-		return fread($file_handle, min($info['upload_content_length'] - $info['size_upload'], $length)); // Remaining upload data or cURL's requested chunk size
+		return fread($this->read_stream, min($info['upload_content_length'] - $info['size_upload'], $length)); // Remaining upload data or cURL's requested chunk size
 	}
 
 	/**
@@ -702,7 +702,6 @@ class RequestCore
 				curl_setopt($curl_handle, CURLOPT_CUSTOMREQUEST, 'PUT');
 				if (isset($this->read_stream))
 				{
-					curl_setopt($curl_handle, CURLOPT_INFILE, $this->read_stream);
 					curl_setopt($curl_handle, CURLOPT_INFILESIZE, $this->read_stream_size);
 					curl_setopt($curl_handle, CURLOPT_UPLOAD, true);
 				}
