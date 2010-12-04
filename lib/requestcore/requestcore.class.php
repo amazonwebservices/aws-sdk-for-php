@@ -169,7 +169,7 @@ class RequestCore
 	 * Property: seek_position
 	 * 	Stores the intended starting seek position.
 	 */
-	public $seek_position = 0;
+	public $seek_position = -1;
 
 
 	/*%******************************************************************************************%*/
@@ -515,6 +515,7 @@ class RequestCore
 	public function set_write_file($location)
 	{
 		$this->write_file = $location;
+		// @todo: Close this connection!
 		$write_file_handle = fopen($location, 'w');
 
 		return $this->set_write_stream($write_file_handle);
@@ -593,14 +594,12 @@ class RequestCore
 		}
 
 		// If we're not in the middle of an upload...
-		if ((integer) $info['size_upload'] === 0)
+		if ((integer) $info['size_upload'] === 0 && $this->seek_position >= 0)
 		{
 			fseek($file_handle, (integer) $this->seek_position);
 		}
 
-		// echo ftell($file_handle) . '/' . $info['size_upload'] . PHP_EOL;
-
-		return fread($file_handle, 16384); // 16KB chunks
+		return fread($file_handle, min($info['upload_content_length'] - $info['size_upload'], $length)); // Remaining upload data or curl's requested chunk size
 	}
 
 	/**
