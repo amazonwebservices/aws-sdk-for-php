@@ -147,9 +147,14 @@ class CFUtilities
 	 */
 	public function to_query_string($array)
 	{
-		// Explicitly pass a third parameter.
-		// <http://php.net/manual/en/function.http-build-query.php#74781>
-		return http_build_query($array, '', '&');
+		$temp = array();
+
+		foreach ($array as $key => $value)
+		{
+			$temp[] = rawurlencode($key) . '=' . rawurlencode($value);
+		}
+
+		return implode('&', $temp);
 	}
 
 	/**

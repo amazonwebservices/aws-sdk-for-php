@@ -30,7 +30,7 @@
  * 	Visit [http://aws.amazon.com/ec2/](http://aws.amazon.com/ec2/) for more information.
  *
  * Version:
- * 	Tue Nov 09 20:58:50 PST 2010
+ * 	Fri Dec 03 16:23:55 PST 2010
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
@@ -261,7 +261,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -321,7 +323,7 @@ class AmazonEC2 extends CFRuntime
 	 *	KeyName - _string_ (Optional) The name of the key pair.
 	 *	SecurityGroup - _string_|_array_ (Optional) The names of the security groups into which the instances will be launched. Pass a string for a single value, or an indexed array for multiple values.
 	 *	UserData - _string_ (Optional) Specifies additional information to make available to the instance(s).
-	 *	InstanceType - _string_ (Optional) Specifies the instance type for the launched instances. [Allowed values: `t1.micro`, `m1.small`, `m1.large`, `m1.xlarge`, `m2.xlarge`, `m2.2xlarge`, `m2.4xlarge`, `c1.medium`, `c1.xlarge`, `cc1.4xlarge`]
+	 *	InstanceType - _string_ (Optional) Specifies the instance type for the launched instances. [Allowed values: `t1.micro`, `m1.small`, `m1.large`, `m1.xlarge`, `m2.xlarge`, `m2.2xlarge`, `m2.4xlarge`, `c1.medium`, `c1.xlarge`, `cc1.4xlarge`, `cg1.4xlarge`]
 	 *	Placement - _ComplexType_ (Optional) Specifies the placement constraints (Availability Zones) for launching the instances. A ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Placement` subtype (documented next), or by passing an associative array with the following `Placement`-prefixed entries as keys. See below for a list and a usage example.
 	 *	Placement.AvailabilityZone - _string_ (Optional) The availability zone in which an Amazon EC2 instance runs.
 	 *	Placement.GroupName - _string_ (Optional) The name of a PlacementGroup.
@@ -341,8 +343,8 @@ class AmazonEC2 extends CFRuntime
 	 *	License - _ComplexType_ (Optional) Specifies active licenses in use and attached to an Amazon EC2 instance. A ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `License` subtype (documented next), or by passing an associative array with the following `License`-prefixed entries as keys. See below for a list and a usage example.
 	 *	License.Pool - _string_ (Optional) The license pool from which to take a license when starting Amazon EC2 instances in the associated `RunInstances` request.
 	 *	PrivateIpAddress - _string_ (Optional) If you're using Amazon Virtual Private Cloud, you can optionally use this parameter to assign the instance a specific available IP address from the subnet.
-	 *	ClientToken - _string_ (Optional)
-	 *	AdditionalInfo - _string_ (Optional)
+	 *	ClientToken - _string_ (Optional) Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, go to How to Ensure Idempotency in the Amazon Elastic Compute Cloud User Guide.
+	 *	AdditionalInfo - _string_ (Optional) For internal use only.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -367,21 +369,27 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Placement']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Placement' => $opt['Placement'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Placement' => $opt['Placement']
+			)));
 			unset($opt['Placement']);
 		}
 
 		// Optional parameter
 		if (isset($opt['BlockDeviceMapping']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('BlockDeviceMapping' => $opt['BlockDeviceMapping'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'BlockDeviceMapping' => $opt['BlockDeviceMapping']
+			)));
 			unset($opt['BlockDeviceMapping']);
 		}
 
 		// Optional parameter
 		if (isset($opt['License']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('License' => $opt['License'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'License' => $opt['License']
+			)));
 			unset($opt['License']);
 		}
 
@@ -425,7 +433,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -474,7 +484,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -522,7 +534,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -626,7 +640,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -721,7 +737,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -859,7 +877,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['BlockDeviceMapping']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('BlockDeviceMapping' => $opt['BlockDeviceMapping'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'BlockDeviceMapping' => $opt['BlockDeviceMapping']
+			)));
 			unset($opt['BlockDeviceMapping']);
 		}
 
@@ -926,9 +946,9 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 * Method: create_image()
-	 * 	Creates an AMI that uses an Amazon EBS root device from a "running" or "stopped" instance. AMIs that
-	 * 	use an Amazon EBS root device boot faster than AMIs that use instance stores. They can be up to 1
-	 * 	TiB in size, use storage that persists on instance failure, and can be stopped and started.
+	 * 	Creates an Amazon EBS-backed AMI from a "running" or "stopped" instance. AMIs that use an Amazon EBS
+	 * 	root device boot faster than AMIs that use instance stores. They can be up to 1 TiB in size, use
+	 * 	storage that persists on instance failure, and can be stopped and started.
 	 *
 	 * Access:
 	 *	public
@@ -1001,7 +1021,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['IpPermissions']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('IpPermissions' => $opt['IpPermissions'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'IpPermissions' => $opt['IpPermissions']
+			)));
 			unset($opt['IpPermissions']);
 		}
 
@@ -1010,7 +1032,23 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 * Method: describe_spot_instance_requests()
-	 *
+	 * 	Describes Spot Instance requests. Spot Instances are instances that Amazon EC2 starts on your behalf
+	 * 	when the maximum price that you specify exceeds the current Spot Price. Amazon EC2 periodically sets
+	 * 	the Spot Price based on available Spot Instance capacity and current spot instance requests. For
+	 * 	conceptual information about Spot Instances, refer to the [ Amazon Elastic Compute Cloud Developer
+	 * 	Guide](http://docs.amazonwebservices.com/AWSEC2/2010-08-31/DeveloperGuide/) or [ Amazon Elastic
+	 * 	Compute Cloud User Guide](http://docs.amazonwebservices.com/AWSEC2/2010-08-31/UserGuide/). You can
+	 * 	filter the results to return information only about Spot Instance requests that match criteria you
+	 * 	specify. For example, you could get information about requests where the Spot Price you specified is
+	 * 	a certain value (you can't use greater than or less than comparison, but you can use `*` and `?`
+	 * 	wildcards). You can specify multiple values for a filter. A Spot Instance request must match at
+	 * 	least one of the specified values for it to be included in the results. You can specify multiple
+	 * 	filters (e.g., the Spot Price is equal to a particular value, and the instance type is m1.small).
+	 * 	The result includes information for a particular request only if it matches all your filters. If
+	 * 	there's no match, no special message is returned; the response is simply empty. You can use
+	 * 	wildcards with the filter values: `*` matches zero or more characters, and `?` matches exactly one
+	 * 	character. You can escape special characters using a backslash before the character. For example, a
+	 * 	value of `\*amazon\?\\` searches for the literal string `*amazon?\`.
 	 *
 	 * Access:
 	 *	public
@@ -1044,7 +1082,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -1256,7 +1296,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -1370,7 +1412,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -1447,7 +1491,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -1557,7 +1603,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -1595,7 +1643,7 @@ class AmazonEC2 extends CFRuntime
 	 *	LaunchSpecification.SecurityGroup.x - _string_ (Optional)
 	 *	LaunchSpecification.UserData - _string_ (Optional) Optional data, specific to a user's application, to provide in the launch request. All instances that collectively comprise the launch request have access to this data. User data is never returned through API responses.
 	 *	LaunchSpecification.AddressingType - _string_ (Optional) Deprecated.
-	 *	LaunchSpecification.InstanceType - _string_ (Optional) Specifies the instance type. [Allowed values: `t1.micro`, `m1.small`, `m1.large`, `m1.xlarge`, `m2.xlarge`, `m2.2xlarge`, `m2.4xlarge`, `c1.medium`, `c1.xlarge`, `cc1.4xlarge`]
+	 *	LaunchSpecification.InstanceType - _string_ (Optional) Specifies the instance type. [Allowed values: `t1.micro`, `m1.small`, `m1.large`, `m1.xlarge`, `m2.xlarge`, `m2.2xlarge`, `m2.4xlarge`, `c1.medium`, `c1.xlarge`, `cc1.4xlarge`, `cg1.4xlarge`]
 	 *	LaunchSpecification.Placement.AvailabilityZone - _string_ (Optional) The availability zone in which an Amazon EC2 instance runs.
 	 *	LaunchSpecification.Placement.GroupName - _string_ (Optional) The name of a PlacementGroup.
 	 *	LaunchSpecification.KernelId - _string_ (Optional) Specifies the ID of the kernel to select.
@@ -1633,7 +1681,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['LaunchSpecification']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('LaunchSpecification' => $opt['LaunchSpecification'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'LaunchSpecification' => $opt['LaunchSpecification']
+			)));
 			unset($opt['LaunchSpecification']);
 		}
 
@@ -1796,7 +1846,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Tag']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Tag' => $opt['Tag'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Tag' => $opt['Tag']
+			)));
 			unset($opt['Tag']);
 		}
 
@@ -1829,7 +1881,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -1845,7 +1899,7 @@ class AmazonEC2 extends CFRuntime
 	 *	public
 	 *
 	 * Parameters:
-	 *	$subnet_id - _string_ (Required)
+	 *	$subnet_id - _string_ (Required) The ID of the subnet you want to delete.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
@@ -2047,7 +2101,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -2188,7 +2244,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -2404,7 +2462,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -2562,7 +2622,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -2607,7 +2669,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -2743,7 +2807,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -2803,7 +2869,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	ReservedInstancesOfferingId - _string_|_array_ (Optional) An optional list of the unique IDs of the Reserved Instance offerings to describe. Pass a string for a single value, or an indexed array for multiple values.
-	 *	InstanceType - _string_ (Optional) The instance type on which the Reserved Instance can be used. [Allowed values: `t1.micro`, `m1.small`, `m1.large`, `m1.xlarge`, `m2.xlarge`, `m2.2xlarge`, `m2.4xlarge`, `c1.medium`, `c1.xlarge`, `cc1.4xlarge`]
+	 *	InstanceType - _string_ (Optional) The instance type on which the Reserved Instance can be used. [Allowed values: `t1.micro`, `m1.small`, `m1.large`, `m1.xlarge`, `m2.xlarge`, `m2.2xlarge`, `m2.4xlarge`, `c1.medium`, `c1.xlarge`, `cc1.4xlarge`, `cg1.4xlarge`]
 	 *	AvailabilityZone - _string_ (Optional) The Availability Zone in which the Reserved Instance can be used.
 	 *	ProductDescription - _string_ (Optional) The Reserved Instance product description.
 	 *	Filter - _ComplexList_ (Optional) A list of filters used to match properties for ReservedInstancesOfferings. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Filter` subtype (documented next), or by passing an associative array with the following `Filter`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
@@ -2830,7 +2896,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -2874,7 +2942,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -2948,7 +3018,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -3077,7 +3149,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -3195,7 +3269,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['IpPermissions']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('IpPermissions' => $opt['IpPermissions'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'IpPermissions' => $opt['IpPermissions']
+			)));
 			unset($opt['IpPermissions']);
 		}
 
@@ -3397,14 +3473,14 @@ class AmazonEC2 extends CFRuntime
 	 * 	You must also provide the device's Border Gateway Protocol (BGP) Autonomous System Number (ASN).
 	 * 	You can use an existing ASN assigned to your network. If you don't have an ASN already, you can use
 	 * 	a private ASN (in the 64512 - 65534 range). For more information about ASNs, go to [
-	 * 	i/Autonomous_system_%28Internet%29](http://en.wikipedia.org/wiki/Autonomous_system_%28Internet%29.).
+	 * 	ki/Autonomous_system_%28Internet%29](http://en.wikipedia.org/wiki/Autonomous_system_%28Internet%29).
 	 *
 	 * Access:
 	 *	public
 	 *
 	 * Parameters:
 	 *	$type - _string_ (Required) The type of VPN connection this customer gateway supports.
-	 *	$ip_address - _string_ (Required)
+	 *	$ip_address - _string_ (Required) The Internet-routable IP address for the customer gateway's outside interface. The address must be static
 	 *	$bgp_asn - _integer_ (Required) The customer gateway's Border Gateway Protocol (BGP) Autonomous System Number (ASN).
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
@@ -3567,7 +3643,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['Filter']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('Filter' => $opt['Filter'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
 			unset($opt['Filter']);
 		}
 
@@ -3621,7 +3699,9 @@ class AmazonEC2 extends CFRuntime
 		// Optional parameter
 		if (isset($opt['BlockDeviceMapping']))
 		{
-			$opt = array_merge($opt, CFComplexType::map(array('BlockDeviceMapping' => $opt['BlockDeviceMapping'])));
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'BlockDeviceMapping' => $opt['BlockDeviceMapping']
+			)));
 			unset($opt['BlockDeviceMapping']);
 		}
 

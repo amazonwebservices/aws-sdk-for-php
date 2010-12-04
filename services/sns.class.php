@@ -19,7 +19,7 @@
  *
  *
  * Version:
- * 	Tue Nov 09 21:03:19 PST 2010
+ * 	Fri Dec 03 16:27:54 PST 2010
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
@@ -411,13 +411,13 @@ class AmazonSNS extends CFRuntime
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'AWSAccountId.member' => (is_array($account_id) ? $account_id : array($account_id))
-		)));
+			'AWSAccountId' => (is_array($account_id) ? $account_id : array($account_id))
+		), 'member'));
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'ActionName.member' => (is_array($action_name) ? $action_name : array($action_name))
-		)));
+			'ActionName' => (is_array($action_name) ? $action_name : array($action_name))
+		), 'member'));
 
 		return $this->authenticate('AddPermission', $opt, $this->hostname);
 	}

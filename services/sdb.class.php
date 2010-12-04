@@ -30,7 +30,7 @@
  * 	Visit [http://aws.amazon.com/simpledb/](http://aws.amazon.com/simpledb/) for more information.
  *
  * Version:
- * 	Tue Nov 09 21:02:48 PST 2010
+ * 	Fri Dec 03 16:27:22 PST 2010
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
@@ -154,6 +154,109 @@ class AmazonSDB extends CFRuntime
 		return array();
 	}
 
+	/**
+	 * Method: remap_batch_items_for_complextype()
+	 * 	Remaps the custom item-key-value format used by Batch* operations to the more common ComplexList format. Internal use only.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$items - _array_ (Required) The item-key-value format passed by <batch_put_attributes()> and <batch_delete_attributes()>.
+	 * 	$replace - _boolean_|_array_ (Optional) The `$replace` value passed by <batch_put_attributes()> and <batch_delete_attributes()>.
+	 *
+	 * Returns:
+	 * 	_array_ A <CFComplexType>-compatible mapping of parameters.
+	 */
+	public static function remap_batch_items_for_complextype($items, $replace = false)
+	{
+		$map = array(
+			'Item' => array()
+		);
+
+		foreach ($items as $key => $value)
+		{
+			$node = array();
+			$node['ItemName'] = $key;
+
+			if (is_array($value))
+			{
+				$node['Attribute'] = array();
+
+				foreach ($value as $k => $v)
+				{
+					$v = is_array($v) ? $v : array($v);
+
+					foreach ($v as $vv)
+					{
+						$n = array();
+						$n['Name'] = $k;
+						$n['Value'] = $vv;
+
+						if (
+							$replace === (boolean) true ||
+							(isset($replace[$key]) && array_search($k, $replace[$key], true) !== false)
+						)
+						{
+							$n['Replace'] = 'true';
+						}
+
+						$node['Attribute'][] = $n;
+					}
+				}
+			}
+
+			$map['Item'][] = $node;
+		}
+
+		return $map;
+	}
+
+	/**
+	 * Method: remap_batch_items_for_complextype()
+	 * 	Remaps the custom item-key-value format used by Batch* operations to the more common ComplexList format. Internal use only.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$keys - _array_ (Required) The key-value format passed by <put_attributes()>.
+	 * 	$replace - _boolean_|_array_ (Optional) The `$replace` value passed by <batch_put_attributes()> and <batch_delete_attributes()>.
+	 *
+	 * Returns:
+	 * 	_array_ A <CFComplexType>-compatible mapping of parameters.
+	 */
+	public static function remap_attribute_items_for_complextype($keys, $replace = false)
+	{
+		$map = array(
+			'Attribute' => array()
+		);
+
+		foreach ($keys as $k => $v)
+		{
+			$v = is_array($v) ? $v : array($v);
+
+			foreach ($v as $vv)
+			{
+				$n = array();
+				$n['Name'] = $k;
+				$n['Value'] = $vv;
+
+				if (
+					$replace === (boolean) true ||
+					(is_array($replace) && array_search($k, $replace, true) !== false)
+				)
+				{
+					$n['Replace'] = 'true';
+				}
+
+				$map['Attribute'][] = $n;
+			}
+		}
+
+		return $map;
+	}
+
 
 	/*%******************************************************************************************%*/
 	// CONSTRUCTOR
@@ -196,13 +299,13 @@ class AmazonSDB extends CFRuntime
 
 	/**
 	 * Method: select()
-	 * 	The Select operation returns a set of Attributes for ItemNames that match the select expression.
-	 * 	Select is similar to the standard SQL SELECT statement.
+	 * 	The `Select` operation returns a set of attributes for `ItemNames` that match the select expression.
+	 * 	`Select` is similar to the standard SQL SELECT statement.
 	 *
 	 * 	The total size of the response cannot exceed 1 MB in total size. Amazon SimpleDB automatically
-	 * 	adjusts the number of items returned per page to enforce this limit. For example, even if you ask to
-	 * 	retrieve 2500 items, but each individual item is 10 kB in size, the system returns 100 items and an
-	 * 	appropriate next token so you can get the next page of results.
+	 * 	adjusts the number of items returned per page to enforce this limit. For example, if the client asks
+	 * 	to retrieve 2500 items, but each individual item is 10 kB in size, the system returns 100 items and
+	 * 	an appropriate `NextToken` so the client can access the next page of results.
 	 *
 	 * 	For information on how to construct select expressions, see Using Select to Create Amazon SimpleDB
 	 * 	Queries in the Developer Guide.
@@ -215,8 +318,8 @@ class AmazonSDB extends CFRuntime
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 *	NextToken - _string_ (Optional) String that tells Amazon SimpleDB where to start the next list of Item Names.
-	 *	ConsistentRead - _boolean_ (Optional) True if strong consistency should be enforced when data is read from SimpleDB, meaning that any data previously written to SimpleDB will be returned. Without specifying this parameter, results will be eventually consistent, and you may not see data that was written immediately before your read.
+	 *	NextToken - _string_ (Optional) A string informing Amazon SimpleDB where to start the next list of `ItemNames`.
+	 *	ConsistentRead - _boolean_ (Optional) Determines whether or not strong consistency should be enforced when data is read from SimpleDB. If `true`, any data previously written to SimpleDB will be returned. Otherwise, results will be consistent eventually, and the client may not see data that was written immediately before your read.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -265,9 +368,13 @@ class AmazonSDB extends CFRuntime
 	 * Parameters:
 	 * 	$domain_name - _string_ (Required) The domain name to use for storing data.
 	 * 	$item_name - _string_ (Required) The name of the base item which will contain the series of keypairs.
-	 * 	$keypairs - _array_ (Required) Associative array of parameters which are treated as key-value and key-multivalue pairs (i.e. a key can have one or more values; think tags).
+	 * 	$keypairs - _ComplexType_ (Required) Associative array of parameters which are treated as key-value and key-multivalue pairs (i.e. a key can have one or more values; think tags).
 	 * 	$replace - _boolean_|_array_ (Optional) Whether to replace a key-value pair if a matching key already exists. Supports either a boolean (which affects ALL key-value pairs) or an indexed array of key names (which affects only the keys specified). Defaults to boolean false.
 	 * 	$opt - _array_ (Optional) Associative array of parameters which can have the following keys:
+	 *
+	 * Keys for the $keypairs parameter:
+	 * 	key1.x - _string_ (Required) This value can be any key and any value that you want to store.
+	 * 	key2.x - _string_ (Optional) This value can be any key and any value that you want to store.
 	 *
 	 * Keys for the $opt parameter:
 	 * 	Expected - _ComplexType_ (Optional) The update condition which, if specified, determines if the specified attributes will be updated or not. The update condition must be satisfied in order for this request to be processed and the attributes to be updated. A ComplexType can be set two ways: by setting each individual `Expected` subtype (documented next), or by passing a nested associative array with the following `Expected`-prefixed entries as keys.
@@ -284,92 +391,87 @@ class AmazonSDB extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
 		$opt['ItemName'] = $item_name;
-		$rstore = array();
 
-		// Start looping through the keypairs.
-		$count = 0;
-		foreach ($keypairs as $k => $v)
+		$opt = array_merge($opt, CFComplexType::map(
+			self::remap_attribute_items_for_complextype($keypairs, $replace)
+		));
+
+		if (isset($opt['Expected']))
 		{
-			// Is one of the values an array?
-			if (is_array($v))
-			{
-				// Loop through each of them so that all values are passed as individual attributes.
-				foreach ($v as $va)
-				{
-					$opt['Attribute.' . (string) $count . '.Name'] = $k;
-					$opt['Attribute.' . (string) $count . '.Value'] = $va;
-
-					// Do we want to do replacement?
-					if ($replace)
-					{
-						// Do we have an associative array of key names?
-						if (is_array($replace))
-						{
-							// Store this key-index pair for later.
-							$rstore[] = array(
-								'count' => $count,
-								'key' => $k
-							);
-						}
-						// Or just a since REPLACE ALL?
-						else
-						{
-							$opt['Attribute.' . (string) $count . '.Replace'] = 'true';
-						}
-					}
-
-					// Increment
-					$count++;
-				}
-			}
-			else
-			{
-				$opt['Attribute.' . (string) $count . '.Name'] = $k;
-				$opt['Attribute.' . (string) $count . '.Value'] = $v;
-
-				// Do we want to do replacement?
-				if ($replace)
-				{
-					// Do we have an associative array of key names?
-					if (is_array($replace))
-					{
-						// Store this key-index pair for later.
-						$rstore[] = array(
-							'count' => $count,
-							'key' => $k
-						);
-					}
-					// Or just a since REPLACE ALL?
-					else
-					{
-						$opt['Attribute.' . (string) $count . '.Replace'] = 'true';
-					}
-				}
-			}
-
-			// Increment
-			$count++;
-		}
-
-		// Go through all of the saved key-index pairs we saved earlier.
-		foreach ($rstore as $k => $store)
-		{
-			// Did we want to replace one of these keypairs?
-			if (in_array($store['key'], $replace))
-			{
-				// Replace!
-				$opt['Attribute.' . (string) $store['count'] . '.Replace'] = 'true';
-			}
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Expected' => $opt['Expected']
+			)));
+			unset($opt['Expected']);
 		}
 
 		return $this->authenticate('PutAttributes', $opt, $this->hostname);
 	}
 
 	/**
+	 * Method: batch_delete_attributes()
+	 * 	Performs multiple DeleteAttributes operations in a single call, which reduces round trips and latencies.
+	 * 	This enables Amazon SimpleDB to optimize requests, which generally yields better throughput.
+	 *
+	 * 	If you specify BatchDeleteAttributes without attributes or values, all the attributes for the item are
+	 * 	deleted. BatchDeleteAttributes is an idempotent operation; running it multiple times on the same item
+	 * 	or attribute doesn't result in an error. The BatchDeleteAttributes operation succeeds or fails in its
+	 * 	entirety. There are no partial deletes.
+	 *
+	 * 	You can execute multiple BatchDeleteAttributes operations and other operations in parallel. However,
+	 * 	large numbers of concurrent BatchDeleteAttributes calls can result in Service Unavailable (503) responses.
+	 * 	This operation does not support conditions using Expected.X.Name, Expected.X.Value, or Expected.X.Exists.
+	 *
+	 * 	The following limitations are enforced for this operation:
+	 *
+	 * 	- 1 MB request size
+	 * 	- 25 item limit per BatchDeleteAttributes operation
+	 *
+	 * Access:
+	 *	public
+	 *
+	 * Parameters:
+	 *	$domain_name - _string_ (Required) The name of the domain in which the attributes are being deleted.
+	 * 	$item_keypairs - _ComplexType_ (Required) Associative array of parameters which are treated as item-key-value and item-key-multivalue pairs (i.e. a key can have one or more values; think tags).
+	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 *
+	 * Keys for the $item_keypairs parameter:
+	 * 	item1.key1.x - _string_ (Required) This value can be any key and any value that you want to delete.
+	 * 	item1.key2.x - _string_ (Optional) This value can be any key and any value that you want to delete.
+	 *
+	 * Keys for the $opt parameter:
+	 *	Item.x.ItemName - _string_ (Optional) This is the parameter format supported by the web service API. This is the item name to use.
+	 *	Item.x.Attribute.y.AlternateNameEncoding - _string_ (Optional) This is the parameter format supported by the web service API. This is the alternate name encoding to use.
+	 *	Item.x.Attribute.y.AlternateValueEncoding - _string_ (Optional) This is the parameter format supported by the web service API. This is the alternate value encoding to use.
+	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 *
+	 * Returns:
+	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function batch_delete_attributes($domain_name, $item_keypairs, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['DomainName'] = $domain_name;
+
+		$opt = array_merge($opt, CFComplexType::map(
+			self::remap_batch_items_for_complextype($item_keypairs)
+		));
+
+		if (isset($opt['Item']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Item' => $opt['Item']
+			)));
+			unset($opt['Item']);
+		}
+
+		return $this->authenticate('BatchDeleteAttributes', $opt, $this->hostname);
+	}
+
+	/**
 	 * Method: delete_domain()
-	 * 	The DeleteDomain operation deletes a domain. Any items (and their attributes) in the domain are
-	 * 	deleted as well. The DeleteDomain operation might take 10 or more seconds to complete. Running
-	 * 	DeleteDomain on a domain that does not exist or running the function multiple times using the same
+	 * 	The `DeleteDomain` operation deletes a domain. Any items (and their attributes) in the domain are
+	 * 	deleted as well. The `DeleteDomain` operation might take 10 or more seconds to complete. Running
+	 * 	`DeleteDomain` on a domain that does not exist or running the function multiple times using the same
 	 * 	domain name will not result in an error response.
 	 *
 	 * Access:
@@ -395,14 +497,14 @@ class AmazonSDB extends CFRuntime
 
 	/**
 	 * Method: create_domain()
-	 * 	The CreateDomain operation creates a new domain. The domain name must be unique among the domains
-	 * 	associated with the Access Key ID provided in the request. The CreateDomain operation may take 10 or
-	 * 	more seconds to complete. CreateDomain is an idempotent operation; running it multiple times using
-	 * 	the same domain name will not result in an error response.
+	 * 	The `CreateDomain` operation creates a new domain. The domain name should be unique among the
+	 * 	domains associated with the Access Key ID provided in the request. The `CreateDomain` operation may
+	 * 	take 10 or more seconds to complete. CreateDomain is an idempotent operation; running it multiple
+	 * 	times using the same domain name will not result in an error response.
 	 *
-	 * 	You can create up to 100 domains per account.
+	 * 	The client can create up to 100 domains per account.
 	 *
-	 * 	If you require additional domains, go to [
+	 * 	If the client requires additional domains, go to [
 	 * 	n.com/contact-us/simpledb-limit-request/](http://aws.amazon.com/contact-us/simpledb-limit-request/).
 	 *
 	 * Access:
@@ -479,15 +581,24 @@ class AmazonSDB extends CFRuntime
 			)));
 		}
 
+		if (isset($opt['Expected']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Expected' => $opt['Expected']
+			)));
+			unset($opt['Expected']);
+		}
+
 		return $this->authenticate('DeleteAttributes', $opt, $this->hostname);
 	}
 
 	/**
 	 * Method: list_domains()
-	 * 	The ListDomains operation lists all domains associated with the Access Key ID. It returns domain
+	 * 	The `ListDomains` operation lists all domains associated with the Access Key ID. It returns domain
 	 * 	names up to the limit set by [MaxNumberOfDomains](#MaxNumberOfDomains). A [NextToken](#NextToken) is
-	 * 	returned if there are more than MaxNumberOfDomains domains. Calling ListDomains successive times
-	 * 	with the NextToken returns up to MaxNumberOfDomains more domain names each time.
+	 * 	returned if there are more than `MaxNumberOfDomains` domains. Calling `ListDomains` successive times
+	 * 	with the `NextToken` provided by the operation returns up to `MaxNumberOfDomains` more domain names
+	 * 	with each successive operation call.
 	 *
 	 * Access:
 	 *	public
@@ -497,7 +608,7 @@ class AmazonSDB extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 *	MaxNumberOfDomains - _integer_ (Optional) The maximum number of domain names you want returned. The range is 1 to 100. The default setting is 100.
-	 *	NextToken - _string_ (Optional) String that tells Amazon SimpleDB where to start the next list of domain names.
+	 *	NextToken - _string_ (Optional) A string informing Amazon SimpleDB where to start the next list of domain names.
 	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -583,11 +694,19 @@ class AmazonSDB extends CFRuntime
 	 *
 	 * Parameters:
 	 * 	$domain_name - _string_ (Required) The domain name to use for storing data.
-	 * 	$item_keypairs - _array_ (Required) Associative array of parameters which are treated as item-key-value and item-key-multivalue pairs (i.e. a key can have one or more values; think tags).
+	 * 	$item_keypairs - _ComplexType_ (Required) Associative array of parameters which are treated as item-key-value and item-key-multivalue pairs (i.e. a key can have one or more values; think tags).
 	 * 	$replace - _boolean_|_array_ (Optional) Whether to replace a key-value pair if a matching key already exists. Supports either a boolean (which affects ALL key-value pairs) or an indexed array of key names (which affects only the keys specified). Defaults to boolean false.
 	 * 	$opt - _array_ (Optional) Associative array of parameters which can have the following keys:
 	 *
+	 * Keys for the $item_keypairs parameter:
+	 * 	item1.key1.x - _string_ (Required) This value can be any key and any value that you want to store.
+	 * 	item1.key2.x - _string_ (Optional) This value can be any key and any value that you want to store.
+	 *
 	 * Keys for the $opt parameter:
+	 *	Item.x.ItemName - _string_ (Optional) This is the parameter format supported by the web service API. This is the item name to use.
+	 *	Item.x.Attribute.y.Name - _string_ (Optional) This is the parameter format supported by the web service API. This is the attribute name (key) to use.
+	 *	Item.x.Attribute.y.Value - _string_ (Optional) This is the parameter format supported by the web service API. This is the attribute value to use.
+	 *	Item.x.Attribute.y.Replace - _string_ (Optional) This is the parameter format supported by the web service API. This is the attribute replacement status.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This is useful for manually-managed batch requests.
 	 *
 	 * Returns:
@@ -597,100 +716,17 @@ class AmazonSDB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		$is_replace_an_array = is_array($replace); // Cache this value
 
-		// Start looping through the item-keypairs
-		$item_count = 0;
-		foreach ($item_keypairs as $item => $keypairs)
+		$opt = array_merge($opt, CFComplexType::map(
+			self::remap_batch_items_for_complextype($item_keypairs, $replace)
+		));
+
+		if (isset($opt['Item']))
 		{
-			// Clear these for re-use
-			unset($rstore);
-			$rstore = array();
-
-			// Set the item name
-			$opt['Item.' . (string) $item_count . '.ItemName'] = $item;
-
-			// Start looping through the keypairs.
-			$count = 0;
-			foreach ($keypairs as $k => $v)
-			{
-				// Is one of the values an array?
-				if (is_array($v))
-				{
-					// Loop through each of them so that all values are passed as individual attributes.
-					foreach ($v as $va)
-					{
-						$opt['Item.' . (string) $item_count . '.Attribute.' . (string) $count . '.Name'] = $k;
-						$opt['Item.' . (string) $item_count . '.Attribute.' . (string) $count . '.Value'] = $va;
-
-						// Do we want to do replacement?
-						if ($replace)
-						{
-							// Do we have an array of key names?
-							if ($is_replace_an_array)
-							{
-								// Store this key-index pair for later.
-								$rstore[] = array(
-									'count' => $count,
-									'key' => $k
-								);
-							}
-							// Or just a since REPLACE ALL?
-							else
-							{
-								$opt['Item.' . (string) $item_count . '.Attribute.' . (string) $count . '.Replace'] = 'true';
-							}
-						}
-
-						// Increment
-						$count++;
-					}
-				}
-				else
-				{
-					$opt['Item.' . (string) $item_count . '.Attribute.' . (string) $count . '.Name'] = $k;
-					$opt['Item.' . (string) $item_count . '.Attribute.' . (string) $count . '.Value'] = $v;
-
-					// Do we want to do replacement?
-					if ($replace)
-					{
-						// Do we have an array of key names?
-						if ($is_replace_an_array)
-						{
-							// Store this key-index pair for later.
-							$rstore[] = array(
-								'count' => $count,
-								'key' => $k
-							);
-						}
-						// Or just a since REPLACE ALL?
-						else
-						{
-							$opt['Item.' . (string) $item_count . '.Attribute.' . (string) $count . '.Replace'] = 'true';
-						}
-					}
-				}
-
-				// Increment
-				$count++;
-			}
-
-			// Go through all of the saved key-index pairs we saved earlier.
-			foreach ($rstore as $k => $store)
-			{
-				if (isset($replace[$item]))
-				{
-					// Did we want to replace one of these keypairs?
-					if (in_array($store['key'], $replace[$item]))
-					{
-						// Replace!
-						$opt['Item.' . (string) $item_count . '.Attribute.' . (string) $store['count'] . '.Replace'] = 'true';
-					}
-				}
-			}
-
-			// Increment
-			$item_count++;
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Item' => $opt['Item']
+			)));
+			unset($opt['Item']);
 		}
 
 		return $this->authenticate('BatchPutAttributes', $opt, $this->hostname);
@@ -699,13 +735,13 @@ class AmazonSDB extends CFRuntime
 	/**
 	 * Method: domain_metadata()
 	 * 	Returns information about the domain, including when the domain was created, the number of items and
-	 * 	attributes, and the size of attribute names and values.
+	 * 	attributes in the domain, and the size of the attribute names and values.
 	 *
 	 * Access:
 	 *	public
 	 *
 	 * Parameters:
-	 *	$domain_name - _string_ (Required) The name of the domain for which to display metadata.
+	 *	$domain_name - _string_ (Required) The name of the domain for which to display the metadata of.
 	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
