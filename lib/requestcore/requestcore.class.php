@@ -415,6 +415,26 @@ class RequestCore
 	}
 
 	/**
+	 * Method: set_read_stream_size()
+	 * 	Sets the length in bytes to read from the stream while streaming up.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$size - _integer_ (Required) The length in bytes to read from the stream.
+	 *
+	 * Returns:
+	 * 	`$this`
+	 */
+	public function set_read_stream_size($size)
+	{
+		$this->read_stream_size = $size;
+
+		return $this;
+	}
+
+	/**
 	 * Method: set_read_stream()
 	 * 	Sets the resource to read from while streaming up. Reads the stream from it's current position until
 	 * 	EOF or `$size` bytes have been read. If `$size` is not given it will be determined by fstat() and
@@ -453,9 +473,8 @@ class RequestCore
 		}
 
 		$this->read_stream = $resource;
-		$this->read_stream_size = $size;
 
-		return $this;
+		return $this->set_read_stream_size($size);
 	}
 
 	/**
@@ -599,7 +618,7 @@ class RequestCore
 			fseek($file_handle, (integer) $this->seek_position);
 		}
 
-		return fread($file_handle, min($info['upload_content_length'] - $info['size_upload'], $length)); // Remaining upload data or curl's requested chunk size
+		return fread($file_handle, min($info['upload_content_length'] - $info['size_upload'], $length)); // Remaining upload data or cURL's requested chunk size
 	}
 
 	/**
