@@ -497,6 +497,7 @@ class RequestCore
 			throw new RequestCore_Exception('Stream size for upload cannot be determined');
 		}
 
+		$this->read_file = null;
 		$this->read_stream = $resource;
 
 		return $this->set_read_stream_size($size);
@@ -538,7 +539,9 @@ class RequestCore
 	 */
 	public function set_write_stream($resource)
 	{
+		$this->write_file = null;
 		$this->write_stream = $resource;
+
 		return $this;
 	}
 
