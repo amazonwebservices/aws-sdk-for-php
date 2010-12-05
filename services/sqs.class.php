@@ -31,7 +31,7 @@
  * 	Visit [http://aws.amazon.com/sqs/](http://aws.amazon.com/sqs/) for more information.
  *
  * Version:
- * 	Tue Nov 09 21:03:53 PST 2010
+ * 	Fri Dec 03 16:28:26 PST 2010
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.

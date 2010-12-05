@@ -19,7 +19,7 @@
  * 	Core functionality and default settings shared across all SDK classes. All methods and properties in this class are inherited by the service-specific classes.
  *
  * Version:
- * 	2010.11.09
+ * 	2010.12.03
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -117,9 +117,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.1');
+define('CFRUNTIME_VERSION', '1.2');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20101110062756');
+define('CFRUNTIME_BUILD', '20101203002835');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . php_uname('s') . '/' . php_uname('r') . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -424,6 +424,33 @@ class CFRuntime
 		{
 			throw new CFRuntime_Exception('No valid credentials were used to authenticate with AWS.');
 		}
+	}
+
+	/**
+	 * Method: init()
+	 * 	Alternate approach to constructing a new instance. Supports chaining.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$key - _string_ (Optional) Your Amazon API Key. If blank, it will look for the <AWS_KEY> constant.
+	 * 	$secret_key - _string_ (Optional) Your Amazon API Secret Key. If blank, it will look for the <AWS_SECRET_KEY> constant.
+	 * 	$account_id - _string_ (Optional) Your Amazon account ID without the hyphens. Required for EC2. If blank, it will look for the <AWS_ACCOUNT_ID> constant.
+	 * 	$assoc_id - _string_ (Optional) Your Amazon Associates ID. Required for AAWS. If blank, it will look for the <AWS_ASSOC_ID> constant.
+	 *
+	 * Returns:
+	 * 	_boolean_ A value of `false` if no valid values are set, otherwise `true`.
+	 */
+	public static function init($key = null, $secret_key = null, $account_id = null, $assoc_id = null)
+	{
+		if (version_compare(PHP_VERSION, '5.3.0', '<'))
+		{
+			throw new Exception('PHP 5.3 or newer is required to instantiate a new class with CLASS::init().');
+		}
+
+		$self = get_called_class();
+		return new $self($key, $secret_key, $account_id, $assoc_id);
 	}
 
 
@@ -1169,7 +1196,7 @@ class CFRuntime
 		// Look for XML cues
 		if (
 			(stripos($body, '<?xml') === 0 || strpos($body, '<Error>') === 0) ||
-			preg_match('/^<(\w*) xmlns="http(s?):\/\/(\w*).amazonaws.com/im', $body)
+			preg_match('/^<(\w*) xmlns="http(s?):\/\/(\w*).amazon(aws)?.com/im', $body)
 		)
 		{
 			// Strip the default XML namespace to simplify XPath expressions
