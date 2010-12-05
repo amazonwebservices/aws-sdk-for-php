@@ -609,7 +609,7 @@ class RequestCore
 
 	/**
 	 * Method: streaming_read_callback()
-	 * 	A callback function that is invoked by cURL for streaming.
+	 * 	A callback function that is invoked by cURL for streaming up.
 	 *
 	 * Access:
 	 * 	public
@@ -620,7 +620,7 @@ class RequestCore
 	 * 	$length - _integer_ (Required) The maximum number of bytes to read.
 	 *
 	 * Returns:
-	 * 	_binary_ Binary data from a file.
+	 * 	_binary_ Binary data from a stream.
 	 */
 	public function streaming_read_callback($curl_handle, $file_handle, $length)
 	{
@@ -640,6 +640,40 @@ class RequestCore
 		}
 
 		return fread($this->read_stream, min($info['upload_content_length'] - $info['size_upload'], $length)); // Remaining upload data or cURL's requested chunk size
+	}
+
+	/**
+	 * Method: streaming_write_callback()
+	 * 	A callback function that is invoked by cURL for streaming down.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Parameters:
+	 * 	$curl_handle - _resource_ (Required) The cURL handle for the request.
+	 * 	$data - _binary_ (Required) The data to write.
+	 *
+	 * Returns:
+	 * 	_integer_ The number of bytes written.
+	 */
+	public function streaming_write_callback($curl_handle, $data)
+	{
+		$length = strlen($data);
+
+		$written_total = 0;
+		$written_last = 0;
+		while ($written_total < $length)
+		{
+			$written_last = fwrite($this->write_stream, substr($data, $written_total));
+			if ($written_last === false)
+			{
+				return $written_total;
+			}
+
+			$written_total += $written_last;
+		}
+
+		return $written_total;
 	}
 
 	/**
@@ -751,7 +785,7 @@ class RequestCore
 				curl_setopt($curl_handle, CURLOPT_CUSTOMREQUEST, $this->method);
 				if (isset($this->write_stream))
 				{
-					curl_setopt($curl_handle, CURLOPT_FILE, $this->write_stream);
+					curl_setopt($curl_handle, CURLOPT_WRITEFUNCTION, array($this, 'streaming_write_callback'));
 					curl_setopt($curl_handle, CURLOPT_HEADER, false);
 				}
 				else
