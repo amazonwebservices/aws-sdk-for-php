@@ -169,7 +169,7 @@ class RequestCore
 	 * Property: seek_position
 	 * 	Stores the intended starting seek position.
 	 */
-	public $seek_position = -1;
+	public $seek_position = null;
 
 
 	/*%******************************************************************************************%*/
@@ -475,9 +475,9 @@ class RequestCore
 	 * Returns:
 	 * 	`$this`
 	 */
-	public function set_read_stream($resource, $size = -1)
+	public function set_read_stream($resource, $size = null)
 	{
-		if ($size < 0)
+		if (!isset($size) || $size < 0)
 		{
 			$stats = fstat($resource);
 
@@ -490,11 +490,6 @@ class RequestCore
 					$size = $stats['size'] - $position;
 				}
 			}
-		}
-
-		if ($size < 0)
-		{
-			throw new RequestCore_Exception('Stream size for upload cannot be determined');
 		}
 
 		$this->read_file = null;
@@ -604,7 +599,7 @@ class RequestCore
 	 */
 	public function set_seek_position($position)
 	{
-		$this->seek_position = (integer) $position;
+		$this->seek_position = isset($position) ? (integer) $position : null;
 		return $this;
 	}
 
@@ -639,7 +634,7 @@ class RequestCore
 		}
 
 		// If we're not in the middle of an upload...
-		if ((integer) $info['size_upload'] === 0 && $this->seek_position >= 0)
+		if ((integer) $info['size_upload'] === 0 && isset($this->seek_position))
 		{
 			fseek($this->read_stream, (integer) $this->seek_position);
 		}
@@ -728,6 +723,11 @@ class RequestCore
 				curl_setopt($curl_handle, CURLOPT_CUSTOMREQUEST, 'PUT');
 				if (isset($this->read_stream))
 				{
+					if (!isset($this->read_stream_size) || $this->read_stream_size < 0)
+					{
+						throw new RequestCore_Exception('Stream size for streaming upload cannot be determined.');
+					}
+
 					curl_setopt($curl_handle, CURLOPT_INFILESIZE, $this->read_stream_size);
 					curl_setopt($curl_handle, CURLOPT_UPLOAD, true);
 				}
