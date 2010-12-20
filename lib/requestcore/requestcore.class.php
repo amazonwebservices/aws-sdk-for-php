@@ -139,31 +139,37 @@ class RequestCore
 	 * Property: read_file
 	 * 	File to read from while streaming up.
 	 */
-	var $read_file = null;
+	public $read_file = null;
 
 	/**
 	 * Property: read_stream
 	 *  The resource to read from while streaming up.
 	 */
-	var $read_stream = null;
+	public $read_stream = null;
 
 	/**
 	 * Property: read_stream_size
 	 *  The size of the stream to read from.
 	 */
-	var $read_stream_size = null;
+	public $read_stream_size = null;
+
+	/**
+	 * Property: read_stream_read
+	 *  The length already read from the stream.
+	 */
+	public $read_stream_read = 0;
 
 	/**
 	 * Property: write_file
 	 * 	File to write to while streaming down.
 	 */
-	var $write_file = null;
+	public $write_file = null;
 
 	/**
 	 * Property: write_stream
 	 *  The resource to write to while streaming down.
 	 */
-	var $write_stream = null;
+	public $write_stream = null;
 
 	/**
 	 * Property: seek_position
@@ -455,6 +461,7 @@ class RequestCore
 	public function set_read_stream_size($size)
 	{
 		$this->read_stream_size = $size;
+		$this->read_stream_read = 0;
 
 		return $this;
 	}
@@ -624,22 +631,23 @@ class RequestCore
 	 */
 	public function streaming_read_callback($curl_handle, $file_handle, $length)
 	{
-		$info = curl_getinfo($curl_handle);
-
 		// Once we've sent as much as we're supposed to send...
-		if ($info['size_upload'] >= $info['upload_content_length'])
+		if ($this->read_stream_read >= $this->read_stream_size)
 		{
 			// Send EOF
 			return 0;
 		}
 
 		// If we're not in the middle of an upload...
-		if ((integer) $info['size_upload'] === 0 && isset($this->seek_position))
+		if ($this->read_stream_read === 0 && isset($this->seek_position))
 		{
 			fseek($this->read_stream, (integer) $this->seek_position);
 		}
 
-		return fread($this->read_stream, min($info['upload_content_length'] - $info['size_upload'], $length)); // Remaining upload data or cURL's requested chunk size
+		$read = fread($this->read_stream, min($this->read_stream_size - $this->read_stream_read, $length)); // Remaining upload data or cURL's requested chunk size
+		$this->read_stream_read += $read;
+
+		return $read;
 	}
 
 	/**
