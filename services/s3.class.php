@@ -3426,12 +3426,12 @@ class AmazonS3 extends CFRuntime
 		if (is_string($parts))
 		{
 			// Assume it's the intended XML.
-			$opt['body'] = $xml;
+			$opt['body'] = $parts;
 		}
 		elseif ($parts instanceof SimpleXMLElement)
 		{
 			// Assume it's a SimpleXMLElement object representing the XML.
-			$opt['body'] = $xml->asXML();
+			$opt['body'] = $parts->asXML();
 		}
 		elseif (is_array($parts) || $parts instanceof CFResponse)
 		{
