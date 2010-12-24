@@ -3211,6 +3211,12 @@ class AmazonS3 extends CFRuntime
 			unset($opt['contentType']);
 		}
 
+		// Set a default content type.
+		if (!isset($opt['headers']['Content-Type']))
+		{
+			$opt['headers']['Content-Type'] = 'application/octet-stream';
+		}
+
 		// Handle Access Control Lists. Can also be passed as an HTTP header.
 		if (isset($opt['acl']))
 		{
