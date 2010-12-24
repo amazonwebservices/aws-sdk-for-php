@@ -518,14 +518,11 @@ class AmazonS3 extends CFRuntime
 				}
 				elseif (isset($opt['seekTo']))
 				{
+					// Read from seekTo until EOF by default
 					$stats = fstat($opt['fileUpload']);
 					if ($stats && $stats['size'] >= 0)
 					{
-						$length = $stats['size'] - (integer) $opt['seekTo']; // Read from seekTo until EOF by default
-					}
-					else
-					{
-						throw new S3_Exception('Stream size for streaming upload cannot be determined.');
+						$length = $stats['size'] - (integer) $opt['seekTo'];
 					}
 				}
 
@@ -546,9 +543,10 @@ class AmazonS3 extends CFRuntime
 				{
 					$length = $headers['Content-Length'];
 				}
-				elseif (isset($opt['seekTo']))
+				elseif (isset($opt['seekTo']) && isset($length))
 				{
-					$length -= (integer) $opt['seekTo']; // Read from seekTo until EOF by default
+					// Read from seekTo until EOF by default
+					$length -= (integer) $opt['seekTo'];
 				}
 
 				$request->set_read_stream_size($length);
