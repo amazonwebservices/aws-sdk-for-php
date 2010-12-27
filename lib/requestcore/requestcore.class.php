@@ -632,7 +632,7 @@ class RequestCore
 		if ($this->read_stream_read >= $this->read_stream_size)
 		{
 			// Send EOF
-			return 0;
+			return '';
 		}
 
 		// If we're not in the middle of an upload...
@@ -644,7 +644,7 @@ class RequestCore
 		$read = fread($this->read_stream, min($this->read_stream_size - $this->read_stream_read, $length)); // Remaining upload data or cURL's requested chunk size
 		$this->read_stream_read += strlen($read);
 
-		return $read === false ? 0 : $read;
+		return $read === false ? '' : $read;
 	}
 
 	/**
