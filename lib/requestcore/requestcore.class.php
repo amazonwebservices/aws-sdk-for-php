@@ -638,7 +638,13 @@ class RequestCore
 		// If we're not in the middle of an upload...
 		if ($this->read_stream_read === 0 && isset($this->seek_position))
 		{
-			fseek($this->read_stream, (integer) $this->seek_position);
+			// Turn off error reporting (@) for the seek operation as an exception is thrown below only if the stream needed to be seeked and does not support seeking
+			@fseek($this->read_stream, (integer) $this->seek_position);
+
+			if (ftell($this->read_stream) !== $this->seek_position)
+			{
+				throw new RequestCore_Exception('Stream does not support seeking and is not at the requested position or the position is unkown.');
+			}
 		}
 
 		$read = fread($this->read_stream, min($this->read_stream_size - $this->read_stream_read, $length)); // Remaining upload data or cURL's requested chunk size
