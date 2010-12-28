@@ -596,7 +596,7 @@ class RequestCore
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$position - _integer_ (Required) The byte-position of the file to begin reading from.
+	 * 	$position - _integer_ (Required) The byte-position of the stream to begin reading from.
 	 *
 	 * Returns:
 	 * 	`$this`
