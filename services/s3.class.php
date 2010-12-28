@@ -3553,6 +3553,11 @@ class AmazonS3 extends CFRuntime
 	 */
 	public function create_mpu_object($bucket, $filename, $opt = null)
 	{
+		if ($this->use_batch_flow)
+		{
+			throw new S3_Exception(__FUNCTION__ . '() cannot be batch requested');
+		}
+
 
 		if (!isset($opt['fileUpload']))
 		{
