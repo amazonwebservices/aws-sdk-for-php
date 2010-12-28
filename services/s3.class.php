@@ -3615,7 +3615,7 @@ class AmazonS3 extends CFRuntime
 			$upload = $this->initiate_multipart_upload($bucket, $filename, $_opt);
 			if (!$upload->isOK())
 			{
-				return false;
+				return $upload;
 			}
 
 			// Fetch the UploadId
@@ -3642,7 +3642,7 @@ class AmazonS3 extends CFRuntime
 		$batch_responses = $this->batch($batch)->send();
 		if (!$batch_responses->areOK())
 		{
-			return false;
+			return $batch_responses;
 		}
 
 		// Compose completion XML
