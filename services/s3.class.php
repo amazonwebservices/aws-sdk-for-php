@@ -3539,6 +3539,7 @@ class AmazonS3 extends CFRuntime
 	 * 	contentType - _string_ (Optional) The type of content that is being sent in the body. The default value is `application/octet-stream`.
 	 * 	headers - _array_ (Optional) The standard HTTP headers to send along in the request.
 	 * 	meta - _array_ (Optional) An associative array of key-value pairs. Any header starting with `x-amz-meta-:` is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.
+	 * 	length - _integer_ (Optional) The size of the object in bytes. For more information, see [RFC 2616, section 14.13](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.13). The value can also be passed to the `header` option as `Content-Length`.
 	 * 	partSize - _integer_ (Optional) The size of an individual part. The size may not be smaller than 5 MB or larger than 500 MB. The default value is 50 MB.
 	 * 	storage - _string_ (Optional) Whether to use Standard or Reduced Redundancy storage. [Allowed values: `AmazonS3::STORAGE_STANDARD`, `AmazonS3::STORAGE_REDUCED`]. The default value is <STORAGE_STANDARD>.
 	 * 	uploadId - _string_ (Optional) An upload ID identifying an existing multipart upload to use. If this option is not set, one will be created automatically.
@@ -3558,6 +3559,14 @@ class AmazonS3 extends CFRuntime
 			throw new S3_Exception(__FUNCTION__ . '() cannot be batch requested');
 		}
 
+		if (!$opt) $opt = array();
+
+		// Handle content length. Can also be passed as an HTTP header.
+		if (isset($opt['length']))
+		{
+			$opt['headers']['Content-Length'] = $opt['length'];
+			unset($opt['length']);
+		}
 
 		if (!isset($opt['fileUpload']))
 		{
@@ -3565,7 +3574,28 @@ class AmazonS3 extends CFRuntime
 		}
 		elseif (is_resource($opt['fileUpload']))
 		{
-			throw new S3_Exception('The `fileUpload` option cannot be a resource in ' . __FUNCTION__ . '().');
+			$opt['limit'] = 1; // We can only read from this one resource.
+			$upload_position = ftell($opt['fileUpload']);
+			$upload_filesize = isset($opt['headers']['Content-Length']) ? $opt['headers']['Content-Length'] : null;
+
+			if (!isset($upload_filesize) && $upload_position !== false)
+			{
+				$stats = fstat($opt['fileUpload']);
+				if ($stats && $stats['size'] >= 0)
+				{
+					$upload_filesize = $stats['size'] - $upload_position;
+				}
+			}
+		}
+		else
+		{
+			$upload_position = 0;
+			$upload_filesize = isset($opt['headers']['Content-Length']) ? $opt['headers']['Content-Length'] : filesize($opt['fileUpload']);
+		}
+
+		if ($upload_position === false || !isset($upload_filesize) || $upload_filesize === false || $upload_filesize < 0)
+		{
+			throw new S3_Exception('The size of `fileUpload` cannot be determined in ' . __FUNCTION__ . '().');
 		}
 
 		// Handle part size
@@ -3586,8 +3616,6 @@ class AmazonS3 extends CFRuntime
 		{
 			$opt['partSize'] = 52428800; // 50 MB
 		}
-
-		$upload_filesize = filesize($opt['fileUpload']);
 
 		// If the upload size is smaller than the piece size, failover to create_object().
 		if ($upload_filesize < $opt['partSize'] && !isset($opt['uploadId']))
@@ -3633,7 +3661,7 @@ class AmazonS3 extends CFRuntime
 				'expect' => '100-continue',
 				'fileUpload' => $opt['fileUpload'],
 				'partNumber' => ($i + 1),
-				'seekTo' => (integer) $piece['seekTo'],
+				'seekTo' => $upload_position + (integer) $piece['seekTo'],
 				'length' => (integer) $piece['length'],
 			));
 		}
