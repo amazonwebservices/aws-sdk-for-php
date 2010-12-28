@@ -3540,6 +3540,7 @@ class AmazonS3 extends CFRuntime
 	 * 	headers - _array_ (Optional) The standard HTTP headers to send along in the request.
 	 * 	meta - _array_ (Optional) An associative array of key-value pairs. Any header starting with `x-amz-meta-:` is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.
 	 * 	length - _integer_ (Optional) The size of the object in bytes. For more information, see [RFC 2616, section 14.13](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.13). The value can also be passed to the `header` option as `Content-Length`.
+	 * 	seekTo - _integer_ (Optional) The starting position in bytes for the first piece of the file/stream to upload.
 	 * 	partSize - _integer_ (Optional) The size of an individual part. The size may not be smaller than 5 MB or larger than 500 MB. The default value is 50 MB.
 	 * 	storage - _string_ (Optional) Whether to use Standard or Reduced Redundancy storage. [Allowed values: `AmazonS3::STORAGE_STANDARD`, `AmazonS3::STORAGE_REDUCED`]. The default value is <STORAGE_STANDARD>.
 	 * 	uploadId - _string_ (Optional) An upload ID identifying an existing multipart upload to use. If this option is not set, one will be created automatically.
@@ -3575,8 +3576,8 @@ class AmazonS3 extends CFRuntime
 		elseif (is_resource($opt['fileUpload']))
 		{
 			$opt['limit'] = 1; // We can only read from this one resource.
-			$upload_position = ftell($opt['fileUpload']);
-			$upload_filesize = isset($opt['headers']['Content-Length']) ? $opt['headers']['Content-Length'] : null;
+			$upload_position = isset($opt['seekTo']) ? (integer) $opt['seekTo'] : ftell($opt['fileUpload']);
+			$upload_filesize = isset($opt['headers']['Content-Length']) ? (integer) $opt['headers']['Content-Length'] : null;
 
 			if (!isset($upload_filesize) && $upload_position !== false)
 			{
@@ -3589,8 +3590,19 @@ class AmazonS3 extends CFRuntime
 		}
 		else
 		{
-			$upload_position = 0;
-			$upload_filesize = isset($opt['headers']['Content-Length']) ? $opt['headers']['Content-Length'] : filesize($opt['fileUpload']);
+			$upload_position = isset($opt['seekTo']) ? (integer) $opt['seekTo'] : 0;
+			if (isset($opt['headers']['Content-Length']))
+			{
+				$upload_filesize = (integer) $opt['headers']['Content-Length'];
+			}
+			else
+			{
+				$upload_filesize = filesize($opt['fileUpload']);
+				if ($upload_filesize !== false)
+				{
+					$upload_filesize -= $upload_position;
+				}
+			}
 		}
 
 		if ($upload_position === false || !isset($upload_filesize) || $upload_filesize === false || $upload_filesize < 0)
