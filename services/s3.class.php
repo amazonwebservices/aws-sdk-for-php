@@ -3553,8 +3553,6 @@ class AmazonS3 extends CFRuntime
 	 */
 	public function create_mpu_object($bucket, $filename, $opt = null)
 	{
-		// Don't timeout!
-		set_time_limit(0);
 
 		if (!isset($opt['fileUpload']))
 		{
