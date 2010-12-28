@@ -3590,7 +3590,7 @@ class AmazonS3 extends CFRuntime
 		$upload_filesize = filesize($opt['fileUpload']);
 
 		// If the upload size is smaller than the piece size, failover to create_object().
-		if ($upload_filesize < $opt['partSize'])
+		if ($upload_filesize < $opt['partSize'] && !isset($opt['uploadId']))
 		{
 			return $this->create_object($bucket, $filename, $opt);
 		}
