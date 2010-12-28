@@ -3534,7 +3534,7 @@ class AmazonS3 extends CFRuntime
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 * 	fileUpload - _string_ (Required) The file system path for the local file to upload.
+	 * 	fileUpload - _string_|_resource_ (Required) The file system path for the local file to upload, or an open resource.
 	 * 	acl - _string_ (Optional) The ACL settings for the specified object. [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. The default value is <ACL_PRIVATE>.
 	 * 	contentType - _string_ (Optional) The type of content that is being sent in the body. The default value is `application/octet-stream`.
 	 * 	headers - _array_ (Optional) The standard HTTP headers to send along in the request.
