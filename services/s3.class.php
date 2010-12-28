@@ -3201,6 +3201,7 @@ class AmazonS3 extends CFRuntime
 		$opt['verb'] = 'POST';
 		$opt['resource'] = $filename;
 		$opt['sub_resource'] = 'uploads';
+		$opt['body'] = '';
 
 		// Handle content type. Can also be passed as an HTTP header.
 		if (isset($opt['contentType']))
