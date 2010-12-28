@@ -635,15 +635,12 @@ class RequestCore
 			return '';
 		}
 
-		// If we're not in the middle of an upload...
-		if ($this->read_stream_read === 0 && isset($this->seek_position))
+		// If we're at the beginning of an upload and need to seek...
+		if ($this->read_stream_read == 0 && isset($this->seek_position) && $this->seek_position != ftell($this->read_stream))
 		{
-			// Turn off error reporting (@) for the seek operation as an exception is thrown below only if the stream needed to be seeked and does not support seeking
-			@fseek($this->read_stream, (integer) $this->seek_position);
-
-			if (ftell($this->read_stream) !== $this->seek_position)
+			if (fseek($this->read_stream, $this->seek_position) !== 0)
 			{
-				throw new RequestCore_Exception('Stream does not support seeking and is not at the requested position or the position is unkown.');
+				throw new RequestCore_Exception('Stream does not support seeking and is not at the requested position or the position is unknown.');
 			}
 		}
 
