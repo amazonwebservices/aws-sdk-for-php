@@ -1218,6 +1218,7 @@ class AmazonS3 extends CFRuntime
 		}
 		else
 		{
+			$opt['body'] = '';
 			$opt['headers']['x-amz-acl'] = $acl;
 		}
 
@@ -1532,6 +1533,7 @@ class AmazonS3 extends CFRuntime
 		// Add this to our request
 		$opt['verb'] = 'PUT';
 		$opt['resource'] = $dest['filename'];
+		$opt['body'] = '';
 
 		// Handle copy source
 		if (isset($source['bucket']) && isset($source['filename']))
@@ -1765,6 +1767,7 @@ class AmazonS3 extends CFRuntime
 		}
 		else
 		{
+			$opt['body'] = '';
 			$opt['headers']['x-amz-acl'] = $acl;
 		}
 
