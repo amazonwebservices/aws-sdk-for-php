@@ -1248,7 +1248,8 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * Keys for the $opt parameter:
 	 * 	body - _string_ (Required; Conditional) The data to be stored in the object. Either this parameter or `fileUpload` must be specified.
-	 * 	fileUpload - _string_|_resource_ (Required; Conditional) The file system path for the local file to upload, or an open resource. Either this parameter or `body` is required.
+	 * 	fileUpload - _string_|_resource_ (Required; Conditional) The URL/path for the file to upload, or an open resource. Either this parameter or `body` is required.
+	 * 	seekTo - _integer_ (Optional) The starting position in bytes within the file/stream to upload from.
 	 * 	length - _integer_ (Optional) The size of the object in bytes. For more information, see [RFC 2616, section 14.13](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.13). The value can also be passed to the `header` option as `Content-Length`.
 	 * 	acl - _string_ (Optional) The ACL settings for the specified object. [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. The default value is <ACL_PRIVATE>.
 	 * 	contentType - _string_ (Optional) The type of content that is being sent in the body. If a file is being uploaded via `fileUpload` as a file system path, it will attempt to determine the correct mime-type based on the file extension. The default value is `application/octet-stream`.
@@ -3267,13 +3268,13 @@ class AmazonS3 extends CFRuntime
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 * 	fileUpload - _string_|_resource_ (Required) The file system path for the local file to upload or an open resource.
+	 * 	fileUpload - _string_|_resource_ (Required) The URL/path for the file to upload or an open resource.
 	 * 	partNumber - _integer_ (Required) The part number order of the multipart upload.
 	 * 	expect - _string_ (Optional) Specifies that the SDK not send the request body until it receives an acknowledgement. If the message is rejected based on the headers, the body of the message is not sent. For more information, see [RFC 2616, section 14.20](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.20). The value can also be passed to the `header` option as `Expect`. [Allowed values: `100-continue`]
 	 * 	headers - _array_ (Optional) The standard HTTP headers to send along in the request.
 	 * 	length - _integer_ (Optional) The size of the part in bytes. For more information, see [RFC 2616, section 14.13](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.13). The value can also be passed to the `header` option as `Content-Length`.
 	 * 	md5 - _string_ (Optional) The base64 encoded 128-bit MD5 digest of the part data. This header can be used as a message integrity check to verify that the part data is the same data that was originally sent. Although it is optional, we recommend using this mechanism as an end-to-end integrity check. For more information, see [RFC 1864](http://www.ietf.org/rfc/rfc1864.txt). The value can also be passed to the `header` option as `Content-MD5`.
-	 * 	seekTo - _integer_ (Optional) The starting position in bytes for the piece of the file to upload.
+	 * 	seekTo - _integer_ (Optional) The starting position in bytes for the piece of the file/stream to upload.
 	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
 	 *
 	 * Returns:
@@ -3537,7 +3538,7 @@ class AmazonS3 extends CFRuntime
 	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
 	 *
 	 * Keys for the $opt parameter:
-	 * 	fileUpload - _string_|_resource_ (Required) The file system path for the local file to upload, or an open resource.
+	 * 	fileUpload - _string_|_resource_ (Required) The URL/path for the file to upload, or an open resource.
 	 * 	acl - _string_ (Optional) The ACL settings for the specified object. [Allowed values: `AmazonS3::ACL_PRIVATE`, `AmazonS3::ACL_PUBLIC`, `AmazonS3::ACL_OPEN`, `AmazonS3::ACL_AUTH_READ`, `AmazonS3::ACL_OWNER_READ`, `AmazonS3::ACL_OWNER_FULL_CONTROL`]. The default value is <ACL_PRIVATE>.
 	 * 	contentType - _string_ (Optional) The type of content that is being sent in the body. The default value is `application/octet-stream`.
 	 * 	headers - _array_ (Optional) The standard HTTP headers to send along in the request.
