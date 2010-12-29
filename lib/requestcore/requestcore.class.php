@@ -511,7 +511,7 @@ class RequestCore
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$location - _string_ (Required) The file system location to read from.
+	 * 	$location - _string_ (Required) The readable location to read from.
 	 *
 	 * Returns:
 	 * 	`$this`
@@ -552,7 +552,7 @@ class RequestCore
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$location - _string_ (Required) The file system location to write to.
+	 * 	$location - _string_ (Required) The writeable location to write to.
 	 *
 	 * Returns:
 	 * 	`$this`
