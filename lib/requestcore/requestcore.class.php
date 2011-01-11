@@ -636,7 +636,7 @@ class RequestCore
 		}
 
 		// If we're at the beginning of an upload and need to seek...
-		if ($this->read_stream_read == 0 && isset($this->seek_position) && $this->seek_position != ftell($this->read_stream))
+		if ($this->read_stream_read == 0 && isset($this->seek_position) && $this->seek_position !== ftell($this->read_stream))
 		{
 			if (fseek($this->read_stream, $this->seek_position) !== 0)
 			{
