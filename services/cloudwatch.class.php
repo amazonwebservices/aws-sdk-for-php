@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
  * 	that initiate Auto Scaling and Simple Notification Service actions on your behalf.
  *
  * Version:
- * 	Fri Dec 03 16:23:21 PST 2010
+ * 	Fri Jan 14 12:14:39 PST 2011
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.

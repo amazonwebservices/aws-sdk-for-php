@@ -633,8 +633,8 @@ class RequestCore
 		curl_setopt($curl_handle, CURLOPT_NOSIGNAL, true);
 		curl_setopt($curl_handle, CURLOPT_REFERER, $this->request_url);
 		curl_setopt($curl_handle, CURLOPT_USERAGENT, $this->useragent);
-		curl_setopt($curl_handle, CURLOPT_LOW_SPEED_LIMIT, 1);
-		curl_setopt($curl_handle, CURLOPT_LOW_SPEED_TIME, 10);
+		// curl_setopt($curl_handle, CURLOPT_LOW_SPEED_LIMIT, 1);
+		// curl_setopt($curl_handle, CURLOPT_LOW_SPEED_TIME, 10);
 		curl_setopt($curl_handle, CURLOPT_READFUNCTION, array($this, 'streaming_read_callback'));
 
 		// Enable a proxy connection if requested.
