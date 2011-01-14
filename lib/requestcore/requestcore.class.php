@@ -252,6 +252,17 @@ class RequestCore
 		return $this;
 	}
 
+	public function __destruct() {
+		if (isset($this->read_stream)) {
+			fclose($this->read_stream);
+			unset($this->read_stream);
+		}
+		if (isset($this->write_stream)) {
+			fclose($this->write_stream);
+			unset($this->write_stream);
+		}
+	}
+
 
 	/*%******************************************************************************************%*/
 	// REQUEST METHODS
@@ -474,7 +485,6 @@ class RequestCore
 	public function set_read_file($location)
 	{
 		$this->read_file = $location;
-		// @todo: Close this connection!
 		$read_file_handle = fopen($location, 'r');
 
 		return $this->set_read_stream($read_file_handle);
