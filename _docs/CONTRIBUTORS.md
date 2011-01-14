@@ -2,17 +2,17 @@
 
 ## AWS SDK for PHP Contributors
 
-Contributions were provided under the Apache 2.0 License, as appropriate.
+Contributions were provided under the Apache 2.0 License, as appropriate, unless otherwise specified.
 
 The following people have provided ideas, support and bug fixes:
 
-* [antischnorrer](http://developer.amazonwebservices.com/connect/profile.jspa?userID=152443) (bug fixes)
 * [arech8](http://developer.amazonwebservices.com/connect/profile.jspa?userID=154435) (bug fixes)
 * [Jeremy Archuleta](http://code.google.com/u/jeremy.archuleta/) (bug fixes)
+* [Paul Voegler](http://developer.amazonwebservices.com/connect/profile.jspa?userID=152443) (bug fixes, bug reports)
 * [Peter Bowen](http://github.com/pzb) (feedback, bug reports)
 
 
-## CloudFusion Contributors
+## CloudFusion/CacheCore/RequestCore Contributors
 
 Contributions were provided under the New BSD License, as appropriate.
 
@@ -47,6 +47,7 @@ The following people have provided ideas, support and bug fixes:
 * [nickgsuperstar](http://code.google.com/u/nickgsuperstar/) (bug fixes)
 * [ofpichon](http://code.google.com/u/ofpichon/) (bug fixes)
 * [Otavio Ferreira](http://otaviofff.me) (bug fixes)
+* [Paul Voegler](http://developer.amazonwebservices.com/connect/profile.jspa?userID=152443) (bug fixes, bug reports, Simplifed BSD-licensed patches)
 * [Steve Brozosky](http://code.google.com/u/@UBZWSlJVBxhHXAN1/) (bug fixes)
 * [Steve Chu](http://stevechu.org) (bug fixes)
 * [tommusic](http://code.google.com/u/tommusic/) (bug fixes)

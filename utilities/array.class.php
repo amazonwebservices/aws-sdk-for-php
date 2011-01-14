@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
  * 	Wrapper for ArrayObject.
  *
  * Version:
- * 	2010.11.02
+ * 	2010.12.06
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for more information.
@@ -47,14 +47,14 @@ class CFArray extends ArrayObject
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$input - _mixed_ (Required) The input parameter accepts an array or an Object.
+	 * 	$input - _mixed_ (Optional) The input parameter accepts an array or an Object. The default value is an empty array.
 	 * 	$flags - _int_ (Optional) Flags to control the behavior of the ArrayObject object. Defaults to `ArrayObject::STD_PROP_LIST`.
 	 * 	$iterator_class - _string_ (Optional) Specify the class that will be used for iteration of the `ArrayObject` object. `ArrayIterator` is the default class used.
 	 *
 	 * Returns:
 	 * 	_mixed_ Either an array of matches, or a single <CFSimpleXML> element.
 	 */
-	public function __construct($input, $flags = self::STD_PROP_LIST, $iterator_class = 'ArrayIterator')
+	public function __construct($input = array(), $flags = self::STD_PROP_LIST, $iterator_class = 'ArrayIterator')
 	{
 		return parent::__construct($input, $flags, $iterator_class);
 	}
@@ -262,5 +262,35 @@ class CFArray extends ArrayObject
 	{
 		$items = $this->getArrayCopy();
 		return count($items) ? end($items) : false;
+	}
+
+	/**
+	 * Method: compress()
+	 * 	Removes all `null` values from an array.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Returns:
+	 * 	_CFArray_ A new <CFArray> object containing the non-null values.
+	 */
+	public function compress()
+	{
+		return new CFArray(array_filter($this->getArrayCopy()));
+	}
+
+	/**
+	 * Method: reindex()
+	 * 	Reindexes the array, starting from zero.
+	 *
+	 * Access:
+	 * 	public
+	 *
+	 * Returns:
+	 * 	_CFArray_ A new <CFArray> object with indexes starting at zero.
+	 */
+	public function reindex()
+	{
+		return new CFArray(array_values($this->getArrayCopy()));
 	}
 }
