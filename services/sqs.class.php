@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 /**
  * File: AmazonSQS
+ * 	 *
  * 	Amazon Simple Queue Service (Amazon SQS) offers a reliable, highly scalable, hosted queue for
  * 	storing messages as they travel between computers. By using Amazon SQS, developers can simply move
  * 	data between distributed components of their applications that perform different tasks, without
@@ -31,7 +32,7 @@
  * 	Visit [http://aws.amazon.com/sqs/](http://aws.amazon.com/sqs/) for more information.
  *
  * Version:
- * 	Fri Dec 03 16:28:26 PST 2010
+ * 	Fri Jan 14 12:24:53 PST 2011
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.

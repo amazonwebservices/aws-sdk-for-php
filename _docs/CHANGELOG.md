@@ -1,3 +1,33 @@
+# Changelog: 1.2.1 "Dio"
+
+Launched Friday, January 14, 2010
+
+
+## New Features & Highlights (Summary)
+* Support for S3 Response Headers has been added to the SDK.
+* Bug fixes and enhancements:
+	* [copy_object failed between regions](https://forums.aws.amazon.com/thread.jspa?threadID=56893)
+	* [Possible S3 bug with multiple buckets?](https://forums.aws.amazon.com/thread.jspa?threadID=56561)
+
+## Service Classes
+### AmazonS3
+* **New:** Support for S3 Response Headers has been added to the SDK.
+* **New:** Documentation for Amazon S3 has been updated to include large object support details.
+* **New:** The `abort_multipart_uploads_by_date()` method has been added to the SDK, which aborts multipart uploads that were initiated before a specific date.
+* **Fixed:** Resolved an issue where the resource prefix wasn't being reset correctly.
+
+## Utility classes
+### CFArray
+* **New:** Instantiating the class without passing an array will use an empty array instead.
+* **New:** Added the `compress()` method which removes null values from the array.
+* **New:** Added the `reindex()` method which reindexes all array elements starting at zero.
+
+## Compatibility Test
+* **New:** The command-line compatibility test now color-codes the responses.
+
+
+----
+
 # Changelog: 1.2 "Cloud"
 
 Launched Friday, December 3, 2010
