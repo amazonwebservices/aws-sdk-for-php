@@ -30,6 +30,16 @@ $sqlite2_ok = extension_loaded('sqlite');
 $sqlite3_ok = extension_loaded('sqlite3');
 $sqlite_ok = ($pdo_ok && $pdo_sqlite_ok && ($sqlite2_ok || $sqlite3_ok));
 
+function success($s = 'Yes')
+{
+	return "\033[1;37m\033[42m " . $s . " \033[0m";
+}
+
+function failure($s = 'No ')
+{
+	return "\033[1;37m\033[41m " . $s . " \033[0m";
+}
+
 /////////////////////////////////////////////////////////////////////////
 
 echo PHP_EOL;
@@ -39,23 +49,23 @@ echo 'PHP Environment Compatibility Test (CLI)' . PHP_EOL;
 echo '----------------------------------------' . PHP_EOL;
 echo PHP_EOL;
 
-echo 'PHP 5.2 or newer...       ' . ($php_ok ? phpversion() : 'No') . PHP_EOL;
-echo 'cURL with SSL...          ' . ($curl_ok ? ($curl_version['version'] . ' (' . $curl_version['ssl_version'] . ')') : ($curl_version['version'] . (in_array('https', $curl_version['protocols'], true) ? ' (with ' . $curl_version['ssl_version'] . ')' : ' (without SSL)'))) . PHP_EOL;
-echo 'Standard PHP Library...   ' . ($spl_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'SimpleXML...              ' . ($simplexml_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'JSON...                   ' . ($json_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'PCRE...                   ' . ($pcre_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'File system read/write... ' . ($file_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'OpenSSL extension...      ' . ($openssl_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'Zlib...                   ' . ($zlib_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'APC...                    ' . ($apc_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'XCache...                 ' . ($xcache_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'Memcache...               ' . ($memcache_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'Memcached...              ' . ($memcached_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'PDO...                    ' . ($pdo_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'SQLite 2...               ' . ($sqlite2_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'SQLite 3...               ' . ($sqlite3_ok ? 'Yes' : 'No') . PHP_EOL;
-echo 'PDO-SQLite driver...      ' . ($pdo_sqlite_ok ? 'Yes' : 'No') . PHP_EOL;
+echo 'PHP 5.2 or newer...       ' . ($php_ok ? (success() . ' ' . phpversion()) : failure()) . PHP_EOL;
+echo 'cURL with SSL...          ' . ($curl_ok ? (success() . ' ' . $curl_version['version'] . ' (' . $curl_version['ssl_version'] . ')') : failure($curl_version['version'] . (in_array('https', $curl_version['protocols'], true) ? ' (with ' . $curl_version['ssl_version'] . ')' : ' (without SSL)'))) . PHP_EOL;
+echo 'Standard PHP Library...   ' . ($spl_ok ? success() : failure()) . PHP_EOL;
+echo 'SimpleXML...              ' . ($simplexml_ok ? success() : failure()) . PHP_EOL;
+echo 'JSON...                   ' . ($json_ok ? success() : failure()) . PHP_EOL;
+echo 'PCRE...                   ' . ($pcre_ok ? success() : failure()) . PHP_EOL;
+echo 'File system read/write... ' . ($file_ok ? success() : failure()) . PHP_EOL;
+echo 'OpenSSL extension...      ' . ($openssl_ok ? success() : failure()) . PHP_EOL;
+echo 'Zlib...                   ' . ($zlib_ok ? success() : failure()) . PHP_EOL;
+echo 'APC...                    ' . ($apc_ok ? success() : failure()) . PHP_EOL;
+echo 'XCache...                 ' . ($xcache_ok ? success() : failure()) . PHP_EOL;
+echo 'Memcache...               ' . ($memcache_ok ? success() : failure()) . PHP_EOL;
+echo 'Memcached...              ' . ($memcached_ok ? success() : failure()) . PHP_EOL;
+echo 'PDO...                    ' . ($pdo_ok ? success() : failure()) . PHP_EOL;
+echo 'SQLite 2...               ' . ($sqlite2_ok ? success() : failure()) . PHP_EOL;
+echo 'SQLite 3...               ' . ($sqlite3_ok ? success() : failure()) . PHP_EOL;
+echo 'PDO-SQLite driver...      ' . ($pdo_sqlite_ok ? success() : failure()) . PHP_EOL;
 echo PHP_EOL;
 
 echo '----------------------------------------' . PHP_EOL;

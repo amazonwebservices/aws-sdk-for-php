@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -16,9 +16,10 @@
 
 /**
  * File: AmazonSDB
- * 	Amazon SimpleDB is a web service providing the core database functions of data indexing and querying
- * 	in the cloud. By offloading the time and effort associated with building and operating a web-scale
- * 	database, SimpleDB provides developers the freedom to focus on application development.
+ * 	 *
+ * 	Amazon SimpleDB is a web service providing the core database functions of data indexing and
+ * 	querying in the cloud. By offloading the time and effort associated with building and operating a
+ * 	web-scale database, SimpleDB provides developers the freedom to focus on application development.
  *
  * 	A traditional, clustered relational database requires a sizable upfront capital outlay, is complex
  * 	to design, and often requires extensive and repetitive database administration. Amazon SimpleDB is
@@ -30,7 +31,7 @@
  * 	Visit [http://aws.amazon.com/simpledb/](http://aws.amazon.com/simpledb/) for more information.
  *
  * Version:
- * 	Fri Dec 03 16:27:22 PST 2010
+ * 	Fri Jan 14 12:23:32 PST 2011
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.

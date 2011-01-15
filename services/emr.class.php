@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
  * 	detailed information about the Amazon Elastic MapReduce APIs.
  *
  * Version:
- * 	Fri Dec 03 16:25:08 PST 2010
+ * 	Fri Jan 14 12:20:15 PST 2011
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
