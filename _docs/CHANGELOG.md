@@ -1,3 +1,29 @@
+# Changelog: 1.2.2 "Esper"
+
+Launched Tuesday, January 18, 2010
+
+## New Features & Highlights (Summary)
+* Support for Amazon Elastic Beanstalk has been added to the SDK.
+* Bug fixes and enhancements:
+	* [AWS PHP S3 Library is not working out of the box](https://forums.aws.amazon.com/thread.jspa?threadID=55174)
+	* [Problem with create_mpu_object() and streaming_read_callback() in S3](https://forums.aws.amazon.com/thread.jspa?threadID=54541)
+	* [Integrated Uranium235's GitHub contributions](https://github.com/Uranium235/aws-sdk-for-php/compare/Streaming)
+
+## Service Classes
+### AmazonElasticBeanstalk
+* **New:** Support for AWS Elastic Beanstalk has been added to the SDK.
+
+### AmazonS3
+* **Fixed:** Major improvements to transferring data over streams.
+
+## Utility classes
+###RequestCore
+* **New:** Upgraded to version 1.4.
+* **Fixed:** Major improvements to transferring data over streams.
+
+
+----
+
 # Changelog: 1.2.1 "Dio"
 
 Launched Friday, January 14, 2010
