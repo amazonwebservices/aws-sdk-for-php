@@ -4,10 +4,11 @@
  * 	Handles all HTTP requests using cURL and manages the responses.
  *
  * Version:
- * 	2010.11.02
+ * 	2011.01.11
  *
  * Copyright:
- * 	2006-2010 Ryan Parman, Foleeo Inc., and contributors.
+ * 	2006-2011 Ryan Parman, Foleeo Inc., and contributors.
+ * 	2010-2011 Amazon.com, Inc. or its affiliates.
  *
  * License:
  * 	Simplified BSD License - http://opensource.org/licenses/bsd-license.php
@@ -133,43 +134,49 @@ class RequestCore
 	 * Property: useragent
 	 * 	Default useragent string to use.
 	 */
-	public $useragent = 'RequestCore/1.3';
+	public $useragent = 'RequestCore/1.4';
 
 	/**
 	 * Property: read_file
 	 * 	File to read from while streaming up.
 	 */
-	var $read_file = null;
+	public $read_file = null;
 
 	/**
 	 * Property: read_stream
 	 *  The resource to read from while streaming up.
 	 */
-	var $read_stream = null;
+	public $read_stream = null;
 
 	/**
 	 * Property: read_stream_size
 	 *  The size of the stream to read from.
 	 */
-	var $read_stream_size = null;
+	public $read_stream_size = null;
+
+	/**
+	 * Property: read_stream_read
+	 *  The length already read from the stream.
+	 */
+	public $read_stream_read = 0;
 
 	/**
 	 * Property: write_file
 	 * 	File to write to while streaming down.
 	 */
-	var $write_file = null;
+	public $write_file = null;
 
 	/**
 	 * Property: write_stream
 	 *  The resource to write to while streaming down.
 	 */
-	var $write_stream = null;
+	public $write_stream = null;
 
 	/**
 	 * Property: seek_position
 	 * 	Stores the intended starting seek position.
 	 */
-	public $seek_position = 0;
+	public $seek_position = null;
 
 
 	/*%******************************************************************************************%*/
@@ -207,7 +214,7 @@ class RequestCore
 
 
 	/*%******************************************************************************************%*/
-	// CONSTRUCTOR
+	// CONSTRUCTOR/DESTRUCTOR
 
 	/**
 	 * Method: __construct()
@@ -247,6 +254,31 @@ class RequestCore
 		if ($proxy)
 		{
 			$this->set_proxy($proxy);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Method: __destruct()
+	 *   The destructor. Closes opened file handles.
+	 *
+	 * Access:
+	 *   public
+	 *
+	 * Returns:
+	 *   `$this`
+	 */
+	public function __destruct()
+	{
+		if (isset($this->read_file) && isset($this->read_stream))
+		{
+			fclose($this->read_stream);
+		}
+
+		if (isset($this->write_file) && isset($this->write_stream))
+		{
+			fclose($this->write_stream);
 		}
 
 		return $this;
@@ -415,6 +447,26 @@ class RequestCore
 	}
 
 	/**
+	 * Method: set_read_stream_size()
+	 *   Sets the length in bytes to read from the stream while streaming up.
+	 *
+	 * Access:
+	 *   public
+	 *
+	 * Parameters:
+	 *   $size - _integer_ (Required) The length in bytes to read from the stream.
+	 *
+	 * Returns:
+	 *   `$this`
+	 */
+	public function set_read_stream_size($size)
+	{
+		$this->read_stream_size = $size;
+
+		return $this;
+	}
+
+	/**
 	 * Method: set_read_stream()
 	 * 	Sets the resource to read from while streaming up. Reads the stream from it's current position until
 	 * 	EOF or `$size` bytes have been read. If `$size` is not given it will be determined by fstat() and
@@ -430,9 +482,9 @@ class RequestCore
 	 * Returns:
 	 * 	`$this`
 	 */
-	public function set_read_stream($resource, $size = -1)
+	public function set_read_stream($resource, $size = null)
 	{
-		if ($size < 0)
+		if (!isset($size) || $size < 0)
 		{
 			$stats = fstat($resource);
 
@@ -447,15 +499,9 @@ class RequestCore
 			}
 		}
 
-		if ($size < 0)
-		{
-			throw new RequestCore_Exception('Stream size for upload cannot be determined');
-		}
-
 		$this->read_stream = $resource;
-		$this->read_stream_size = $size;
 
-		return $this;
+		return $this->set_read_stream_size($size);
 	}
 
 	/**
@@ -466,7 +512,7 @@ class RequestCore
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$location - _string_ (Required) The file system location to read from.
+	 * 	$location - _string_ (Required) The readable location to read from.
 	 *
 	 * Returns:
 	 * 	`$this`
@@ -474,7 +520,6 @@ class RequestCore
 	public function set_read_file($location)
 	{
 		$this->read_file = $location;
-		// @todo: Close this connection!
 		$read_file_handle = fopen($location, 'r');
 
 		return $this->set_read_stream($read_file_handle);
@@ -496,6 +541,7 @@ class RequestCore
 	public function set_write_stream($resource)
 	{
 		$this->write_stream = $resource;
+
 		return $this;
 	}
 
@@ -507,7 +553,7 @@ class RequestCore
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$location - _string_ (Required) The file system location to write to.
+	 * 	$location - _string_ (Required) The writeable location to write to.
 	 *
 	 * Returns:
 	 * 	`$this`
@@ -551,14 +597,15 @@ class RequestCore
 	 * 	public
 	 *
 	 * Parameters:
-	 * 	$position - _integer_ (Required) The byte-position of the file to begin reading from.
+	 * 	$position - _integer_ (Required) The byte-position of the stream to begin reading from.
 	 *
 	 * Returns:
 	 * 	`$this`
 	 */
 	public function set_seek_position($position)
 	{
-		$this->seek_position = (integer) $position;
+		$this->seek_position = isset($position) ? (integer) $position : null;
+
 		return $this;
 	}
 
@@ -568,7 +615,7 @@ class RequestCore
 
 	/**
 	 * Method: streaming_read_callback()
-	 * 	A callback function that is invoked by cURL for streaming.
+	 * 	A callback function that is invoked by cURL for streaming up.
 	 *
 	 * Access:
 	 * 	public
@@ -579,28 +626,65 @@ class RequestCore
 	 * 	$length - _integer_ (Required) The maximum number of bytes to read.
 	 *
 	 * Returns:
-	 * 	_binary_ Binary data from a file.
+	 * 	_binary_ Binary data from a stream.
 	 */
 	public function streaming_read_callback($curl_handle, $file_handle, $length)
 	{
-		$info = curl_getinfo($curl_handle);
-
 		// Once we've sent as much as we're supposed to send...
-		if ($info['size_upload'] >= $info['upload_content_length'])
+		if ($this->read_stream_read >= $this->read_stream_size)
 		{
 			// Send EOF
-			return 0;
+			return '';
 		}
 
-		// If we're not in the middle of an upload...
-		if ((integer) $info['size_upload'] === 0)
+		// If we're at the beginning of an upload and need to seek...
+		if ($this->read_stream_read == 0 && isset($this->seek_position) && $this->seek_position !== ftell($this->read_stream))
 		{
-			fseek($file_handle, (integer) $this->seek_position);
+			if (fseek($this->read_stream, $this->seek_position) !== 0)
+			{
+				throw new RequestCore_Exception('The stream does not support seeking and is either not at the requested position or the position is unknown.');
+			}
 		}
 
-		// echo ftell($file_handle) . '/' . $info['size_upload'] . PHP_EOL;
+		$read = fread($this->read_stream, min($this->read_stream_size - $this->read_stream_read, $length)); // Remaining upload data or cURL's requested chunk size
+		$this->read_stream_read += strlen($read);
 
-		return fread($file_handle, 16384); // 16KB chunks
+		return $read === false ? '' : $read;
+	}
+
+	/**
+	 * Method: streaming_write_callback()
+	 *   A callback function that is invoked by cURL for streaming down.
+	 *
+	 * Access:
+	 *   public
+	 *
+	 * Parameters:
+	 *   $curl_handle - _resource_ (Required) The cURL handle for the request.
+	 *   $data - _binary_ (Required) The data to write.
+	 *
+	 * Returns:
+	 *   _integer_ The number of bytes written.
+	 */
+	public function streaming_write_callback($curl_handle, $data)
+	{
+		$length = strlen($data);
+		$written_total = 0;
+		$written_last = 0;
+
+		while ($written_total < $length)
+		{
+			$written_last = fwrite($this->write_stream, substr($data, $written_total));
+
+			if ($written_last === false)
+			{
+				return $written_total;
+			}
+
+			$written_total += $written_last;
+		}
+
+		return $written_total;
 	}
 
 	/**
@@ -633,8 +717,6 @@ class RequestCore
 		curl_setopt($curl_handle, CURLOPT_NOSIGNAL, true);
 		curl_setopt($curl_handle, CURLOPT_REFERER, $this->request_url);
 		curl_setopt($curl_handle, CURLOPT_USERAGENT, $this->useragent);
-		// curl_setopt($curl_handle, CURLOPT_LOW_SPEED_LIMIT, 1);
-		// curl_setopt($curl_handle, CURLOPT_LOW_SPEED_TIME, 10);
 		curl_setopt($curl_handle, CURLOPT_READFUNCTION, array($this, 'streaming_read_callback'));
 
 		// Enable a proxy connection if requested.
@@ -684,7 +766,11 @@ class RequestCore
 				curl_setopt($curl_handle, CURLOPT_CUSTOMREQUEST, 'PUT');
 				if (isset($this->read_stream))
 				{
-					curl_setopt($curl_handle, CURLOPT_INFILE, $this->read_stream);
+					if (!isset($this->read_stream_size) || $this->read_stream_size < 0)
+					{
+						throw new RequestCore_Exception('The stream size for the streaming upload cannot be determined.');
+					}
+
 					curl_setopt($curl_handle, CURLOPT_INFILESIZE, $this->read_stream_size);
 					curl_setopt($curl_handle, CURLOPT_UPLOAD, true);
 				}
@@ -708,7 +794,7 @@ class RequestCore
 				curl_setopt($curl_handle, CURLOPT_CUSTOMREQUEST, $this->method);
 				if (isset($this->write_stream))
 				{
-					curl_setopt($curl_handle, CURLOPT_FILE, $this->write_stream);
+					curl_setopt($curl_handle, CURLOPT_WRITEFUNCTION, array($this, 'streaming_write_callback'));
 					curl_setopt($curl_handle, CURLOPT_HEADER, false);
 				}
 				else
@@ -884,14 +970,14 @@ class RequestCore
 			// Start executing and wait for a response.
 			while (($status = curl_multi_exec($multi_handle, $active)) === CURLM_CALL_MULTI_PERFORM)
 			{
-				if ($status !== CURLM_OK && $limit > 0) break;
+				// Start looking for possible responses immediately when we have to add more handles
+				if (count($handles) > 0) break;
 			}
 
 			// Figure out which requests finished.
-			$qlength = 0;
 			$to_process = array();
 
-			while ($done = curl_multi_info_read($multi_handle, $qlength))
+			while ($done = curl_multi_info_read($multi_handle))
 			{
 				// Since curl_errno() isn't reliable for handles that were in multirequests, we check the 'result' of the info read, which contains the curl error number, (listed here http://curl.haxx.se/libcurl/c/libcurl-errors.html )
 				if ($done['result'] > 0)
@@ -909,25 +995,20 @@ class RequestCore
 			// Actually deal with the request
 			foreach ($to_process as $pkey => $done)
 			{
-				if ((int) $done['handle'] != $last_handle)
+				$response = $http->process_response($done['handle'], curl_multi_getcontent($done['handle']));
+				$key = array_search($done['handle'], $handle_list, true);
+				$handles_post[$key] = $response;
+
+				if (count($handles) > 0)
 				{
-					$last_handle = (int) $done['handle'];
-					$response = $http->process_response($done['handle'], curl_multi_getcontent($done['handle']));
-					$key = array_search($done['handle'], $handle_list, true);
-
-					$handles_post[$key] = $response;
-
-					if (count($handles) > 0)
-					{
-						curl_multi_add_handle($multi_handle, array_shift($handles));
-					}
-
-					curl_multi_remove_handle($multi_handle, $done['handle']);
-					curl_close($done['handle']);
+					curl_multi_add_handle($multi_handle, array_shift($handles));
 				}
+
+				curl_multi_remove_handle($multi_handle, $done['handle']);
+				curl_close($done['handle']);
 			}
 		}
-		while ($active);
+		while ($active || count($handles_post) < $added);
 
 		curl_multi_close($multi_handle);
 

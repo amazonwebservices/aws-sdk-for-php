@@ -1201,4 +1201,3 @@ class AmazonIAM extends CFRuntime
 		return $this->authenticate('DeleteGroup', $opt, $this->hostname);
 	}
 }
-
