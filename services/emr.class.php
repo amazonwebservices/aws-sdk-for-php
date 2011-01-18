@@ -20,7 +20,7 @@
  * 	detailed information about the Amazon Elastic MapReduce APIs.
  *
  * Version:
- * 	Fri Jan 14 12:20:15 PST 2011
+ * 	Tue Jan 18 08:11:51 PST 2011
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
