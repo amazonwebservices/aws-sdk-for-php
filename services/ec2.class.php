@@ -30,7 +30,7 @@
  * 	Visit [http://aws.amazon.com/ec2/](http://aws.amazon.com/ec2/) for more information.
  *
  * Version:
- * 	Fri Jan 14 12:16:29 PST 2011
+ * 	Tue Jan 18 08:10:03 PST 2011
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.

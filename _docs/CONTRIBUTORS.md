@@ -8,7 +8,7 @@ The following people have provided ideas, support and bug fixes:
 
 * [arech8](http://developer.amazonwebservices.com/connect/profile.jspa?userID=154435) (bug fixes)
 * [Jeremy Archuleta](http://code.google.com/u/jeremy.archuleta/) (bug fixes)
-* [Paul Voegler](http://developer.amazonwebservices.com/connect/profile.jspa?userID=152443) (bug fixes, bug reports)
+* [Paul Voegler](mailto:voegler@gmx.de) (bug fixes, bug reports, patches)
 * [Peter Bowen](http://github.com/pzb) (feedback, bug reports)
 
 
@@ -47,7 +47,7 @@ The following people have provided ideas, support and bug fixes:
 * [nickgsuperstar](http://code.google.com/u/nickgsuperstar/) (bug fixes)
 * [ofpichon](http://code.google.com/u/ofpichon/) (bug fixes)
 * [Otavio Ferreira](http://otaviofff.me) (bug fixes)
-* [Paul Voegler](http://developer.amazonwebservices.com/connect/profile.jspa?userID=152443) (bug fixes, bug reports, Simplifed BSD-licensed patches)
+* [Paul Voegler](mailto:voegler@gmx.de) (bug fixes, bug reports, patches)
 * [Steve Brozosky](http://code.google.com/u/@UBZWSlJVBxhHXAN1/) (bug fixes)
 * [Steve Chu](http://stevechu.org) (bug fixes)
 * [tommusic](http://code.google.com/u/tommusic/) (bug fixes)

@@ -4,10 +4,11 @@
  * 	Handles all HTTP requests using cURL and manages the responses.
  *
  * Version:
- * 	2010.11.02
+ * 	2011.01.11
  *
  * Copyright:
- * 	2006-2010 Ryan Parman, Foleeo Inc., and contributors.
+ * 	2006-2011 Ryan Parman, Foleeo Inc., and contributors.
+ * 	2010-2011 Amazon.com, Inc. or its affiliates.
  *
  * License:
  * 	Simplified BSD License - http://opensource.org/licenses/bsd-license.php
@@ -133,7 +134,7 @@ class RequestCore
 	 * Property: useragent
 	 * 	Default useragent string to use.
 	 */
-	public $useragent = 'RequestCore/1.3';
+	public $useragent = 'RequestCore/1.4';
 
 	/**
 	 * Property: read_file
@@ -213,7 +214,7 @@ class RequestCore
 
 
 	/*%******************************************************************************************%*/
-	// CONSTRUCTOR / DESTRUCTOR
+	// CONSTRUCTOR/DESTRUCTOR
 
 	/**
 	 * Method: __construct()
@@ -260,13 +261,13 @@ class RequestCore
 
 	/**
 	 * Method: __destruct()
-	 * 	The destructor. Closes opened file handles.
+	 *   The destructor. Closes opened file handles.
 	 *
 	 * Access:
-	 * 	public
+	 *   public
 	 *
 	 * Returns:
-	 * 	`$this`
+	 *   `$this`
 	 */
 	public function __destruct()
 	{
@@ -447,16 +448,16 @@ class RequestCore
 
 	/**
 	 * Method: set_read_stream_size()
-	 * 	Sets the length in bytes to read from the stream while streaming up.
+	 *   Sets the length in bytes to read from the stream while streaming up.
 	 *
 	 * Access:
-	 * 	public
+	 *   public
 	 *
 	 * Parameters:
-	 * 	$size - _integer_ (Required) The length in bytes to read from the stream.
+	 *   $size - _integer_ (Required) The length in bytes to read from the stream.
 	 *
 	 * Returns:
-	 * 	`$this`
+	 *   `$this`
 	 */
 	public function set_read_stream_size($size)
 	{
@@ -604,6 +605,7 @@ class RequestCore
 	public function set_seek_position($position)
 	{
 		$this->seek_position = isset($position) ? (integer) $position : null;
+
 		return $this;
 	}
 
@@ -640,7 +642,7 @@ class RequestCore
 		{
 			if (fseek($this->read_stream, $this->seek_position) !== 0)
 			{
-				throw new RequestCore_Exception('Stream does not support seeking and is not at the requested position or the position is unknown.');
+				throw new RequestCore_Exception('The stream does not support seeking and is either not at the requested position or the position is unknown.');
 			}
 		}
 
@@ -652,27 +654,28 @@ class RequestCore
 
 	/**
 	 * Method: streaming_write_callback()
-	 * 	A callback function that is invoked by cURL for streaming down.
+	 *   A callback function that is invoked by cURL for streaming down.
 	 *
 	 * Access:
-	 * 	public
+	 *   public
 	 *
 	 * Parameters:
-	 * 	$curl_handle - _resource_ (Required) The cURL handle for the request.
-	 * 	$data - _binary_ (Required) The data to write.
+	 *   $curl_handle - _resource_ (Required) The cURL handle for the request.
+	 *   $data - _binary_ (Required) The data to write.
 	 *
 	 * Returns:
-	 * 	_integer_ The number of bytes written.
+	 *   _integer_ The number of bytes written.
 	 */
 	public function streaming_write_callback($curl_handle, $data)
 	{
 		$length = strlen($data);
-
 		$written_total = 0;
 		$written_last = 0;
+
 		while ($written_total < $length)
 		{
 			$written_last = fwrite($this->write_stream, substr($data, $written_total));
+
 			if ($written_last === false)
 			{
 				return $written_total;
@@ -714,8 +717,6 @@ class RequestCore
 		curl_setopt($curl_handle, CURLOPT_NOSIGNAL, true);
 		curl_setopt($curl_handle, CURLOPT_REFERER, $this->request_url);
 		curl_setopt($curl_handle, CURLOPT_USERAGENT, $this->useragent);
-		// curl_setopt($curl_handle, CURLOPT_LOW_SPEED_LIMIT, 1);
-		// curl_setopt($curl_handle, CURLOPT_LOW_SPEED_TIME, 10);
 		curl_setopt($curl_handle, CURLOPT_READFUNCTION, array($this, 'streaming_read_callback'));
 
 		// Enable a proxy connection if requested.
@@ -767,7 +768,7 @@ class RequestCore
 				{
 					if (!isset($this->read_stream_size) || $this->read_stream_size < 0)
 					{
-						throw new RequestCore_Exception('Stream size for streaming upload cannot be determined.');
+						throw new RequestCore_Exception('The stream size for the streaming upload cannot be determined.');
 					}
 
 					curl_setopt($curl_handle, CURLOPT_INFILESIZE, $this->read_stream_size);
@@ -996,7 +997,6 @@ class RequestCore
 			{
 				$response = $http->process_response($done['handle'], curl_multi_getcontent($done['handle']));
 				$key = array_search($done['handle'], $handle_list, true);
-
 				$handles_post[$key] = $response;
 
 				if (count($handles) > 0)
