@@ -29,7 +29,7 @@
  * 	that initiate Auto Scaling and Simple Notification Service actions on your behalf.
  *
  * Version:
- * 	Tue Jan 18 08:08:48 PST 2011
+ * 	Mon Jan 24 14:50:40 PST 2011
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
