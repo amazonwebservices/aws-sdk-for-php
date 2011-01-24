@@ -31,7 +31,7 @@
  * 	Visit [http://aws.amazon.com/simpledb/](http://aws.amazon.com/simpledb/) for more information.
  *
  * Version:
- * 	Tue Jan 18 08:14:03 PST 2011
+ * 	Mon Jan 24 14:58:45 PST 2011
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.

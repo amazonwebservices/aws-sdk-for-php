@@ -1,6 +1,20 @@
+# Changelog: 1.2.3 "Fayth"
+
+Launched Monday, January 24, 2011
+
+## New Features & Highlights (Summary)
+* Support for Amazon Simple Email Service has been added to the SDK.
+
+## Service Classes
+### AmazonSES
+* **New:** Support for Amazon Simple Email Service has been added to the SDK.
+
+
+----
+
 # Changelog: 1.2.2 "Esper"
 
-Launched Tuesday, January 18, 2010
+Launched Tuesday, January 18, 2011
 
 ## New Features & Highlights (Summary)
 * Support for Amazon Elastic Beanstalk has been added to the SDK.
@@ -26,7 +40,7 @@ Launched Tuesday, January 18, 2010
 
 # Changelog: 1.2.1 "Dio"
 
-Launched Friday, January 14, 2010
+Launched Friday, January 14, 2011
 
 
 ## New Features & Highlights (Summary)

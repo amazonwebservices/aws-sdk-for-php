@@ -29,7 +29,7 @@
  * 	Guide](http://docs.amazonwebservices.com/elasticbeanstalk/latest/ug/).
  *
  * Version:
- * 	Tue Jan 18 08:09:24 PST 2011
+ * 	Mon Jan 24 14:51:25 PST 2011
  *
  * License and Copyright:
  * 	See the included NOTICE.md file for complete information.
