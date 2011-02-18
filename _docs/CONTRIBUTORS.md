@@ -2,7 +2,7 @@
 
 ## AWS SDK for PHP Contributors
 
-Contributions were provided under the Apache 2.0 License, as appropriate, unless otherwise specified.
+Contributions were provided under the Apache 2.0 License, as appropriate.
 
 The following people have provided ideas, support and bug fixes:
 

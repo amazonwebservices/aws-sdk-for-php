@@ -14,42 +14,26 @@
  * permissions and limitations under the License.
  */
 
-/**
- * File: CFManifest
- * 	Provides information about the SDK.
- *
- * Version:
- * 	2010.11.22
- *
- * License and Copyright:
- * 	See the included NOTICE.md file for more information.
- *
- * See Also:
- * 	[PHP Developer Center](http://aws.amazon.com/php/)
- */
-
 
 /*%******************************************************************************************%*/
 // CLASS
 
 /**
- * Class: CFManifest
- * 	Provides information about the SDK.
+ * Simplifies the process of generating manifests for the AWS Import/Export service.
+ *
+ * @version 2010.11.22
+ * @license See the included NOTICE.md file for more information.
+ * @copyright See the included NOTICE.md file for more information.
+ * @link http://aws.amazon.com/php/ PHP Developer Center
  */
 class CFManifest
 {
+
 	/**
-	 * Method: json()
-	 * 	Takes a JSON object as a string to convert to a YAML manifest.
+	 * Takes a JSON object as a string to convert to a YAML manifest.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$json - _string_ (Required) A JSON object.
-	 *
-	 * Returns:
-	 * 	_string_ A YAML manifest document.
+	 * @param string $json (Required) A JSON object. The JSON string should use canonical rules (e.g., double quotes, quoted keys) as is required by PHP's <php:json_encode()> function.
+	 * @return string A YAML manifest document.
 	 */
 	public static function json($json)
 	{
@@ -58,17 +42,10 @@ class CFManifest
 	}
 
 	/**
-	 * Method: map()
-	 * 	Takes an associative array to convert to a YAML manifest.
+	 * Takes an associative array to convert to a YAML manifest.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$map - _array_ (Required) An associative array.
-	 *
-	 * Returns:
-	 * 	_string_ A YAML manifest document.
+	 * @param array $map (Required) An associative array.
+	 * @return string A YAML manifest document.
 	 */
 	public static function map($map)
 	{

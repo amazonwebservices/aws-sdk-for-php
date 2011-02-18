@@ -14,26 +14,16 @@
  * permissions and limitations under the License.
  */
 
-/**
- * File: CFResponse
- * 	Wrapper for ResponseCore.
- *
- * Version:
- * 	2010.10.11
- *
- * License and Copyright:
- * 	See the included NOTICE.md file for more information.
- *
- * See Also:
- * 	[PHP Developer Center](http://aws.amazon.com/php/)
- */
-
 
 /*%******************************************************************************************%*/
 // CLASS
 
 /**
- * Class: CFResponse
- * 	Wrapper for ResponseCore.
+ * Wraps the underlying `ResponseCore` class with some AWS-specific customizations.
+ *
+ * @version 2010.10.11
+ * @license See the included NOTICE.md file for more information.
+ * @copyright See the included NOTICE.md file for more information.
+ * @link http://aws.amazon.com/php/ PHP Developer Center
  */
 class CFResponse extends ResponseCore {}

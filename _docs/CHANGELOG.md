@@ -1,6 +1,33 @@
+# Changelog: 1.2.4 "Goltanna"
+
+Launched Wednesday, February 16, 2011
+
+## New Features & Highlights (Summary)
+* Support for IAM account aliases and server certificates has been added to the SDK.
+* Support for Amazon S3 Website Configuration has been added to the SDK.
+* Documentation updates for Amazon RDS and AWS Import/Export.
+* Updated all documentation blocks to adhere to the PHPDoc format. This enables a greater number of tools to take advantage of the SDK documentation.
+* Rolled out a major update to the SDK API Reference.
+
+## Service Classes
+### AmazonIAM
+* **New:** Support for IAM account aliases and server certificates has been added to the SDK.
+
+### AmazonImportExport
+* **New:** Documentation has been updated to note the new US West region support.
+
+### AmazonRDS
+* **New:** Documentation has been updated to note the new support for MySQL 5.5.
+
+### AmazonS3
+* **New:** Support for Amazon S3 Website Configuration has been added to the SDK.
+
+
+----
+
 # Changelog: 1.2.3 "Fayth"
 
-Launched Monday, January 24, 2011
+Launched Tuesday, January 25, 2010
 
 ## New Features & Highlights (Summary)
 * Support for Amazon Simple Email Service has been added to the SDK.

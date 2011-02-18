@@ -14,20 +14,6 @@
  * permissions and limitations under the License.
  */
 
-/**
- * File: CFRuntime
- * 	Core functionality and default settings shared across all SDK classes. All methods and properties in this class are inherited by the service-specific classes.
- *
- * Version:
- * 	2011.01.14
- *
- * License and Copyright:
- * 	See the included NOTICE.md file for more information.
- *
- * See Also:
- * 	[PHP Developer Center](http://aws.amazon.com/php/)
- */
-
 
 /*%******************************************************************************************%*/
 // CORE DEPENDENCIES
@@ -48,8 +34,7 @@ elseif (getenv('HOME') && file_exists(getenv('HOME') . DIRECTORY_SEPARATOR . '.a
 // EXCEPTIONS
 
 /**
- * Exception: CFRuntime_Exception
- * 	Default CFRuntime Exception.
+ * Default CFRuntime Exception.
  */
 class CFRuntime_Exception extends Exception {}
 
@@ -117,9 +102,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.2.2');
+define('CFRUNTIME_VERSION', '1.2.4');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20110118151007');
+define('CFRUNTIME_BUILD', '20110216201555');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . php_uname('s') . '/' . php_uname('r') . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -127,8 +112,13 @@ define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/'
 // CLASS
 
 /**
- * Class: CFRuntime
- * 	Container for all shared methods. This is not intended to be instantiated directly, but is extended by the service-specific classes.
+ * Core functionality and default settings shared across all SDK classes. All methods and properties in this
+ * class are inherited by the service-specific classes.
+ *
+ * @version 2011.01.14
+ * @license See the included NOTICE.md file for more information.
+ * @copyright See the included NOTICE.md file for more information.
+ * @link http://aws.amazon.com/php/ PHP Developer Center
  */
 class CFRuntime
 {
@@ -136,27 +126,22 @@ class CFRuntime
 	// CONSTANTS
 
 	/**
-	 * Constant: NAME
-	 * 	Name of the software.
+	 * Name of the software.
 	 */
 	const NAME = CFRUNTIME_NAME;
 
 	/**
-	 * Constant: VERSION
-	 * 	Version of the software.
+	 * Version of the software.
 	 */
 	const VERSION = CFRUNTIME_VERSION;
 
 	/**
-	 * Constant: BUILD
-	 * 	Build ID of the software.
+	 * Build ID of the software.
 	 */
 	const BUILD = CFRUNTIME_BUILD;
 
 	/**
-	 * Constant: USERAGENT
-	 * 	User agent string used to identify the software.
-	 * 	> aws-sdk-php/1.0 PHP/5.3.3 Darwin/10.4.0 Arch/i386 SAPI/apache2handler Build/20100915173336 [environmental information]
+	 * User agent string used to identify the software.
 	 */
 	const USERAGENT = CFRUNTIME_USERAGENT;
 
@@ -165,188 +150,157 @@ class CFRuntime
 	// PROPERTIES
 
 	/**
-	 * Property: key
-	 * 	The Amazon API Key.
+	 * The Amazon API Key.
 	 */
 	public $key;
 
 	/**
-	 * Property: secret_key
-	 * 	The Amazon API Secret Key.
+	 * The Amazon API Secret Key.
 	 */
 	public $secret_key;
 
 	/**
-	 * Property: account_id
-	 * 	The Amazon Account ID, without hyphens.
+	 * The Amazon Account ID, without hyphens.
 	 */
 	public $account_id;
 
 	/**
-	 * Property: assoc_id
-	 * 	The Amazon Associates ID.
+	 * The Amazon Associates ID.
 	 */
 	public $assoc_id;
 
 	/**
-	 * Property: util
-	 * 	Handle for the utility functions.
+	 * Handle for the utility functions.
 	 */
 	public $util;
 
 	/**
-	 * Property: service
-	 * 	An identifier for the current AWS service.
+	 * An identifier for the current AWS service.
 	 */
 	public $service = null;
 
 	/**
-	 * Property: api_version
-	 * 	The supported API version.
+	 * The supported API version.
 	 */
 	public $api_version = null;
 
 	/**
-	 * Property: utilities_class
-	 * 	The default class to use for utilities (defaults to <CFUtilities>).
+	 * The default class to use for utilities (defaults to <CFUtilities>).
 	 */
 	public $utilities_class = 'CFUtilities';
 
 	/**
-	 * Property: request_class
-	 * 	The default class to use for HTTP requests (defaults to <CFRequest>).
+	 * The default class to use for HTTP requests (defaults to <CFRequest>).
 	 */
 	public $request_class = 'CFRequest';
 
 	/**
-	 * Property: response_class
-	 * 	The default class to use for HTTP responses (defaults to <CFResponse>).
+	 * The default class to use for HTTP responses (defaults to <CFResponse>).
 	 */
 	public $response_class = 'CFResponse';
 
 	/**
-	 * Property: parser_class
-	 * 	The default class to use for parsing XML (defaults to <CFSimpleXML>).
+	 * The default class to use for parsing XML (defaults to <CFSimpleXML>).
 	 */
 	public $parser_class = 'CFSimpleXML';
 
 	/**
-	 * Property: batch_class
-	 * 	The default class to use for handling batch requests (defaults to <CFBatchRequest>).
+	 * The default class to use for handling batch requests (defaults to <CFBatchRequest>).
 	 */
 	public $batch_class = 'CFBatchRequest';
 
 	/**
-	 * Property: adjust_offset
-	 * 	The number of seconds to adjust the request timestamp by (defaults to 0).
+	 * The number of seconds to adjust the request timestamp by (defaults to 0).
 	 */
 	public $adjust_offset = 0;
 
 	/**
-	 * Property: use_ssl
-	 * 	The state of SSL/HTTPS use.
+	 * The state of SSL/HTTPS use.
 	 */
 	public $use_ssl = true;
 
 	/**
-	 * Property: proxy
-	 * 	The proxy to use for connecting.
+	 * The proxy to use for connecting.
 	 */
 	public $proxy = null;
 
 	/**
-	 * Property: hostname
-	 * 	The alternate hostname to use, if any.
+	 * The alternate hostname to use, if any.
 	 */
 	public $hostname = null;
 
 	/**
-	 * Property: override_hostname
-	 * 	The state of the capability to override the hostname with <set_hostname()>.
+	 * The state of the capability to override the hostname with <set_hostname()>.
 	 */
 	public $override_hostname = true;
 
 	/**
-	 * Property: port_number
-	 * 	The alternate port number to use, if any.
+	 * The alternate port number to use, if any.
 	 */
 	public $port_number = null;
 
 	/**
-	 * Property: resource_prefix
-	 * 	The alternate resource prefix to use, if any.
+	 * The alternate resource prefix to use, if any.
 	 */
 	public $resource_prefix = null;
 
 	/**
-	 * Property: use_cache_flow
-	 * 	The state of cache flow usage.
+	 * The state of cache flow usage.
 	 */
 	public $use_cache_flow = false;
 
 	/**
-	 * Property: cache_class
-	 * 	The caching class to use.
+	 * The caching class to use.
 	 */
 	public $cache_class = null;
 
 	/**
-	 * Property: cache_location
-	 * 	The caching location to use.
+	 * The caching location to use.
 	 */
 	public $cache_location = null;
 
 	/**
-	 * Property: cache_expires
-	 * 	When the cache should be considered stale.
+	 * When the cache should be considered stale.
 	 */
 	public $cache_expires = null;
 
 	/**
-	 * Property: cache_compress
-	 * 	The state of cache compression.
+	 * The state of cache compression.
 	 */
 	public $cache_compress = null;
 
 	/**
-	 * Property: cache_object
-	 * 	The current instantiated cache object.
+	 * The current instantiated cache object.
 	 */
 	public $cache_object = null;
 
 	/**
-	 * Property: batch_object
-	 * 	The current instantiated batch request object.
+	 * The current instantiated batch request object.
 	 */
 	public $batch_object = null;
 
 	/**
-	 * Property: internal_batch_object
-	 * 	The internally instantiated batch request object.
+	 * The internally instantiated batch request object.
 	 */
 	public $internal_batch_object = null;
 
 	/**
-	 * Property: use_batch_flow
-	 * 	The state of batch flow usage.
+	 * The state of batch flow usage.
 	 */
 	public $use_batch_flow = false;
 
 	/**
-	 * Property: delete_cache
-	 * 	The state of the cache deletion setting.
+	 * The state of the cache deletion setting.
 	 */
 	public $delete_cache = false;
 
 	/**
-	 * Property: debug_mode
-	 * 	The state of the debug mode setting.
+	 * The state of the debug mode setting.
 	 */
 	public $debug_mode = false;
 
 	/**
-	 * Property: max_retries
-	 * 	The number of times to retry failed requests.
+	 * The number of times to retry failed requests.
 	 */
 	public $max_retries = 3;
 
@@ -355,20 +309,14 @@ class CFRuntime
 	// CONSTRUCTOR
 
 	/**
-	 * Method: __construct()
-	 * 	The constructor. You would not normally instantiate this class directly. Rather, you would instantiate a service-specific class.
+	 * The constructor. You would not normally instantiate this class directly. Rather, you would instantiate
+	 * a service-specific class.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$key - _string_ (Optional) Your Amazon API Key. If blank, it will look for the <AWS_KEY> constant.
-	 * 	$secret_key - _string_ (Optional) Your Amazon API Secret Key. If blank, it will look for the <AWS_SECRET_KEY> constant.
-	 * 	$account_id - _string_ (Optional) Your Amazon account ID without the hyphens. Required for EC2. If blank, it will look for the <AWS_ACCOUNT_ID> constant.
-	 * 	$assoc_id - _string_ (Optional) Your Amazon Associates ID. Required for AAWS. If blank, it will look for the <AWS_ASSOC_ID> constant.
-	 *
-	 * Returns:
-	 * 	_boolean_ A value of `false` if no valid values are set, otherwise `true`.
+	 * @param string $key (Optional) Your Amazon API Key. If blank, it will look for the <AWS_KEY> constant.
+	 * @param string $secret_key (Optional) Your Amazon API Secret Key. If blank, it will look for the <AWS_SECRET_KEY> constant.
+	 * @param string $account_id (Optional) Your Amazon account ID without the hyphens. Required for EC2. If blank, it will look for the <AWS_ACCOUNT_ID> constant.
+	 * @param string $assoc_id (Optional) Your Amazon Associates ID. Required for PAS. If blank, it will look for the <AWS_ASSOC_ID> constant.
+	 * @return boolean A value of `false` if no valid values are set, otherwise `true`.
 	 */
 	public function __construct($key = null, $secret_key = null, $account_id = null, $assoc_id = null)
 	{
@@ -427,20 +375,13 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: init()
-	 * 	Alternate approach to constructing a new instance. Supports chaining.
+	 * Alternate approach to constructing a new instance. Supports chaining.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$key - _string_ (Optional) Your Amazon API Key. If blank, it will look for the <AWS_KEY> constant.
-	 * 	$secret_key - _string_ (Optional) Your Amazon API Secret Key. If blank, it will look for the <AWS_SECRET_KEY> constant.
-	 * 	$account_id - _string_ (Optional) Your Amazon account ID without the hyphens. Required for EC2. If blank, it will look for the <AWS_ACCOUNT_ID> constant.
-	 * 	$assoc_id - _string_ (Optional) Your Amazon Associates ID. Required for AAWS. If blank, it will look for the <AWS_ASSOC_ID> constant.
-	 *
-	 * Returns:
-	 * 	_boolean_ A value of `false` if no valid values are set, otherwise `true`.
+	 * @param string $key (Optional) Your Amazon API Key. If blank, it will look for the <AWS_KEY> constant.
+	 * @param string $secret_key (Optional) Your Amazon API Secret Key. If blank, it will look for the <AWS_SECRET_KEY> constant.
+	 * @param string $account_id (Optional) Your Amazon account ID without the hyphens. Required for EC2. If blank, it will look for the <AWS_ACCOUNT_ID> constant.
+	 * @param string $assoc_id (Optional) Your Amazon Associates ID. Required for AAWS. If blank, it will look for the <AWS_ASSOC_ID> constant.
+	 * @return boolean A value of `false` if no valid values are set, otherwise `true`.
 	 */
 	public static function init($key = null, $secret_key = null, $account_id = null, $assoc_id = null)
 	{
@@ -458,18 +399,11 @@ class CFRuntime
 	// MAGIC METHODS
 
 	/**
-	 * Method: __call()
-	 * 	A magic method that allows `camelCase` method names to be translated into `snake_case` names.
+	 * A magic method that allows `camelCase` method names to be translated into `snake_case` names.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$name - _string_ (Required) The name of the method.
-	 * 	$arguments - _array_ (Required) The arguments passed to the method.
-	 *
-	 * Returns:
-	 * 	_mixed_ The results of the intended method.
+	 * @param string $name (Required) The name of the method.
+	 * @param array $arguments (Required) The arguments passed to the method.
+	 * @return mixed The results of the intended method.
 	 */
 	public function  __call($name, $arguments)
 	{
@@ -489,17 +423,11 @@ class CFRuntime
 	// SET CUSTOM SETTINGS
 
 	/**
-	 * Method: adjust_offset()
-	 * 	Adjusts the current time. Use this method for occasions when a server is out of sync with Amazon S3 servers.
+	 * Adjusts the current time. Use this method for occasions when a server is out of sync with Amazon
+	 * servers.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$seconds - _integer_ (Required) The number of seconds to adjust the sent timestamp by.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param integer $seconds (Required) The number of seconds to adjust the sent timestamp by.
+	 * @return $this A reference to the current instance.
 	 */
 	public function adjust_offset($seconds)
 	{
@@ -508,17 +436,10 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: set_proxy()
-	 * 	Set the proxy settings to use.
+	 * Set the proxy settings to use.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$proxy - _string_ (Required) Accepts proxy credentials in the following format: `proxy://user:pass@hostname:port`
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param string $proxy (Required) Accepts proxy credentials in the following format: `proxy://user:pass@hostname:port`
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_proxy($proxy)
 	{
@@ -527,18 +448,12 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: set_hostname()
-	 * 	Set the hostname to connect to. This is useful for alternate services that are API-compatible with AWS, but run from a different hostname.
+	 * Set the hostname to connect to. This is useful for alternate services that are API-compatible with
+	 * AWS, but run from a different hostname.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$hostname - _string_ (Required) The alternate hostname to use in place of the default one. Useful for API-compatible applications living on different hostnames.
-	 * 	$port_number - _integer_ (Optional) The alternate port number to use in place of the default one. Useful for API-compatible applications living on different port numbers.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param string $hostname (Required) The alternate hostname to use in place of the default one. Useful for mock or test applications living on different hostnames.
+	 * @param integer $port_number (Optional) The alternate port number to use in place of the default one. Useful for mock or test applications living on different port numbers.
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_hostname($hostname, $port_number = null)
 	{
@@ -557,18 +472,11 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: set_resource_prefix()
-	 * 	Set the resource prefix to use. This method is useful for alternate services that are API-compatible
-	 * 	with AWS.
+	 * Set the resource prefix to use. This method is useful for alternate services that are API-compatible
+	 * with AWS.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$prefix - _string_ (Required) An alternate prefix to prepend to the resource path. Useful for API-compatible applications.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param string $prefix (Required) An alternate prefix to prepend to the resource path. Useful for mock or test applications.
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_resource_prefix($prefix)
 	{
@@ -577,17 +485,10 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: allow_hostname_override()
-	 * 	Disables any subsequent use of the <set_hostname()> method. Use this method when using third-party, Amazon API-compatible services.
+	 * Disables any subsequent use of the <set_hostname()> method.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$override - _boolean_ (Optional) Whether or not subsequent calls to <set_hostname()> should be obeyed. A `false` value disables the further effectiveness of <set_hostname()>. Defaults to `true`.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param boolean $override (Optional) Whether or not subsequent calls to <set_hostname()> should be obeyed. A `false` value disables the further effectiveness of <set_hostname()>. Defaults to `true`.
+	 * @return $this A reference to the current instance.
 	 */
 	public function allow_hostname_override($override = true)
 	{
@@ -596,14 +497,10 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: disable_ssl()
-	 * 	Disables SSL/HTTPS connections for hosts that don't support them. Some services, however, still require SSL support.
+	 * Disables SSL/HTTPS connections for hosts that don't support them. Some services, however, still
+	 * require SSL support.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @return $this A reference to the current instance.
 	 */
 	public function disable_ssl()
 	{
@@ -612,17 +509,10 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: enable_debug_mode()
-	 * 	Enables HTTP request/response header logging to `STDERR`.
+	 * Enables HTTP request/response header logging to `STDERR`.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$enabled - _boolean_ (Optional) Whether or not to enable debug mode. Defaults to `true`.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param boolean $enabled (Optional) Whether or not to enable debug mode. Defaults to `true`.
+	 * @return $this A reference to the current instance.
 	 */
 	public function enable_debug_mode($enabled = true)
 	{
@@ -631,17 +521,10 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: set_max_retries()
-	 * 	Sets the maximum number of times to retry failed requests.
+	 * Sets the maximum number of times to retry failed requests.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$retries - _integer_ (Optional) The maximum number of times to retry failed requests. Defaults to `3`.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param integer $retries (Optional) The maximum number of times to retry failed requests. Defaults to `3`.
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_max_retries($retries = 3)
 	{
@@ -650,25 +533,11 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: set_cache_config()
-	 * 	Set the caching configuration to use for response caching.
+	 * Set the caching configuration to use for response caching.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$location - _string_ (Required) The location to store the cache object in. This may vary by cache method. See below.
-	 * 	$gzip - _boolean_ (Optional) Whether or not data should be gzipped before being stored. A value of `true` will compress the contents before caching them. A value of `false` will leave the contents uncompressed. Defaults to `true`.
-	 *
-	 * Example values for $location:
-	 * 	File - The local file system paths such as `./cache` (relative) or `/tmp/cache/` (absolute). The location must be server-writable.
-	 * 	APC - Pass in `apc` to use this lightweight cache. You must have the APC extension installed (see [php.net/apc](http://php.net/apc)).
-	 * 	XCache - Pass in `xcache` to use this lightweight cache. You must have the XCache extension installed (see [xcache.lighttpd.net](http://xcache.lighttpd.net)).
-	 * 	Memcached - Pass in an indexed array of associative arrays. Each associative array should have a `host` and a `port` value representing a Memcached server to connect to.
-	 * 	PDO - A URL-style string (e.g. `pdo.mysql://user:pass@localhost/cache`) or a standard DSN-style string (e.g. `pdo.sqlite:/sqlite/cache.db`). MUST be prefixed with `pdo.`. See <CachePDO> and [php.net/pdo](http://php.net/pdo) for more details.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param string $location (Required) <p>The location to store the cache object in. This may vary by cache method.</p><ul><li>File - The local file system paths such as <code>./cache</code> (relative) or <code>/tmp/cache/</code> (absolute). The location must be server-writable.</li><li>APC - Pass in <code>apc</code> to use this lightweight cache. You must have the <a href="http://php.net/apc">APC extension</a> installed.</li><li>XCache - Pass in <code>xcache</code> to use this lightweight cache. You must have the <a href="http://xcache.lighttpd.net">XCache</a> extension installed.</li><li>Memcached - Pass in an indexed array of associative arrays. Each associative array should have a <code>host</code> and a <code>port</code> value representing a <a href="http://php.net/memcached">Memcached</a> server to connect to.</li><li>PDO - A URL-style string (e.g. <code>pdo.mysql://user:pass@localhost/cache</code>) or a standard DSN-style string (e.g. <code>pdo.sqlite:/sqlite/cache.db</code>). MUST be prefixed with <code>pdo.</code>. See <code>CachePDO</code> and <a href="http://php.net/pdo">PDO</a> for more details.</li></ul>
+	 * @param boolean $gzip (Optional) Whether or not data should be gzipped before being stored. A value of `true` will compress the contents before caching them. A value of `false` will leave the contents uncompressed. Defaults to `true`.
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_cache_config($location, $gzip = true)
 	{
@@ -714,19 +583,13 @@ class CFRuntime
 	// SET CUSTOM CLASSES
 
 	/**
-	 * Method: set_utilities_class()
-	 * 	Set a custom class for this functionality. Use this method when extending/overriding existing classes with new functionality.
+	 * Set a custom class for this functionality. Use this method when extending/overriding existing classes
+	 * with new functionality.
 	 *
-	 * 	The replacement class must extend from <CFUtilities>.
+	 * The replacement class must extend from <CFUtilities>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	class - _string_ (Optional) The name of the new class to use for this functionality.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param string $class (Optional) The name of the new class to use for this functionality.
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_utilities_class($class = 'CFUtilities')
 	{
@@ -736,19 +599,13 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: set_request_class()
-	 * 	Set a custom class for this functionality. Use this method when extending/overriding existing classes with new functionality.
+	 * Set a custom class for this functionality. Use this method when extending/overriding existing classes
+	 * with new functionality.
 	 *
-	 * 	The replacement class must extend from <CFRequest>.
+	 * The replacement class must extend from <CFRequest>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	class - _string_ (Optional) The name of the new class to use for this functionality.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param string $class (Optional) The name of the new class to use for this functionality.
+	 * @param $this A reference to the current instance.
 	 */
 	public function set_request_class($class = 'CFRequest')
 	{
@@ -757,19 +614,13 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: set_response_class()
-	 * 	Set a custom class for this functionality. Use this method when extending/overriding existing classes with new functionality.
+	 * Set a custom class for this functionality. Use this method when extending/overriding existing classes
+	 * with new functionality.
 	 *
-	 * 	The replacement class must extend from <CFResponse>.
+	 * The replacement class must extend from <CFResponse>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	class - _string_ (Optional) The name of the new class to use for this functionality.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param string $class (Optional) The name of the new class to use for this functionality.
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_response_class($class = 'CFResponse')
 	{
@@ -778,19 +629,13 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: set_parser_class()
-	 * 	Set a custom class for this functionality. Use this method when extending/overriding existing classes with new functionality.
+	 * Set a custom class for this functionality. Use this method when extending/overriding existing classes
+	 * with new functionality.
 	 *
-	 * 	The replacement class must extend from <CFSimpleXML>.
+	 * The replacement class must extend from <CFSimpleXML>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	class - _string_ (Optional) The name of the new class to use for this functionality.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param string $class (Optional) The name of the new class to use for this functionality.
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_parser_class($class = 'CFSimpleXML')
 	{
@@ -799,19 +644,13 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: set_batch_class()
-	 * 	Set a custom class for this functionality. Use this method when extending/overriding existing classes with new functionality.
+	 * Set a custom class for this functionality. Use this method when extending/overriding existing classes
+	 * with new functionality.
 	 *
-	 * 	The replacement class must extend from <CFBatchRequest>.
+	 * The replacement class must extend from <CFBatchRequest>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	class - _string_ (Optional) The name of the new class to use for this functionality.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param string $class (Optional) The name of the new class to use for this functionality.
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_batch_class($class = 'CFBatchRequest')
 	{
@@ -824,21 +663,15 @@ class CFRuntime
 	// AUTHENTICATION
 
 	/**
-	 * Method: authenticate()
-	 * 	Default, shared method for authenticating a connection to AWS. Overridden on a class-by-class basis as necessary.
+	 * Default, shared method for authenticating a connection to AWS. Overridden on a class-by-class basis
+	 * as necessary.
 	 *
-	 * Access:
-	 * 	public
- 	 *
-	 * Parameters:
-	 * 	$action - _string_ (Required) Indicates the action to perform.
-	 * 	$opt - _array_ (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
-	 * 	$domain - _string_ (Optional) The URL of the queue to perform the action on.
-	 * 	$signature_version - _string_ (Optional) The signature version to use. Defaults to 2.
-	 * 	$redirects - _integer_ (Do Not Use) Used internally by this function on occasions when Amazon S3 returns a redirect code and it needs to call itself recursively.
-	 *
-	 * Returns:
-	 * 	<CFResponse> Object containing a parsed HTTP response.
+	 * @param string $action (Required) Indicates the action to perform.
+	 * @param array $opt (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
+	 * @param string $domain (Optional) The URL of the queue to perform the action on.
+	 * @param integer $signature_version (Optional) The signature version to use. Defaults to 2.
+	 * @param integer $redirects (Do Not Use) Used internally by this function on occasions when Amazon S3 returns a redirect code and it needs to call itself recursively.
+	 * @return CFResponse Object containing a parsed HTTP response.
 	 */
 	public function authenticate($action, $opt = null, $domain = null, $signature_version = 2, $redirects = 0)
 	{
@@ -1053,17 +886,10 @@ class CFRuntime
 	// BATCH REQUEST LAYER
 
 	/**
-	 * Method: batch()
-	 * 	Specifies that the intended request should be queued for a later batch request.
+	 * Specifies that the intended request should be queued for a later batch request.
 	 *
-	 * Access:
-	 * 	public
- 	 *
-	 * Parameters:
-	 * 	$queue - _CFBatchRequest_ (Optional) The <CFBatchRequest> instance to use for managing batch requests. If not available, it generates a new instance of <CFBatchRequest>.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param CFBatchRequest $queue (Optional) The <CFBatchRequest> instance to use for managing batch requests. If not available, it generates a new instance of <CFBatchRequest>.
+	 * @return $this A reference to the current instance.
 	 */
 	public function batch(CFBatchRequest &$queue = null)
 	{
@@ -1087,17 +913,10 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: send()
-	 * 	Executes the batch request queue by sending all queued requests.
+	 * Executes the batch request queue by sending all queued requests.
 	 *
-	 * Access:
-	 * 	public
- 	 *
-	 * Parameters:
-	 * 	$clear_after_send - _boolean_ (Optional) Whether or not to clear the batch queue after sending a request. Defaults to `true`. Set this to `false` if you are caching batch responses and want to retrieve results later.
-	 *
-	 * Returns:
-	 * 	_array_ An array of <CFResponse> objects.
+	 * @param boolean $clear_after_send (Optional) Whether or not to clear the batch queue after sending a request. Defaults to `true`. Set this to `false` if you are caching batch responses and want to retrieve results later.
+	 * @return array An array of <CFResponse> objects.
 	 */
 	public function send($clear_after_send = true)
 	{
@@ -1158,17 +977,10 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: parse_callback()
-	 * 	Parses a response body into a PHP object if appropriate.
+	 * Parses a response body into a PHP object if appropriate.
 	 *
-	 * Access:
-	 * 	public
- 	 *
-	 * Parameters:
-	 * 	$response - _CFResponse_|_string_ (Required) The <CFResponse> object to parse, or an XML string that would otherwise be a response body.
-	 *
-	 * Returns:
-	 * 	_CFResponse_|_string_ A parsed <CFResponse> object, or parsed XML.
+	 * @param CFResponse|string $response (Required) The <CFResponse> object to parse, or an XML string that would otherwise be a response body.
+	 * @return CFResponse|string A parsed <CFResponse> object, or parsed XML.
 	 */
 	public function parse_callback($response)
 	{
@@ -1224,17 +1036,12 @@ class CFRuntime
 	// CACHING LAYER
 
 	/**
-	 * Method: cache()
-	 * 	Specifies that the resulting <CFResponse> object should be cached according to the settings from <set_cache_config()>.
+	 * Specifies that the resulting <CFResponse> object should be cached according to the settings from
+	 * <set_cache_config()>.
 	 *
-	 * Access:
-	 * 	public
- 	 *
-	 * Parameters:
-	 * 	$expires - _string_|_integer_ (Required) The time the cache is to expire. Accepts a number of seconds as an integer, or an amount of time, as a string, that is understood by `strtotime()` (e.g. "1 hour").
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param string|integer $expires (Required) The time the cache is to expire. Accepts a number of seconds as an integer, or an amount of time, as a string, that is understood by <php:strtotime()> (e.g. "1 hour").
+	 * @param $this A reference to the current instance.
+	 * @return $this
 	 */
 	public function cache($expires)
 	{
@@ -1260,20 +1067,15 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: cache_callback()
-	 * 	The callback function that is executed when the cache doesn't exist or has expired. The response of this method is cached. Accepts identical parameters as the <authenticate()> method. Never call this method directly -- it is used internally by the caching system.
+	 * The callback function that is executed when the cache doesn't exist or has expired. The response of
+	 * this method is cached. Accepts identical parameters as the <authenticate()> method. Never call this
+	 * method directly -- it is used internally by the caching system.
 	 *
-	 * Access:
-	 * 	public
- 	 *
-	 * Parameters:
-	 * 	$action - _string_ (Required) Indicates the action to perform.
-	 * 	$opt - _array_ (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
-	 * 	$domain - _string_ (Optional) The URL of the queue to perform the action on.
-	 * 	$signature_version - _string_ (Optional) The signature version to use. Defaults to 2.
-	 *
-	 * Returns:
-	 * 	<CFResponse> object
+	 * @param string $action (Required) Indicates the action to perform.
+	 * @param array $opt (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
+	 * @param string $domain (Optional) The URL of the queue to perform the action on.
+	 * @param integer $signature_version (Optional) The signature version to use. Defaults to 2.
+	 * @return CFResponse A parsed HTTP response.
 	 */
 	public function cache_callback($action, $opt = null, $domain = null, $signature_version = 2)
 	{
@@ -1293,17 +1095,11 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: cache_callback_batch()
-	 * 	Used for caching the results of a batch request. Never call this method directly; it is used internally by the caching system.
+	 * Used for caching the results of a batch request. Never call this method directly; it is used
+	 * internally by the caching system.
 	 *
-	 * Access:
-	 * 	public
- 	 *
-	 * Parameters:
-	 * 	$batch - _CFBatchRequest_ (Required) The batch request object to send.
-	 *
-	 * Returns:
-	 * 	<CFResponse> object
+	 * @param CFBatchRequest $batch (Required) The batch request object to send.
+	 * @return CFResponse A parsed HTTP response.
 	 */
 	public function cache_callback_batch(CFBatchRequest $batch)
 	{
@@ -1311,14 +1107,9 @@ class CFRuntime
 	}
 
 	/**
-	 * Method: delete_cache()
-	 * 	Deletes a cached <CFResponse> object using the specified cache storage type.
+	 * Deletes a cached <CFResponse> object using the specified cache storage type.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	_boolean_ A value of `true` if cached object exists and is successfully deleted, otherwise `false`.
+	 * @return boolean A value of `true` if cached object exists and is successfully deleted, otherwise `false`.
 	 */
 	public function delete_cache()
 	{
@@ -1331,8 +1122,7 @@ class CFRuntime
 
 
 /**
- * Class: CFLoader
- * 	Contains the functionality for auto-loading service classes.
+ * Contains the functionality for auto-loading service classes.
  */
 class CFLoader
 {
@@ -1341,17 +1131,10 @@ class CFLoader
 	// AUTO-LOADER
 
 	/**
-	 * Method: autoloader()
-	 * 	Automatically load classes that aren't included.
+	 * Automatically load classes that aren't included.
 	 *
-	 * Access:
-	 * 	public static
-	 *
-	 * Parameters:
-	 * 	$class - _string_ (Required) The classname to load.
-	 *
-	 * Returns:
-	 * 	void
+	 * @param string $class (Required) The classname to load.
+	 * @return void
 	 */
 	public static function autoloader($class)
 	{

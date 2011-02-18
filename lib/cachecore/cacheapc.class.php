@@ -1,30 +1,16 @@
 <?php
 /**
- * File: CacheAPC
- * 	APC-based caching class.
+ * Container for all APC-based cache methods. Inherits additional methods from <CacheCore>. Adheres
+ * to the ICacheCore interface.
  *
- * Version:
- * 	2009.10.10
- *
- * Copyright:
- * 	2006-2010 Ryan Parman, Foleeo Inc., and contributors.
- *
- * License:
- * 	Simplified BSD License - http://opensource.org/licenses/bsd-license.php
- *
- * See Also:
-* 	CacheCore - http://cachecore.googlecode.com
- * 	CloudFusion - http://getcloudfusion.com
- * 	APC - http://php.net/apc
- */
-
-
-/*%******************************************************************************************%*/
-// CLASS
-
-/**
- * Class: CacheAPC
- * 	Container for all APC-based cache methods. Inherits additional methods from CacheCore. Adheres to the ICacheCore interface.
+ * @version 2009.10.10
+ * @copyright 2006-2010 Ryan Parman
+ * @copyright 2006-2010 Foleeo, Inc.
+ * @copyright 2008-2010 Contributors
+ * @license http://opensource.org/licenses/bsd-license.php Simplified BSD License
+ * @link http://github.com/skyzyx/cachecore CacheCore
+ * @link http://getcloudfusion.com CloudFusion
+ * @link http://php.net/apc APC
  */
 class CacheAPC extends CacheCore implements ICacheCore
 {
@@ -33,20 +19,13 @@ class CacheAPC extends CacheCore implements ICacheCore
 	// CONSTRUCTOR
 
 	/**
-	 * Method: __construct()
-	 * 	The constructor
+	 * Constructs a new instance of this class.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	name - _string_ (Required) A name to uniquely identify the cache object.
-	 * 	location - _string_ (Required) The location to store the cache object in. This may vary by cache method.
-	 * 	expires - _integer_ (Required) The number of seconds until a cache object is considered stale.
-	 * 	gzip - _boolean_ (Optional) Whether data should be gzipped before being stored. Defaults to true.
-	 *
-	 * Returns:
-	 * 	_object_ Reference to the cache object.
+	 * @param string $name (Required) A name to uniquely identify the cache object.
+	 * @param string $location (Required) The location to store the cache object in. This may vary by cache method.
+	 * @param integer $expires (Required) The number of seconds until a cache object is considered stale.
+	 * @param boolean $gzip (Optional) Whether data should be gzipped before being stored. Defaults to true.
+	 * @return object Reference to the cache object.
 	 */
 	public function __construct($name, $location, $expires, $gzip = true)
 	{
@@ -55,17 +34,10 @@ class CacheAPC extends CacheCore implements ICacheCore
 	}
 
 	/**
-	 * Method: create()
-	 * 	Creates a new cache.
+	 * Creates a new cache.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	data - _mixed_ (Required) The data to cache.
-	 *
-	 * Returns:
-	 * 	_boolean_ Whether the operation was successful.
+	 * @param mixed $data (Required) The data to cache.
+	 * @return boolean Whether the operation was successful.
 	 */
 	public function create($data)
 	{
@@ -76,14 +48,9 @@ class CacheAPC extends CacheCore implements ICacheCore
 	}
 
 	/**
-	 * Method: read()
-	 * 	Reads a cache.
+	 * Reads a cache.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	_mixed_ Either the content of the cache object, or _boolean_ false.
+	 * @return mixed Either the content of the cache object, or boolean `false`.
 	 */
 	public function read()
 	{
@@ -97,17 +64,10 @@ class CacheAPC extends CacheCore implements ICacheCore
 	}
 
 	/**
-	 * Method: update()
-	 * 	Updates an existing cache.
+	 * Updates an existing cache.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	data - _mixed_ (Required) The data to cache.
-	 *
-	 * Returns:
-	 * 	_boolean_ Whether the operation was successful.
+	 * @param mixed $data (Required) The data to cache.
+	 * @return boolean Whether the operation was successful.
 	 */
 	public function update($data)
 	{
@@ -118,14 +78,9 @@ class CacheAPC extends CacheCore implements ICacheCore
 	}
 
 	/**
-	 * Method: delete()
-	 * 	Deletes a cache.
+	 * Deletes a cache.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	_boolean_ Whether the operation was successful.
+	 * @return boolean Whether the operation was successful.
 	 */
 	public function delete()
 	{
@@ -133,14 +88,9 @@ class CacheAPC extends CacheCore implements ICacheCore
 	}
 
 	/**
-	 * Method: is_expired()
-	 * 	Implemented here, but always returns false. APC manages it's own expirations.
+	 * Implemented here, but always returns `false`. APC manages its own expirations.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	_boolean_ Whether the cache is expired or not.
+	 * @return boolean Whether the cache is expired or not.
 	 */
 	public function is_expired()
 	{
@@ -148,14 +98,9 @@ class CacheAPC extends CacheCore implements ICacheCore
 	}
 
 	/**
-	 * Method: timestamp()
-	 * 	Implemented here, but always returns false. APC manages it's own expirations.
+	 * Implemented here, but always returns `false`. APC manages its own expirations.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	_mixed_ Either the Unix time stamp of the cache creation, or _boolean_ false.
+	 * @return mixed Either the Unix time stamp of the cache creation, or boolean `false`.
 	 */
 	public function timestamp()
 	{
@@ -163,14 +108,9 @@ class CacheAPC extends CacheCore implements ICacheCore
 	}
 
 	/**
-	 * Method: reset()
-	 * 	Implemented here, but always returns false. APC manages it's own expirations.
+	 * Implemented here, but always returns `false`. APC manages its own expirations.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	_boolean_ Whether the operation was successful.
+	 * @return boolean Whether the operation was successful.
 	 */
 	public function reset()
 	{

@@ -39,14 +39,15 @@ The source tree for includes the following files and directories:
 
 * `_compatibility_test` -- Includes both an HTML-based and a CLI-based SDK Compatibility Test that you can
   run on your server to determine whether or not your PHP environment meets the minimum requirements.
+* `_docs` -- Informational documents, the contents of which should be fairly self-explanatory.
+* `_samples` -- Code samples that you can run out of the box.
 * `lib` -- Contains any third-party libraries that the SDK depends on. The licenses for these projects will
   always be Apache 2.0-compatible.
 * `services` -- Contains the service-specific classes that communicate with AWS. These classes are always
   prefixed with `Amazon`.
 * `utilities` -- Contains any utility-type methods that the SDK uses. Includes extensions to built-in PHP
   classes, as well as new functionality that is entirely custom. These classes are always prefixed with `CF`.
-* `CHANGELOG`, `CLOUDFUSION_CONTRIBUTORS`, `LICENSE`, `NOTICE`, `README` -- File names that are all-caps are
-  informational documents; the contents of which should be fairly self-explanatory.
+* `README` -- The document you're reading right now.
 * `config-sample.inc.php` -- A sample configuration file that should be filled out and renamed to `config.inc.php`.
 * `sdk.class.php` -- The SDK loader that you would include in your projects. Contains the base functionality
   that the rest of the SDK depends on.
@@ -56,16 +57,13 @@ The source tree for includes the following files and directories:
 
 * You are at least an intermediate-level PHP developer and have a basic understanding of object-oriented PHP.
 * You have a valid AWS account, and you've already signed up for the services you want to use.
-* PHP 5.2 or newer (5.2.14 or latest 5.3.x highly recommended)
-* [SimpleXML](http://php.net/simplexml) extension
-* [JSON](http://php.net/json) (JavaScript Object Notation) extension
-* [PCRE](http://php.net/pcre) (Perl-Compatible Regular Expressions) extension
-* [SPL](http://php.net/spl) (Standard PHP Library) extension
-* [cURL](http://php.net/curl) extension (compiled with [OpenSSL](http://openssl.org) for HTTPS support)
-* Ability to write to the file system
+* The PHP interpreter, version 5.2 or newer. PHP 5.2.17 or 5.3.x is highly recommended for use with the AWS SDK for PHP.
+* The cURL PHP extension (compiled with the [OpenSSL](http://openssl.org) libraries for HTTPS support).
+* The ability to read from and write to the file system via [file_get_contents()](http://php.net/file_get_contents) and [file_put_contents()](http://php.net/file_put_contents).
 
-We've included an SDK Compatibility Test that you can run to determine whether or not your PHP environment
-meets the minimum requirements.
+If you're not sure whether your PHP environment meets these requirements, run the
+[SDK Compatibility Test](http://github.com/amazonwebservices/aws-sdk-for-php/tree/master/_compatibility_test/) script
+included in the SDK download.
 
 
 ## Installation

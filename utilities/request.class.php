@@ -14,39 +14,27 @@
  * permissions and limitations under the License.
  */
 
-/**
- * File: CFRequest
- * 	Wrapper for RequestCore with enhanced functionality.
- *
- * Version:
- * 	2010.07.30
- *
- * License and Copyright:
- * 	See the included NOTICE.md file for more information.
- *
- * See Also:
- * 	[PHP Developer Center](http://aws.amazon.com/php/)
- */
-
 
 /*%******************************************************************************************%*/
 // CLASS
 
 /**
- * Class: CFRequest
- * 	Wrapper for RequestCore with enhanced functionality.
+ * Wraps the underlying `RequestCore` class with some AWS-specific customizations.
+ *
+ * @version 2010.10.11
+ * @license See the included NOTICE.md file for more information.
+ * @copyright See the included NOTICE.md file for more information.
+ * @link http://aws.amazon.com/php/ PHP Developer Center
  */
 class CFRequest extends RequestCore
 {
 	/**
-	 * Property: request_class
-	 * 	The default class to use for HTTP Requests (defaults to <CFRequest>).
+	 * The default class to use for HTTP Requests (defaults to <CFRequest>).
 	 */
 	public $request_class = 'CFRequest';
 
 	/**
-	 * Property: response_class
-	 * 	The default class to use for HTTP Responses (defaults to <CFResponse>).
+	 * The default class to use for HTTP Responses (defaults to <CFResponse>).
 	 */
 	public $response_class = 'CFResponse';
 
@@ -55,19 +43,12 @@ class CFRequest extends RequestCore
 	// CONSTRUCTOR
 
 	/**
-	 * Method: __construct()
-	 * 	The constructor
+	 * Constructs a new instance of this class.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$url - _string_ (Optional) The URL to request or service endpoint to query.
-	 * 	$proxy - _string_ (Optional) The faux-url to use for proxy settings. Takes the following format: `proxy://user:pass@hostname:port`
-	 * 	$helpers - _array_ (Optional) An associative array of classnames to use for request, and response functionality. Gets passed in automatically by the calling class.
-	 *
-	 * Returns:
-	 * 	`$this`
+	 * @param string $url (Optional) The URL to request or service endpoint to query.
+	 * @param string $proxy (Optional) The faux-url to use for proxy settings. Takes the following format: `proxy://user:pass@hostname:port`
+	 * @param array $helpers (Optional) An associative array of classnames to use for request, and response functionality. Gets passed in automatically by the calling class.
+	 * @return $this A reference to the current instance.
 	 */
 	public function __construct($url = null, $proxy = null, $helpers = null)
 	{

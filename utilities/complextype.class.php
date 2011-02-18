@@ -14,44 +14,27 @@
  * permissions and limitations under the License.
  */
 
-/**
- * File: CFComplexType
- * 	Contains methods used for converting array, JSON, and YAML data into query string keys.
- *
- * Version:
- * 	2010.11.11
- *
- * License and Copyright:
- * 	See the included NOTICE.md file for more information.
- *
- * See Also:
- * 	[PHP Developer Center](http://aws.amazon.com/php/)
- */
-
 
 /*%******************************************************************************************%*/
 // CLASS
 
 /**
- * Class: CFComplexType
- * 	Namespace for static methods used for configuration across services.
+ * Contains utility methods used for converting array, JSON, and YAML data types into query string keys.
+ *
+ * @version 2010.11.11
+ * @license See the included NOTICE.md file for more information.
+ * @copyright See the included NOTICE.md file for more information.
+ * @link http://aws.amazon.com/php/ PHP Developer Center
  */
 class CFComplexType
 {
 	/**
-	 * Method: json()
-	 * 	Takes a JSON object, as a string, to convert to query string keys.
+	 * Takes a JSON object, as a string, to convert to query string keys.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$json - _string_ (Required) A JSON object.
-	 * 	$member - _string_ (Optional) The name of the "member" property that AWS uses for lists in certain services. Defaults to an empty string.
-	 * 	$default_key - _string_ (Optional) The default key to use when the value for `$data` is a string. Defaults to an empty string.
-	 *
-	 * Returns:
-	 * 	array The option group parameters to merge into `$opt`.
+	 * @param string $json (Required) A JSON object. The JSON string should use canonical rules (e.g., double quotes, quoted keys) as is required by PHP's <php:json_encode()> function.
+	 * @param string $member (Optional) The name of the "member" property that AWS uses for lists in certain services. Defaults to an empty string.
+	 * @param string $default_key (Optional) The default key to use when the value for `$data` is a string. Defaults to an empty string.
+	 * @return array The option group parameters to merge into another method's `$opt` parameter.
 	 */
 	public static function json($json, $member = '', $default_key = '')
 	{
@@ -59,19 +42,12 @@ class CFComplexType
 	}
 
 	/**
-	 * Method: yaml()
-	 * 	Takes a YAML object, as a string, to convert to query string keys.
+	 * Takes a YAML object, as a string, to convert to query string keys.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$yaml - _string_ (Required) A YAML object.
-	 * 	$member - _string_ (Optional) The name of the "member" property that AWS uses for lists in certain services. Defaults to an empty string.
-	 * 	$default_key - _string_ (Optional) The default key to use when the value for `$data` is a string. Defaults to an empty string.
-	 *
-	 * Returns:
-	 * 	array The option group parameters to merge into `$opt`.
+	 * @param string $yaml (Required) A YAML object.
+	 * @param string $member (Optional) The name of the "member" property that AWS uses for lists in certain services. Defaults to an empty string.
+	 * @param string $default_key (Optional) The default key to use when the value for `$data` is a string. Defaults to an empty string.
+	 * @return array The option group parameters to merge into another method's `$opt` parameter.
 	 */
 	public static function yaml($yaml, $member = '', $default_key = '')
 	{
@@ -79,19 +55,12 @@ class CFComplexType
 	}
 
 	/**
-	 * Method: map()
-	 * 	Takes an associative array to convert to query string keys.
+	 * Takes an associative array to convert to query string keys.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$map - _array_ (Required) An associative array.
-	 * 	$member - _string_ (Optional) The name of the "member" property that AWS uses for lists in certain services. Defaults to an empty string.
-	 * 	$default_key - _string_ (Optional) The default key to use when the value for `$data` is a string. Defaults to an empty string.
-	 *
-	 * Returns:
-	 * 	array The option group parameters to merge into `$opt`.
+	 * @param array $map (Required) An associative array.
+	 * @param string $member (Optional) The name of the "member" property that AWS uses for lists in certain services. Defaults to an empty string.
+	 * @param string $default_key (Optional) The default key to use when the value for `$data` is a string. Defaults to an empty string.
+	 * @return array The option group parameters to merge into another method's `$opt` parameter.
 	 */
 	public static function map($map, $member = '', $default_key = '')
 	{
@@ -99,20 +68,13 @@ class CFComplexType
 	}
 
 	/**
-	 * Method: option_group()
-	 * 	A protected method that is used by <json()>, <yaml()> and <map()>.
+	 * A protected method that is used by <json()>, <yaml()> and <map()>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$data - _string_|_array_ (Required) The data to iterate over.
-	 * 	$key - _string_ (Optional) The default key to use when the value for `$data` is a string. Also used internally for keeping track of the key during recursion. Defaults to an empty string.
-	 * 	$member - _string_ (Optional) The name of the "member" property that AWS uses for lists in certain services. Defaults to an empty string.
-	 * 	$out - _array_ (Optional) INTERNAL ONLY. The array that contains the calculated values up to this point.
-	 *
-	 * Return:
-	 * 	_array_ An array of keys that can be passed to the internal `$opt` variable.
+	 * @param string|array $data (Required) The data to iterate over.
+	 * @param string $member (Optional) The name of the "member" property that AWS uses for lists in certain services. Defaults to an empty string.
+	 * @param string $key (Optional) The default key to use when the value for `$data` is a string. Defaults to an empty string.
+	 * @param array $out (Optional) INTERNAL ONLY. The array that contains the calculated values up to this point.
+	 * @return array The option group parameters to merge into another method's `$opt` parameter.
 	 */
 	public static function option_group($data, $member = '', $key = '', &$out = array())
 	{

@@ -15,47 +15,27 @@
  */
 
 /**
- * File: AmazonCloudWatch
- * 	Amazon CloudWatch is a web service that enables you to monitor and manage various metrics, as well
- * 	as configure alarm actions based on data from metrics. Amazon CloudWatch monitoring enables you to
- * 	collect, analyze, and view system and application metrics so that you can make operational and
- * 	business decisions more quickly and with greater confidence. You can use Amazon CloudWatch to
- * 	collect metrics about your AWS resources, such as the performance of your Amazon EC2 instances. If
- * 	you are registered for an AWS product that supports Amazon CloudWatch, the service automatically
- * 	pushes basic metrics to CloudWatch for you. Once Amazon CloudWatch contains metrics, you can
- * 	calculate statistics based on that data. Amazon CloudWatch alarms help you implement decisions more
- * 	easily by enabling you do things like send notifications or automatically make changes to the
- * 	resources you are monitoring, based on rules that you define. For example, you can create alarms
- * 	that initiate Auto Scaling and Simple Notification Service actions on your behalf.
  *
- * Version:
- * 	Mon Jan 24 14:50:40 PST 2011
  *
- * License and Copyright:
- * 	See the included NOTICE.md file for complete information.
+ * Amazon CloudWatch is a web service that enables you to monitor and manage various metrics, as well as configure alarm
+ * actions based on data from metrics.
  *
- * See Also:
- * 	[Amazon CloudWatch](http://aws.amazon.com/cloudwatch/)
- * 	[Amazon CloudWatch documentation](http://aws.amazon.com/documentation/cloudwatch/)
- */
-
-
-/*%******************************************************************************************%*/
-// EXCEPTIONS
-
-/**
- * Exception: CloudWatch_Exception
- * 	Default CloudWatch Exception.
- */
-class CloudWatch_Exception extends Exception {}
-
-
-/*%******************************************************************************************%*/
-// MAIN CLASS
-
-/**
- * Class: AmazonCloudWatch
- * 	Container for all service-related methods.
+ * Amazon CloudWatch monitoring enables you to collect, analyze, and view system and application metrics so that you can
+ * make operational and business decisions more quickly and with greater confidence. You can use Amazon CloudWatch to
+ * collect metrics about your AWS resources, such as the performance of your Amazon EC2 instances.
+ *
+ * If you are registered for an AWS product that supports Amazon CloudWatch, the service automatically pushes basic metrics
+ * to CloudWatch for you. Once Amazon CloudWatch contains metrics, you can calculate statistics based on that data.
+ *
+ * Amazon CloudWatch alarms help you implement decisions more easily by enabling you do things like send notifications or
+ * automatically make changes to the resources you are monitoring, based on rules that you define. For example, you can
+ * create alarms that initiate Auto Scaling and Simple Notification Service actions on your behalf.
+ *
+ * @version Wed Feb 16 17:04:07 PST 2011
+ * @license See the included NOTICE.md file for complete information.
+ * @copyright See the included NOTICE.md file for complete information.
+ * @link http://aws.amazon.com/cloudwatch/Amazon CloudWatch
+ * @link http://aws.amazon.com/documentation/cloudwatch/Amazon CloudWatch documentation
  */
 class AmazonCloudWatch extends CFRuntime
 {
@@ -64,32 +44,27 @@ class AmazonCloudWatch extends CFRuntime
 	// CLASS CONSTANTS
 
 	/**
-	 * Constant: DEFAULT_URL
-	 * 	Specify the default queue URL.
+	 * Specify the default queue URL.
 	 */
 	const DEFAULT_URL = 'monitoring.amazonaws.com';
 
 	/**
-	 * Constant: REGION_US_E1
-	 * 	Specify the queue URL for the US-East (Northern Virginia) Region.
+	 * Specify the queue URL for the US-East (Northern Virginia) Region.
 	 */
 	const REGION_US_E1 = 'us-east-1';
 
 	/**
-	 * Constant: REGION_US_W1
-	 * 	Specify the queue URL for the US-West (Northern California) Region.
+	 * Specify the queue URL for the US-West (Northern California) Region.
 	 */
 	const REGION_US_W1 = 'us-west-1';
 
 	/**
-	 * Constant: REGION_EU_W1
-	 * 	Specify the queue URL for the EU (Ireland) Region.
+	 * Specify the queue URL for the EU (Ireland) Region.
 	 */
 	const REGION_EU_W1 = 'eu-west-1';
 
 	/**
-	 * Constant: REGION_APAC_SE1
-	 * 	Specify the queue URL for the Asia Pacific (Singapore) Region.
+	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
 	const REGION_APAC_SE1 = 'ap-southeast-1';
 
@@ -98,17 +73,10 @@ class AmazonCloudWatch extends CFRuntime
 	// SETTERS
 
 	/**
-	 * Method: set_region()
-	 * 	This allows you to explicitly sets the region for the service to use.
+	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$region - _string_ (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_EU_W1>, and <REGION_APAC_SE1>.
-	 *
-	 * Returns:
-	 * 	`$this`
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_EU_W1>, or <REGION_APAC_SE1>.
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
 	{
@@ -121,18 +89,11 @@ class AmazonCloudWatch extends CFRuntime
 	// CONSTRUCTOR
 
 	/**
-	 * Method: __construct()
-	 * 	Constructs a new instance of <AmazonCloudWatch>.
+	 * Constructs a new instance of <AmazonCloudWatch>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$key - _string_ (Optional) Your Amazon API Key. If blank, it will look for the <AWS_KEY> constant.
-	 * 	$secret_key - _string_ (Optional) Your Amazon API Secret Key. If blank, it will look for the <AWS_SECRET_KEY> constant.
-	 *
-	 * Returns:
-	 * 	_boolean_ false if no valid values are set, otherwise true.
+	 * @param string $key (Optional) Your Amazon API Key. If blank, it will look for the <code>AWS_KEY</code> constant.
+	 * @param string $secret_key (Optional) Your Amazon API Secret Key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
+	 * @return boolean false if no valid values are set, otherwise true.
 	 */
 	public function __construct($key = null, $secret_key = null)
 	{
@@ -157,42 +118,39 @@ class AmazonCloudWatch extends CFRuntime
 	// SERVICE METHODS
 
 	/**
-	 * Method: put_metric_alarm()
-	 * 	Creates or updates an alarm and associates it with the specified Amazon CloudWatch metric.
-	 * 	Optionally, this operation can associate one or more Amazon Simple Notification Service resources
-	 * 	with the alarm. When this operation creates an alarm, the alarm state is immediately set to
-	 * 	`UNKNOWN`. The alarm is evaluated and its `StateValue` is set appropriately. Any actions associated
-	 * 	with the `StateValue` is then executed. When updating an existing alarm, its `StateValue` is left
-	 * 	unchanged.
 	 *
-	 * Access:
-	 *	public
+	 * Creates or updates an alarm and associates it with the specified Amazon CloudWatch metric. Optionally, this operation
+	 * can associate one or more Amazon Simple Notification Service resources with the alarm.
 	 *
-	 * Parameters:
-	 *	$alarm_name - _string_ (Required) The descriptive name for the alarm. This name must be unique within the user's AWS account
-	 *	$metric_name - _string_ (Required) The name for the alarm's associated metric.
-	 *	$namespace - _string_ (Required) The namespace for the alarm's associated metric.
-	 *	$statistic - _string_ (Required) The statistic to apply to the alarm's associated metric. [Allowed values: `SampleCount`, `Average`, `Sum`, `Minimum`, `Maximum`]
-	 *	$period - _integer_ (Required) The period in seconds over which the specified statistic is applied.
-	 *	$evaluation_periods - _integer_ (Required) The number of periods over which data is compared to the specified threshold.
-	 *	$threshold - _double_ (Required) The value against which the specified statistic is compared.
-	 *	$comparison_operator - _string_ (Required) The arithmetic operation to use when comparing the specified `Statistic` and `Threshold`. The specified `Statistic` value is used as the first operand. [Allowed values: `GreaterThanOrEqualToThreshold`, `GreaterThanThreshold`, `LessThanThreshold`, `LessThanOrEqualToThreshold`]
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * When this operation creates an alarm, the alarm state is immediately set to <code>UNKNOWN</code>. The alarm is
+	 * evaluated and its <code>StateValue</code> is set appropriately. Any actions associated with the <code>StateValue</code>
+	 * is then executed.
 	 *
-	 * Keys for the $opt parameter:
-	 *	AlarmDescription - _string_ (Optional) The description for the alarm.
-	 *	ActionsEnabled - _boolean_ (Optional) Indicates whether or not actions should be executed during any changes to the alarm's state.
-	 *	OKActions - _string_|_array_ (Optional) The list of actions to execute when this alarm transitions into an `OK` state from any other state. Each action is specified as an Amazon Resource Number (ARN). Currently the only action supported is publishing to an Amazon SNS topic or an Amazon Auto Scaling policy. Pass a string for a single value, or an indexed array for multiple values.
-	 *	AlarmActions - _string_|_array_ (Optional) The list of actions to execute when this alarm transitions into an `ALARM` state from any other state. Each action is specified as an Amazon Resource Number (ARN). Currently the only action supported is publishing to an Amazon SNS topic or an Amazon Auto Scaling policy. Pass a string for a single value, or an indexed array for multiple values.
-	 *	InsufficientDataActions - _string_|_array_ (Optional) The list of actions to execute when this alarm transitions into an `UNKNOWN` state from any other state. Each action is specified as an Amazon Resource Number (ARN). Currently the only action supported is publishing to an Amazon SNS topic or an Amazon Auto Scaling policy. Pass a string for a single value, or an indexed array for multiple values.
-	 *	Dimensions - _ComplexList_ (Optional) The dimensions for the alarm's associated metric. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Dimensions` subtype (documented next), or by passing an associative array with the following `Dimensions`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
-	 *	Dimensions.x.Name - _string_ (Required) The name of the dimension.
-	 *	Dimensions.x.Value - _string_ (Required) The value representing the dimension measurement
-	 *	Unit - _string_ (Optional) The unit for the alarm's associated metric. [Allowed values: `Seconds`, `Microseconds`, `Milliseconds`, `Bytes`, `Kilobytes`, `Megabytes`, `Gigabytes`, `Terabytes`, `Bits`, `Kilobits`, `Megabits`, `Gigabits`, `Terabits`, `Percent`, `Count`, `Bytes/Second`, `Kilobytes/Second`, `Megabytes/Second`, `Gigabytes/Second`, `Terabytes/Second`, `Bits/Second`, `Kilobits/Second`, `Megabits/Second`, `Gigabits/Second`, `Terabits/Second`, `Count/Second`, `None`]
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * When updating an existing alarm, its <code>StateValue</code> is left unchanged.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $alarm_name (Required) The descriptive name for the alarm. This name must be unique within the user's AWS account
+	 * @param string $metric_name (Required) The name for the alarm's associated metric.
+	 * @param string $namespace (Required) The namespace for the alarm's associated metric.
+	 * @param string $statistic (Required) The statistic to apply to the alarm's associated metric. [Allowed values: <code>SampleCount</code>, <code>Average</code>, <code>Sum</code>, <code>Minimum</code>, <code>Maximum</code>]
+	 * @param integer $period (Required) The period in seconds over which the specified statistic is applied.
+	 * @param integer $evaluation_periods (Required) The number of periods over which data is compared to the specified threshold.
+	 * @param double $threshold (Required) The value against which the specified statistic is compared.
+	 * @param string $comparison_operator (Required) The arithmetic operation to use when comparing the specified <code>Statistic</code> and <code>Threshold</code>. The specified <code>Statistic</code> value is used as the first operand. [Allowed values: <code>GreaterThanOrEqualToThreshold</code>, <code>GreaterThanThreshold</code>, <code>LessThanThreshold</code>, <code>LessThanOrEqualToThreshold</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>AlarmDescription</code> - <code>string</code> - Optional - The description for the alarm. </li>
+	 * 	<li><code>ActionsEnabled</code> - <code>boolean</code> - Optional - Indicates whether or not actions should be executed during any changes to the alarm's state. </li>
+	 * 	<li><code>OKActions</code> - <code>string|array</code> - Optional - The list of actions to execute when this alarm transitions into an <code>OK</code> state from any other state. Each action is specified as an Amazon Resource Number (ARN). Currently the only action supported is publishing to an Amazon SNS topic or an Amazon Auto Scaling policy.  Pass a string for a single value, or an indexed array for multiple values. </li>
+	 * 	<li><code>AlarmActions</code> - <code>string|array</code> - Optional - The list of actions to execute when this alarm transitions into an <code>ALARM</code> state from any other state. Each action is specified as an Amazon Resource Number (ARN). Currently the only action supported is publishing to an Amazon SNS topic or an Amazon Auto Scaling policy.  Pass a string for a single value, or an indexed array for multiple values. </li>
+	 * 	<li><code>InsufficientDataActions</code> - <code>string|array</code> - Optional - The list of actions to execute when this alarm transitions into an <code>UNKNOWN</code> state from any other state. Each action is specified as an Amazon Resource Number (ARN). Currently the only action supported is publishing to an Amazon SNS topic or an Amazon Auto Scaling policy.  Pass a string for a single value, or an indexed array for multiple values. </li>
+	 * 	<li><code>Dimensions</code> - <code>array</code> - Optional - The dimensions for the alarm's associated metric. <ul>
+	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
+	 * 			<li><code>Name</code> - <code>string</code> - Required - The name of the dimension. </li>
+	 * 			<li><code>Value</code> - <code>string</code> - Required - The value representing the dimension measurement </li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>Unit</code> - <code>string</code> - Optional - The unit for the alarm's associated metric. [Allowed values: <code>Seconds</code>, <code>Microseconds</code>, <code>Milliseconds</code>, <code>Bytes</code>, <code>Kilobytes</code>, <code>Megabytes</code>, <code>Gigabytes</code>, <code>Terabytes</code>, <code>Bits</code>, <code>Kilobits</code>, <code>Megabits</code>, <code>Gigabits</code>, <code>Terabits</code>, <code>Percent</code>, <code>Count</code>, <code>Bytes/Second</code>, <code>Kilobytes/Second</code>, <code>Megabytes/Second</code>, <code>Gigabytes/Second</code>, <code>Terabytes/Second</code>, <code>Bits/Second</code>, <code>Kilobits/Second</code>, <code>Megabits/Second</code>, <code>Gigabits/Second</code>, <code>Terabits/Second</code>, <code>Count/Second</code>, <code>None</code>]</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function put_metric_alarm($alarm_name, $metric_name, $namespace, $statistic, $period, $evaluation_periods, $threshold, $comparison_operator, $opt = null)
 	{
@@ -246,29 +204,25 @@ class AmazonCloudWatch extends CFRuntime
 	}
 
 	/**
-	 * Method: list_metrics()
-	 * 	Returns a list of valid metrics stored for the AWS account owner. Returned metrics can be used with
-	 * 	`GetMetricStatistics` to obtain statistical data for a given metric. Up to 500 results are returned
-	 * 	for any one call. To retrieve further results, use returned `NextToken` values with subsequent
-	 * 	`ListMetrics` operations.
 	 *
-	 * Access:
-	 *	public
+	 * Returns a list of valid metrics stored for the AWS account owner. Returned metrics can be used with
+	 * <code>GetMetricStatistics</code> to obtain statistical data for a given metric.
 	 *
-	 * Parameters:
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * Up to 500 results are returned for any one call. To retrieve further results, use returned <code>NextToken</code>
+	 * values with subsequent <code>ListMetrics</code> operations.
 	 *
-	 * Keys for the $opt parameter:
-	 *	Namespace - _string_ (Optional) The namespace to filter against.
-	 *	MetricName - _string_ (Optional) The name of the metric to filter against.
-	 *	Dimensions - _ComplexList_ (Optional) A list of dimensions to filter against. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Dimensions` subtype (documented next), or by passing an associative array with the following `Dimensions`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
-	 *	Dimensions.x.Name - _string_ (Required) The dimension name to be matched.
-	 *	Dimensions.x.Value - _string_ (Optional) The value of the dimension to be matched. Specifying a `Name` without specifying a `Value` is equivalent to "wildcarding" the `Name` for all values.
-	 *	NextToken - _string_ (Optional) The token returned by a previous call to indicate that there is more data available.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Namespace</code> - <code>string</code> - Optional - The namespace to filter against. </li>
+	 * 	<li><code>MetricName</code> - <code>string</code> - Optional - The name of the metric to filter against. </li>
+	 * 	<li><code>Dimensions</code> - <code>array</code> - Optional - A list of dimensions to filter against. <ul>
+	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
+	 * 			<li><code>Name</code> - <code>string</code> - Required - The dimension name to be matched. </li>
+	 * 			<li><code>Value</code> - <code>string</code> - Optional - The value of the dimension to be matched. Specifying a <code>Name</code> without specifying a <code>Value</code> is equivalent to "wildcarding" the <code>Name</code> for all values. </li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - The token returned by a previous call to indicate that there is more data available. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function list_metrics($opt = null)
 	{
@@ -287,34 +241,30 @@ class AmazonCloudWatch extends CFRuntime
 	}
 
 	/**
-	 * Method: get_metric_statistics()
-	 * 	Gets statistics for the specified metric. The maximum number of datapoints returned from a single
-	 * 	`GetMetricStatistics` request is 1,440. If a request is made that generates more than 1,440
-	 * 	datapoints, Amazon CloudWatch returns an error. In such a case, alter the request by narrowing the
-	 * 	specified time range or increasing the specified period. Alternatively, make multiple requests
-	 * 	across adjacent time ranges.
 	 *
-	 * Access:
-	 *	public
+	 * Gets statistics for the specified metric.
 	 *
-	 * Parameters:
-	 *	$namespace - _string_ (Required) The namespace of the metric.
-	 *	$metric_name - _string_ (Required) The name of the metric.
-	 *	$start_time - _string_ (Required) The timestamp to use for determining the first datapoint to return. The value specified is inclusive; results include datapoints with the timestamp specified. The specified start time is rounded down to the nearest value. Datapoints are returned for start times up to two weeks in the past. Specified start times that are more than two weeks in the past will not return datapoints for metrics that are older than two weeks. Accepts any value that `strtotime()` understands.
-	 *	$end_time - _string_ (Required) The time stamp to use for determining the last datapoint to return. The value specified is exclusive; results will include datapoints up to the time stamp specified. Accepts any value that `strtotime()` understands.
-	 *	$period - _integer_ (Required) The granularity, in seconds, of the returned datapoints. `Period` must be at least 60 seconds and must be a multiple of 60. The default value is 60.
-	 *	$statistics - _string_|_array_ (Required) The metric statistics to return. Pass a string for a single value, or an indexed array for multiple values.
-	 *	$unit - _string_ (Required) The unit for the metric. [Allowed values: `Seconds`, `Microseconds`, `Milliseconds`, `Bytes`, `Kilobytes`, `Megabytes`, `Gigabytes`, `Terabytes`, `Bits`, `Kilobits`, `Megabits`, `Gigabits`, `Terabits`, `Percent`, `Count`, `Bytes/Second`, `Kilobytes/Second`, `Megabytes/Second`, `Gigabytes/Second`, `Terabytes/Second`, `Bits/Second`, `Kilobits/Second`, `Megabits/Second`, `Gigabits/Second`, `Terabits/Second`, `Count/Second`, `None`]
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * The maximum number of datapoints returned from a single <code>GetMetricStatistics</code> request is 1,440. If a request
+	 * is made that generates more than 1,440 datapoints, Amazon CloudWatch returns an error. In such a case, alter the request
+	 * by narrowing the specified time range or increasing the specified period. Alternatively, make multiple requests across
+	 * adjacent time ranges.
 	 *
-	 * Keys for the $opt parameter:
-	 *	Dimensions - _ComplexList_ (Optional) A list of dimensions describing qualities of the metric. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Dimensions` subtype (documented next), or by passing an associative array with the following `Dimensions`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
-	 *	Dimensions.x.Name - _string_ (Required) The name of the dimension.
-	 *	Dimensions.x.Value - _string_ (Required) The value representing the dimension measurement
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $namespace (Required) The namespace of the metric.
+	 * @param string $metric_name (Required) The name of the metric.
+	 * @param string $start_time (Required) The timestamp to use for determining the first datapoint to return. The value specified is inclusive; results include datapoints with the timestamp specified. The specified start time is rounded down to the nearest value. Datapoints are returned for start times up to two weeks in the past. Specified start times that are more than two weeks in the past will not return datapoints for metrics that are older than two weeks. Accepts any value that <php:strtotime()> understands.
+	 * @param string $end_time (Required) The time stamp to use for determining the last datapoint to return. The value specified is exclusive; results will include datapoints up to the time stamp specified. Accepts any value that <php:strtotime()> understands.
+	 * @param integer $period (Required) The granularity, in seconds, of the returned datapoints. <code>Period</code> must be at least 60 seconds and must be a multiple of 60. The default value is 60.
+	 * @param string|array $statistics (Required) The metric statistics to return.  Pass a string for a single value, or an indexed array for multiple values.
+	 * @param string $unit (Required) The unit for the metric. [Allowed values: <code>Seconds</code>, <code>Microseconds</code>, <code>Milliseconds</code>, <code>Bytes</code>, <code>Kilobytes</code>, <code>Megabytes</code>, <code>Gigabytes</code>, <code>Terabytes</code>, <code>Bits</code>, <code>Kilobits</code>, <code>Megabits</code>, <code>Gigabits</code>, <code>Terabits</code>, <code>Percent</code>, <code>Count</code>, <code>Bytes/Second</code>, <code>Kilobytes/Second</code>, <code>Megabytes/Second</code>, <code>Gigabytes/Second</code>, <code>Terabytes/Second</code>, <code>Bits/Second</code>, <code>Kilobits/Second</code>, <code>Megabits/Second</code>, <code>Gigabits/Second</code>, <code>Terabits/Second</code>, <code>Count/Second</code>, <code>None</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Dimensions</code> - <code>array</code> - Optional - A list of dimensions describing qualities of the metric. <ul>
+	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
+	 * 			<li><code>Name</code> - <code>string</code> - Required - The name of the dimension. </li>
+	 * 			<li><code>Value</code> - <code>string</code> - Required - The value representing the dimension measurement </li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function get_metric_statistics($namespace, $metric_name, $start_time, $end_time, $period, $statistics, $unit, $opt = null)
 	{
@@ -344,22 +294,14 @@ class AmazonCloudWatch extends CFRuntime
 	}
 
 	/**
-	 * Method: disable_alarm_actions()
-	 * 	Disables actions for the specified alarms. When an alarm's actions are disabled the alarm's state
-	 * 	may change, but none of the alarm's actions will execute.
 	 *
-	 * Access:
-	 *	public
+	 * Disables actions for the specified alarms. When an alarm's actions are disabled the alarm's state may change, but none
+	 * of the alarm's actions will execute.
 	 *
-	 * Parameters:
-	 *	$alarm_names - _string_|_array_ (Required) The names of the alarms to disable actions for. Pass a string for a single value, or an indexed array for multiple values.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string|array $alarm_names (Required) The names of the alarms to disable actions for.  Pass a string for a single value, or an indexed array for multiple values.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function disable_alarm_actions($alarm_names, $opt = null)
 	{
@@ -374,28 +316,19 @@ class AmazonCloudWatch extends CFRuntime
 	}
 
 	/**
-	 * Method: describe_alarms()
-	 * 	Retrieves alarms with the specified names. If no name is specified, all alarms for the user are
-	 * 	returned. Alarms can be retrieved by using only a prefix for the alarm name, the alarm state, or a
-	 * 	prefix for any action.
 	 *
-	 * Access:
-	 *	public
+	 * Retrieves alarms with the specified names. If no name is specified, all alarms for the user are returned. Alarms can be
+	 * retrieved by using only a prefix for the alarm name, the alarm state, or a prefix for any action.
 	 *
-	 * Parameters:
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	AlarmNames - _string_|_array_ (Optional) A list of alarm names to retrieve information for. Pass a string for a single value, or an indexed array for multiple values.
-	 *	AlarmNamePrefix - _string_ (Optional) The alarm name prefix. `AlarmNames` cannot be specified if this parameter is specified.
-	 *	StateValue - _string_ (Optional) The state value to be used in matching alarms. [Allowed values: `OK`, `ALARM`, `INSUFFICIENT_DATA`]
-	 *	ActionPrefix - _string_ (Optional) The action name prefix.
-	 *	MaxRecords - _integer_ (Optional) The maximum number of alarm descriptions to retrieve.
-	 *	NextToken - _string_ (Optional) The token returned by a previous call to indicate that there is more data available.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>AlarmNames</code> - <code>string|array</code> - Optional - A list of alarm names to retrieve information for.  Pass a string for a single value, or an indexed array for multiple values. </li>
+	 * 	<li><code>AlarmNamePrefix</code> - <code>string</code> - Optional - The alarm name prefix. <code>AlarmNames</code> cannot be specified if this parameter is specified. </li>
+	 * 	<li><code>StateValue</code> - <code>string</code> - Optional - The state value to be used in matching alarms. [Allowed values: <code>OK</code>, <code>ALARM</code>, <code>INSUFFICIENT_DATA</code>]</li>
+	 * 	<li><code>ActionPrefix</code> - <code>string</code> - Optional - The action name prefix. </li>
+	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of alarm descriptions to retrieve. </li>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - The token returned by a previous call to indicate that there is more data available. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function describe_alarms($opt = null)
 	{
@@ -414,29 +347,23 @@ class AmazonCloudWatch extends CFRuntime
 	}
 
 	/**
-	 * Method: describe_alarms_for_metric()
-	 * 	Retrieves all alarms for a single metric. Specify a statistic, period, or unit to filter the set of
-	 * 	alarms further.
 	 *
-	 * Access:
-	 *	public
+	 * Retrieves all alarms for a single metric. Specify a statistic, period, or unit to filter the set of alarms further.
 	 *
-	 * Parameters:
-	 *	$metric_name - _string_ (Required) The name of the metric.
-	 *	$namespace - _string_ (Required) The namespace of the metric.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	Statistic - _string_ (Optional) The statistic for the metric. [Allowed values: `SampleCount`, `Average`, `Sum`, `Minimum`, `Maximum`]
-	 *	Dimensions - _ComplexList_ (Optional) The list of dimensions associated with the metric. A ComplexList is an indexed array of ComplexTypes. Each ComplexType is a set of key-value pairs. These pairs can be set one of two ways: by setting each individual `Dimensions` subtype (documented next), or by passing an associative array with the following `Dimensions`-prefixed entries as keys. In the descriptions below, `x`, `y` and `z` should be integers starting at `1`. See below for a list and a usage example.
-	 *	Dimensions.x.Name - _string_ (Required) The name of the dimension.
-	 *	Dimensions.x.Value - _string_ (Required) The value representing the dimension measurement
-	 *	Period - _integer_ (Optional) The period in seconds over which the statistic is applied.
-	 *	Unit - _string_ (Optional) The unit for the metric. [Allowed values: `Seconds`, `Microseconds`, `Milliseconds`, `Bytes`, `Kilobytes`, `Megabytes`, `Gigabytes`, `Terabytes`, `Bits`, `Kilobits`, `Megabits`, `Gigabits`, `Terabits`, `Percent`, `Count`, `Bytes/Second`, `Kilobytes/Second`, `Megabytes/Second`, `Gigabytes/Second`, `Terabytes/Second`, `Bits/Second`, `Kilobits/Second`, `Megabits/Second`, `Gigabits/Second`, `Terabits/Second`, `Count/Second`, `None`]
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $metric_name (Required) The name of the metric.
+	 * @param string $namespace (Required) The namespace of the metric.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Statistic</code> - <code>string</code> - Optional - The statistic for the metric. [Allowed values: <code>SampleCount</code>, <code>Average</code>, <code>Sum</code>, <code>Minimum</code>, <code>Maximum</code>]</li>
+	 * 	<li><code>Dimensions</code> - <code>array</code> - Optional - The list of dimensions associated with the metric. <ul>
+	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
+	 * 			<li><code>Name</code> - <code>string</code> - Required - The name of the dimension. </li>
+	 * 			<li><code>Value</code> - <code>string</code> - Required - The value representing the dimension measurement </li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>Period</code> - <code>integer</code> - Optional - The period in seconds over which the statistic is applied. </li>
+	 * 	<li><code>Unit</code> - <code>string</code> - Optional - The unit for the metric. [Allowed values: <code>Seconds</code>, <code>Microseconds</code>, <code>Milliseconds</code>, <code>Bytes</code>, <code>Kilobytes</code>, <code>Megabytes</code>, <code>Gigabytes</code>, <code>Terabytes</code>, <code>Bits</code>, <code>Kilobits</code>, <code>Megabits</code>, <code>Gigabits</code>, <code>Terabits</code>, <code>Percent</code>, <code>Count</code>, <code>Bytes/Second</code>, <code>Kilobytes/Second</code>, <code>Megabytes/Second</code>, <code>Gigabytes/Second</code>, <code>Terabytes/Second</code>, <code>Bits/Second</code>, <code>Kilobits/Second</code>, <code>Megabits/Second</code>, <code>Gigabits/Second</code>, <code>Terabits/Second</code>, <code>Count/Second</code>, <code>None</code>]</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function describe_alarms_for_metric($metric_name, $namespace, $opt = null)
 	{
@@ -457,29 +384,22 @@ class AmazonCloudWatch extends CFRuntime
 	}
 
 	/**
-	 * Method: describe_alarm_history()
-	 * 	Retrieves history for the specified alarm. Filter alarms by date range or item type. If an alarm
-	 * 	name is not specified, Amazon CloudWatch returns histories for all of the owner's alarms. Amazon
-	 * 	CloudWatch retains the history of deleted alarms for a period of six weeks. If an alarm has been
-	 * 	deleted, its history can still be queried.
 	 *
-	 * Access:
-	 *	public
+	 * Retrieves history for the specified alarm. Filter alarms by date range or item type. If an alarm name is not specified,
+	 * Amazon CloudWatch returns histories for all of the owner's alarms.
 	 *
-	 * Parameters:
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * Amazon CloudWatch retains the history of deleted alarms for a period of six weeks. If an alarm has been deleted, its
+	 * history can still be queried.
 	 *
-	 * Keys for the $opt parameter:
-	 *	AlarmName - _string_ (Optional) The name of the alarm.
-	 *	HistoryItemType - _string_ (Optional) The type of alarm histories to retrieve. [Allowed values: `ConfigurationUpdate`, `StateUpdate`, `Action`]
-	 *	StartDate - _string_ (Optional) The starting date to retrieve alarm history. Accepts any value that `strtotime()` understands.
-	 *	EndDate - _string_ (Optional) The ending date to retrieve alarm history. Accepts any value that `strtotime()` understands.
-	 *	MaxRecords - _integer_ (Optional) The maximum number of alarm history records to retrieve.
-	 *	NextToken - _string_ (Optional) The token returned by a previous call to indicate that there is more data available.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>AlarmName</code> - <code>string</code> - Optional - The name of the alarm. </li>
+	 * 	<li><code>HistoryItemType</code> - <code>string</code> - Optional - The type of alarm histories to retrieve. [Allowed values: <code>ConfigurationUpdate</code>, <code>StateUpdate</code>, <code>Action</code>]</li>
+	 * 	<li><code>StartDate</code> - <code>string</code> - Optional - The starting date to retrieve alarm history. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
+	 * 	<li><code>EndDate</code> - <code>string</code> - Optional - The ending date to retrieve alarm history. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
+	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of alarm history records to retrieve. </li>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - The token returned by a previous call to indicate that there is more data available. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function describe_alarm_history($opt = null)
 	{
@@ -501,21 +421,13 @@ class AmazonCloudWatch extends CFRuntime
 	}
 
 	/**
-	 * Method: enable_alarm_actions()
-	 * 	Enables actions for the specified alarms.
 	 *
-	 * Access:
-	 *	public
+	 * Enables actions for the specified alarms.
 	 *
-	 * Parameters:
-	 *	$alarm_names - _string_|_array_ (Required) The names of the alarms to enable actions for. Pass a string for a single value, or an indexed array for multiple values.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string|array $alarm_names (Required) The names of the alarms to enable actions for.  Pass a string for a single value, or an indexed array for multiple values.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function enable_alarm_actions($alarm_names, $opt = null)
 	{
@@ -530,21 +442,13 @@ class AmazonCloudWatch extends CFRuntime
 	}
 
 	/**
-	 * Method: delete_alarms()
-	 * 	Deletes all specified alarms. In the event of an error, no alarms are deleted.
 	 *
-	 * Access:
-	 *	public
+	 * Deletes all specified alarms. In the event of an error, no alarms are deleted.
 	 *
-	 * Parameters:
-	 *	$alarm_names - _string_|_array_ (Required) A list of alarms to be deleted. Pass a string for a single value, or an indexed array for multiple values.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string|array $alarm_names (Required) A list of alarms to be deleted.  Pass a string for a single value, or an indexed array for multiple values.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function delete_alarms($alarm_names, $opt = null)
 	{
@@ -559,26 +463,18 @@ class AmazonCloudWatch extends CFRuntime
 	}
 
 	/**
-	 * Method: set_alarm_state()
-	 * 	Temporarily sets the state of an alarm. When the updated `StateValue` differs from the previous
-	 * 	value, the action configured for the appropriate state is invoked. This is not a permanent change.
-	 * 	The next periodic alarm check (in about a minute) will set the alarm to its actual state.
 	 *
-	 * Access:
-	 *	public
+	 * Temporarily sets the state of an alarm. When the updated <code>StateValue</code> differs from the previous value, the
+	 * action configured for the appropriate state is invoked. This is not a permanent change. The next periodic alarm check
+	 * (in about a minute) will set the alarm to its actual state.
 	 *
-	 * Parameters:
-	 *	$alarm_name - _string_ (Required) The descriptive name for the alarm. This name must be unique within the user's AWS account
-	 *	$state_value - _string_ (Required) The value of the state. [Allowed values: `OK`, `ALARM`, `INSUFFICIENT_DATA`]
-	 *	$state_reason - _string_ (Required) The reason that this alarm is set to this specific state (in human-readable text format)
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	StateReasonData - _string_ (Optional) The reason that this alarm is set to this specific state (in machine-readable JSON format)
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $alarm_name (Required) The descriptive name for the alarm. This name must be unique within the user's AWS account
+	 * @param string $state_value (Required) The value of the state. [Allowed values: <code>OK</code>, <code>ALARM</code>, <code>INSUFFICIENT_DATA</code>]
+	 * @param string $state_reason (Required) The reason that this alarm is set to this specific state (in human-readable text format)
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>StateReasonData</code> - <code>string</code> - Optional - The reason that this alarm is set to this specific state (in machine-readable JSON format) </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function set_alarm_state($alarm_name, $state_value, $state_reason, $opt = null)
 	{
@@ -591,3 +487,11 @@ class AmazonCloudWatch extends CFRuntime
 	}
 }
 
+
+/*%******************************************************************************************%*/
+// EXCEPTIONS
+
+/**
+ * Default CloudWatch Exception.
+ */
+class CloudWatch_Exception extends Exception {}

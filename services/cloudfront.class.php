@@ -14,34 +14,12 @@
  * permissions and limitations under the License.
  */
 
-/**
- * File: CloudFront
- * 	Amazon CloudFront is a web service for content delivery. It makes it easier for you to distribute content
- * 	to end users quickly, with low latency and high data transfer speeds.
- *
- * 	CloudFront delivers your content through a worldwide network of edge locations. End users are routed to
- * 	the nearest edge location, so content is delivered with the best possible performance. CloudFront works
- * 	seamlessly with the Amazon Simple Storage Service, which durably stores the original, definitive versions
- * 	of your files.
- *
- * Version:
- * 	2010.11.24
- *
- * License and Copyright:
- * 	See the included NOTICE.md file for more information.
- *
- * See Also:
- * 	[Amazon CloudFront](http://aws.amazon.com/cloudfront/)
- * 	[Amazon CloudFront documentation](http://aws.amazon.com/documentation/cloudfront/)
- */
-
 
 /*%******************************************************************************************%*/
 // EXCEPTIONS
 
 /**
- * Exception: CloudFront_Exception
- * 	Default CloudFront Exception.
+ * Default CloudFront Exception.
  */
 class CloudFront_Exception extends Exception {}
 
@@ -50,50 +28,54 @@ class CloudFront_Exception extends Exception {}
 // MAIN CLASS
 
 /**
- * Class: AmazonCloudFront
- * 	Container for all Amazon CloudFront-related methods. Inherits additional methods from CFRuntime.
+ * Amazon CloudFront is a web service for content delivery. It makes it easier for you to distribute content
+ * to end users quickly, with low latency and high data transfer speeds.
+ *
+ * CloudFront delivers your content through a worldwide network of edge locations. End users are routed to
+ * the nearest edge location, so content is delivered with the best possible performance. CloudFront works
+ * seamlessly with the Amazon Simple Storage Service, which durably stores the original, definitive versions
+ * of your files.
+ *
+ * @version 2010.11.24
+ * @license See the included NOTICE.md file for more information.
+ * @copyright See the included NOTICE.md file for more information.
+ * @link http://aws.amazon.com/cloudfront/ Amazon CloudFront
+ * @link http://aws.amazon.com/documentation/cloudfront/ Amazon CloudFront documentation
  */
 class AmazonCloudFront extends CFRuntime
 {
 	/**
-	 * Constant: DEFAULT_URL
-	 * 	Specify the default queue URL.
+	 * Specify the default queue URL.
 	 */
 	const DEFAULT_URL = 'cloudfront.amazonaws.com';
 
 	/**
-	 * Constant: STATE_INPROGRESS
-	 * 	The InProgress state.
+	 * The InProgress state.
 	 */
 	const STATE_INPROGRESS = 'InProgress';
 
 	/**
-	 * Constant: STATE_DEPLOYED
-	 * 	The Deployed state.
+	 * The Deployed state.
 	 */
 	const STATE_DEPLOYED = 'Deployed';
 
 	/**
-	 * Property: base_standard_xml
-	 * 	The base content to use for generating the DistributionConfig XML.
+	 * The base content to use for generating the DistributionConfig XML.
 	 */
 	var $base_xml;
 
 	/**
-	 * Property: domain
-	 * 	The CloudFront distribution domain to use.
+	 * The CloudFront distribution domain to use.
 	 */
 	var $domain;
 
 	/**
-	 * Property: key_pair_id
-	 * 	The RSA key pair ID to use.
+	 * The RSA key pair ID to use.
 	 */
 	var $key_pair_id;
 
 	/**
-	 * Property: private_key
-	 * 	The RSA private key resource locator.
+	 * The RSA private key resource locator.
 	 */
 	var $private_key;
 
@@ -102,18 +84,11 @@ class AmazonCloudFront extends CFRuntime
 	// CONSTRUCTOR
 
 	/**
-	 * Method: __construct()
-	 * 	Constructs a new instance of <AmazonCloudFront>.
+	 * Constructs a new instance of this class.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$key - _string_ (Optional) Your Amazon API Key. If blank, it will look for the <AWS_KEY> constant.
-	 * 	$secret_key - _string_ (Optional) Your Amazon API Secret Key. If blank, it will look for the <AWS_SECRET_KEY> constant.
-	 *
-	 * Returns:
-	 * 	_boolean_ A value of `false` if no valid values are set, otherwise `true`.
+	 * @param string $key (Optional) Your Amazon API Key. If blank, it will look for the <AWS_KEY> constant.
+	 * @param string $secret_key (Optional) Your Amazon API Secret Key. If blank, it will look for the <AWS_SECRET_KEY> constant.
+	 * @return boolean A value of <code>false</code> if no valid values are set, otherwise <code>true</code>.
 	 */
 	public function __construct($key = null, $secret_key = null)
 	{
@@ -152,26 +127,17 @@ class AmazonCloudFront extends CFRuntime
 	// AUTHENTICATION
 
 	/**
-	 * Method: authenticate()
-	 * 	Authenticates a connection to Amazon CloudFront. This method should not be used directly unless
-	 * 	you're writing custom methods for this class.
+	 * Authenticates a connection to Amazon CloudFront. This method should not be used directly unless
+	 * you're writing custom methods for this class.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$method - _string_ (Required) The HTTP method to use to connect. Accepts <HTTP_GET>, <HTTP_POST>, <HTTP_PUT>, <HTTP_DELETE>, and <HTTP_HEAD>.
-	 * 	$path - _string_ (Optional) The endpoint path to make requests to.
-	 * 	$opt - _array_ (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
-	 * 	$xml - _string_ (Optional) The XML body content to send along in the request.
-	 * 	$etag - _string_ (Optional) The ETag value to pass along with the If-Match HTTP header.
-	 * 	$redirects - _integer_ (Do Not Use) Used internally by this function on occasions when Amazon S3 returns a redirect code and it needs to call itself recursively.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	[Authentication](http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/RESTAuthentication.html)
+	 * @param string $method (Required) The HTTP method to use to connect. Accepts <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, and <code>HEAD</code>.
+	 * @param string $path (Optional) The endpoint path to make requests to.
+	 * @param array $opt (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
+	 * @param string $xml (Optional) The XML body content to send along in the request.
+	 * @param string $etag (Optional) The ETag value to pass along with the If-Match HTTP header.
+	 * @param integer $redirects (Do Not Use) Used internally by this function on occasions when Amazon S3 returns a redirect code and it needs to call itself recursively.
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/RESTAuthentication.html Authentication
 	 */
 	public function authenticate($method = 'GET', $path = null, $opt = null, $xml = null, $etag = null, $redirects = 0)
 	{
@@ -311,23 +277,16 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: cache_callback()
-	 * 	When caching is enabled, this method fires the request to the server, and the response is cached.
-	 * 	Accepts identical parameters as <authenticate()>. You should never call this method directly—it is
-	 * 	used internally by the caching system.
+	 * When caching is enabled, this method fires the request to the server, and the response is cached.
+	 * Accepts identical parameters as <authenticate()>. You should never call this method directly—it is
+	 * used internally by the caching system.
 	 *
-	 * Access:
-	 * 	public
- 	 *
-	 * Parameters:
-	 * 	$method - _string_ (Required) The HTTP method to use to connect. Accepts <HTTP_GET>, <HTTP_POST>, <HTTP_PUT>, <HTTP_DELETE>, and <HTTP_HEAD>.
-	 * 	$path - _string_ (Optional) The endpoint path to make requests to.
-	 * 	$opt - _array_ (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
-	 * 	$xml - _string_ (Optional) The XML body content to send along in the request.
-	 * 	$etag - _string_ (Optional) The ETag value to pass along with the If-Match HTTP header.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $method (Required) The HTTP method to use to connect. Accepts <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, and <code>HEAD</code>.
+	 * @param string $path (Optional) The endpoint path to make requests to.
+	 * @param array $opt (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
+	 * @param string $xml (Optional) The XML body content to send along in the request.
+	 * @param string $etag (Optional) The ETag value to pass along with the If-Match HTTP header.
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function cache_callback($method = 'GET', $path = null, $opt = null, $xml = null, $etag = null)
 	{
@@ -350,17 +309,10 @@ class AmazonCloudFront extends CFRuntime
 	// SETTERS
 
 	/**
-	 * Method: set_keypair_id()
-	 * 	Set the key ID of the RSA key pair being used.
+	 * Set the key ID of the RSA key pair being used.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$key_pair_id - _string_ (Required) The ID of the RSA key pair being used.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param string $key_pair_id (Required) The ID of the RSA key pair being used.
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_keypair_id($key_pair_id)
 	{
@@ -369,17 +321,10 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: set_private_key()
-	 * 	Set the private key resource locator being used.
+	 * Set the private key resource locator being used.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 *	$private_key - _string_ (Optional) The contents of the RSA private key used to sign requests.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param string $private_key (Optional) The contents of the RSA private key used to sign requests.
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_private_key($private_key)
 	{
@@ -388,14 +333,9 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: disable_ssl()
-	 * 	Overrides the <CFRuntime::disable_ssl()> method from the base class. SSL is required for CloudFront.
+	 * Overrides the <CFRuntime::disable_ssl()> method from the base class. SSL is required for CloudFront.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	void
+	 * @return void
 	 */
 	public function disable_ssl()
 	{
@@ -407,31 +347,22 @@ class AmazonCloudFront extends CFRuntime
 	// GENERATE CONFIG XML
 
 	/**
-	 * Method: generate_config_xml()
-	 * 	Generates the distribution configuration XML used with <create_distribution()> and
-	 * 	<set_distribution_config()>.
+	 * Generates the distribution configuration XML used with <create_distribution()> and
+	 * <set_distribution_config()>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$origin - _string_ (Required) The source to use for the Amazon CloudFront distribution. Use an Amazon S3 bucket name, or a fully-qualified non-S3 domain name prefixed with `http://` or `https://`.
-	 * 	$caller_reference - _string_ (Required) A unique identifier for the request. A timestamp-appended string is recommended.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	CNAME - _string_|_array_ (Optional) A DNS CNAME to use to map to the Amazon CloudFront distribution. If setting more than one, use an indexed array. Supports 1-10 CNAMEs.
-	 * 	Comment - _string_ (Optional) A comment to apply to the distribution. Cannot exceed 128 characters.
-	 * 	DefaultRootObject - _string_ (Optional) The file to load when someone accesses the root of your Amazon CloudFront domain (e.g., `index.html`).
-	 * 	Enabled - _string_ (Optional) A value of `true` enables the distribution. A value of `false` disables it. The default value is `true`.
-	 * 	Logging - _array_ (Optional) An array that contains two keys: `Bucket`, specifying where logs are written to, and `Prefix`, specifying a prefix to append to log file names.
-	 * 	OriginAccessIdentity - _string_ (Optional) The origin access identity (OAI) associated with this distribution. Use the Identity ID from the OAI, not the `CanonicalId`. Requires an S3 origin.
-	 * 	OriginProtocolPolicy - _string_ (Optional) The origin protocol policy to apply to your origin. If you specify `http-only`, CloudFront will use HTTP only to access the origin. If you specify `match-viewer`, CloudFront will fetch from your origin using HTTP or HTTPS, based on the protocol of the viewer request. It has a default value of `match-viewer`. [Allowed values: `http-only`, `match-viewer`]
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. The default value is `false`.
-	 * 	TrustedSigners - _array_ (Optional) An array of AWS account numbers for users who are trusted signers. Explicity add the value `Self` to the array to add your own account as a trusted signer.
-	 *
-	 * Returns:
-	 * 	_string_ An XML document to be used as the distribution configuration.
+	 * @param string $origin (Required) The source to use for the Amazon CloudFront distribution. Use an Amazon S3 bucket name, or a fully-qualified non-S3 domain name prefixed with <code>http://</code> or <code>https://</code>.
+	 * @param string $caller_reference (Required) A unique identifier for the request. A timestamp-appended string is recommended.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>CNAME</code> - <code>string|array</code> - Optional - A DNS CNAME to use to map to the Amazon CloudFront distribution. If setting more than one, use an indexed array. Supports 1-10 CNAMEs.</li>
+	 * 	<li><code>Comment</code> - <code>string</code> - Optional - A comment to apply to the distribution. Cannot exceed 128 characters.</li>
+	 * 	<li><code>DefaultRootObject</code> - <code>string</code> - Optional - The file to load when someone accesses the root of your Amazon CloudFront domain (e.g., <code>index.html</code>).</li>
+	 * 	<li><code>Enabled</code> - <code>string</code> - Optional - A value of <code>true</code> enables the distribution. A value of <code>false</code> disables it. The default value is <code>true</code>.</li>
+	 * 	<li><code>Logging</code> - <code>array</code> - Optional - An array that contains two keys: <code>Bucket</code>, specifying where logs are written to, and <code>Prefix</code>, specifying a prefix to append to log file names.</li>
+	 * 	<li><code>OriginAccessIdentity</code> - <code>string</code> - Optional - The origin access identity (OAI) associated with this distribution. Use the Identity ID from the OAI, not the <code>CanonicalId</code>. Requires an S3 origin.</li>
+	 * 	<li><code>OriginProtocolPolicy</code> - <code>string</code> - Optional - The origin protocol policy to apply to your origin. If you specify <code>http-only</code>, CloudFront will use HTTP only to access the origin. If you specify <code>match-viewer</code>, CloudFront will fetch from your origin using HTTP or HTTPS, based on the protocol of the viewer request. It has a default value of <code>match-viewer</code>. [Allowed values: <code>http-only</code>, <code>match-viewer</code>]</li>
+	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> will create a streaming distribution. A value of <code>false</code> will create a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>TrustedSigners</code> - <code>array</code> - Optional - An array of AWS account numbers for users who are trusted signers. Explicity add the value <code>Self</code> to the array to add your own account as a trusted signer.</li></ul>
+	 * @return string An XML document to be used as the distribution configuration.
 	 */
 	public function generate_config_xml($origin, $caller_reference, $opt = null)
 	{
@@ -562,27 +493,18 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: update_config_xml()
-	 * 	Updates an existing configuration XML document.
+	 * Updates an existing configuration XML document.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$xml - _CFSimpleXML_|_CFResponse_|_string_ (Required) The source configuration XML to make updates to. Can be the <CFSimpleXML> body of a <get_distribution_config()> response, the entire <CFResponse> of a <get_distribution_config()> response, or a string of XML generated by <generate_config_xml()> or <update_config_xml()>.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	CNAME - _string_|_array_ (Optional) The value or values to add to the existing list of CNAME values. If setting more than one, use an indexed array. Supports up to 10 CNAMEs.
-	 * 	Comment - _string_ (Optional) A comment to apply to the distribution. Cannot exceed 128 characters.
-	 * 	DefaultRootObject - _string_ (Optional) The file to load when someone accesses the root of your Amazon CloudFront domain (e.g., `index.html`).
-	 * 	Enabled - _string_ (Optional) A value of `true` enables the distribution. A value of `false` disables it. The default value is `true`.
-	 * 	Logging - _array_ (Optional) An array that contains two keys: `Bucket`, specifying where logs are written to, and `Prefix`, specifying a prefix to append to log file names.
-	 * 	OriginAccessIdentity - _string_ (Optional) The origin access identity (OAI) associated with this distribution. Use the Identity ID from the OAI, not the `CanonicalId`.
-	 * 	TrustedSigners - _array_ (Optional) An array of AWS account numbers for users who are trusted signers. Explicity add the value `Self` to the array to add your own account as a trusted signer.
-	 *
-	 * Returns:
-	 * 	_string_ XML document.
+	 * @param CFSimpleXML|CFResponse|string $xml (Required) The source configuration XML to make updates to. Can be the <CFSimpleXML> body of a <get_distribution_config()> response, the entire <CFResponse> of a <get_distribution_config()> response, or a string of XML generated by <generate_config_xml()> or <update_config_xml()>.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>CNAME</code> - <code>string|array</code> - Optional - The value or values to add to the existing list of CNAME values. If setting more than one, use an indexed array. Supports up to 10 CNAMEs.</li>
+	 * 	<li><code>Comment</code> - <code>string</code> - Optional - A comment to apply to the distribution. Cannot exceed 128 characters.</li>
+	 * 	<li><code>DefaultRootObject</code> - <code>string</code> - Optional - The file to load when someone accesses the root of your Amazon CloudFront domain (e.g., <code>index.html</code>).</li>
+	 * 	<li><code>Enabled</code> - <code>string</code> - Optional - A value of <code>true</code> enables the distribution. A value of <code>false</code> disables it. The default value is <code>true</code>.</li>
+	 * 	<li><code>Logging</code> - <code>array</code> - Optional - An array that contains two keys: <code>Bucket</code>, specifying where logs are written to, and <code>Prefix</code>, specifying a prefix to append to log file names.</li>
+	 * 	<li><code>OriginAccessIdentity</code> - <code>string</code> - Optional - The origin access identity (OAI) associated with this distribution. Use the Identity ID from the OAI, not the <code>CanonicalId</code>.</li>
+	 * 	<li><code>TrustedSigners</code> - <code>array</code> - Optional - An array of AWS account numbers for users who are trusted signers. Explicity add the value <code>Self</code> to the array to add your own account as a trusted signer.</li></ul>
+	 * @return string XML document.
 	 */
 	public function update_config_xml($xml, $opt = null)
 	{
@@ -746,18 +668,11 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: remove_cname()
-	 * 	Removes one or more CNAMEs from a `DistibutionConfig` XML document.
+	 * Removes one or more CNAMEs from a <code>DistibutionConfig</code> XML document.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$xml - _CFSimpleXML_|_CFResponse_|_string_ (Required) The source DistributionConfig XML to make updates to. Can be the <CFSimpleXML> body of a <get_distribution_config()> response, the entire <CFResponse> of a <get_distribution_config()> response, or a string of XML generated by <generate_config_xml()> or <update_config_xml()>.
-	 * 	$cname - _string_|_array_ (Optional) The value or values to remove from the existing list of CNAME values. To add a CNAME value, see <update_config_xml()>.
-	 *
-	 * Returns:
-	 * 	_string_ XML document.
+	 * @param CFSimpleXML|CFResponse|string $xml (Required) The source DistributionConfig XML to make updates to. Can be the <CFSimpleXML> body of a <get_distribution_config()> response, the entire <CFResponse> of a <get_distribution_config()> response, or a string of XML generated by <generate_config_xml()> or <update_config_xml()>.
+	 * @param string|array $cname (Optional) The value or values to remove from the existing list of CNAME values. To add a CNAME value, see <update_config_xml()>.
+	 * @return string XML document.
 	 */
 	public function remove_cname($xml, $cname)
 	{
@@ -810,21 +725,12 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: generate_oai_xml()
-	 * 	Used to generate the origin access identity (OAI) Config XML used in <create_oai()>.
+	 * Used to generate the origin access identity (OAI) Config XML used in <create_oai()>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$caller_reference - _string_ (Required) A unique identifier for the request. A timestamp-appended string is recommended.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	Comment - _string_ (Optional) Replaces the existing value for "Comment". Cannot exceed 128 characters.
-	 *
-	 * Returns:
-	 * 	_string_ An XML document to be used as the OAI configuration.
+	 * @param string $caller_reference (Required) A unique identifier for the request. A timestamp-appended string is recommended.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Comment</code> - <code>string</code> - Optional - Replaces the existing value for "Comment". Cannot exceed 128 characters.</li></ul>
+	 * @return string An XML document to be used as the OAI configuration.
 	 */
 	public function generate_oai_xml($caller_reference, $opt = null)
 	{
@@ -844,21 +750,12 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: update_oai_xml()
-	 * 	Updates the origin access identity (OAI) configureation XML used in <create_oai()>.
+	 * Updates the origin access identity (OAI) configureation XML used in <create_oai()>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$xml - _CFSimpleXML_|_CFResponse_|_string_ (Required) The source configuration XML to make updates to. Can be the <CFSimpleXML> body of a <get_oai_config()> response, the entire <CFResponse> of a <get_oai_config()> response, or a string of XML generated by <generate_oai_xml()> or <update_oai_xml()>.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	Comment - _string_ (Optional) Replaces the existing value for "Comment". Cannot exceed 128 characters.
-	 *
-	 * Returns:
-	 * 	_string_ XML document.
+	 * @param CFSimpleXML|CFResponse|string $xml (Required) The source configuration XML to make updates to. Can be the <CFSimpleXML> body of a <get_oai_config()> response, the entire <CFResponse> of a <get_oai_config()> response, or a string of XML generated by <generate_oai_xml()> or <update_oai_xml()>.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Comment</code> - <code>string</code> - Optional - Replaces the existing value for "Comment". Cannot exceed 128 characters.</li></ul>
+	 * @return string XML document.
 	 */
 	public function update_oai_xml($xml, $opt = null)
 	{
@@ -888,21 +785,12 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: generate_invalidation_xml()
-	 * 	Generates the Invalidation Config XML used in <create_invalidation()>.
+	 * Generates the Invalidation Config XML used in <create_invalidation()>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$caller_reference - _string_ (Required) A unique identifier for the request. A timestamp-appended string is recommended.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	Paths - _string_|_array_ (Optional) One or more paths to set for invalidation. Pass a string for a single value, or an indexed array for multiple values.
-	 *
-	 * Returns:
-	 * 	_string_ An XML document to be used as the Invalidation configuration.
+	 * @param string $caller_reference (Required) A unique identifier for the request. A timestamp-appended string is recommended.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Paths</code> - <code>string|array</code> - Optional - One or more paths to set for invalidation. Pass a string for a single value, or an indexed array for multiple values.</li></ul>
+	 * @return string An XML document to be used as the Invalidation configuration.
 	 */
 	public function generate_invalidation_xml($caller_reference, $opt = null)
 	{
@@ -933,38 +821,27 @@ class AmazonCloudFront extends CFRuntime
 	// DISTRIBUTIONS
 
 	/**
-	 * Method: create_distribution()
-	 * 	Creates an Amazon CloudFront distribution. You can have up to 100 distributions in the Amazon
-	 * 	CloudFront system.
+	 * Creates an Amazon CloudFront distribution. You can have up to 100 distributions in the Amazon
+	 * CloudFront system.
 	 *
-	 * 	For an Adobe Real-Time Messaging Protocol (RTMP) streaming distribution, set the `Streaming` option
-	 * 	to true.
+	 * For an Adobe Real-Time Messaging Protocol (RTMP) streaming distribution, set the <code>Streaming</code> option
+	 * to true.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$origin - _string_ (Required) The source to use for the Amazon CloudFront distribution. Use an Amazon S3 bucket name, or a fully-qualified non-S3 domain name prefixed with `http://` or `https://`.
-	 * 	$caller_reference - _string_ (Required) A unique identifier for the request. A timestamp-appended string is recommended.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	CNAME - _string_|_array_ (Optional) A DNS CNAME to use to map to the Amazon CloudFront distribution. If setting more than one, use an indexed array. Supports 1-10 CNAMEs.
-	 * 	Comment - _string_ (Optional) A comment to apply to the distribution. Cannot exceed 128 characters.
-	 * 	DefaultRootObject - _string_ (Optional) The file to load when someone accesses the root of the Amazon CloudFront domain (e.g., `index.html`).
-	 * 	Enabled - _string_ (Optional) A value of `true` will enable the distribution. A value of `false` will disable it. The default value is `true`.
-	 * 	OriginAccessIdentity - _string_ (Optional) The origin access identity (OAI) associated with this distribution. Use the Identity ID from the OAI, not the `CanonicalId`. Requires an S3 origin.
-	 * 	OriginProtocolPolicy - _string_ (Optional) The origin protocol policy to apply to your origin. If you specify `http-only`, CloudFront will use HTTP only to access the origin. If you specify `match-viewer`, CloudFront will fetch from your origin using HTTP or HTTPS, based on the protocol of the viewer request. [Allowed values: `http-only`, `match-viewer`]. The default value is `match-viewer`. Requires a non-S3 origin.
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` creates a streaming distribution. A value of `false` creates a standard distribution. The default value is `false`.
-	 * 	TrustedSigners - _array_ (Optional) An array of AWS account numbers for users who are trusted signers. Explicity add the value `Self` to the array to add your own account as a trusted signer.
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [POST Distribution](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/CreateDistribution.html)
-	 * 	- [POST Streaming Distribution](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/CreateStreamingDistribution.html)
+	 * @param string $origin (Required) The source to use for the Amazon CloudFront distribution. Use an Amazon S3 bucket name, or a fully-qualified non-S3 domain name prefixed with <code>http://</code> or <code>https://</code>.
+	 * @param string $caller_reference (Required) A unique identifier for the request. A timestamp-appended string is recommended.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>CNAME</code> - <code>string|array</code> - Optional - A DNS CNAME to use to map to the Amazon CloudFront distribution. If setting more than one, use an indexed array. Supports 1-10 CNAMEs.</li>
+	 * 	<li><code>Comment</code> - <code>string</code> - Optional - A comment to apply to the distribution. Cannot exceed 128 characters.</li>
+	 * 	<li><code>DefaultRootObject</code> - <code>string</code> - Optional - The file to load when someone accesses the root of the Amazon CloudFront domain (e.g., <code>index.html</code>).</li>
+	 * 	<li><code>Enabled</code> - <code>string</code> - Optional - A value of <code>true</code> will enable the distribution. A value of <code>false</code> will disable it. The default value is <code>true</code>.</li>
+	 * 	<li><code>OriginAccessIdentity</code> - <code>string</code> - Optional - The origin access identity (OAI) associated with this distribution. Use the Identity ID from the OAI, not the <code>CanonicalId</code>. Requires an S3 origin.</li>
+	 * 	<li><code>OriginProtocolPolicy</code> - <code>string</code> - Optional - The origin protocol policy to apply to your origin. If you specify <code>http-only</code>, CloudFront will use HTTP only to access the origin. If you specify <code>match-viewer</code>, CloudFront will fetch from your origin using HTTP or HTTPS, based on the protocol of the viewer request. [Allowed values: <code>http-only</code>, <code>match-viewer</code>]. The default value is <code>match-viewer</code>. Requires a non-S3 origin.</li>
+	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> creates a streaming distribution. A value of <code>false</code> creates a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>TrustedSigners</code> - <code>array</code> - Optional - An array of AWS account numbers for users who are trusted signers. Explicity add the value <code>Self</code> to the array to add your own account as a trusted signer.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/CreateDistribution.html POST Distribution
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/CreateStreamingDistribution.html POST Streaming Distribution
 	 */
 	public function create_distribution($origin, $caller_reference, $opt = null)
 	{
@@ -977,31 +854,20 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: list_distributions()
-	 * 	Gets a list of distributions. By default, the list is returned as one result. If needed, paginate the
-	 * 	list by specifying values for the `MaxItems` and `Marker` parameters.
+	 * Gets a list of distributions. By default, the list is returned as one result. If needed, paginate the
+	 * list by specifying values for the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
-	 * 	Standard distributions are listed separately from streaming distributions. For streaming distributions,
-	 * 	set the `Streaming` option to true.
+	 * Standard distributions are listed separately from streaming distributions. For streaming distributions,
+	 * set the <code>Streaming</code> option to true.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$opt - _array_ (Optional) Associative array of parameters which can have the following keys:
-	 *
-	 * Keys for the $opt parameter:
-	 * 	Marker - _string_ (Optional) Use this setting when paginating results to indicate where in your list of distributions to begin. The results include distributions in the list that occur after the marker. To get the next page of results, set the `Marker` to the value of the `NextMarker` from the current page's response (which is also the ID of the last distribution on that page).
-	 * 	MaxItems - _integer_ (Optional) The maximum number of distributions you want in the response body. Maximum of 100.
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. The default value is `false`.
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [GET Distribution List](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/ListDistributions.html)
-	 * 	- [GET Streaming Distribution List](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/ListStreamingDistributions.html)
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this setting when paginating results to indicate where in your list of distributions to begin. The results include distributions in the list that occur after the marker. To get the next page of results, set the <code>Marker</code> to the value of the <code>NextMarker</code> from the current page's response (which is also the ID of the last distribution on that page).</li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - The maximum number of distributions you want in the response body. Maximum of 100.</li>
+	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> will create a streaming distribution. A value of <code>false</code> will create a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/ListDistributions.html GET Distribution List
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/ListStreamingDistributions.html GET Streaming Distribution List
 	 */
 	public function list_distributions($opt = null)
 	{
@@ -1023,29 +889,18 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: get_distribution_info()
-	 * 	Gets distribution information for the specified distribution ID.
+	 * Gets distribution information for the specified distribution ID.
 	 *
-	 * 	Standard distributions are handled separately from streaming distributions. For streaming
-	 * 	distributions, set the `Streaming` option to true.
+	 * Standard distributions are handled separately from streaming distributions. For streaming
+	 * distributions, set the <code>Streaming</code> option to true.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$distribution_id - _string_ (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
-	 * 	$opt - _array_ (Optional) Associative array of parameters which can have the following keys:
-	 *
-	 * Keys for the $opt parameter:
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. The default value is `false`.
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [GET Distribution](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetDistribution.html)
-	 * 	- [GET Streaming Distribution](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetStreamingDistribution.html)
+	 * @param string $distribution_id (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> will create a streaming distribution. A value of <code>false</code> will create a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetDistribution.html GET Distribution
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetStreamingDistribution.html GET Streaming Distribution
 	 */
 	public function get_distribution_info($distribution_id, $opt = null)
 	{
@@ -1058,32 +913,21 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: delete_distribution()
-	 * 	Deletes a disabled distribution. If distribution hasn't been disabled, Amazon CloudFront returns a
-	 * 	`DistributionNotDisabled` error. Use <set_distribution_config()> to disable a distribution before
-	 * 	attempting to delete.
+	 * Deletes a disabled distribution. If distribution hasn't been disabled, Amazon CloudFront returns a
+	 * <code>DistributionNotDisabled</code> error. Use <set_distribution_config()> to disable a distribution before
+	 * attempting to delete.
 	 *
-	 * 	For an Adobe Real-Time Messaging Protocol (RTMP) streaming distribution, set the `Streaming` option
-	 * 	to be `true`.
+	 * For an Adobe Real-Time Messaging Protocol (RTMP) streaming distribution, set the <code>Streaming</code> option
+	 * to be <code>true</code>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$distribution_id - _string_ (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
-	 * 	$etag - _string_ (Required) The `ETag` header value retrieved from <get_distribution_config()>.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. The default value is `false`.
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [DELETE Distribution](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/DeleteDistribution.html)
-	 * 	- [DELETE Streaming Distribution](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/DeleteStreamingDistribution.html)
+	 * @param string $distribution_id (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
+	 * @param string $etag (Required) The <code>ETag</code> header value retrieved from <get_distribution_config()>.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> will create a streaming distribution. A value of <code>false</code> will create a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/DeleteDistribution.html DELETE Distribution
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/DeleteStreamingDistribution.html DELETE Streaming Distribution
 	 */
 	public function delete_distribution($distribution_id, $etag, $opt = null)
 	{
@@ -1096,29 +940,18 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: get_distribution_config()
-	 * 	Gets the current distribution configuration for the specified distribution ID.
+	 * Gets the current distribution configuration for the specified distribution ID.
 	 *
-	 * 	Standard distributions are handled separately from streaming distributions. For streaming
-	 * 	distributions, set the `Streaming` option to true.
+	 * Standard distributions are handled separately from streaming distributions. For streaming
+	 * distributions, set the <code>Streaming</code> option to true.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$distribution_id - _string_ (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
-	 * 	$opt - _array_ (Optional) Associative array of parameters which can have the following keys:
-	 *
-	 * Keys for the $opt parameter:
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. The default value is `false`.
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [GET Distribution Config](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetConfig.html)
-	 * 	- [GET Streaming Distribution Config](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetStreamingDistConfig.html)
+	 * @param string $distribution_id (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> will create a streaming distribution. A value of <code>false</code> will create a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetConfig.html GET Distribution Config
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetStreamingDistConfig.html GET Streaming Distribution Config
 	 */
 	public function get_distribution_config($distribution_id, $opt = null)
 	{
@@ -1131,31 +964,20 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: set_distribution_config()
-	 * 	Sets a new distribution configuration for the specified distribution ID.
+	 * Sets a new distribution configuration for the specified distribution ID.
 	 *
-	 * 	Standard distributions are handled separately from streaming distributions. For streaming
-	 * 	distributions, set the `Streaming` option to true.
+	 * Standard distributions are handled separately from streaming distributions. For streaming
+	 * distributions, set the <code>Streaming</code> option to true.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$distribution_id - _string_ (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
-	 * 	$xml - _string_ (Required) The DistributionConfig XML generated by <generate_config_xml()> or <update_config_xml()>.
-	 * 	$etag - _string_ (Required) The ETag header value retrieved from <get_distribution_config()>.
-	 * 	$opt - _array_ (Optional) Associative array of parameters which can have the following keys:
-	 *
-	 * Keys for the $opt parameter:
-	 * 	Streaming - _boolean_ (Optional) Whether or not this should be for a streaming distribution. A value of `true` will create a streaming distribution. A value of `false` will create a standard distribution. The default value is `false`.
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [PUT Distribution Config](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/PutConfig.html)
-	 * 	- [PUT Streaming Distribution Config](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/PutStreamingDistConfig.html)
+	 * @param string $distribution_id (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
+	 * @param string $xml (Required) The DistributionConfig XML generated by <generate_config_xml()> or <update_config_xml()>.
+	 * @param string $etag (Required) The ETag header value retrieved from <get_distribution_config()>.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> will create a streaming distribution. A value of <code>false</code> will create a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/PutConfig.html PUT Distribution Config
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/PutStreamingDistConfig.html PUT Streaming Distribution Config
 	 */
 	public function set_distribution_config($distribution_id, $xml, $etag, $opt = null)
 	{
@@ -1172,26 +994,15 @@ class AmazonCloudFront extends CFRuntime
 	// Origin Access Identity
 
 	/**
-	 * Method: create_oai()
-	 * 	Creates a new Amazon CloudFront origin access identity (OAI). You can create up to 100 OAIs per AWS
-	 * 	account. For more information, see the Amazon CloudFront Developer Guide.
+	 * Creates a new Amazon CloudFront origin access identity (OAI). You can create up to 100 OAIs per AWS
+	 * account. For more information, see the Amazon CloudFront Developer Guide.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$caller_reference - _string_ (Required) A unique identifier for the request. A timestamp-appended string is recommended.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	Comment - _string_ (Optional) A comment about the OAI.
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [POST Origin Access Identity](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/CreateOAI.html)
+	 * @param string $caller_reference (Required) A unique identifier for the request. A timestamp-appended string is recommended.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Comment</code> - <code>string</code> - Optional - A comment about the OAI.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/CreateOAI.html POST Origin Access Identity
 	 */
 	public function create_oai($caller_reference, $opt = null)
 	{
@@ -1204,26 +1015,16 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: list_oais()
-	 * 	Gets a list of origin access identity (OAI) summaries. By default, the list is returned as one result.
-	 * 	If needed, paginate the list by specifying values for the `MaxItems` and `Marker` parameters.
+	 * Gets a list of origin access identity (OAI) summaries. By default, the list is returned as one result.
+	 * If needed, paginate the list by specifying values for the <code>MaxItems</code> and <code>Marker</code>
+	 * parameters.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	Marker - _string_ (Optional) Use this when paginating results to indicate where in your list of distributions to begin. The results include distributions in the list that occur after the marker. To get the next page of results, set the Marker to the value of the NextMarker from the current page's response (which is also the ID of the last distribution on that page).
-	 * 	MaxItems - _integer_ (Optional) The maximum number of distributions you want in the response body. Maximum of 100.
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [GET Origin Access Identity List](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/ListOAIs.html)
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this when paginating results to indicate where in your list of distributions to begin. The results include distributions in the list that occur after the marker. To get the next page of results, set the Marker to the value of the NextMarker from the current page's response (which is also the ID of the last distribution on that page).</li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - The maximum number of distributions you want in the response body. Maximum of 100.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/ListOAIs.html GET Origin Access Identity List
 	 */
 	public function list_oais($opt = null)
 	{
@@ -1245,24 +1046,13 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: get_oai()
-	 * 	Gets information about an origin access identity (OAI).
+	 * Gets information about an origin access identity (OAI).
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$identity_id - _string_ (Required) The Identity ID for an existing OAI.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [GET Origin Access Identity](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetOAI.html)
+	 * @param string $identity_id (Required) The Identity ID for an existing OAI.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetOAI.html GET Origin Access Identity
 	 */
 	public function get_oai($identity_id, $opt = null)
 	{
@@ -1274,28 +1064,17 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: delete_oai()
-	 * 	Deletes an Amazon CloudFront origin access identity (OAI). To delete an OAI, the identity must first
-	 * 	be disassociated from all distributions (by updating each distribution's configuration to omit the
-	 * 	`OriginAccessIdentity` element). Wait until each distribution's state is `Deployed` before deleting
-	 * 	the OAI.
+	 * Deletes an Amazon CloudFront origin access identity (OAI). To delete an OAI, the identity must first
+	 * be disassociated from all distributions (by updating each distribution's configuration to omit the
+	 * <code>OriginAccessIdentity</code> element). Wait until each distribution's state is <code>Deployed</code>
+	 * before deleting the OAI.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$identity_id - _string_ (Required) An Identity ID for an existing OAI.
-	 * 	$etag - _string_ (Required) The `ETag` header value retrieved from a call to <get_oai()>.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [DELETE Origin Access Identity](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/DeleteOAI.html)
+	 * @param string $identity_id (Required) An Identity ID for an existing OAI.
+	 * @param string $etag (Required) The <code>ETag</code> header value retrieved from a call to <get_oai()>.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/DeleteOAI.html DELETE Origin Access Identity
 	 */
 	public function delete_oai($identity_id, $etag, $opt = null)
 	{
@@ -1307,24 +1086,13 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: get_oai_config()
-	 * 	Gets the configuration of the origin access identity (OAI) for the specified identity ID.
+	 * Gets the configuration of the origin access identity (OAI) for the specified identity ID.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$identity_id - _string_ (Required) An Identity ID for an existing OAI.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [GET Origin Access Identity Config](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetOAIConfig.html)
+	 * @param string $identity_id (Required) An Identity ID for an existing OAI.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetOAIConfig.html GET Origin Access Identity Config
 	 */
 	public function get_oai_config($identity_id, $opt = null)
 	{
@@ -1336,32 +1104,21 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: set_oai_config()
-	 * 	Sets the configuration for an Amazon CloudFront origin access identity (OAI). Use this when updating
-	 * 	the configuration. Currently, only comments may be updated.  Follow the same process as when updating
-	 * 	an identity's configuration as you do when updating a distribution's configuration. For more
-	 * 	information, go to Updating a Distribution's Configuration in the Amazon CloudFront Developer Guide.
+	 * Sets the configuration for an Amazon CloudFront origin access identity (OAI). Use this when updating
+	 * the configuration. Currently, only comments may be updated.  Follow the same process as when updating
+	 * an identity's configuration as you do when updating a distribution's configuration. For more
+	 * information, go to Updating a Distribution's Configuration in the Amazon CloudFront Developer Guide.
 	 *
-	 * 	When attempting to change configuration items that are not allowed to be updated, Amazon CloudFront
-	 * 	returns an `IllegalUpdate` error.
+	 * When attempting to change configuration items that are not allowed to be updated, Amazon CloudFront
+	 * returns an <code>IllegalUpdate</code> error.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$identity_id - _string_ (Required) An Identity ID for an existing OAI.
-	 * 	$xml - _string_ (Required) The configuration XML generated by <generate_oai_xml()>.
-	 * 	$etag - _string_ (Required) The ETag header value retrieved from a call to <get_distribution_config()>.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [PUT Origin Access Identity Config](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/PutOAIConfig.html)
+	 * @param string $identity_id (Required) An Identity ID for an existing OAI.
+	 * @param string $xml (Required) The configuration XML generated by <generate_oai_xml()>.
+	 * @param string $etag (Required) The ETag header value retrieved from a call to <get_distribution_config()>.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/PutOAIConfig.html PUT Origin Access Identity Config
 	 */
 	public function set_oai_config($identity_id, $xml, $etag, $opt = null)
 	{
@@ -1377,26 +1134,15 @@ class AmazonCloudFront extends CFRuntime
 	// INVALIDATION
 
 	/**
-	 * Method: create_invalidation()
-	 * 	Creates a new invalidation request.
+	 * Creates a new invalidation request.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$distribution_id - _string_ (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
-	 * 	$caller_reference - _string_ (Required) A unique identifier for the request. A timestamp-appended string is recommended.
-	 * 	$paths - _string_|_array_ (Required) One or more paths to set for invalidation. Pass a string for a single value, or an indexed array for multiple values. values.
-	 * 	$opt - _array_ (Optional) Associative array of parameters which can have the following keys:
-	 *
-	 * Keys for the $opt parameter:
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [POST Invalidation](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/CreateInvalidation.html)
+	 * @param string $distribution_id (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
+	 * @param string $caller_reference (Required) A unique identifier for the request. A timestamp-appended string is recommended.
+	 * @param string|array $paths (Required) One or more paths to set for invalidation. Pass a string for a single value, or an indexed array for multiple values. values.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/CreateInvalidation.html POST Invalidation
 	 */
 	public function create_invalidation($distribution_id, $caller_reference, $paths, $opt = null)
 	{
@@ -1410,27 +1156,16 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: list_invalidations()
-	 * 	Gets a list of invalidations. By default, the list is returned as one result. If needed, paginate the
-	 * 	list by specifying values for the `MaxItems` and `Marker` parameters.
+	 * Gets a list of invalidations. By default, the list is returned as one result. If needed, paginate the
+	 * list by specifying values for the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$distribution_id - _string_ (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	Marker - _string_ (Optional) Use this when paginating results to indicate where in the list of invalidations to begin. The results include invalidations in the list that occur after the marker. To get the next page of results, set the `Marker` parameter to the value of the `NextMarker` parameter from the current page's response, which is also the ID of the last invalidation on that page.
-	 * 	MaxItems - _integer_ (Optional) The maximum number of invalidations you want in the response body. A maximum value of 100 can be used.
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [GET Invalidation List](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/ListInvalidation.html)
+	 * @param string $distribution_id (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this when paginating results to indicate where in the list of invalidations to begin. The results include invalidations in the list that occur after the marker. To get the next page of results, set the <code>Marker</code> parameter to the value of the <code>NextMarker</code> parameter from the current page's response, which is also the ID of the last invalidation on that page.</li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - The maximum number of invalidations you want in the response body. A maximum value of 100 can be used.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/ListInvalidation.html GET Invalidation List
 	 */
 	public function list_invalidations($distribution_id, $opt = null)
 	{
@@ -1452,25 +1187,14 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: get_invalidation()
-	 * 	Gets information about an invalidation.
+	 * Gets information about an invalidation.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$distribution_id - _string_ (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
-	 * 	$invalidation_id - _string_ (Required) The invalidation ID returned from <create_invalidation()> or <list_invalidations()>.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 * 	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 * 	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 *
-	 * See Also:
-	 * 	- [GET Invalidation](http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetInvalidation.html)
+	 * @param string $distribution_id (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
+	 * @param string $invalidation_id (Required) The invalidation ID returned from <create_invalidation()> or <list_invalidations()>.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetInvalidation.html GET Invalidation
 	 */
 	public function get_invalidation($distribution_id, $invalidation_id, $opt = null)
 	{
@@ -1486,17 +1210,10 @@ class AmazonCloudFront extends CFRuntime
 	// CONVENIENCE METHODS
 
 	/**
-	 * Method: get_distribution_list()
-	 * 	Gets a simplified list of standard distribution IDs.
+	 * Gets a simplified list of standard distribution IDs.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$pcre - _string_ (Optional) A Perl-Compatible Regular Expression (PCRE) to filter the distribution caller references against.
-	 *
-	 * Returns:
-	 * 	_array_ A list of standard distribution IDs.
+	 * @param string $pcre (Optional) A Perl-Compatible Regular Expression (PCRE) to filter the distribution caller references against.
+	 * @return array A list of standard distribution IDs.
 	 */
 	public function get_distribution_list($pcre = null)
 	{
@@ -1516,17 +1233,10 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: get_streaming_distribution_list()
-	 * 	Gets a simplified list of streaming distribution IDs.
+	 * Gets a simplified list of streaming distribution IDs.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$pcre - _string_ (Optional) A Perl-Compatible Regular Expression (PCRE) to filter the distribution caller references against.
-	 *
-	 * Returns:
-	 * 	_array_ A list of streaming distribution IDs.
+	 * @param string $pcre (Optional) A Perl-Compatible Regular Expression (PCRE) to filter the distribution caller references against.
+	 * @return array A list of streaming distribution IDs.
 	 */
 	public function get_streaming_distribution_list($pcre = null)
 	{
@@ -1548,17 +1258,10 @@ class AmazonCloudFront extends CFRuntime
 	}
 
 	/**
-	 * Method: get_oai_list()
-	 * 	Gets a simplified list of origin access identity (OAI) IDs.
+	 * Gets a simplified list of origin access identity (OAI) IDs.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$pcre - _string_ (Optional) A Perl-Compatible Regular Expression (PCRE) to filter the OAI caller references against.
-	 *
-	 * Returns:
-	 * 	_array_ A list of OAI IDs.
+	 * @param string $pcre (Optional) A Perl-Compatible Regular Expression (PCRE) to filter the OAI caller references against.
+	 * @return array A list of OAI IDs.
 	 */
 	public function get_oai_list($pcre = null)
 	{
@@ -1582,29 +1285,18 @@ class AmazonCloudFront extends CFRuntime
 	// URLS
 
 	/**
-	 * Method: get_private_object_url()
-	 * 	Generates a time-limited and/or query signed request for a private file with additional optional
-	 * 	restrictions.
+	 * Generates a time-limited and/or query signed request for a private file with additional optional
+	 * restrictions.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$distribution_hostname - _string_ (Required) The hostname of the distribution. Obtained from <create_distribution()> or <get_distribution_info()>.
-	 *	$filename - _string_ (Required) The file name of the object. Query parameters can be included. You can use multicharacter match wild cards () or a single-character match wild card (?) anywhere in the string.
-	 * 	$expires - _integer_|_string_ (Required) The expiration time expressed either as a number of seconds since UNIX Epoch, or any string that `strtotime()` can understand.
-	 * 	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	BecomeAvailable - _integer_|_string_ (Optional) The time when the private URL becomes active. Can be expressed either as a number of seconds since UNIX Epoch, or any string that `strtotime()` can understand.
-	 *	IPAddress - _string_ (Optional) A single IP address to restrict the access to.
-	 * 	Secure - _boolean_ (Optional) Whether or not to use HTTPS as the protocol scheme. A value of `true` uses `https`. A value of `false` uses `http`. The default value is `false`.
-	 *
-	 * Returns:
-	 * 	_string_ The file URL with authentication parameters.
-	 *
-	 * See Also:
-	 * 	[Serving Private Content](http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html)
+	 * @param string $distribution_hostname (Required) The hostname of the distribution. Obtained from <create_distribution()> or <get_distribution_info()>.
+	 * @param string $filename (Required) The file name of the object. Query parameters can be included. You can use multicharacter match wild cards () or a single-character match wild card (?) anywhere in the string.
+	 * @param integer|string $expires (Required) The expiration time expressed either as a number of seconds since UNIX Epoch, or any string that <php:strtotime()> can understand.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 *	<li><code>BecomeAvailable</code> - <code>integer|string</code> - Optional - The time when the private URL becomes active. Can be expressed either as a number of seconds since UNIX Epoch, or any string that <code>strtotime()</code> can understand.</li>
+	 *	<li><code>IPAddress</code> - <code>string</code> - Optional - A single IP address to restrict the access to.</li>
+	 * 	<li><code>Secure</code> - <code>boolean</code> - Optional - Whether or not to use HTTPS as the protocol scheme. A value of <code>true</code> uses <code>https</code>. A value of <code>false</code> uses <code>http</code>. The default value is <code>false</code>.</li></ul>
+	 * @return string The file URL with authentication parameters.
+	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html Serving Private Content
 	 */
 	public function get_private_object_url($distribution_hostname, $filename, $expires, $opt = null)
 	{
