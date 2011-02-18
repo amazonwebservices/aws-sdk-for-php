@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -15,58 +15,40 @@
  */
 
 /**
- * File: AmazonIAM
- * 	 *
- * 	AWS Identity and Access Management (IAM) is a web service that enables Amazon Web Services (AWS)
- * 	customers to manage users and user permissions under their AWS account. This is the AWS Identity and
- * 	Access Management API Reference. This guide describes who should read this guide and other resources
- * 	related to IAM. Use of this guide assumes you are familiar with the following:
  *
- * 	- Basic understanding of web services (for information, go to W3 Schools Web Services Tutorial at
- * 	ttp://www.w3schools.com/webservices/default.asp](http://www.w3schools.com/webservices/default.asp)).
  *
- * 	- XML (for information, go to W3 Schools XML Tutorial at
- * 	[http://www.w3schools.com/xml/default.asp](http://www.w3schools.com/xml/default.asp)).
+ * AWS Identity and Access Management (IAM) is a web service that enables Amazon Web Services (AWS) customers to manage
+ * Users and User permissions under their AWS Account.
  *
- * 	- JSON (for information, go to [http://json.org](http://json.org))
+ * This is the AWS Identity and Access Management API Reference. This guide describes who should read this guide and other
+ * resources related to IAM.
  *
- * 	- The specific AWS products you are using or plan to use (e.g., Amazon Elastic Compute Cloud (Amazon
- * 	EC2), Amazon Simple Storage Service (Amazon S3), etc.)
+ * Use of this guide assumes you are familiar with the following:
  *
- * 	If you're new to AWS and need additional technical information about a specific AWS product, you
- * 	can find the product's technical documentation at
- * 	[http://aws.amazon.com/documentation/](http://aws.amazon.com/documentation/). We will refer to
- * 	Amazon AWS Identity and Access Management using the the abbreviated form IAM; all copyrights and
- * 	legal protections still apply.
+ * <ul> <li>Basic understanding of web services (for information, go to W3 Schools Web Services Tutorial at <a
+ * href="http://www.w3schools.com/webservices/default.asp">http://www.w3schools.com/webservices/default.asp</a>).</li>
  *
- * Version:
- * 	Tue Nov 09 21:01:38 PST 2010
+ * <li>XML (for information, go to W3 Schools XML Tutorial at <a
+ * href="http://www.w3schools.com/xml/default.asp">http://www.w3schools.com/xml/default.asp</a>).</li>
  *
- * License and Copyright:
- * 	See the included NOTICE.md file for complete information.
+ * <li>JSON (for information, go to <a href="http://json.org">http://json.org</a>)</li>
  *
- * See Also:
- * 	[Amazon Identity and Access Management Service](http://aws.amazon.com/iam/)
- * 	[Amazon Identity and Access Management Service documentation](http://aws.amazon.com/documentation/iam/)
- */
-
-
-/*%******************************************************************************************%*/
-// EXCEPTIONS
-
-/**
- * Exception: IAM_Exception
- * 	Default IAM Exception.
- */
-class IAM_Exception extends Exception {}
-
-
-/*%******************************************************************************************%*/
-// MAIN CLASS
-
-/**
- * Class: AmazonIAM
- * 	Container for all service-related methods.
+ * <li>The specific AWS products you are using or plan to use (e.g., Amazon Elastic Compute Cloud (Amazon EC2), Amazon
+ * Simple Storage Service (Amazon S3), and so on.)</li>
+ *
+ * </ul>
+ *
+ * If you're new to AWS and need additional technical information about a specific AWS product, you can find the product's
+ * technical documentation at <a href="http://aws.amazon.com/documentation/">http://aws.amazon.com/documentation/</a>.
+ *
+ * We will refer to Amazon AWS Identity and Access Management using the abbreviated form IAM. All copyrights and legal
+ * protections still apply.
+ *
+ * @version Wed Feb 16 17:08:01 PST 2011
+ * @license See the included NOTICE.md file for complete information.
+ * @copyright See the included NOTICE.md file for complete information.
+ * @link http://aws.amazon.com/iam/Amazon Identity and Access Management Service
+ * @link http://aws.amazon.com/documentation/iam/Amazon Identity and Access Management Service documentation
  */
 class AmazonIAM extends CFRuntime
 {
@@ -75,8 +57,7 @@ class AmazonIAM extends CFRuntime
 	// CLASS CONSTANTS
 
 	/**
-	 * Constant: DEFAULT_URL
-	 * 	Specify the default queue URL.
+	 * Specify the default queue URL.
 	 */
 	const DEFAULT_URL = 'iam.amazonaws.com';
 
@@ -86,18 +67,11 @@ class AmazonIAM extends CFRuntime
 	// CONSTRUCTOR
 
 	/**
-	 * Method: __construct()
-	 * 	Constructs a new instance of <AmazonIAM>.
+	 * Constructs a new instance of <AmazonIAM>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$key - _string_ (Optional) Your Amazon API Key. If blank, it will look for the <AWS_KEY> constant.
-	 * 	$secret_key - _string_ (Optional) Your Amazon API Secret Key. If blank, it will look for the <AWS_SECRET_KEY> constant.
-	 *
-	 * Returns:
-	 * 	_boolean_ false if no valid values are set, otherwise true.
+	 * @param string $key (Optional) Your Amazon API Key. If blank, it will look for the <code>AWS_KEY</code> constant.
+	 * @param string $secret_key (Optional) Your Amazon API Secret Key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
+	 * @return boolean false if no valid values are set, otherwise true.
 	 */
 	public function __construct($key = null, $secret_key = null)
 	{
@@ -122,24 +96,17 @@ class AmazonIAM extends CFRuntime
 	// SERVICE METHODS
 
 	/**
-	 * Method: list_groups()
-	 * 	Lists the groups that have the specified path prefix. You can paginate the results using the
-	 * 	`MaxItems` and `Marker` parameters.
 	 *
-	 * Access:
-	 *	public
+	 * Lists the groups that have the specified path prefix.
 	 *
-	 * Parameters:
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
-	 * Keys for the $opt parameter:
-	 *	PathPrefix - _string_ (Optional) The path prefix for filtering the results. For example: `/division_abc/subdivision_xyz/`, which would get all groups whose path starts with `/division_abc/subdivision_xyz/`. This parameter is optional. If it is not included, it defaults to /, listing all groups.
-	 *	Marker - _string_ (Optional) Use this only when paginating results, and only in a follow-up request after you've received a response where the results are truncated. Set this to the value of the `Marker` element in the response you just received.
-	 *	MaxItems - _integer_ (Optional) Use this only when paginating results to indicate the maximum number of groups you want in the response. If there are additional groups beyond the maximum you specify, the `IsTruncated` response element is `true`.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>PathPrefix</code> - <code>string</code> - Optional - The path prefix for filtering the results. For example: <code>/division_abc/subdivision_xyz/</code>, which would get all groups whose path starts with <code>/division_abc/subdivision_xyz/</code>. This parameter is optional. If it is not included, it defaults to a slash (/), listing all groups. </li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of groups you want in the response. If there are additional groups beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function list_groups($opt = null)
 	{
@@ -149,25 +116,18 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: delete_access_key()
-	 * 	Deletes the access key associated with the specified user. If the `UserName` field is not specified,
-	 * 	the UserName is determined implicitly based on the AWS Access Key ID used to sign the request.
-	 * 	Because this action works for access keys under the account, this API can be used to manage root
-	 * 	credentials even if the account has no associated users.
 	 *
-	 * Access:
-	 *	public
+	 * Deletes the access key associated with the specified User.
 	 *
-	 * Parameters:
-	 *	$access_key_id - _string_ (Required) The Access Key ID for the Access Key ID and Secret Access Key you want to delete.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * If you do not specify a User name, IAM determines the User name implicitly based on the AWS Access Key ID signing the
+	 * request. Because this action works for access keys under the AWS Account, you can use this API to manage root
+	 * credentials even if the AWS Account has no associated Users.
 	 *
-	 * Keys for the $opt parameter:
-	 *	UserName - _string_ (Optional) Name of the user whose key you want to delete.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $access_key_id (Required) The Access Key ID for the Access Key ID and Secret Access Key you want to delete.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User whose key you want to delete. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function delete_access_key($access_key_id, $opt = null)
 	{
@@ -178,28 +138,40 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: list_signing_certificates()
-	 * 	Returns information about the signing certificates associated with the specified user. If there are
-	 * 	none, the action returns an empty list. Although each user is limited to a small number of signing
-	 * 	certificates, you can still paginate the results using the `MaxItems` and `Marker` parameters. If
-	 * 	the `UserName` field is not specified, the UserName is determined implicitly based on the AWS Access
-	 * 	Key ID used to sign the request. Because this action works for access keys under the account, this
-	 * 	API can be used to manage root credentials even if the account has no associated users.
 	 *
-	 * Access:
-	 *	public
+	 * Deletes the specified account alias.
 	 *
-	 * Parameters:
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * @param string $account_alias (Required) Name of the account alias to delete.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_account_alias($account_alias, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['AccountAlias'] = $account_alias;
+
+		return $this->authenticate('DeleteAccountAlias', $opt, $this->hostname);
+	}
+
+	/**
 	 *
-	 * Keys for the $opt parameter:
-	 *	UserName - _string_ (Optional) The name of the user.
-	 *	Marker - _string_ (Optional) Use this only when paginating results, and only in a follow-up request after you've received a response where the results are truncated. Set this to the value of the `Marker` element in the response you just received.
-	 *	MaxItems - _integer_ (Optional) Use this only when paginating results to indicate the maximum number of certificate IDs you want in the response. If there are additional certificate IDs beyond the maximum you specify, the `IsTruncated` response element is `true`.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * Returns information about the signing certificates associated with the specified User. If there are none, the action
+	 * returns an empty list.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * Although each User is limited to a small number of signing certificates, you can still paginate the results using the
+	 * <code>MaxItems</code> and <code>Marker</code> parameters.
+	 *
+	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly based on the AWS Access Key
+	 * ID used to sign the request. Because this action works for access keys under the AWS Account, this API can be used to
+	 * manage root credentials even if the AWS Account has no associated Users.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - The name of the User. </li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of certificate IDs you want in the response. If there are additional certificate IDs beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function list_signing_certificates($opt = null)
 	{
@@ -209,30 +181,25 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: upload_signing_certificate()
-	 * 	Uploads an X.509 signing certificate and associates it with the specified user. Some AWS services
-	 * 	use X.509 signing certificates to validate requests that are signed with a corresponding private
-	 * 	key. When you upload the certificate, its default status is Active. If the `UserName` field is not
-	 * 	specified, the UserName is determined implicitly based on the AWS Access Key ID used to sign the
-	 * 	request. Because this action works for access keys under the account, this API can be used to manage
-	 * 	root credentials even if the account has no associated users. Because the body of a X.509
-	 * 	certificate can be large, you should use POST rather than GET when calling
-	 * 	`UploadSigningCertificate`. For more information, see Using the Query API in the [AWS Identity and
-	 * 	Access Management User Guide](http://aws.amazon.com/documentation/).
 	 *
-	 * Access:
-	 *	public
+	 * Uploads an X.509 signing certificate and associates it with the specified User. Some AWS services use X.509 signing
+	 * certificates to validate requests that are signed with a corresponding private key. When you upload the certificate, its
+	 * default status is <code>Active</code>.
 	 *
-	 * Parameters:
-	 *	$certificate_body - _string_ (Required) The contents of the signing certificate.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * If the <code>UserName</code> field is not specified, the User name is determined implicitly based on the AWS Access Key
+	 * ID used to sign the request. Because this action works for access keys under the AWS Account, this API can be used to
+	 * manage root credentials even if the AWS Account has no associated Users.
 	 *
-	 * Keys for the $opt parameter:
-	 *	UserName - _string_ (Optional) Name of the user the signing certificate is for.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * Because the body of a X.509 certificate can be large, you should use POST rather than GET when calling
+	 * <code>UploadSigningCertificate</code>. For more information, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?IAM_UsingQueryAPI.html">Making Query
+	 * Requests</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $certificate_body (Required) The contents of the signing certificate.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User the signing certificate is for. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function upload_signing_certificate($certificate_body, $opt = null)
 	{
@@ -243,22 +210,14 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: delete_user_policy()
-	 * 	Deletes the specified policy associated with the specified user.
 	 *
-	 * Access:
-	 *	public
+	 * Deletes the specified policy associated with the specified User.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user the policy is associated with.
-	 *	$policy_name - _string_ (Required) Name of the policy document to delete.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) Name of the User the policy is associated with.
+	 * @param string $policy_name (Required) Name of the policy document to delete.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function delete_user_policy($user_name, $policy_name, $opt = null)
 	{
@@ -270,30 +229,26 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: put_user_policy()
-	 * 	Adds (or updates) a policy document associated with the specified user. For information about how to
-	 * 	write a policy, refer to the [AWS Identity and Access Management User
-	 * 	Guide](http://aws.amazon.com/documentation/). For information about limits on the number of policies
-	 * 	you can associate with a user, see Limitations on AWS IAM Entities in the [AWS Identity and Access
-	 * 	Management User Guide](http://aws.amazon.com/documentation/). Because policy documents can be large,
-	 * 	you should use POST rather than GET when calling `PutUserPolicy`. For more information, see Using
-	 * 	the Query API in the [AWS Identity and Access Management User
-	 * 	Guide](http://aws.amazon.com/documentation/).
 	 *
-	 * Access:
-	 *	public
+	 * Adds (or updates) a policy document associated with the specified User. For information about policies, refer to <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html">Overview of Policies</a>
+	 * in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user to associate the policy with.
-	 *	$policy_name - _string_ (Required) Name of the policy document.
-	 *	$policy_document - _string_ (Required) The policy document.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * For information about limits on the number of policies you can associate with a User, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/index.html?LimitationsOnEntities.html">Limitations on
+	 * IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * Because policy documents can be large, you should use POST rather than GET when calling <code>PutUserPolicy</code>. For
+	 * more information, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?IAM_UsingQueryAPI.html">Making Query
+	 * Requests</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) Name of the User to associate the policy with.
+	 * @param string $policy_name (Required) Name of the policy document.
+	 * @param string $policy_document (Required) The policy document.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function put_user_policy($user_name, $policy_name, $policy_document, $opt = null)
 	{
@@ -306,24 +261,36 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: get_user_policy()
-	 * 	Retrieves the specified policy document for the specified user. The returned policy is URL-encoded
-	 * 	according to RFC 3986. For more information about RFC 3986, go to
-	 * 	http://www.faqs.org/rfcs/rfc3986.html.
 	 *
-	 * Access:
-	 *	public
+	 * Lists the server certificates that have the specified path prefix. If none exist, the action returns an empty list.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user that the policy is associated with.
-	 *	$policy_name - _string_ (Required) Name of the policy document to get.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>PathPrefix</code> - <code>string</code> - Optional - The path prefix for filtering the results. For example: <code>/company/servercerts</code> would get all server certificates for which the path starts with <code>/company/servercerts</code>. This parameter is optional. If it is not included, it defaults to a slash (/), listing all server certificates. </li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of server certificates you want in the response. If there are additional server certificates beyond the maximum you specify, the <code>IsTruncated</code> response element will be set to <code>true</code>. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function list_server_certificates($opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		return $this->authenticate('ListServerCertificates', $opt, $this->hostname);
+	}
+
+	/**
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * Retrieves the specified policy document for the specified User. The returned policy is URL-encoded according to RFC
+	 * 3986. For more information about RFC 3986, go to <a
+	 * href="http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
+	 *
+	 * @param string $user_name (Required) Name of the User who the policy is associated with.
+	 * @param string $policy_name (Required) Name of the policy document to get.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function get_user_policy($user_name, $policy_name, $opt = null)
 	{
@@ -335,22 +302,18 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: update_login_profile()
-	 * 	Updates the login profile for the specified user. Use this API to change the user's password.
 	 *
-	 * Access:
-	 *	public
+	 * Updates the login profile for the specified User. Use this API to change the User's password.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user whose login profile you want to update.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * In the full release you will be able to use IAM to access your services through the AWS Management Console. Although
+	 * this feature is not currently available, you can create login profiles for your Users now. Then, when this feature is
+	 * implemented, your Users can use IAM to access your services through the AWS Management Console.
 	 *
-	 * Keys for the $opt parameter:
-	 *	Password - _string_ (Optional) The new password for the user.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) Name of the User whose login profile you want to update.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Password</code> - <code>string</code> - Optional - The new password for the User name. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function update_login_profile($user_name, $opt = null)
 	{
@@ -361,25 +324,54 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: update_user()
-	 * 	Updates the name and/or the path of the specified user. You should understand the implications of
-	 * 	changing a user's path or name. For more information, see Renaming Users and Groups in the [AWS
-	 * 	Identity and Access Management User Guide](http://aws.amazon.com/documentation/).
 	 *
-	 * Access:
-	 *	public
+	 * Updates the name and/or the path of the specified server certificate.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user to update. If you're changing the name of the user, this is the original name.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * You should understand the implications of changing a server certificate's path or name. For more information, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/ManagingServerCerts.html">Managing Server Certificates</a>
+	 * in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Keys for the $opt parameter:
-	 *	NewPath - _string_ (Optional) New path for the user. Include this only if you're changing the user's path.
-	 *	NewUserName - _string_ (Optional) New name for the user. Include this only if you're changing the user's name.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * To change a server certificate name the requester must have appropriate permissions on both the source object and the
+	 * target object. For example, to change the name from ProductionCert to ProdCert, the entity making the request must have
+	 * permission on ProductionCert and ProdCert, or must have permission on all (*). For more information about permissions,
+	 * see <a href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/PermissionsAndPolicies.html">Permissions and
+	 * Policies</a>.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $server_certificate_name (Required) The name of the server certificate that you want to update.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>NewPath</code> - <code>string</code> - Optional - The new path for the server certificate. Include this only if you are updating the server certificate's path. </li>
+	 * 	<li><code>NewServerCertificateName</code> - <code>string</code> - Optional - The new name for the server certificate. Include this only if you are updating the server certificate's name. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function update_server_certificate($server_certificate_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['ServerCertificateName'] = $server_certificate_name;
+
+		return $this->authenticate('UpdateServerCertificate', $opt, $this->hostname);
+	}
+
+	/**
+	 *
+	 * Updates the name and/or the path of the specified User.
+	 *
+	 * You should understand the implications of changing a User's path or name. For more information, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_Renaming.html">Renaming Users and
+	 * Groups</a> in <i>Using AWS Identity and Access Management</i>.
+	 *
+	 * To change a User name the requester must have appropriate permissions on both the source object and the target object.
+	 * For example, to change Bob to Robert, the entity making the request must have permission on Bob and Robert, or must have
+	 * permission on all (*). For more information about permissions, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/PermissionsAndPolicies.html">Permissions and
+	 * Policies</a>.
+	 *
+	 * @param string $user_name (Required) Name of the User to update. If you're changing the name of the User, this is the original User name.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>NewPath</code> - <code>string</code> - Optional - New path for the User. Include this parameter only if you're changing the User's path. </li>
+	 * 	<li><code>NewUserName</code> - <code>string</code> - Optional - New name for the User. Include this parameter only if you're changing the User's name. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function update_user($user_name, $opt = null)
 	{
@@ -390,26 +382,22 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: delete_login_profile()
-	 * 	Deletes the login profile for the specified user, which terminates the user's ability to access AWS
-	 * 	services through the IAM login page. Deleting a user's login profile does not prevent a user from
-	 * 	accessing IAM through the command line interface or the API. To prevent a user from accessing IAM
-	 * 	through the command line interface or the API you must either make the access key inactive or delete
-	 * 	it. For more information about making keys inactive or deleting them, see UpdateAccessKey and
-	 * 	DeleteAccessKey.
 	 *
-	 * Access:
-	 *	public
+	 * Deletes the login profile for the specified User, which terminates the User's ability to access AWS services through the
+	 * IAM login page.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user whose login profile you want to delete.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * Deleting a User's login profile does not prevent a User from accessing IAM through the command line interface or the
+	 * API. To prevent all User access you must also either make the access key inactive or delete it. For more information
+	 * about making keys inactive or deleting them, see UpdateAccessKey and DeleteAccessKey.
 	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * In the full release you will be able to use IAM to access your services through the AWS Management Console. Although
+	 * this feature is not currently available, you can create login profiles for your Users now. Then, when this feature is
+	 * implemented, your Users can use IAM to access your services through the AWS Management Console.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) Name of the User whose login profile you want to delete.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function delete_login_profile($user_name, $opt = null)
 	{
@@ -420,29 +408,24 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: update_signing_certificate()
-	 * 	Changes the status of the specified signing certificate from active to disabled, or vice versa. This
-	 * 	action can be used to disable a user's signing certificate as part of a certificate rotation
-	 * 	workflow. If the `UserName` field is not specified, the UserName is determined implicitly based on
-	 * 	the AWS Access Key ID used to sign the request. Because this action works for access keys under the
-	 * 	account, this API can be used to manage root credentials even if the account has no associated
-	 * 	users. For information about rotating certificates, see Managing Keys and Certificates in the [AWS
-	 * 	Identity and Access Management User Guide](http://aws.amazon.com/documentation/).
 	 *
-	 * Access:
-	 *	public
+	 * Changes the status of the specified signing certificate from active to disabled, or vice versa. This action can be used
+	 * to disable a User's signing certificate as part of a certificate rotation workflow.
 	 *
-	 * Parameters:
-	 *	$certificate_id - _string_ (Required) The ID of the signing certificate you want to update.
-	 *	$status - _string_ (Required) The status you want to assign to the certificate. `Active` means the certificate can be used for API calls to AWS, while `Inactive` means the certificate cannot be used. [Allowed values: `Active`, `Inactive`]
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly based on the AWS Access Key
+	 * ID used to sign the request. Because this action works for access keys under the AWS Account, this API can be used to
+	 * manage root credentials even if the AWS Account has no associated Users.
 	 *
-	 * Keys for the $opt parameter:
-	 *	UserName - _string_ (Optional) Name of the user the signing certificate belongs to.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * For information about rotating certificates, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?ManagingCredentials.html">Managing Keys and
+	 * Certificates</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $certificate_id (Required) The ID of the signing certificate you want to update.
+	 * @param string $status (Required) The status you want to assign to the certificate. <code>Active</code> means the certificate can be used for API calls to AWS, while <code>Inactive</code> means the certificate cannot be used. [Allowed values: <code>Active</code>, <code>Inactive</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User the signing certificate belongs to. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function update_signing_certificate($certificate_id, $status, $opt = null)
 	{
@@ -454,49 +437,14 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: list_users()
-	 * 	Lists the users that have the specified path prefix. If there are none, the action returns an empty
-	 * 	list. You can paginate the results using the `MaxItems` and `Marker` parameters.
 	 *
-	 * Access:
-	 *	public
+	 * Deletes the specified policy that is associated with the specified group.
 	 *
-	 * Parameters:
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	PathPrefix - _string_ (Optional) The path prefix for filtering the results. For example: `/division_abc/subdivision_xyz/`, which would get all users whose path starts with `/division_abc/subdivision_xyz/`. This parameter is optional. If it is not included, it defaults to /, listing all users.
-	 *	Marker - _string_ (Optional) Use this only when paginating results, and only in a follow-up request after you've received a response where the results are truncated. Set this to the value of the `Marker` element in the response you just received.
-	 *	MaxItems - _integer_ (Optional) Use this only when paginating results to indicate the maximum number of users you want in the response. If there are additional users beyond the maximum you specify, the `IsTruncated` response element is `true`.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
-	 */
-	public function list_users($opt = null)
-	{
-		if (!$opt) $opt = array();
-
-		return $this->authenticate('ListUsers', $opt, $this->hostname);
-	}
-
-	/**
-	 * Method: delete_group_policy()
-	 * 	Deletes the specified policy that is associated with the specified group.
-	 *
-	 * Access:
-	 *	public
-	 *
-	 * Parameters:
-	 *	$group_name - _string_ (Required) Name of the group the policy is associated with.
-	 *	$policy_name - _string_ (Required) Name of the policy document to delete.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $group_name (Required) Name of the group the policy is associated with.
+	 * @param string $policy_name (Required) Name of the policy document to delete.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function delete_group_policy($group_name, $policy_name, $opt = null)
 	{
@@ -508,25 +456,45 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: update_group()
-	 * 	Updates the name and/or the path of the specified group. You should understand the implications of
-	 * 	changing a group's path or name. For more information, see Renaming Users and Groups in the [AWS
-	 * 	Identity and Access Management User Guide](http://aws.amazon.com/documentation/).
 	 *
-	 * Access:
-	 *	public
+	 * Lists the Users that have the specified path prefix. If there are none, the action returns an empty list.
 	 *
-	 * Parameters:
-	 *	$group_name - _string_ (Required) Name of the group to update. If you're changing the name of the group, this is the original name.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
-	 * Keys for the $opt parameter:
-	 *	NewPath - _string_ (Optional) New path for the group. Only include this if changing the group's path.
-	 *	NewGroupName - _string_ (Optional) New name for the group. Only include this if changing the group's name.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>PathPrefix</code> - <code>string</code> - Optional - The path prefix for filtering the results. For example: <code>/division_abc/subdivision_xyz/</code>, which would get all User names whose path starts with <code>/division_abc/subdivision_xyz/</code>. This parameter is optional. If it is not included, it defaults to a slash (/), listing all User names. </li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this parameter only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this parameter only when paginating results to indicate the maximum number of User names you want in the response. If there are additional User names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function list_users($opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		return $this->authenticate('ListUsers', $opt, $this->hostname);
+	}
+
+	/**
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * Updates the name and/or the path of the specified group.
+	 *
+	 * You should understand the implications of changing a group's path or name. For more information, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_Renaming.html">Renaming Users and
+	 * Groups</a> in <i>Using AWS Identity and Access Management</i>.
+	 *
+	 * To change a group name the requester must have appropriate permissions on both the source object and the target object.
+	 * For example, to change Managers to MGRs, the entity making the request must have permission on Managers and MGRs, or
+	 * must have permission on all (*). For more information about permissions, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/PermissionsAndPolicies.html">Permissions and
+	 * Policies</a>.
+	 *
+	 * @param string $group_name (Required) Name of the group to update. If you're changing the name of the group, this is the original name.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>NewPath</code> - <code>string</code> - Optional - New path for the group. Only include this if changing the group's path. </li>
+	 * 	<li><code>NewGroupName</code> - <code>string</code> - Optional - New name for the group. Only include this if changing the group's name. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function update_group($group_name, $opt = null)
 	{
@@ -537,29 +505,43 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: put_group_policy()
-	 * 	Adds (or updates) a policy document associated with the specified group. For information about how
-	 * 	to write a policy, refer to the [AWS Identity and Access Management User
-	 * 	Guide](http://aws.amazon.com/documentation/). For information about limits on the number of policies
-	 * 	you can associate with a group, see Limitations on AWS IAM Entities in the [AWS Identity and Access
-	 * 	Management User Guide](http://aws.amazon.com/documentation/). Because policy documents can be large,
-	 * 	you should use POST rather than GET when calling `PutGroupPolicy`. For more information, see Using
-	 * 	the Query API in the [ AWS Identity and Access Management User Guide](http://aws.amazon.com/docu/).
 	 *
-	 * Access:
-	 *	public
+	 * Retrieves information about the specified server certificate.
 	 *
-	 * Parameters:
-	 *	$group_name - _string_ (Required) Name of the group to associate the policy with.
-	 *	$policy_name - _string_ (Required) Name of the policy document.
-	 *	$policy_document - _string_ (Required) The policy document.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * @param string $server_certificate_name (Required) The name of the server certificate you want to retrieve information about.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function get_server_certificate($server_certificate_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['ServerCertificateName'] = $server_certificate_name;
+
+		return $this->authenticate('GetServerCertificate', $opt, $this->hostname);
+	}
+
+	/**
 	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * Adds (or updates) a policy document associated with the specified group. For information about policies, refer to <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html">Overview of Policies</a>
+	 * in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * For information about limits on the number of policies you can associate with a group, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/index.html?LimitationsOnEntities.html">Limitations on
+	 * IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.
+	 *
+	 * Because policy documents can be large, you should use POST rather than GET when calling <code>PutGroupPolicy</code>. For
+	 * more information, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?IAM_UsingQueryAPI.html">Making Query
+	 * Requests</a> in <i>Using AWS Identity and Access Management</i>.
+	 *
+	 * @param string $group_name (Required) Name of the group to associate the policy with.
+	 * @param string $policy_name (Required) Name of the policy document.
+	 * @param string $policy_document (Required) The policy document.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function put_group_policy($group_name, $policy_name, $policy_document, $opt = null)
 	{
@@ -572,24 +554,18 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: create_user()
-	 * 	Creates a new user for your account. For information about limitations on the number of users you
-	 * 	can create, see Limitations on AWS IAM Entities in the [AWS Identity and Access Management User
-	 * 	Guide](http://aws.amazon.com/documentation/).
 	 *
-	 * Access:
-	 *	public
+	 * Creates a new User for your AWS Account.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user to create.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * For information about limitations on the number of Users you can create, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM
+	 * Entities</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Keys for the $opt parameter:
-	 *	Path - _string_ (Optional) The user's path. For more information about paths, see Identifiers for Users and Groups in the AWS AWS Identity and Access Management User Guide. This parameter is optional. If it is not included, it defaults to /.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) Name of the User to create.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Path</code> - <code>string</code> - Optional - The path for the User name. For more information about paths, see Identifiers for IAM Entities in <i>Using AWS Identity and Access Management</i>. This parameter is optional. If it is not included, it defaults to a slash (/). </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function create_user($user_name, $opt = null)
 	{
@@ -600,25 +576,18 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: delete_signing_certificate()
-	 * 	Deletes the specified signing certificate associated with the specified user. If the `UserName`
-	 * 	field is not specified, the UserName is determined implicitly based on the AWS Access Key ID used to
-	 * 	sign the request. Because this action works for access keys under the account, this API can be used
-	 * 	to manage root credentials even if the account has no associated users.
 	 *
-	 * Access:
-	 *	public
+	 * Deletes the specified signing certificate associated with the specified User.
 	 *
-	 * Parameters:
-	 *	$certificate_id - _string_ (Required) ID of the signing certificate to delete.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * If you do not specify a User name, IAM determines the User name implicitly based on the AWS Access Key ID signing the
+	 * request. Because this action works for access keys under the AWS Account, you can use this API to manage root
+	 * credentials even if the AWS Account has no associated Users.
 	 *
-	 * Keys for the $opt parameter:
-	 *	UserName - _string_ (Optional) Name of the user the signing certificate belongs to.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $certificate_id (Required) ID of the signing certificate to delete.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User the signing certificate belongs to. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function delete_signing_certificate($certificate_id, $opt = null)
 	{
@@ -629,25 +598,17 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: enable_mfa_device()
-	 * 	Enables the specified MFA device and associates it with the specified user. Once enabled, the MFA
-	 * 	device is required for every subsequent login by the user associated with the device.
 	 *
-	 * Access:
-	 *	public
+	 * Enables the specified MFA device and associates it with the specified User name. Once enabled, the MFA device is
+	 * required for every subsequent login by the User name associated with the device.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user for whom you want to enable the MFA device.
-	 *	$serial_number - _string_ (Required) The serial number which uniquely identifies the MFA device.
-	 *	$authentication_code1 - _string_ (Required) An authentication code emitted by the device.
-	 *	$authentication_code2 - _string_ (Required) A subsequent authentication code emitted by the device.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) Name of the User for whom you want to enable the MFA device.
+	 * @param string $serial_number (Required) The serial number that uniquely identifies the MFA device.
+	 * @param string $authentication_code1 (Required) An authentication code emitted by the device.
+	 * @param string $authentication_code2 (Required) A subsequent authentication code emitted by the device.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function enable_mfa_device($user_name, $serial_number, $authentication_code1, $authentication_code2, $opt = null)
 	{
@@ -661,24 +622,17 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: list_user_policies()
-	 * 	Lists the names of the policies associated with the specified user. If there are none, the action
-	 * 	returns an empty list. You can paginate the results using the `MaxItems` and `Marker` parameters.
 	 *
-	 * Access:
-	 *	public
+	 * Lists the names of the policies associated with the specified User. If there are none, the action returns an empty list.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) The name of the user to list policies for.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
-	 * Keys for the $opt parameter:
-	 *	Marker - _string_ (Optional) Use this only when paginating results, and only in a follow-up request after you've received a response where the results are truncated. Set this to the value of the `Marker` element in the response you just received.
-	 *	MaxItems - _integer_ (Optional) Use this only when paginating results to indicate the maximum number of policy names you want in the response. If there are additional policy names beyond the maximum you specify, the `IsTruncated` response element is `true`.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) The name of the User to list policies for.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of policy names you want in the response. If there are additional policy names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function list_user_policies($user_name, $opt = null)
 	{
@@ -689,29 +643,25 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: list_access_keys()
-	 * 	Returns information about the Access Key IDs associated with the specified user. If there are none,
-	 * 	the action returns an empty list. Although each user is limited to a small number of keys, you can
-	 * 	still paginate the results using the `MaxItems` and `Marker` parameters. If the `UserName` field is
-	 * 	not specified, the UserName is determined implicitly based on the AWS Access Key ID used to sign the
-	 * 	request. Because this action works for access keys under the account, this API can be used to manage
-	 * 	root credentials even if the account has no associated users. To ensure the security of your
-	 * 	account, the secret access key is accesible only during key and user creation.
 	 *
-	 * Access:
-	 *	public
+	 * Returns information about the Access Key IDs associated with the specified User. If there are none, the action returns
+	 * an empty list.
 	 *
-	 * Parameters:
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * Although each User is limited to a small number of keys, you can still paginate the results using the
+	 * <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
-	 * Keys for the $opt parameter:
-	 *	UserName - _string_ (Optional) Name of the user.
-	 *	Marker - _string_ (Optional) Use this only when paginating results, and only in a follow-up request after you've received a response where the results are truncated. Set this to the value of the `Marker` element in the response you just received.
-	 *	MaxItems - _integer_ (Optional) Use this only when paginating results to indicate the maximum number of keys you want in the response. If there are additional keys beyond the maximum you specify, the `IsTruncated` response element is `true`.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly based on the AWS Access Key
+	 * ID used to sign the request. Because this action works for access keys under the AWS Account, this API can be used to
+	 * manage root credentials even if the AWS Account has no associated Users.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * To ensure the security of your AWS Account, the secret access key is accessible only during key and User creation.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User. </li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of keys you want in the response. If there are additional keys beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function list_access_keys($opt = null)
 	{
@@ -721,21 +671,17 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: get_login_profile()
-	 * 	Retrieves the login profile for the specified user.
 	 *
-	 * Access:
-	 *	public
+	 * Retrieves the login profile for the specified User.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user whose login profile you want to retrieve.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * In the full release you will be able to use IAM to access your services through the AWS Management Console. Although
+	 * this feature is not currently available, you can create login profiles for your Users now. Then, when this feature is
+	 * implemented, your Users can use IAM to access your services through the AWS Management Console.
 	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) Name of the User whose login profile you want to retrieve.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function get_login_profile($user_name, $opt = null)
 	{
@@ -746,24 +692,17 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: list_groups_for_user()
-	 * 	Lists the groups the specified user belongs to. You can paginate the results using the `MaxItems`
-	 * 	and `Marker` parameters.
 	 *
-	 * Access:
-	 *	public
+	 * Lists the groups the specified User belongs to.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) The name of the user to list groups for.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
-	 * Keys for the $opt parameter:
-	 *	Marker - _string_ (Optional) Use this only when paginating results, and only in a follow-up request after you've received a response where the results are truncated. Set this to the value of the `Marker` element in the response you just received.
-	 *	MaxItems - _integer_ (Optional) Use this only when paginating results to indicate the maximum number of groups you want in the response. If there are additional groups beyond the maximum you specify, the `IsTruncated` response element is `true`.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) The name of the User to list groups for.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of groups you want in the response. If there are additional groups beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function list_groups_for_user($user_name, $opt = null)
 	{
@@ -774,24 +713,18 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: create_group()
-	 * 	Creates a new group. For information about the number of groups you can create, see Limitations on
-	 * 	AWS IAM Entities in the [ AWS Identity and Access Management User
-	 * 	Guide](http://aws.amazon.com/documentation/).
 	 *
-	 * Access:
-	 *	public
+	 * Creates a new group.
 	 *
-	 * Parameters:
-	 *	$group_name - _string_ (Required) Name of the group to create. Do not include the path in this value.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * For information about the number of groups you can create, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM
+	 * Entities</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Keys for the $opt parameter:
-	 *	Path - _string_ (Optional) The path to the group. For more information about paths, see Identifiers for Users and Groups in the AWS Identity and Access Management User Guide. This parameter is optional. If it is not included, it defaults to /.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $group_name (Required) Name of the group to create. Do not include the path in this value.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Path</code> - <code>string</code> - Optional - The path to the group. For more information about paths, see Identifiers for IAM Entities in <i>Using AWS Identity and Access Management</i>. This parameter is optional. If it is not included, it defaults to a slash (/). </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function create_group($group_name, $opt = null)
 	{
@@ -802,50 +735,66 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: delete_user()
-	 * 	Deletes the specified user. The user must not belong to any groups, have any keys or signing
-	 * 	certificates, or have any attached policies.
 	 *
-	 * Access:
-	 *	public
+	 * Uploads a server certificate entity for the AWS Account. The server certificate entity includes a public key
+	 * certificate, a private key, and an optional certificate chain, which should all be PEM-encoded.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user to delete.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * For information about the number of server certificates you can upload, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM
+	 * Entities</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * Because the body of the public key certificate, private key, and the certificate chain can be large, you should use POST
+	 * rather than GET when calling <code>UploadServerCertificate</code>. For more information, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html">Making Query Requests</a> in
+	 * <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $server_certificate_name (Required) The name for the server certificate. Do not include the path in this value.
+	 * @param string $certificate_body (Required) The contents of the public key certificate in PEM-encoded format.
+	 * @param string $private_key (Required) The contents of the private key in PEM-encoded format.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Path</code> - <code>string</code> - Optional - The path for the server certificate. For more information about paths, see Identifiers for IAM Entities in <i>Using AWS Identity and Access Management</i>. This parameter is optional. If it is not included, it defaults to a slash (/). </li>
+	 * 	<li><code>CertificateChain</code> - <code>string</code> - Optional - The contents of the certificate chain. This is typically a concatenation of the PEM-encoded public key certificates of the chain. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function delete_user($user_name, $opt = null)
+	public function upload_server_certificate($server_certificate_name, $certificate_body, $private_key, $opt = null)
 	{
 		if (!$opt) $opt = array();
-		$opt['UserName'] = $user_name;
+		$opt['ServerCertificateName'] = $server_certificate_name;
+		$opt['CertificateBody'] = $certificate_body;
+		$opt['PrivateKey'] = $private_key;
 
-		return $this->authenticate('DeleteUser', $opt, $this->hostname);
+		return $this->authenticate('UploadServerCertificate', $opt, $this->hostname);
 	}
 
 	/**
-	 * Method: get_group_policy()
-	 * 	Retrieves the specified policy document for the specified group. The returned policy is URL-encoded
-	 * 	according to RFC 3986. For more information about RFC 3986, go to
-	 * 	http://www.faqs.org/rfcs/rfc3986.html.
 	 *
-	 * Access:
-	 *	public
+	 * Creates an account alias.
 	 *
-	 * Parameters:
-	 *	$group_name - _string_ (Required) Name of the group the policy is associated with.
-	 *	$policy_name - _string_ (Required) Name of the policy document to get.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * @param string $account_alias (Required) Name of the account alias to create
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_account_alias($account_alias, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['AccountAlias'] = $account_alias;
+
+		return $this->authenticate('CreateAccountAlias', $opt, $this->hostname);
+	}
+
+	/**
 	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * Retrieves the specified policy document for the specified group. The returned policy is URL-encoded according to RFC
+	 * 3986. For more information about RFC 3986, go to <a
+	 * href="http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $group_name (Required) Name of the group the policy is associated with.
+	 * @param string $policy_name (Required) Name of the policy document to get.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function get_group_policy($group_name, $policy_name, $opt = null)
 	{
@@ -857,23 +806,33 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: deactivate_mfa_device()
-	 * 	Deactivates the specified MFA device and removes it from association with the user for which it was
-	 * 	originally enabled.
 	 *
-	 * Access:
-	 *	public
+	 * Deletes the specified User. The User must not belong to any groups, have any keys or signing certificates, or have any
+	 * attached policies.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user whose MFA device you want to deactivate.
-	 *	$serial_number - _string_ (Required) The serial number that uniquely identifies the MFA device.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * @param string $user_name (Required) Name of the User to delete.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_user($user_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['UserName'] = $user_name;
+
+		return $this->authenticate('DeleteUser', $opt, $this->hostname);
+	}
+
+	/**
 	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * Deactivates the specified MFA device and removes it from association with the User name for which it was originally
+	 * enabled.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) Name of the User whose MFA device you want to deactivate.
+	 * @param string $serial_number (Required) The serial number that uniquely identifies the MFA device.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function deactivate_mfa_device($user_name, $serial_number, $opt = null)
 	{
@@ -885,22 +844,14 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: remove_user_from_group()
-	 * 	Removes the specified user from the specified group.
 	 *
-	 * Access:
-	 *	public
+	 * Removes the specified User from the specified group.
 	 *
-	 * Parameters:
-	 *	$group_name - _string_ (Required) Name of the group to update.
-	 *	$user_name - _string_ (Required) Name of the user to remove.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $group_name (Required) Name of the group to update.
+	 * @param string $user_name (Required) Name of the User to remove.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function remove_user_from_group($group_name, $user_name, $opt = null)
 	{
@@ -912,24 +863,41 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: list_group_policies()
-	 * 	Lists the names of the policies associated with the specified group. If there are none, the action
-	 * 	returns an empty list. You can paginate the results using the `MaxItems` and `Marker` parameters.
 	 *
-	 * Access:
-	 *	public
+	 * Deletes the specified server certificate.
 	 *
-	 * Parameters:
-	 *	$group_name - _string_ (Required) The name of the group to list policies for.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * If your Elastic Load Balancing instances are using a server certificate, deleting the certificate could have
+	 * implications for your application. If your Elastic Load Balancing instances do not detect the deletion of bound
+	 * certificates, they may continue to use the certificates. This could cause them to stop accepting traffic. We recommend
+	 * that you remove the reference to the certificate from your Elastic Load Balancing instances before using this command to
+	 * delete the certificate.
 	 *
-	 * Keys for the $opt parameter:
-	 *	Marker - _string_ (Optional) Use this only when paginating results, and only in a follow-up request after you've received a response where the results are truncated. Set this to the value of the `Marker` element in the response you just received.
-	 *	MaxItems - _integer_ (Optional) Use this only when paginating results to indicate the maximum number of policy names you want in the response. If there are additional policy names beyond the maximum you specify, the `IsTruncated` response element is `true`.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * @param string $server_certificate_name (Required) The name of the server certificate you want to delete.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_server_certificate($server_certificate_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['ServerCertificateName'] = $server_certificate_name;
+
+		return $this->authenticate('DeleteServerCertificate', $opt, $this->hostname);
+	}
+
+	/**
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * Lists the names of the policies associated with the specified group. If there are none, the action returns an empty
+	 * list.
+	 *
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
+	 *
+	 * @param string $group_name (Required) The name of the group to list policies for.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of policy names you want in the response. If there are additional policy names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function list_group_policies($group_name, $opt = null)
 	{
@@ -940,25 +908,21 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: create_login_profile()
-	 * 	Creates a login profile for the specified user, giving the user the ability to access AWS services
-	 * 	such as the AWS Management Console. For more information about login profiles, see Managing Login
-	 * 	Profiles and MFA Devices in the [AWS Identity and Access Management User
-	 * 	Guide](http://aws.amazon.com/documentation/).
 	 *
-	 * Access:
-	 *	public
+	 * Creates a login profile for the specified User, giving the User the ability to access AWS services such as the AWS
+	 * Management Console. For more information about login profiles, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_ManagingLoginsAndMFA.html">Managing Login
+	 * Profiles and MFA Devices</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user to create a login profile for.
-	 *	$password - _string_ (Required) The new password for the user.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * In the full release you will be able to use IAM to access your services through the AWS Management Console. Although
+	 * this feature is not currently available, you can create login profiles for your Users now. Then, when this feature is
+	 * implemented, your Users can use IAM to access your services through the AWS Management Console.
 	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) Name of the User to create a login profile for.
+	 * @param string $password (Required) The new password for the User name.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function create_login_profile($user_name, $password, $opt = null)
 	{
@@ -970,30 +934,26 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: create_access_key()
-	 * 	Creates a new AWS Secret Access Key and corresponding AWS Access Key ID for the specified user. The
-	 * 	default status for new keys is Active. If the `UserName` field is not specified, the UserName is
-	 * 	determined implicitly based on the AWS Access Key ID used to sign the request. Because this action
-	 * 	works for access keys under the account, this API can be used to manage root credentials even if the
-	 * 	account has no associated users. For information about limits on the number of keys you can create,
-	 * 	see Limitations on AWS IAM Entities in the [AWS Identity and Access Management User
-	 * 	Guide](http://aws.amazon.com/documentation/). To ensure the security of your account, the secret
-	 * 	access key is accesible only during key and user creation. You must save the key (for example, in a
-	 * 	text file) if you want to be able to access it again. If a secret key is lost, you can delete the
-	 * 	access keys for the associated user and then create new keys.
 	 *
-	 * Access:
-	 *	public
+	 * Creates a new AWS Secret Access Key and corresponding AWS Access Key ID for the specified User. The default status for
+	 * new keys is <code>Active</code>.
 	 *
-	 * Parameters:
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * If you do not specify a User name, IAM determines the User name implicitly based on the AWS Access Key ID signing the
+	 * request. Because this action works for access keys under the AWS Account, you can use this API to manage root
+	 * credentials even if the AWS Account has no associated Users.
 	 *
-	 * Keys for the $opt parameter:
-	 *	UserName - _string_ (Optional) The user that the new key will belong to.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * For information about limits on the number of keys you can create, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/index.html?LimitationsOnEntities.html">Limitations on
+	 * IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * To ensure the security of your AWS Account, the Secret Access Key is accessible only during key and User creation. You
+	 * must save the key (for example, in a text file) if you want to be able to access it again. If a secret key is lost, you
+	 * can delete the access keys for the associated User and then create new keys.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - The User name that the new key will belong to. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function create_access_key($opt = null)
 	{
@@ -1003,23 +963,16 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: get_user()
-	 * 	Retrieves information about the specified user, including the user's path, GUID, and ARN. If the
-	 * 	`UserName` field is not specified, UserName is determined implicitly based on the AWS Access Key ID
-	 * 	used to sign the request.
 	 *
-	 * Access:
-	 *	public
+	 * Retrieves information about the specified User, including the User's path, GUID, and ARN.
 	 *
-	 * Parameters:
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * If you do not specify a User name, IAM determines the User name implicitly based on the AWS Access Key ID signing the
+	 * request.
 	 *
-	 * Keys for the $opt parameter:
-	 *	UserName - _string_ (Optional) Name of the user to get information about. This parameter is optional. If it is not included, it defaults to the user making the request.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User to get information about. This parameter is optional. If it is not included, it defaults to the User making the request. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function get_user($opt = null)
 	{
@@ -1029,24 +982,16 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: resync_mfa_device()
-	 * 	Synchronizes the specified MFA device with AWS servers.
 	 *
-	 * Access:
-	 *	public
+	 * Synchronizes the specified MFA device with AWS servers.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user whose MFA device you want to resynchronize.
-	 *	$serial_number - _string_ (Required) Serial number which uniquely identifies the MFA device.
-	 *	$authentication_code1 - _string_ (Required) An authentication code emitted by the device.
-	 *	$authentication_code2 - _string_ (Required) A subsequent authentication code emitted by the device.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) Name of the User whose MFA device you want to resynchronize.
+	 * @param string $serial_number (Required) Serial number that uniquely identifies the MFA device.
+	 * @param string $authentication_code1 (Required) An authentication code emitted by the device.
+	 * @param string $authentication_code2 (Required) A subsequent authentication code emitted by the device.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function resync_mfa_device($user_name, $serial_number, $authentication_code1, $authentication_code2, $opt = null)
 	{
@@ -1060,24 +1005,17 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: list_mfa_devices()
-	 * 	Lists the MFA devices associated with the specified user. You can paginate the results using the
-	 * 	`MaxItems` and `Marker` parameters.
 	 *
-	 * Access:
-	 *	public
+	 * Lists the MFA devices associated with the specified User name.
 	 *
-	 * Parameters:
-	 *	$user_name - _string_ (Required) Name of the user whose MFA devices you want to list.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
-	 * Keys for the $opt parameter:
-	 *	Marker - _string_ (Optional) Use this only when paginating results, and only in a follow-up request after you've received a response where the results are truncated. Set this to the value of the `Marker` element in the response you just received.
-	 *	MaxItems - _integer_ (Optional) Use this only when paginating results to indicate the maximum number of keys you want in the response. If there are additional keys beyond the maximum you specify, the `IsTruncated` response element is `true`.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $user_name (Required) Name of the User whose MFA devices you want to list.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of keys you want in the response. If there are additional keys beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function list_mfa_devices($user_name, $opt = null)
 	{
@@ -1088,29 +1026,24 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: update_access_key()
-	 * 	Changes the status of the specified access key from Active to Inactive, or vice versa. This action
-	 * 	can be used to disable a user's key as part of a key rotation workflow. If the `UserName` field is
-	 * 	not specified, the UserName is determined implicitly based on the AWS Access Key ID used to sign the
-	 * 	request. Because this action works for access keys under the account, this API can be used to manage
-	 * 	root credentials even if the account has no associated users. For information about rotating keys,
-	 * 	see Managing Keys and Certificates in the [AWS Identity and Access Management User
-	 * 	Guide](http://aws.amazon.com/documentation/).
 	 *
-	 * Access:
-	 *	public
+	 * Changes the status of the specified access key from Active to Inactive, or vice versa. This action can be used to
+	 * disable a User's key as part of a key rotation workflow.
 	 *
-	 * Parameters:
-	 *	$access_key_id - _string_ (Required) The Access Key ID of the Secret Access Key you want to update.
-	 *	$status - _string_ (Required) The status you want to assign to the Secret Access Key. `Active` means the key can be used for API calls to AWS, while `Inactive` means the key cannot be used. [Allowed values: `Active`, `Inactive`]
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly based on the AWS Access Key
+	 * ID used to sign the request. Because this action works for access keys under the AWS Account, this API can be used to
+	 * manage root credentials even if the AWS Account has no associated Users.
 	 *
-	 * Keys for the $opt parameter:
-	 *	UserName - _string_ (Optional) Name of the user whose key you want to update.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * For information about rotating keys, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?ManagingCredentials.html">Managing Keys and
+	 * Certificates</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $access_key_id (Required) The Access Key ID of the Secret Access Key you want to update.
+	 * @param string $status (Required) The status you want to assign to the Secret Access Key. <code>Active</code> means the key can be used for API calls to AWS, while <code>Inactive</code> means the key cannot be used. [Allowed values: <code>Active</code>, <code>Inactive</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User whose key you want to update. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function update_access_key($access_key_id, $status, $opt = null)
 	{
@@ -1122,22 +1055,29 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: add_user_to_group()
-	 * 	Adds the specified user to the specified group.
 	 *
-	 * Access:
-	 *	public
+	 * Retrieves account level information about usage and quota.
 	 *
-	 * Parameters:
-	 *	$group_name - _string_ (Required) Name of the group to update.
-	 *	$user_name - _string_ (Required) Name of the user to add.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function get_account_summary($opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		return $this->authenticate('GetAccountSummary', $opt, $this->hostname);
+	}
+
+	/**
 	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * Adds the specified User to the specified group.
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $group_name (Required) Name of the group to update.
+	 * @param string $user_name (Required) Name of the User to add.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function add_user_to_group($group_name, $user_name, $opt = null)
 	{
@@ -1149,24 +1089,16 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: get_group()
-	 * 	Returns a list of users that are in the specified group. You can paginate the results using the
-	 * 	`MaxItems` and `Marker` parameters.
 	 *
-	 * Access:
-	 *	public
+	 * Returns a list of Users that are in the specified group. You can paginate the results using the <code>MaxItems</code>
+	 * and <code>Marker</code> parameters.
 	 *
-	 * Parameters:
-	 *	$group_name - _string_ (Required) Name of the group.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	Marker - _string_ (Optional) Use this only when paginating results, and only in a follow-up request after you've received a response where the results are truncated. Set this to the value of the `Marker` element in the response you just received.
-	 *	MaxItems - _integer_ (Optional) Use this only when paginating results to indicate the maximum number of users you want in the response. If there are additional users beyond the maximum you specify, the `IsTruncated` response element is `true`.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $group_name (Required) Name of the group.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of User names you want in the response. If there are additional User names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function get_group($group_name, $opt = null)
 	{
@@ -1177,21 +1109,32 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Method: delete_group()
-	 * 	Deletes the specified group. The group must not contain any users or have any attached policies.
 	 *
-	 * Access:
-	 *	public
+	 * Lists the account aliases associated with the account.
 	 *
-	 * Parameters:
-	 *	$group_name - _string_ (Required) Name of the group to delete.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of account aliases you want in the response. If there are additional account aliases beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function list_account_aliases($opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		return $this->authenticate('ListAccountAliases', $opt, $this->hostname);
+	}
+
+	/**
 	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * Deletes the specified group. The group must not contain any Users or have any attached policies.
+	 *
+	 * @param string $group_name (Required) Name of the group to delete.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function delete_group($group_name, $opt = null)
 	{
@@ -1201,3 +1144,12 @@ class AmazonIAM extends CFRuntime
 		return $this->authenticate('DeleteGroup', $opt, $this->hostname);
 	}
 }
+
+
+/*%******************************************************************************************%*/
+// EXCEPTIONS
+
+/**
+ * Default IAM Exception.
+ */
+class IAM_Exception extends Exception {}

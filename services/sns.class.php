@@ -15,37 +15,13 @@
  */
 
 /**
- * File: AmazonSNS
+
  *
- *
- * Version:
- * 	Mon Jan 24 14:59:34 PST 2011
- *
- * License and Copyright:
- * 	See the included NOTICE.md file for complete information.
- *
- * See Also:
- * 	[Amazon Simple Notification Service](http://aws.amazon.com/sns/)
- * 	[Amazon Simple Notification Service documentation](http://aws.amazon.com/documentation/sns/)
- */
-
-
-/*%******************************************************************************************%*/
-// EXCEPTIONS
-
-/**
- * Exception: SNS_Exception
- * 	Default SNS Exception.
- */
-class SNS_Exception extends Exception {}
-
-
-/*%******************************************************************************************%*/
-// MAIN CLASS
-
-/**
- * Class: AmazonSNS
- * 	Container for all service-related methods.
+ * @version Wed Feb 16 17:10:34 PST 2011
+ * @license See the included NOTICE.md file for complete information.
+ * @copyright See the included NOTICE.md file for complete information.
+ * @link http://aws.amazon.com/sns/Amazon Simple Notification Service
+ * @link http://aws.amazon.com/documentation/sns/Amazon Simple Notification Service documentation
  */
 class AmazonSNS extends CFRuntime
 {
@@ -185,26 +161,18 @@ class AmazonSNS extends CFRuntime
 	// SERVICE METHODS
 
 	/**
-	 * Method: confirm_subscription()
-	 * 	The ConfirmSubscription action verifies an endpoint owner's intent to receive messages by validating
-	 * 	the token sent to the endpoint by an earlier Subscribe action. If the token is valid, the action
-	 * 	creates a new subscription and returns its Amazon Resource Name (ARN). This call requires an AWS
-	 * 	signature only when the AuthenticateOnUnsubscribe flag is set to "true".
 	 *
-	 * Access:
-	 *	public
+	 * The ConfirmSubscription action verifies an endpoint owner's intent to receive messages by validating the token sent to
+	 * the endpoint by an earlier Subscribe action. If the token is valid, the action creates a new subscription and returns
+	 * its Amazon Resource Name (ARN). This call requires an AWS signature only when the AuthenticateOnUnsubscribe flag is set
+	 * to "true".
 	 *
-	 * Parameters:
-	 *	$topic_arn - _string_ (Required) The ARN of the topic for which you wish to confirm a subscription.
-	 *	$token - _string_ (Required) Short-lived token sent to an endpoint during the Subscribe action.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	AuthenticateOnUnsubscribe - _string_ (Optional) Indicates that you want to disable unauthenticated unsubsciption of the subscription. If parameter is present in the request, the request has an AWS signature, and the value of this parameter is true, only the topic owner and the subscription owner will be permitted to unsubscribe the endopint, and the Unsubscribe action will require AWS authentication.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $topic_arn (Required) The ARN of the topic for which you wish to confirm a subscription.
+	 * @param string $token (Required) Short-lived token sent to an endpoint during the Subscribe action.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>AuthenticateOnUnsubscribe</code> - <code>string</code> - Optional - Indicates that you want to disable unauthenticated unsubsciption of the subscription. If parameter is present in the request, the request has an AWS signature, and the value of this parameter is true, only the topic owner and the subscription owner will be permitted to unsubscribe the endopint, and the Unsubscribe action will require AWS authentication. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function confirm_subscription($topic_arn, $token, $opt = null)
 	{
@@ -216,22 +184,14 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
-	 * Method: get_topic_attributes()
-	 * 	The GetTopicAttribtues action returns all of the properties of a topic customers have created. Topic
-	 * 	properties returned might differ based on the authorization of the user.
 	 *
-	 * Access:
-	 *	public
+	 * The GetTopicAttribtues action returns all of the properties of a topic customers have created. Topic properties returned
+	 * might differ based on the authorization of the user.
 	 *
-	 * Parameters:
-	 *	$topic_arn - _string_ (Required) The ARN of the topic whose properties you want to get.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $topic_arn (Required) The ARN of the topic whose properties you want to get.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function get_topic_attributes($topic_arn, $opt = null)
 	{
@@ -242,26 +202,17 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
-	 * Method: subscribe()
-	 * 	The Subscribe action prepares to subscribe an endpoint by sending the endpoint a confirmation
-	 * 	message. To actually create a subscription, the endpoint owner must call the ConfirmSubscription
-	 * 	action with the token from the confirmation message. Confirmation tokens are valid for twenty-four
-	 * 	hours.
 	 *
-	 * Access:
-	 *	public
+	 * The Subscribe action prepares to subscribe an endpoint by sending the endpoint a confirmation message. To actually
+	 * create a subscription, the endpoint owner must call the ConfirmSubscription action with the token from the confirmation
+	 * message. Confirmation tokens are valid for twenty-four hours.
 	 *
-	 * Parameters:
-	 *	$topic_arn - _string_ (Required) The ARN of topic you want to subscribe to.
-	 *	$protocol - _string_ (Required) The protocol you want to use. Supported protocols include: http -- delivery of JSON-encoded message via HTTP POST; https -- delivery of JSON-encoded message via HTTPS POST; email -- delivery of message via SMTP; email-json -- delivery of JSON-encoded message via SMTP; sqs -- delivery of JSON-encoded message to an Amazon SQS queue.
-	 *	$endpoint - _string_ (Required) The endpoint that you want to receive notifications. Endpoints vary by protocol: For the http protocol, the endpoint is an URL beginning with "http://"; For the https protocol, the endpoint is a URL beginning with "https://"; For the email protocol, the endpoint is an e-mail address; For the email-json protocol, the endpoint is an e-mail address; For the sqs protocol, the endpoint is the ARN of an Amazon SQS queue.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $topic_arn (Required) The ARN of topic you want to subscribe to.
+	 * @param string $protocol (Required) The protocol you want to use. Supported protocols include: <ul> <li>http -- delivery of JSON-encoded message via HTTP POST</li><li>https -- delivery of JSON-encoded message via HTTPS POST</li><li>email -- delivery of message via SMTP</li><li>email-json -- delivery of JSON-encoded message via SMTP</li><li>sqs -- delivery of JSON-encoded message to an Amazon SQS queue</li> </ul>
+	 * @param string $endpoint (Required) The endpoint that you want to receive notifications. Endpoints vary by protocol: <ul> <li>For the http protocol, the endpoint is an URL beginning with "http://"</li><li>For the https protocol, the endpoint is a URL beginning with "https://"</li><li>For the email protocol, the endpoint is an e-mail address</li><li>For the email-json protocol, the endpoint is an e-mail address</li><li>For the sqs protocol, the endpoint is the ARN of an Amazon SQS queue</li> </ul>
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function subscribe($topic_arn, $protocol, $endpoint, $opt = null)
 	{
@@ -274,23 +225,15 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
-	 * Method: set_topic_attributes()
-	 * 	The SetTopicAttributes action allows a topic owner to set an attribute of the topic to a new value.
 	 *
-	 * Access:
-	 *	public
+	 * The SetTopicAttributes action allows a topic owner to set an attribute of the topic to a new value.
 	 *
-	 * Parameters:
-	 *	$topic_arn - _string_ (Required) The ARN of the topic to modify.
-	 *	$attribute_name - _string_ (Required) The name of the attribute you want to set. Only a subset of the topic's attributes are mutable.
-	 *	$attribute_value - _string_ (Required) The new value for the attribute.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $topic_arn (Required) The ARN of the topic to modify.
+	 * @param string $attribute_name (Required) The name of the attribute you want to set. Only a subset of the topic's attributes are mutable.
+	 * @param string $attribute_value (Required) The new value for the attribute.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function set_topic_attributes($topic_arn, $attribute_name, $attribute_value, $opt = null)
 	{
@@ -303,23 +246,15 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
-	 * Method: delete_topic()
-	 * 	The DeleteTopic action deletes a topic and all its subscriptions. Deleting a topic might prevent
-	 * 	some messages previously sent to the topic from being delivered to subscribers. This action is
-	 * 	idempotent, so deleting a topic that does not exist will not result in an error.
 	 *
-	 * Access:
-	 *	public
+	 * The DeleteTopic action deletes a topic and all its subscriptions. Deleting a topic might prevent some messages
+	 * previously sent to the topic from being delivered to subscribers. This action is idempotent, so deleting a topic that
+	 * does not exist will not result in an error.
 	 *
-	 * Parameters:
-	 *	$topic_arn - _string_ (Required) The ARN of the topic you want to delete.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $topic_arn (Required) The ARN of the topic you want to delete.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function delete_topic($topic_arn, $opt = null)
 	{
@@ -330,22 +265,14 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
-	 * Method: remove_permission()
-	 * 	The RemovePermission action removes a statement from a topic's access control policy.
 	 *
-	 * Access:
-	 *	public
+	 * The RemovePermission action removes a statement from a topic's access control policy.
 	 *
-	 * Parameters:
-	 *	$topic_arn - _string_ (Required) The ARN of the topic whose access control policy you wish to modify.
-	 *	$label - _string_ (Required) The unique label of the statement you want to remove.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $topic_arn (Required) The ARN of the topic whose access control policy you wish to modify.
+	 * @param string $label (Required) The unique label of the statement you want to remove.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function remove_permission($topic_arn, $label, $opt = null)
 	{
@@ -357,23 +284,15 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
-	 * Method: list_subscriptions()
-	 * 	The ListSubscriptions action returns a list of the requester's subscriptions. Each call returns a
-	 * 	limited list of subscriptions. If there are more subscriptions, a NextToken is also returned. Use
-	 * 	the NextToken parameter in a new ListSubscriptions call to get further results.
 	 *
-	 * Access:
-	 *	public
+	 * The ListSubscriptions action returns a list of the requester's subscriptions. Each call returns a limited list of
+	 * subscriptions. If there are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a new
+	 * ListSubscriptions call to get further results.
 	 *
-	 * Parameters:
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	NextToken - _string_ (Optional) Token returned by the previous ListSubscriptions request.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - Token returned by the previous ListSubscriptions request. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function list_subscriptions($opt = null)
 	{
@@ -383,25 +302,17 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
-	 * Method: add_permission()
-	 * 	The AddPermission action adds a statement to a topic's access control policy, granting access for
-	 * 	the specified AWS accounts to the specified actions.
 	 *
-	 * Access:
-	 *	public
+	 * The AddPermission action adds a statement to a topic's access control policy, granting access for the specified AWS
+	 * accounts to the specified actions.
 	 *
-	 * Parameters:
-	 *	$topic_arn - _string_ (Required) The ARN of the topic whose access control policy you wish to modify.
-	 *	$label - _string_ (Required) A unique identifier for the new policy statement.
-	 *	$account_id - _string_|_array_ (Required) The AWS account IDs of the users (principals) who will be given access to the specified actions. The users must have AWS accounts, but do not need to be signed up for this service. Pass a string for a single value, or an indexed array for multiple values.
-	 *	$action_name - _string_|_array_ (Required) The action you want to allow for the specified principal(s). Pass a string for a single value, or an indexed array for multiple values.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $topic_arn (Required) The ARN of the topic whose access control policy you wish to modify.
+	 * @param string $label (Required) A unique identifier for the new policy statement.
+	 * @param string|array $account_id (Required) The AWS account IDs of the users (principals) who will be given access to the specified actions. The users must have AWS accounts, but do not need to be signed up for this service.  Pass a string for a single value, or an indexed array for multiple values.
+	 * @param string|array $action_name (Required) The action you want to allow for the specified principal(s).  Pass a string for a single value, or an indexed array for multiple values.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function add_permission($topic_arn, $label, $account_id, $action_name, $opt = null)
 	{
@@ -423,23 +334,15 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
-	 * Method: create_topic()
-	 * 	The CreateTopic action creates a topic to which notifications can be published. Users can create at
-	 * 	most 25 topics. This action is idempotent, so if the requester already owns a topic with the
-	 * 	specified name, that topic's ARN will be returned without creating a new topic.
 	 *
-	 * Access:
-	 *	public
+	 * The CreateTopic action creates a topic to which notifications can be published. Users can create at most 25 topics. This
+	 * action is idempotent, so if the requester already owns a topic with the specified name, that topic's ARN will be
+	 * returned without creating a new topic.
 	 *
-	 * Parameters:
-	 *	$name - _string_ (Required) The name of the topic you want to create. Constraints: Topic names must be made up of only uppercase and lowercase ASCII letters, numbers, and hyphens, and must be between 1 and 256 characters long.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $name (Required) The name of the topic you want to create. Constraints: Topic names must be made up of only uppercase and lowercase ASCII letters, numbers, and hyphens, and must be between 1 and 256 characters long.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function create_topic($name, $opt = null)
 	{
@@ -450,23 +353,14 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
-	 * Method: list_topics()
-	 * 	The ListTopics action returns a list of the requester's topics. Each call returns a limited list of
-	 * 	topics. If there are more topics, a NextToken is also returned. Use the NextToken parameter in a new
-	 * 	ListTopics call to get further results.
 	 *
-	 * Access:
-	 *	public
+	 * The ListTopics action returns a list of the requester's topics. Each call returns a limited list of topics. If there are
+	 * more topics, a NextToken is also returned. Use the NextToken parameter in a new ListTopics call to get further results.
 	 *
-	 * Parameters:
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	NextToken - _string_ (Optional) Token returned by the previous ListTopics request.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - Token returned by the previous ListTopics request. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function list_topics($opt = null)
 	{
@@ -476,25 +370,17 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
-	 * Method: unsubscribe()
-	 * 	The Unsubscribe action deletes a subscription. If the subscription requires authentication for
-	 * 	deletion, only the owner of the subscription or the its topic's owner can unsubscribe, and an AWS
-	 * 	signature is required. If the Unsubscribe call does not require authentication and the requester is
-	 * 	not the subscription owner, a final cancellation message is delivered to the endpoint, so that the
-	 * 	endpoint owner can easily resubscribe to the topic if the Unsubscribe request was unintended.
 	 *
-	 * Access:
-	 *	public
+	 * The Unsubscribe action deletes a subscription. If the subscription requires authentication for deletion, only the owner
+	 * of the subscription or the its topic's owner can unsubscribe, and an AWS signature is required. If the Unsubscribe call
+	 * does not require authentication and the requester is not the subscription owner, a final cancellation message is
+	 * delivered to the endpoint, so that the endpoint owner can easily resubscribe to the topic if the Unsubscribe request was
+	 * unintended.
 	 *
-	 * Parameters:
-	 *	$subscription_arn - _string_ (Required) The ARN of the subscription to be deleted.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $subscription_arn (Required) The ARN of the subscription to be deleted.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function unsubscribe($subscription_arn, $opt = null)
 	{
@@ -505,24 +391,16 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
-	 * Method: list_subscriptions_by_topic()
-	 * 	The ListSubscriptionsByTopic action returns a list of the subscriptions to a specific topic. Each
-	 * 	call returns a limited list of subscriptions. If there are more subscriptions, a NextToken is also
-	 * 	returned. Use the NextToken parameter in a new ListSubscriptionsByTopic call to get further results.
 	 *
-	 * Access:
-	 *	public
+	 * The ListSubscriptionsByTopic action returns a list of the subscriptions to a specific topic. Each call returns a limited
+	 * list of subscriptions. If there are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a
+	 * new ListSubscriptionsByTopic call to get further results.
 	 *
-	 * Parameters:
-	 *	$topic_arn - _string_ (Required) The ARN of the topic for which you wish to find subscriptions.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	NextToken - _string_ (Optional) Token returned by the previous ListSubscriptionsByTopic request.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $topic_arn (Required) The ARN of the topic for which you wish to find subscriptions.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - Token returned by the previous ListSubscriptionsByTopic request. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function list_subscriptions_by_topic($topic_arn, $opt = null)
 	{
@@ -533,26 +411,17 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
-	 * Method: publish()
-	 * 	The Publish action sends a message to all of a topic's subscribed endpoints. When a messageId is
-	 * 	returned, the message has been saved and Amazon SNS will attempt to deliver it to the topic's
-	 * 	subscribers shortly. The format of the outgoing message to each subscribed endpoint depends on the
-	 * 	notification protocol selected.
 	 *
-	 * Access:
-	 *	public
+	 * The Publish action sends a message to all of a topic's subscribed endpoints. When a messageId is returned, the message
+	 * has been saved and Amazon SNS will attempt to deliver it to the topic's subscribers shortly. The format of the outgoing
+	 * message to each subscribed endpoint depends on the notification protocol selected.
 	 *
-	 * Parameters:
-	 *	$topic_arn - _string_ (Required) The topic you want to publish to.
-	 *	$message - _string_ (Required) The message you want to send to the topic. Constraints: Messages must be UTF-8 encoded strings at most 8 KB in size (8192 bytes, not 8192 characters).
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	Subject - _string_ (Optional) Optional parameter to be used as the "Subject" line of when the message is delivered to e-mail endpoints. This field will also be included, if present, in the standard JSON messages delivered to other endpoints. Constraints: Subjects must be ASCII text that begins with a letter, number or punctuation mark; must not include line breaks or control characters; and must be less than 100 characters long.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $topic_arn (Required) The topic you want to publish to.
+	 * @param string $message (Required) The message you want to send to the topic. Constraints: Messages must be UTF-8 encoded strings at most 8 KB in size (8192 bytes, not 8192 characters).
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Subject</code> - <code>string</code> - Optional - Optional parameter to be used as the "Subject" line of when the message is delivered to e-mail endpoints. This field will also be included, if present, in the standard JSON messages delivered to other endpoints. Constraints: Subjects must be ASCII text that begins with a letter, number or punctuation mark; must not include line breaks or control characters; and must be less than 100 characters long. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function publish($topic_arn, $message, $opt = null)
 	{
@@ -564,3 +433,12 @@ class AmazonSNS extends CFRuntime
 	}
 }
 
+
+/*%******************************************************************************************%*/
+// EXCEPTIONS
+
+/**
+ * Exception: SNS_Exception
+ * 	Default SNS Exception.
+ */
+class SNS_Exception extends Exception {}

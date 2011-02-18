@@ -15,42 +15,18 @@
  */
 
 /**
- * File: AmazonImportExport
- * 	 *
- * 	AWS Import/Export accelerates transferring large amounts of data between the AWS cloud and portable
- * 	storage devices that you mail to us. AWS Import/Export transfers data directly onto and off of your
- * 	storage devices using Amazon's high-speed internal network and bypassing the Internet. For large
- * 	data sets, AWS Import/Export is often faster than Internet transfer and more cost effective than
- * 	upgrading your connectivity.
  *
- * Version:
- * 	Mon Jan 24 14:56:54 PST 2011
  *
- * License and Copyright:
- * 	See the included NOTICE.md file for complete information.
+ * AWS Import/Export accelerates transferring large amounts of data between the AWS cloud and portable storage devices
+ * that you mail to us. AWS Import/Export transfers data directly onto and off of your storage devices using Amazon's
+ * high-speed internal network and bypassing the Internet. For large data sets, AWS Import/Export is often faster than
+ * Internet transfer and more cost effective than upgrading your connectivity.
  *
- * See Also:
- * 	[Amazon Import/Export Service](http://aws.amazon.com/importexport/)
- * 	[Amazon Import/Export Service documentation](http://aws.amazon.com/documentation/importexport/)
- */
-
-
-/*%******************************************************************************************%*/
-// EXCEPTIONS
-
-/**
- * Exception: ImportExport_Exception
- * 	Default ImportExport Exception.
- */
-class ImportExport_Exception extends Exception {}
-
-
-/*%******************************************************************************************%*/
-// MAIN CLASS
-
-/**
- * Class: AmazonImportExport
- * 	Container for all service-related methods.
+ * @version Wed Feb 16 17:08:43 PST 2011
+ * @license See the included NOTICE.md file for complete information.
+ * @copyright See the included NOTICE.md file for complete information.
+ * @link http://aws.amazon.com/importexport/Amazon Import/Export Service
+ * @link http://aws.amazon.com/documentation/importexport/Amazon Import/Export Service documentation
  */
 class AmazonImportExport extends CFRuntime
 {
@@ -59,8 +35,7 @@ class AmazonImportExport extends CFRuntime
 	// CLASS CONSTANTS
 
 	/**
-	 * Constant: DEFAULT_URL
-	 * 	Specify the default queue URL.
+	 * Specify the default queue URL.
 	 */
 	const DEFAULT_URL = 'importexport.amazonaws.com';
 
@@ -70,18 +45,11 @@ class AmazonImportExport extends CFRuntime
 	// CONSTRUCTOR
 
 	/**
-	 * Method: __construct()
-	 * 	Constructs a new instance of <AmazonImportExport>.
+	 * Constructs a new instance of <AmazonImportExport>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$key - _string_ (Optional) Your Amazon API Key. If blank, it will look for the <AWS_KEY> constant.
-	 * 	$secret_key - _string_ (Optional) Your Amazon API Secret Key. If blank, it will look for the <AWS_SECRET_KEY> constant.
-	 *
-	 * Returns:
-	 * 	_boolean_ false if no valid values are set, otherwise true.
+	 * @param string $key (Optional) Your Amazon API Key. If blank, it will look for the <code>AWS_KEY</code> constant.
+	 * @param string $secret_key (Optional) Your Amazon API Secret Key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
+	 * @return boolean false if no valid values are set, otherwise true.
 	 */
 	public function __construct($key = null, $secret_key = null)
 	{
@@ -106,27 +74,19 @@ class AmazonImportExport extends CFRuntime
 	// SERVICE METHODS
 
 	/**
-	 * Method: create_job()
-	 * 	This operation initiates the process of scheduling an upload or download of your data. You include
-	 * 	in the request a manifest that describes the data transfer specifics. The response to the request
-	 * 	includes a job ID, which you can use in other operations, a signature that you use to identify your
-	 * 	storage device, and the address where you should ship your storage device.
 	 *
-	 * Access:
-	 *	public
+	 * This operation initiates the process of scheduling an upload or download of your data. You include in the request a
+	 * manifest that describes the data transfer specifics. The response to the request includes a job ID, which you can use in
+	 * other operations, a signature that you use to identify your storage device, and the address where you should ship your
+	 * storage device.
 	 *
-	 * Parameters:
-	 *	$job_type - _string_ (Required) Specifies whether the job to initiate is an import or export job. [Allowed values: `Import`, `Export`]
-	 *	$manifest - _string_ (Required) The UTF-8 encoded text of the manifest file.
-	 *	$validate_only - _boolean_ (Required) Validate the manifest and parameter values in the request but do not actually create a job.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	ManifestAddendum - _string_ (Optional) For internal use only.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $job_type (Required) Specifies whether the job to initiate is an import or export job. [Allowed values: <code>Import</code>, <code>Export</code>]
+	 * @param string $manifest (Required) The UTF-8 encoded text of the manifest file.
+	 * @param boolean $validate_only (Required) Validate the manifest and parameter values in the request but do not actually create a job.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>ManifestAddendum</code> - <code>string</code> - Optional - For internal use only. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function create_job($job_type, $manifest, $validate_only, $opt = null)
 	{
@@ -139,22 +99,14 @@ class AmazonImportExport extends CFRuntime
 	}
 
 	/**
-	 * Method: cancel_job()
-	 * 	This operation cancels a specified job. Only the job owner can cancel it. The operation fails if the
-	 * 	job has already started or is complete.
 	 *
-	 * Access:
-	 *	public
+	 * This operation cancels a specified job. Only the job owner can cancel it. The operation fails if the job has already
+	 * started or is complete.
 	 *
-	 * Parameters:
-	 *	$job_id - _string_ (Required) A unique identifier which refers to a particular job.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $job_id (Required) A unique identifier which refers to a particular job.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function cancel_job($job_id, $opt = null)
 	{
@@ -165,23 +117,14 @@ class AmazonImportExport extends CFRuntime
 	}
 
 	/**
-	 * Method: get_status()
-	 * 	This operation returns information about a job, including where the job is in the processing
-	 * 	pipeline, the status of the results, and the signature value associated with the job. You can only
-	 * 	return information about jobs you own.
 	 *
-	 * Access:
-	 *	public
+	 * This operation returns information about a job, including where the job is in the processing pipeline, the status of
+	 * the results, and the signature value associated with the job. You can only return information about jobs you own.
 	 *
-	 * Parameters:
-	 *	$job_id - _string_ (Required) A unique identifier which refers to a particular job.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $job_id (Required) A unique identifier which refers to a particular job.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function get_status($job_id, $opt = null)
 	{
@@ -192,25 +135,16 @@ class AmazonImportExport extends CFRuntime
 	}
 
 	/**
-	 * Method: list_jobs()
-	 * 	This operation returns the jobs associated with the requester. AWS Import/Export lists the jobs in
-	 * 	reverse chronological order based on the date of creation. For example if Job Test1 was created
-	 * 	2009Dec30 and Test2 was created 2010Feb05, the ListJobs operation would return Test2 followed by
-	 * 	Test1.
 	 *
-	 * Access:
-	 *	public
+	 * This operation returns the jobs associated with the requester. AWS Import/Export lists the jobs in reverse
+	 * chronological order based on the date of creation. For example if Job Test1 was created 2009Dec30 and Test2 was created
+	 * 2010Feb05, the ListJobs operation would return Test2 followed by Test1.
 	 *
-	 * Parameters:
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	MaxJobs - _integer_ (Optional) Sets the maximum number of jobs returned in the response. If there are additional jobs that were not returned because MaxJobs was exceeded, the response contains <IsTruncated>true</IsTruncated>. To return the additional jobs, see Marker.
-	 *	Marker - _string_ (Optional) Specifies the JOBID to start after when listing the jobs created with your account. AWS Import/Export lists your jobs in reverse chronological order. See MaxJobs.
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>MaxJobs</code> - <code>integer</code> - Optional - Sets the maximum number of jobs returned in the response. If there are additional jobs that were not returned because MaxJobs was exceeded, the response contains <IsTruncated>true</IsTruncated>. To return the additional jobs, see Marker. </li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Specifies the JOBID to start after when listing the jobs created with your account. AWS Import/Export lists your jobs in reverse chronological order. See MaxJobs. </li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function list_jobs($opt = null)
 	{
@@ -220,27 +154,18 @@ class AmazonImportExport extends CFRuntime
 	}
 
 	/**
-	 * Method: update_job()
-	 * 	You use this operation to change the parameters specified in the original manifest file by supplying
-	 * 	a new manifest file. The manifest file attached to this request replaces the original manifest file.
-	 * 	You can only use the operation after a CreateJob request but before the data transfer starts and you
-	 * 	can only use it on jobs you own.
 	 *
-	 * Access:
-	 *	public
+	 * You use this operation to change the parameters specified in the original manifest file by supplying a new manifest
+	 * file. The manifest file attached to this request replaces the original manifest file. You can only use the operation
+	 * after a CreateJob request but before the data transfer starts and you can only use it on jobs you own.
 	 *
-	 * Parameters:
-	 *	$job_id - _string_ (Required) A unique identifier which refers to a particular job.
-	 *	$manifest - _string_ (Required) The UTF-8 encoded text of the manifest file.
-	 *	$job_type - _string_ (Required) Specifies whether the job to initiate is an import or export job. [Allowed values: `Import`, `Export`]
-	 *	$validate_only - _boolean_ (Required) Validate the manifest and parameter values in the request but do not actually create a job.
-	 *	$opt - _array_ (Optional) An associative array of parameters that can have the keys listed in the following section.
-	 *
-	 * Keys for the $opt parameter:
-	 *	returnCurlHandle - _boolean_ (Optional) A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.
-	 *
-	 * Returns:
-	 *	_CFResponse_ A <CFResponse> object containing a parsed HTTP response.
+	 * @param string $job_id (Required) A unique identifier which refers to a particular job.
+	 * @param string $manifest (Required) The UTF-8 encoded text of the manifest file.
+	 * @param string $job_type (Required) Specifies whether the job to initiate is an import or export job. [Allowed values: <code>Import</code>, <code>Export</code>]
+	 * @param boolean $validate_only (Required) Validate the manifest and parameter values in the request but do not actually create a job.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
 	public function update_job($job_id, $manifest, $job_type, $validate_only, $opt = null)
 	{
@@ -254,3 +179,11 @@ class AmazonImportExport extends CFRuntime
 	}
 }
 
+
+/*%******************************************************************************************%*/
+// EXCEPTIONS
+
+/**
+ * Default ImportExport Exception.
+ */
+class ImportExport_Exception extends Exception {}

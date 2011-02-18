@@ -14,48 +14,31 @@
  * permissions and limitations under the License.
  */
 
-/**
- * File: CFStepConfig
- * 	Contains functionality for simplifying Amazon EMR Hadoop steps.
- *
- * Version:
- * 	2010.11.16
- *
- * License and Copyright:
- * 	See the included NOTICE.md file for more information.
- *
- * See Also:
- * 	[PHP Developer Center](http://aws.amazon.com/php/)
- */
-
 
 /*%******************************************************************************************%*/
 // CLASS
 
 /**
- * Class: CFStepConfig
- * 	Contains functionality for simplifying Amazon EMR Hadoop steps.
+ * Contains functionality for simplifying Amazon EMR Hadoop steps.
+ *
+ * @version 2010.11.16
+ * @license See the included NOTICE.md file for more information.
+ * @copyright See the included NOTICE.md file for more information.
+ * @link http://aws.amazon.com/php/ PHP Developer Center
  */
 class CFStepConfig
 {
+
 	/**
-	 * Property: config
-	 * 	Stores the configuration map.
+	 * Stores the configuration map.
 	 */
 	public $config;
 
 	/**
-	 * Method: __construct()
-	 * 	Constructs a new instance of <CFStepConfig>.
+	 * Constructs a new instance of this class.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$config - _array_ (Required) An associative array representing the Hadoop step configuration.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param array $config (Required) An associative array representing the Hadoop step configuration.
+	 * @return $this A reference to the current instance.
 	 */
 	public function __construct($config)
 	{
@@ -69,17 +52,10 @@ class CFStepConfig
 	}
 
 	/**
-	 * Method: init()
-	 * 	Constructs a new instance of <CFStepConfig>, and allows chaining.
+	 * Constructs a new instance of this class, and allows chaining.
 	 *
-	 * Access:
-	 * 	public static
-	 *
-	 * Parameters:
-	 * 	$config - _array_ (Required) An associative array representing the Hadoop step configuration.
-	 *
-	 * Returns:
-	 * 	`$this` A reference to the current instance.
+	 * @param array $config (Required) An associative array representing the Hadoop step configuration.
+	 * @return $this A reference to the current instance.
 	 */
 	public static function init($config)
 	{
@@ -93,17 +69,10 @@ class CFStepConfig
 	}
 
 	/**
-	 * Method: __toString()
-	 * 	Returns a JSON representation of the object when typecast as a string.
+	 * Returns a JSON representation of the object when typecast as a string.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	_string_ A JSON representation of the object.
-	 *
-	 * See Also:
-	 * 	[PHP Magic Methods](http://www.php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring)
+	 * @return string A JSON representation of the object.
+	 * @link http://www.php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring PHP Magic Methods
 	 */
 	public function __toString()
 	{
@@ -111,14 +80,9 @@ class CFStepConfig
 	}
 
 	/**
-	 * Method: get_config()
-	 * 	Returns the configuration data.
+	 * Returns the configuration data.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	_array_ The configuration data.
+	 * @return array The configuration data.
 	 */
 	public function get_config()
 	{

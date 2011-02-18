@@ -14,59 +14,39 @@
  * permissions and limitations under the License.
  */
 
-/**
- * File: CFPolicy
- * 	Contains methods used for signing policy JSON documents.
- *
- * Version:
- * 	2010.08.31
- *
- * License and Copyright:
- * 	See the included NOTICE.md file for more information.
- *
- * See Also:
- * 	[PHP Developer Center](http://aws.amazon.com/php/)
- */
-
 
 /*%******************************************************************************************%*/
 // CLASS
 
 /**
- * Class: CFPolicy
- * 	Namespace for methods used for generating policy documents.
+ * Simplifies the process of signing JSON policy documents.
+ *
+ * @version 2010.08.31
+ * @license See the included NOTICE.md file for more information.
+ * @copyright See the included NOTICE.md file for more information.
+ * @link http://aws.amazon.com/php/ PHP Developer Center
  */
 class CFPolicy
 {
+
 	/**
-	 * Property: auth
-	 * 	Stores the object that contains the authentication credentials.
+	 * Stores the object that contains the authentication credentials.
 	 */
 	public $auth;
 
 	/**
-	 * Property: json_policy
-	 * 	Stores the policy object that we're working with.
+	 * Stores the policy object that we're working with.
 	 */
 	public $json_policy;
 
 	/**
-	 * Method: __construct()
-	 * 	Constructs the object.
+	 * Constructs a new instance of this class.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$auth - _object_ (Required) An instance of any authenticated AWS object (e.g. `AmazonEC2`, `AmazonS3`).
-	 * 	$policy - _string_|_array_ (Required) The associative array representing the S3 policy to use, or a string of JSON content.
-	 *
-	 * Returns:
-	 * 	`$this`
-	 *
-	 * See Also:
-	 * 	- [S3 Policies](http://docs.amazonwebservices.com/AmazonS3/2006-03-01/dev/index.html?HTTPPOSTForms.html)
-	 * 	- [Access Policy Language](http://docs.amazonwebservices.com/AmazonS3/latest/dev/index.html?AccessPolicyLanguage.html)
+	 * @param CFRuntime $auth (Required) An instance of any authenticated AWS object that is an instance of <CFRuntime> (e.g. <AmazonEC2>, <AmazonS3>).
+	 * @param string|array $policy (Required) The associative array representing the S3 policy to use, or a string of JSON content.
+	 * @return $this A reference to the current instance.
+	 * @link http://docs.amazonwebservices.com/AmazonS3/2006-03-01/dev/index.html?HTTPPOSTForms.html S3 Policies
+	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/index.html?AccessPolicyLanguage.html Access Policy Language
 	 */
 	public function __construct($auth, $policy)
 	{
@@ -85,14 +65,9 @@ class CFPolicy
 	}
 
 	/**
-	 * Method: get_key()
-	 * 	Get the key from the authenticated instance.
+	 * Get the key from the authenticated instance.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	string The key from the authenticated instance.
+	 * @return string The key from the authenticated instance.
 	 */
 	public function get_key()
 	{
@@ -100,14 +75,9 @@ class CFPolicy
 	}
 
 	/**
-	 * Method: get_policy()
-	 * 	Base64-encodes the JSON string.
+	 * Base64-encodes the JSON string.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	string The Base64-encoded version of the JSON string.
+	 * @return string The Base64-encoded version of the JSON string.
 	 */
 	public function get_policy()
 	{
@@ -115,14 +85,9 @@ class CFPolicy
 	}
 
 	/**
-	 * Method: get_json()
-	 * 	Gets the JSON string with the whitespace removed.
+	 * Gets the JSON string with the whitespace removed.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	string The JSON string without extraneous whitespace.
+	 * @return string The JSON string without extraneous whitespace.
 	 */
 	public function get_json()
 	{
@@ -130,14 +95,9 @@ class CFPolicy
 	}
 
 	/**
-	 * Method: get_policy_signature()
-	 * 	Gets the JSON string with the whitespace removed.
+	 * Gets the JSON string with the whitespace removed.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	string The Base64-encoded, signed JSON string.
+	 * @return string The Base64-encoded, signed JSON string.
 	 */
 	public function get_policy_signature()
 	{
@@ -145,14 +105,10 @@ class CFPolicy
 	}
 
 	/**
-	 * Method: decode_policy()
-	 * 	Decode a policy that was returned from the service.
+	 * Decode a policy that was returned from the service.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	string The Base64-encoded, signed JSON string.
+	 * @param string $response (Required) The policy returned by AWS that you want to decode into an object.
+	 * @return string The Base64-encoded, signed JSON string.
 	 */
 	public static function decode_policy($response)
 	{

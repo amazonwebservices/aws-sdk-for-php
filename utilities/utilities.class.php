@@ -14,27 +14,17 @@
  * permissions and limitations under the License.
  */
 
-/**
- * File: CFUtilities
- * 	Utilities for connecting to, and working with, AWS.
- *
- * Version:
- * 	2010.09.30
- *
- * License and Copyright:
- * 	See the included NOTICE.md file for more information.
- *
- * See Also:
- * 	[PHP Developer Center](http://aws.amazon.com/php/)
- */
-
 
 /*%******************************************************************************************%*/
 // CLASS
 
 /**
- * Class: CFUtilities
- * 	Container for all utility-related methods.
+ * Contains a set of utility methods for connecting to, and working with, AWS.
+ *
+ * @version 2010.09.30
+ * @license See the included NOTICE.md file for more information.
+ * @copyright See the included NOTICE.md file for more information.
+ * @link http://aws.amazon.com/php/ PHP Developer Center
  */
 class CFUtilities
 {
@@ -43,20 +33,17 @@ class CFUtilities
 	// CONSTANTS
 
 	/**
-	 * Constant: DATE_FORMAT_RFC2616
-	 * 	Define the RFC 2616-compliant date format.
+	 * Define the RFC 2616-compliant date format.
 	 */
 	const DATE_FORMAT_RFC2616 = 'D, d M Y H:i:s \G\M\T';
 
 	/**
-	 * Constant: DATE_FORMAT_ISO8601
-	 * 	Define the ISO-8601-compliant date format.
+	 * Define the ISO-8601-compliant date format.
 	 */
 	const DATE_FORMAT_ISO8601 = 'Y-m-d\TH:i:s\Z';
 
 	/**
-	 * Constant: DATE_FORMAT_MYSQL
-	 * 	Define the MySQL-compliant date format.
+	 * Define the MySQL-compliant date format.
 	 */
 	const DATE_FORMAT_MYSQL = 'Y-m-d H:i:s';
 
@@ -65,14 +52,9 @@ class CFUtilities
 	// METHODS
 
 	/**
-	 * Method: __construct()
-	 * 	The constructor.
+	 * Constructs a new instance of this class.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	<CFUtilities> object
+	 * @return $this A reference to the current instance.
 	 */
 	public function __construct()
 	{
@@ -80,18 +62,11 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: konst()
-	 * 	Retrieves the value of a class constant, while avoiding the `T_PAAMAYIM_NEKUDOTAYIM` error. Misspelled because `const` is a reserved word.
+	 * Retrieves the value of a class constant, while avoiding the `T_PAAMAYIM_NEKUDOTAYIM` error. Misspelled because `const` is a reserved word.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$class - _object_ (Required) An instance of the class containing the constant.
-	 * 	$const - _string_ (Required) The name of the constant to retrieve.
-	 *
-	 * Returns:
-	 * 	_mixed_ The value of the class constant.
+	 * @param object $class (Required) An instance of the class containing the constant.
+	 * @param string $const (Required) The name of the constant to retrieve.
+	 * @return mixed The value of the class constant.
 	 */
 	public function konst($class, $const)
 	{
@@ -108,17 +83,10 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: hex_to_base64()
-	 *   Convert a HEX value to Base64.
+	 * Convert a HEX value to Base64.
 	 *
-	 * Access:
-	 *   public
-	 *
-	 * Parameters:
-	 *   $str - _string_ (Required) Value to convert.
-	 *
-	 * Returns:
-	 *   _string_ Base64-encoded string.
+	 * @param string $str (Required) Value to convert.
+	 * @return string Base64-encoded string.
 	 */
 	public function hex_to_base64($str)
 	{
@@ -133,17 +101,10 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: to_query_string()
-	 * 	Convert an associative array into a query string.
+	 * Convert an associative array into a query string.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$array - _array_ (Required) Array to convert.
-	 *
-	 * Returns:
-	 * 	_string_ URL-friendly query string.
+	 * @param array $array (Required) Array to convert.
+	 * @return string URL-friendly query string.
 	 */
 	public function to_query_string($array)
 	{
@@ -158,17 +119,10 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: to_signable_string()
-	 * 	Convert an associative array into a sign-able string.
+	 * Convert an associative array into a sign-able string.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$array - _array_ (Required) Array to convert.
-	 *
-	 * Returns:
-	 * 	_string_ URL-friendly sign-able string.
+	 * @param array $array (Required) Array to convert.
+	 * @return string URL-friendly sign-able string.
 	 */
 	public function to_signable_string($array)
 	{
@@ -183,17 +137,10 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: encode_signature2()
-	 * 	Encode the value according to RFC 3986.
+	 * Encode the value according to RFC 3986.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$string - _string_ (Required) String to convert
-	 *
-	 * Returns:
-	 * 	_string_ URL-friendly sign-able string.
+	 * @param string $string (Required) String to convert.
+	 * @return string URL-friendly sign-able string.
 	 */
 	public function encode_signature2($string)
 	{
@@ -202,17 +149,10 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: query_to_array()
-	 * 	Convert a query string into an associative array. Multiple, identical keys will become an indexed array.
+	 * Convert a query string into an associative array. Multiple, identical keys will become an indexed array.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$qs - _string_ (Required) Query string to convert.
-	 *
-	 * Returns:
-	 * 	_array_ Associative array of keys and values.
+	 * @param string $qs (Required) Query string to convert.
+	 * @return array Associative array of keys and values.
 	 */
 	public function query_to_array($qs)
 	{
@@ -241,29 +181,16 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: size_readable()
-	 * 	Return human readable file sizes.
+	 * Return human readable file sizes.
 	 *
-	 * Author:
-	 * 	Aidan Lister <aidan@php.net>
-	 * 	Ryan Parman <ryan@getcloudfusion.com>
-	 *
-	 * Access:
-	 * 	public
-	 *
-	 * License:
-	 * 	[PHP License](http://www.php.net/license/3_01.txt)
-	 *
-	 * Parameters:
-	 * 	$size - _integer_ (Required) Filesize in bytes.
-	 * 	$unit - _string_ (Optional) The maximum unit to use. Defaults to the largest appropriate unit.
-	 * 	$default - _string_ (Optional) The format for the return string. Defaults to '%01.2f %s'
-	 *
-	 * Returns:
-	 * 	_string_ The human-readable file size.
-	 *
-	 * See Also:
-	 * 	Original Function - http://aidanlister.com/repos/v/function.size_readable.php
+	 * @author Aidan Lister <aidan@php.net>
+	 * @author Ryan Parman <ryan@getcloudfusion.com>
+	 * @license http://www.php.net/license/3_01.txt PHP License
+	 * @param integer $size (Required) Filesize in bytes.
+	 * @param string $unit (Optional) The maximum unit to use. Defaults to the largest appropriate unit.
+	 * @param string $default (Optional) The format for the return string. Defaults to `%01.2f %s`.
+	 * @return string The human-readable file size.
+	 * @link http://aidanlister.com/repos/v/function.size_readable.php Original Function
 	 */
 	public function size_readable($size, $unit = null, $default = null)
 	{
@@ -297,17 +224,10 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: time_hms()
-	 * 	Convert a number of seconds into Hours:Minutes:Seconds.
+	 * Convert a number of seconds into Hours:Minutes:Seconds.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$seconds - _integer_ (Required) The number of seconds to convert.
-	 *
-	 * Returns:
-	 * 	_string_ The formatted time.
+	 * @param integer $seconds (Required) The number of seconds to convert.
+	 * @return string The formatted time.
 	 */
 	public function time_hms($seconds)
 	{
@@ -329,19 +249,12 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: try_these()
-	 * 	Returns the first value that is set. Based on [Try.these()](http://api.prototypejs.org/language/try/these/) from [Prototype](http://prototypejs.org).
+	 * Returns the first value that is set. Based on [Try.these()](http://api.prototypejs.org/language/Try/these/) from [Prototype](http://prototypejs.org).
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$attrs - _array_ (Required) The attributes to test, as strings. Intended for testing properties of the $base object, but also works with variables if you place an @ symbol at the beginning of the command.
-	 * 	$base - _object_ (Optional) The base object to use, if any.
-	 * 	$default - _mixed_ (Optional) What to return if there are no matches. Defaults to null.
-	 *
-	 * Returns:
-	 * 	_mixed_ Either a matching property of a given object, _boolean_ false, or any other data type you might choose.
+	 * @param array $attrs (Required) The attributes to test, as strings. Intended for testing properties of the $base object, but also works with variables if you place an @ symbol at the beginning of the command.
+	 * @param object $base (Optional) The base object to use, if any.
+	 * @param mixed $default (Optional) What to return if there are no matches. Defaults to `null`.
+	 * @return mixed Either a matching property of a given object, boolean `false`, or any other data type you might choose.
 	 */
 	public function try_these($attrs, $base = null, $default = null)
 	{
@@ -370,17 +283,11 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: json_encode()
-	 * 	Can be removed once all calls are updated.
+	 * Can be removed once all calls are updated.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$obj - _mixed_ (Required) The PHP object to convert into a JSON string.
-	 *
-	 * Returns:
-	 * 	_string_ A JSON string.
+	 * @deprecated Use <php:json_encode()> instead.
+	 * @param mixed $obj (Required) The PHP object to convert into a JSON string.
+	 * @return string A JSON string.
 	 */
 	public function json_encode($obj)
 	{
@@ -388,20 +295,10 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: convert_response_to_array()
-	 * 	Converts a SimpleXML response to an array structure.
+	 * Converts a SimpleXML response to an array structure.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$response - _ResponseCore_ (Required) A response value.
-	 *
-	 * Returns:
-	 * 	_array_ The response value as a standard, multi-dimensional array.
-	 *
-	 * Requires:
-	 * 	PHP 5.2
+	 * @param ResponseCore $response (Required) A response value.
+	 * @return array The response value as a standard, multi-dimensional array.
 	 */
 	public function convert_response_to_array(ResponseCore $response)
 	{
@@ -409,17 +306,10 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: convert_date_to_iso8601()
-	 * 	Checks to see if a date stamp is ISO-8601 formatted, and if not, makes it so.
+	 * Checks to see if a date stamp is ISO-8601 formatted, and if not, makes it so.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$datestamp - _string_ (Required) A date stamp, or a string that can be parsed into a date stamp.
-	 *
-	 * Returns:
-	 * 	_string_ An ISO-8601 formatted date stamp.
+	 * @param string $datestamp (Required) A date stamp, or a string that can be parsed into a date stamp.
+	 * @return string An ISO-8601 formatted date stamp.
 	 */
 	public function convert_date_to_iso8601($datestamp)
 	{
@@ -432,20 +322,11 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: is_base64()
-	 * 	Determines whether the data is Base64 encoded or not.
+	 * Determines whether the data is Base64 encoded or not.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * License:
-	 * 	[PHP License](http://us.php.net/manual/en/function.base64-decode.php#81425)
-	 *
-	 * Parameters:
-	 * 	$s - _string_ (Required) The string to test.
-	 *
-	 * Returns:
-	 * 	_boolean_ Whether the string is Base64 encoded or not.
+	 * @license http://us.php.net/manual/en/function.base64-decode.php#81425 PHP License
+	 * @param string $s (Required) The string to test.
+	 * @return boolean Whether the string is Base64 encoded or not.
 	 */
 	public function is_base64($s)
 	{
@@ -453,17 +334,10 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: decode_uhex()
-	 * 	Decodes \uXXXX entities into their real unicode character equivalents.
+	 * Decodes `\uXXXX` entities into their real unicode character equivalents.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$s - _string_ (Required) The string to decode.
-	 *
-	 * Returns:
-	 * 	_string_ The decoded string.
+	 * @param string $s (Required) The string to decode.
+	 * @return string The decoded string.
 	 */
 	public function decode_uhex($s)
 	{
@@ -483,20 +357,11 @@ class CFUtilities
 	}
 
 	/**
-	 * Method: generate_guid()
-	 * 	Generates a random GUID.
+	 * Generates a random GUID.
 	 *
-	 * Author:
-	 * 	Alix Axel <http://www.php.net/manual/en/function.com-create-guid.php#99425>
-	 *
-	 * License:
-	 * 	[PHP License](http://www.php.net/license/3_01.txt)
-	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Returns:
-	 * 	_string_ A random GUID.
+	 * @author Alix Axel <http://www.php.net/manual/en/function.com-create-guid.php#99425>
+	 * @license http://www.php.net/license/3_01.txt PHP License
+	 * @return string A random GUID.
 	 */
 	public function generate_guid()
 	{
