@@ -36,7 +36,7 @@ class CloudFront_Exception extends Exception {}
  * seamlessly with the Amazon Simple Storage Service, which durably stores the original, definitive versions
  * of your files.
  *
- * @version 2010.11.24
+ * @version 2011.02.24
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/cloudfront/ Amazon CloudFront
@@ -530,6 +530,16 @@ class AmazonCloudFront extends CFRuntime
 		{
 			$origin = $update->addChild('S3Origin');
 			$origin->addChild('DNSName', $xml->S3Origin->DNSName);
+
+			// origin access identity
+			if (isset($opt['OriginAccessIdentity']))
+			{
+				$update->addChild('OriginAccessIdentity', 'origin-access-identity/cloudfront/' . $opt['OriginAccessIdentity']);
+			}
+			elseif (isset($xml->OriginAccessIdentity))
+			{
+				$update->addChild('OriginAccessIdentity', $xml->OriginAccessIdentity);
+			}
 		}
 		elseif (isset($xml->CustomOrigin))
 		{
@@ -609,16 +619,6 @@ class AmazonCloudFront extends CFRuntime
 			$logging = $update->addChild('Logging');
 			$logging->addChild('Bucket', $xml->Logging->Bucket);
 			$logging->addChild('Prefix', $xml->Logging->Prefix);
-		}
-
-		// origin access identity
-		if (isset($opt['OriginAccessIdentity']))
-		{
-			$update->addChild('OriginAccessIdentity', 'origin-access-identity/cloudfront/' . $opt['OriginAccessIdentity']);
-		}
-		elseif (isset($xml->OriginAccessIdentity))
-		{
-			$update->addChild('OriginAccessIdentity', $xml->OriginAccessIdentity);
 		}
 
 		// Trusted Signers

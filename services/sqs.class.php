@@ -30,7 +30,7 @@
  *
  * Visit <a href="http://aws.amazon.com/sqs/">http://aws.amazon.com/sqs/</a> for more information.
  *
- * @version Wed Feb 16 17:11:10 PST 2011
+ * @version Thu Feb 24 12:25:08 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sqs/Amazon Simple Queue Service

@@ -19,7 +19,7 @@
  * This is the Amazon Elastic MapReduce API Reference Guide. This guide is for programmers who need detailed information
  * about the Amazon Elastic MapReduce APIs.
  *
- * @version Wed Feb 16 17:07:23 PST 2011
+ * @version Thu Feb 24 12:21:27 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticmapreduce/Amazon Elastic MapReduce

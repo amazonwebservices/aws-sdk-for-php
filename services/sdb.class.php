@@ -31,7 +31,7 @@
  *
  * Visit <a href="http://aws.amazon.com/simpledb/">http://aws.amazon.com/simpledb/</a> for more information.
  *
- * @version Wed Feb 16 17:09:59 PST 2011
+ * @version Thu Feb 24 12:24:00 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/simpledb/Amazon SimpleDB

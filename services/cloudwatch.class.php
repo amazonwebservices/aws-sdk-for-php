@@ -31,7 +31,7 @@
  * automatically make changes to the resources you are monitoring, based on rules that you define. For example, you can
  * create alarms that initiate Auto Scaling and Simple Notification Service actions on your behalf.
  *
- * @version Wed Feb 16 17:04:07 PST 2011
+ * @version Thu Feb 24 12:17:14 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudwatch/Amazon CloudWatch
