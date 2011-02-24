@@ -1,3 +1,26 @@
+# Changelog: 1.2.5 "Heidegger"
+
+Launched Thursday, February 24, 2011
+
+## New Features & Highlights (Summary)
+* Support for AWS CloudFormation has been added to the SDK.
+* Bug fixes and enhancements:
+	* [PHP API change_content_type() broken](https://forums.aws.amazon.com/thread.jspa?threadID=59532)
+	* [Bug setting OriginAccessIdentity for a Cloudfront distribution config](https://forums.aws.amazon.com/thread.jspa?threadID=60989)
+
+## Service Classes
+### AmazonCloudFormation
+* **New:** Support for AWS CloudFormation has been added to the SDK.
+
+### AmazonCloudFront
+* **Fixed:** Issues around `update_xml_config()` have been resolved.
+
+### AmazonS3
+* **Fixed:** Issues around `change_content_type()` have been resolved.
+
+
+----
+
 # Changelog: 1.2.4 "Goltanna"
 
 Launched Wednesday, February 16, 2011

@@ -23,7 +23,7 @@
  * For specific details on how to construct a service request, please consult the <a
  * href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
  *
- * @version Wed Feb 16 17:06:48 PST 2011
+ * @version Thu Feb 24 12:20:37 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ses/Amazon Simple Email Service
