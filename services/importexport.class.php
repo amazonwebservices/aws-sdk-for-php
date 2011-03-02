@@ -22,7 +22,7 @@
  * high-speed internal network and bypassing the Internet. For large data sets, AWS Import/Export is often faster than
  * Internet transfer and more cost effective than upgrading your connectivity.
  *
- * @version Thu Feb 24 12:22:40 PST 2011
+ * @version Tue Mar 01 17:18:09 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/importexport/Amazon Import/Export Service

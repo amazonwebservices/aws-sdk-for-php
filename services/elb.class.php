@@ -20,7 +20,7 @@
  * of your application. It makes it easy for you to distribute application loads between two or more EC2 instances. Elastic
  * Load Balancing enables availability through redundancy and supports traffic growth of your application.
  *
- * @version Thu Feb 24 12:19:28 PST 2011
+ * @version Tue Mar 01 17:15:42 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticloadbalancing/Amazon Elastic Load Balancing
@@ -56,6 +56,11 @@ class AmazonELB extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
 	const REGION_APAC_SE1 = 'elasticloadbalancing.ap-southeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Region.
+	 */
+	const REGION_APAC_NE1 = 'elasticloadbalancing.ap-northeast-1.amazonaws.com';
 
 
 	/*%******************************************************************************************%*/

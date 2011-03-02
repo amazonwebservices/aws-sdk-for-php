@@ -197,6 +197,17 @@ class AmazonCloudFront extends CFRuntime
 		$request->request_class = $this->request_class;
 		$request->response_class = $this->response_class;
 
+		// Pass along registered stream callbacks
+		if ($this->registered_streaming_read_callback)
+		{
+			$request->register_streaming_read_callback($this->registered_streaming_read_callback);
+		}
+
+		if ($this->registered_streaming_write_callback)
+		{
+			$request->register_streaming_write_callback($this->registered_streaming_write_callback);
+		}
+
 		// Generate required headers.
 		$request->set_method($method);
 		$canonical_date = gmdate($this->util->konst($this->util, 'DATE_FORMAT_RFC2616'));

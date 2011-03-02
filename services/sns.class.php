@@ -17,7 +17,7 @@
 /**
 
  *
- * @version Thu Feb 24 12:24:35 PST 2011
+ * @version Tue Mar 01 17:20:00 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sns/Amazon Simple Notification Service
@@ -30,51 +30,44 @@ class AmazonSNS extends CFRuntime
 	// CLASS CONSTANTS
 
 	/**
-	 * Constant: DEFAULT_URL
-	 * 	Specify the default queue URL.
+	 * Specify the default queue URL.
 	 */
 	const DEFAULT_URL = 'sns.us-east-1.amazonaws.com';
 
 	/**
-	 * Constant: REGION_US_E1
-	 * 	Specify the queue URL for the US-East (Northern Virginia) Region.
+	 * Specify the queue URL for the US-East (Northern Virginia) Region.
 	 */
 	const REGION_US_E1 = self::DEFAULT_URL;
 
 	/**
-	 * Constant: REGION_US_W1
-	 * 	Specify the queue URL for the US-West (Northern California) Region.
+	 * Specify the queue URL for the US-West (Northern California) Region.
 	 */
 	const REGION_US_W1 = 'sns.us-west-1.amazonaws.com';
 
 	/**
-	 * Constant: REGION_EU_W1
-	 * 	Specify the queue URL for the EU (Ireland) Region.
+	 * Specify the queue URL for the EU (Ireland) Region.
 	 */
 	const REGION_EU_W1 = 'sns.eu-west-1.amazonaws.com';
 
 	/**
-	 * Constant: REGION_APAC_SE1
-	 * 	Specify the queue URL for the Asia Pacific (Singapore) Region.
+	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
 	const REGION_APAC_SE1 = 'sns.ap-southeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Region.
+	 */
+	const REGION_APAC_NE1 = 'sns.ap-northeast-1.amazonaws.com';
 
 
 	/*%******************************************************************************************%*/
 	// SETTERS
 
 	/**
-	 * Method: set_region()
-	 * 	This allows you to explicitly sets the region for the service to use.
+	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$region - _string_ (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_EU_W1>, or <REGION_APAC_SE1>.
-	 *
-	 * Returns:
-	 * 	`$this`
+	 * @param string $region (Required) The region to use for subsequent Amazon S3 operations. [Allowed values: `AmazonSNS::REGION_US_E1 `, `AmazonSNS::REGION_US_W1`, `AmazonSNS::REGION_EU_W1`, `AmazonSNS::REGION_APAC_SE1`]
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
 	{
@@ -87,20 +80,11 @@ class AmazonSNS extends CFRuntime
 	// CONVENIENCE METHODS
 
 	/**
-	 * Method: get_topic_list()
-	 * 	Gets a simple list of Topic ARNs.
+	 * Gets a simple list of Topic ARNs.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$pcre - _string_ (Optional) A Perl-Compatible Regular Expression (PCRE) to filter the names against.
-	 *
-	 * Returns:
-	 * 	_array_ A list of Topic ARNs.
-	 *
-	 * See Also:
-	 * 	[Perl-Compatible Regular Expression (PCRE) Docs](http://php.net/pcre)
+	 * @param string $pcre (Optional) A Perl-Compatible Regular Expression (PCRE) to filter the names against.
+	 * @return array A list of Topic ARNs.
+	 * @link http://php.net/pcre Perl-Compatible Regular Expression (PCRE) Docs
 	 */
 	public function get_topic_list($pcre = null)
 	{
@@ -125,18 +109,11 @@ class AmazonSNS extends CFRuntime
 	// CONSTRUCTOR
 
 	/**
-	 * Method: __construct()
-	 * 	Constructs a new instance of <AmazonSNS>.
+	 * Constructs a new instance of <AmazonSNS>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$key - _string_ (Optional) Your Amazon API Key. If blank, it will look for the <AWS_KEY> constant.
-	 * 	$secret_key - _string_ (Optional) Your Amazon API Secret Key. If blank, it will look for the <AWS_SECRET_KEY> constant.
-	 *
-	 * Returns:
-	 * 	_boolean_ false if no valid values are set, otherwise true.
+	 * @param string $key (Optional) Your Amazon API Key. If blank, it will look for the `AWS_KEY` constant.
+	 * @param string $secret_key (Optional) Your Amazon API Secret Key. If blank, it will look for the `AWS_SECRET_KEY` constant.
+	 * @return boolean <code>false</code> if no valid values are set, otherwise <code>true</code>.
 	 */
 	public function __construct($key = null, $secret_key = null)
 	{
@@ -438,7 +415,6 @@ class AmazonSNS extends CFRuntime
 // EXCEPTIONS
 
 /**
- * Exception: SNS_Exception
- * 	Default SNS Exception.
+ * Default SNS Exception.
  */
 class SNS_Exception extends Exception {}

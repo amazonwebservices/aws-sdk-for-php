@@ -1,3 +1,60 @@
+# Changelog: 1.2.6 "Ifrit"
+
+Launched Wednesday, March 2, 2011
+
+## New Features & Highlights (Summary)
+* **New:** Support for the new Asia Pacific "Northeast" (Japan) endpoint has been added for all relevant services.
+* **New:** Support for registering callback functions for read/write streams has been added to the SDK. Includes a runnable sample.
+* **Fixed:** Improvements to avoid triggering warnings when PHP is in Safe Mode.
+
+
+## Service Classes
+### AmazonAS
+* **New:** Added a new _class_ constant: `REGION_APAC_NE1`.
+
+### AmazonCloudFormation
+* **New:** Added a new _class_ constant: `REGION_APAC_NE1`.
+
+### AmazonCloudWatch
+* **New:** Added a new _class_ constant: `REGION_APAC_NE1`.
+
+### AmazonEC2
+* **New:** Added a new _class_ constant: `REGION_APAC_NE1`.
+
+### AmazonELB
+* **New:** Added a new _class_ constant: `REGION_APAC_NE1`.
+
+### AmazonRDS
+* **New:** Added a new _class_ constant: `REGION_APAC_NE1`.
+
+### AmazonS3
+* **New:** Added a new _class_ constant: `REGION_APAC_NE1`.
+* **New:** Added support for `ap-northeast-1` as a location constraint when creating a new bucket.
+
+### AmazonSDB
+* **New:** Added a new _class_ constant: `REGION_APAC_NE1`.
+
+### AmazonSNS
+* **New:** Added a new _class_ constant: `REGION_APAC_NE1`.
+
+### AmazonSQS
+* **New:** Added a new _class_ constant: `REGION_APAC_NE1`.
+
+## Utility classes
+### CFRuntime
+* **New:** Support for registering callback functions for read/write streams has been added to the SDK.
+* **New:** Future-proofed for future regional endpoints.
+
+### RequestCore
+* **New:** Support for registering callback functions for read/write streams has been added to the SDK.
+* **Fixed:** Improvements to avoid triggering warnings when PHP is in Safe Mode.
+
+## Samples
+* **New:** A sample demonstrating how to add a command-line progress bar for S3 transfers has been added to the SDK.
+
+
+----
+
 # Changelog: 1.2.5 "Heidegger"
 
 Launched Thursday, February 24, 2011

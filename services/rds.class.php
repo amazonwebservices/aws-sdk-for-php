@@ -28,7 +28,7 @@
  * flexible: you can scale your database instance's compute resources and storage capacity to meet your application's
  * demand. As with all Amazon Web Services, there are no up-front investments, and you pay only for the resources you use.
  *
- * @version Thu Feb 24 12:23:23 PST 2011
+ * @version Tue Mar 01 17:18:44 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/rds/Amazon Relational Database Service
@@ -64,6 +64,11 @@ class AmazonRDS extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
 	const REGION_APAC_SE1 = 'rds.ap-southeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Region.
+	 */
+	const REGION_APAC_NE1 = 'rds.ap-northeast-1.amazonaws.com';
 
 
 	/*%******************************************************************************************%*/

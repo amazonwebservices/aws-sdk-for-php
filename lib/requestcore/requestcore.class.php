@@ -2,7 +2,7 @@
 /**
  * Handles all HTTP requests using cURL and manages the responses.
  *
- * @version 2011.01.11
+ * @version 2011.03.01
  * @copyright 2006-2011 Ryan Parman
  * @copyright 2006-2010 Foleeo Inc.
  * @copyright 2010-2011 Amazon.com, Inc. or its affiliates.
@@ -94,7 +94,7 @@ class RequestCore
 	/**
 	 * Default useragent string to use.
 	 */
-	public $useragent = 'RequestCore/1.4';
+	public $useragent = 'RequestCore/1.4.1';
 
 	/**
 	 * File to read from while streaming up.
@@ -130,6 +130,16 @@ class RequestCore
 	 * Stores the intended starting seek position.
 	 */
 	public $seek_position = null;
+
+	/**
+	 * The user-defined callback function to call when a stream is read from.
+	 */
+	public $registered_streaming_read_callback = null;
+
+	/**
+	 * The user-defined callback function to call when a stream is written to.
+	 */
+	public $registered_streaming_write_callback = null;
 
 
 	/*%******************************************************************************************%*/
@@ -441,6 +451,55 @@ class RequestCore
 		return $this;
 	}
 
+	/**
+	 * Register a callback function to execute whenever a data stream is read from using
+	 * <CFRequest::streaming_read_callback()>.
+	 *
+	 * The user-defined callback function should accept three arguments:
+	 *
+	 * <ul>
+	 * 	<li><code>$curl_handle</code> - <code>resource</code> - Required - The cURL handle resource that represents the in-progress transfer.</li>
+	 * 	<li><code>$file_handle</code> - <code>resource</code> - Required - The file handle resource that represents the file on the local file system.</li>
+	 * 	<li><code>$length</code> - <code>integer</code> - Required - The length in kilobytes of the data chunk that was transferred.</li>
+	 * </ul>
+	 *
+	 * @param string|array|function $callback (Required) The callback function is called by <php:call_user_func()>, so you can pass the following values: <ul>
+	 * 	<li>The name of a global function to execute, passed as a string.</li>
+	 * 	<li>A method to execute, passed as <code>array('ClassName', 'MethodName')</code>.</li>
+	 * 	<li>An anonymous function (PHP 5.3+).</li></ul>
+	 * @return $this A reference to the current instance.
+	 */
+	public function register_streaming_read_callback($callback)
+	{
+		$this->registered_streaming_read_callback = $callback;
+
+		return $this;
+	}
+
+	/**
+	 * Register a callback function to execute whenever a data stream is written to using
+	 * <CFRequest::streaming_write_callback()>.
+	 *
+	 * The user-defined callback function should accept two arguments:
+	 *
+	 * <ul>
+	 * 	<li><code>$curl_handle</code> - <code>resource</code> - Required - The cURL handle resource that represents the in-progress transfer.</li>
+	 * 	<li><code>$length</code> - <code>integer</code> - Required - The length in kilobytes of the data chunk that was transferred.</li>
+	 * </ul>
+	 *
+	 * @param string|array|function $callback (Required) The callback function is called by <php:call_user_func()>, so you can pass the following values: <ul>
+	 * 	<li>The name of a global function to execute, passed as a string.</li>
+	 * 	<li>A method to execute, passed as <code>array('ClassName', 'MethodName')</code>.</li>
+	 * 	<li>An anonymous function (PHP 5.3+).</li></ul>
+	 * @return $this A reference to the current instance.
+	 */
+	public function register_streaming_write_callback($callback)
+	{
+		$this->registered_streaming_write_callback = $callback;
+
+		return $this;
+	}
+
 
 	/*%******************************************************************************************%*/
 	// PREPARE, SEND, AND PROCESS REQUEST
@@ -474,7 +533,15 @@ class RequestCore
 		$read = fread($this->read_stream, min($this->read_stream_size - $this->read_stream_read, $length)); // Remaining upload data or cURL's requested chunk size
 		$this->read_stream_read += strlen($read);
 
-		return $read === false ? '' : $read;
+		$out = $read === false ? '' : $read;
+
+		// Execute callback function
+		if ($this->registered_streaming_read_callback)
+		{
+			call_user_func($this->registered_streaming_read_callback, $curl_handle, $file_handle, $out);
+		}
+
+		return $out;
 	}
 
 	/**
@@ -502,6 +569,12 @@ class RequestCore
 			$written_total += $written_last;
 		}
 
+		// Execute callback function
+		if ($this->registered_streaming_write_callback)
+		{
+			call_user_func($this->registered_streaming_write_callback, $curl_handle, $written_total);
+		}
+
 		return $written_total;
 	}
 
@@ -522,7 +595,6 @@ class RequestCore
 		curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, true);
 		curl_setopt($curl_handle, CURLOPT_CLOSEPOLICY, CURLCLOSEPOLICY_LEAST_RECENTLY_USED);
-		curl_setopt($curl_handle, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($curl_handle, CURLOPT_MAXREDIRS, 5);
 		curl_setopt($curl_handle, CURLOPT_HEADER, true);
 		curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true);
@@ -532,6 +604,11 @@ class RequestCore
 		curl_setopt($curl_handle, CURLOPT_REFERER, $this->request_url);
 		curl_setopt($curl_handle, CURLOPT_USERAGENT, $this->useragent);
 		curl_setopt($curl_handle, CURLOPT_READFUNCTION, array($this, 'streaming_read_callback'));
+
+		if (!ini_get('safe_mode'))
+		{
+			curl_setopt($curl_handle, CURLOPT_FOLLOWLOCATION, true);
+		}
 
 		// Enable a proxy connection if requested.
 		if ($this->proxy)

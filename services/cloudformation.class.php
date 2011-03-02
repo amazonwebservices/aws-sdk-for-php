@@ -33,7 +33,7 @@
  * Amazon CloudFormation makes use of other AWS products. If you need additional technical information about a specific AWS
  * product, you can find the product's technical documentation at http://aws.amazon.com/documentation/.
  *
- * @version Thu Feb 24 12:16:40 PST 2011
+ * @version Tue Mar 01 17:13:02 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudformation/Amazon CloudFormation
@@ -69,6 +69,11 @@ class AmazonCloudFormation extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
 	const REGION_APAC_SE1 = 'cloudformation.ap-southeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Region.
+	 */
+	const REGION_APAC_NE1 = 'cloudformation.ap-northeast-1.amazonaws.com';
 
 
 	/*%******************************************************************************************%*/

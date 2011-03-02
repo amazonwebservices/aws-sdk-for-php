@@ -44,7 +44,7 @@
  * We will refer to Amazon AWS Identity and Access Management using the abbreviated form IAM. All copyrights and legal
  * protections still apply.
  *
- * @version Thu Feb 24 12:22:01 PST 2011
+ * @version Tue Mar 01 17:17:30 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/iam/Amazon Identity and Access Management Service
