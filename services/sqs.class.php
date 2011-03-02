@@ -30,7 +30,7 @@
  *
  * Visit <a href="http://aws.amazon.com/sqs/">http://aws.amazon.com/sqs/</a> for more information.
  *
- * @version Thu Feb 24 12:25:08 PST 2011
+ * @version Tue Mar 01 17:20:35 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sqs/Amazon Simple Queue Service
@@ -43,51 +43,44 @@ class AmazonSQS extends CFRuntime
 	// CLASS CONSTANTS
 
 	/**
-	 * Constant: DEFAULT_URL
-	 * 	Specify the default queue URL.
+	 * Specify the default queue URL.
 	 */
 	const DEFAULT_URL = 'sqs.us-east-1.amazonaws.com';
 
 	/**
-	 * Constant: REGION_US_E1
-	 * 	Specify the queue URL for the US-East (Northern Virginia) Region.
+	 * Specify the queue URL for the US-East (Northern Virginia) Region.
 	 */
 	const REGION_US_E1 = self::DEFAULT_URL;
 
 	/**
-	 * Constant: REGION_US_W1
-	 * 	Specify the queue URL for the US-West (Northern California) Region.
+	 * Specify the queue URL for the US-West (Northern California) Region.
 	 */
 	const REGION_US_W1 = 'sqs.us-west-1.amazonaws.com';
 
 	/**
-	 * Constant: REGION_EU_W1
-	 * 	Specify the queue URL for the EU (Ireland) Region.
+	 * Specify the queue URL for the EU (Ireland) Region.
 	 */
 	const REGION_EU_W1 = 'sqs.eu-west-1.amazonaws.com';
 
 	/**
-	 * Constant: REGION_APAC_SE1
-	 * 	Specify the queue URL for the Asia Pacific (Singapore) Region.
+	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
 	const REGION_APAC_SE1 = 'sqs.ap-southeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Region.
+	 */
+	const REGION_APAC_NE1 = 'sqs.ap-northeast-1.amazonaws.com';
 
 
 	/*%******************************************************************************************%*/
 	// SETTERS
 
 	/**
-	 * Method: set_region()
-	 * 	This allows you to explicitly sets the region for the service to use.
+	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$region - _string_ (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_EU_W1>, or <REGION_APAC_SE1>.
-	 *
-	 * Returns:
-	 * 	`$this`
+	 * @param string $region (Required) The region to use for subsequent Amazon S3 operations. [Allowed values: `AmazonSQS::REGION_US_E1 `, `AmazonSQS::REGION_US_W1`, `AmazonSQS::REGION_EU_W1`, `AmazonSQS::REGION_APAC_SE1`]
+	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
 	{
@@ -100,17 +93,10 @@ class AmazonSQS extends CFRuntime
 	// CONVENIENCE METHODS
 
 	/**
-	 * Method: get_queue_arn()
-	 * 	Converts a queue URI into a queue ARN.
+	 * Converts a queue URI into a queue ARN.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$queue_url - _string_ (Required) The queue URL to perform the action on. Retrieved when the queue is first created.
-	 *
-	 * Returns:
-	 * 	_string_ An ARN representation of the queue URI.
+	 * @param string $queue_url (Required) The queue URL to perform the action on. Retrieved when the queue is first created.
+	 * @return string An ARN representation of the queue URI.
 	 */
 	function get_queue_arn($queue_url)
 	{
@@ -122,17 +108,10 @@ class AmazonSQS extends CFRuntime
 	}
 
 	/**
-	 * Method: get_queue_size()
-	 * 	Returns the approximate number of messages in the queue.
+	 * Returns the approximate number of messages in the queue.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$queue_url - _string_ (Required) The queue URL to perform the action on. Retrieved when the queue is first created.
-	 *
-	 * Returns:
-	 * 	_mixed_ The Approximate number of messages in the queue as an integer. If the queue doesn't exist, it returns the entire <CFResponse> object.
+	 * @param string $queue_url (Required) The queue URL to perform the action on. Retrieved when the queue is first created.
+	 * @return mixed The Approximate number of messages in the queue as an integer. If the queue doesn't exist, it returns the entire <CFResponse> object.
 	 */
 	public function get_queue_size($queue_url)
 	{
@@ -149,20 +128,11 @@ class AmazonSQS extends CFRuntime
 	}
 
 	/**
-	 * Method: get_queue_list()
-	 * 	ONLY lists the queue URLs, as an array, on the SQS account.
+	 * ONLY lists the queue URLs, as an array, on the SQS account.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$pcre - _string_ (Optional) A Perl-Compatible Regular Expression (PCRE) to filter the names against.
-	 *
-	 * Returns:
-	 * 	_array_ The list of matching queue names. If there are no results, the method will return an empty array.
-	 *
-	 * See Also:
-	 * 	[Perl-Compatible Regular Expression (PCRE) Docs](http://php.net/pcre)
+	 * @param string $pcre (Optional) A Perl-Compatible Regular Expression (PCRE) to filter the names against.
+	 * @return array The list of matching queue names. If there are no results, the method will return an empty array.
+	 * @link http://php.net/pcre Perl-Compatible Regular Expression (PCRE) Docs
 	 */
 	public function get_queue_list($pcre = null)
 	{
@@ -187,18 +157,11 @@ class AmazonSQS extends CFRuntime
 	// CONSTRUCTOR
 
 	/**
-	 * Method: __construct()
-	 * 	Constructs a new instance of <AmazonSQS>.
+	 * Constructs a new instance of <AmazonSQS>.
 	 *
-	 * Access:
-	 * 	public
-	 *
-	 * Parameters:
-	 * 	$key - _string_ (Optional) Your Amazon API Key. If blank, it will look for the <AWS_KEY> constant.
-	 * 	$secret_key - _string_ (Optional) Your Amazon API Secret Key. If blank, it will look for the <AWS_SECRET_KEY> constant.
-	 *
-	 * Returns:
-	 * 	_boolean_ false if no valid values are set, otherwise true.
+	 * @param string $key (Optional) Your Amazon API Key. If blank, it will look for the `AWS_KEY` constant.
+	 * @param string $secret_key (Optional) Your Amazon API Secret Key. If blank, it will look for the `AWS_SECRET_KEY` constant.
+	 * @return boolean <code>false</code> if no valid values are set, otherwise <code>true</code>.
 	 */
 	public function __construct($key = null, $secret_key = null)
 	{
@@ -498,7 +461,6 @@ class AmazonSQS extends CFRuntime
 // EXCEPTIONS
 
 /**
- * Exception: SQS_Exception
- * 	Default SQS Exception.
+ * Default SQS Exception.
  */
 class SQS_Exception extends Exception {}

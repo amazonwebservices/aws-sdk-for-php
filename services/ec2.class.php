@@ -28,7 +28,7 @@
  *
  * Visit <a href="http://aws.amazon.com/ec2/">http://aws.amazon.com/ec2/</a> for more information.
  *
- * @version Thu Feb 24 12:18:39 PST 2011
+ * @version Tue Mar 01 17:14:56 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ec2/Amazon Elastic Compute Cloud
@@ -64,6 +64,11 @@ class AmazonEC2 extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
 	const REGION_APAC_SE1 = 'ap-southeast-1';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Region.
+	 */
+	const REGION_APAC_NE1 = 'ap-northeast-1';
 
 	/**
 	 * The "pending" state code of an EC2 instance. Useful for conditionals.

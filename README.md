@@ -92,7 +92,7 @@ Here's how you would check out the source code from GitHub:
 ### Via PEAR
 
 Amazon Web Services also publishes releases of the AWS SDK for PHP to a self-hosted
-[PEAR repository](http://pear.php.net).
+[PEAR repository](http://pear.amazonwebservices.com).
 
 If you're unfamiliar with how to install PEAR packages, check out
 [Command line installer](http://pear.php.net/manual/en/guide.users.commandline.cli.php) in the PEAR user guide.
@@ -102,7 +102,7 @@ If you're unfamiliar with how to install PEAR packages, check out
 
 ### Configuration
 
-1. Copy the contents of <https://github.com/amazonwebservices/aws-sdk-for-php/raw/master/config-sample.inc.php>
+1. Copy the contents of [config-sample.inc.php](https://github.com/amazonwebservices/aws-sdk-for-php/raw/master/config-sample.inc.php)
    and add your credentials as instructed in the file.
 2. Move your file to `~/.aws/sdk/config.inc.php`.
 3. Make sure that `getenv('HOME')` points to your user directory. If not you'll need to set

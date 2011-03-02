@@ -47,7 +47,7 @@
  *
  * </ul>
  *
- * @version Thu Feb 24 12:15:58 PST 2011
+ * @version Tue Mar 01 17:12:19 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/autoscaling/Amazon Auto-Scaling
@@ -83,6 +83,11 @@ class AmazonAS extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
 	const REGION_APAC_SE1 = 'autoscaling.ap-southeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Region.
+	 */
+	const REGION_APAC_NE1 = 'autoscaling.ap-northeast-1.amazonaws.com';
 
 
 	/*%******************************************************************************************%*/

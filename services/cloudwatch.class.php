@@ -31,7 +31,7 @@
  * automatically make changes to the resources you are monitoring, based on rules that you define. For example, you can
  * create alarms that initiate Auto Scaling and Simple Notification Service actions on your behalf.
  *
- * @version Thu Feb 24 12:17:14 PST 2011
+ * @version Tue Mar 01 17:13:39 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudwatch/Amazon CloudWatch
@@ -67,6 +67,11 @@ class AmazonCloudWatch extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
 	const REGION_APAC_SE1 = 'ap-southeast-1';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Region.
+	 */
+	const REGION_APAC_NE1 = 'ap-northeast-1';
 
 
 	/*%******************************************************************************************%*/

@@ -49,7 +49,7 @@ class S3_Exception extends Exception {}
  *
  * Visit <http://aws.amazon.com/s3/> for more information.
  *
- * @version 2011.02.16
+ * @version 2011.03.01
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/s3/ Amazon Simple Storage Service
@@ -84,6 +84,11 @@ class AmazonS3 extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
 	const REGION_APAC_SE1 = 'ap-southeast-1';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Region.
+	 */
+	const REGION_APAC_NE1 = 'ap-northeast-1';
 
 	/**
 	 * ACL: Owner-only read/write.
@@ -470,6 +475,17 @@ class AmazonS3 extends CFRuntime
 		$request->request_class = $this->request_class;
 		$request->response_class = $this->response_class;
 
+		// Pass along registered stream callbacks
+		if ($this->registered_streaming_read_callback)
+		{
+			$request->register_streaming_read_callback($this->registered_streaming_read_callback);
+		}
+
+		if ($this->registered_streaming_write_callback)
+		{
+			$request->register_streaming_write_callback($this->registered_streaming_write_callback);
+		}
+
 		// Streaming uploads
 		if (isset($opt['fileUpload']))
 		{
@@ -805,16 +821,15 @@ class AmazonS3 extends CFRuntime
 	 * Sets the region to use for subsequent Amazon S3 operations. This will also reset any prior use of
 	 * <enable_path_style()>.
 	 *
-	 * @param string $region (Required) The region to use for subsequent Amazon S3 operations. [Allowed values: `AmazonS3::REGION_US_E1 `, `AmazonS3::REGION_US_W1`, `AmazonS3::REGION_EU_W1`, `AmazonS3::REGION_APAC_SE1`]
+	 * @param string $region (Required) The region to use for subsequent Amazon S3 operations. [Allowed values: `AmazonS3::REGION_US_E1 `, `AmazonS3::REGION_US_W1`, `AmazonS3::REGION_EU_W1`, `AmazonS3::REGION_APAC_SE1`, `AmazonS3::REGION_APAC_NE1`]
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
 	{
 		switch ($region)
 		{
-			case self::REGION_US_W1: // Northern California
-			case self::REGION_APAC_SE1: // Singapore
-				$this->set_hostname('s3-' . $region . '.amazonaws.com');
+			case self::REGION_US_E1: // Northern Virginia
+				$this->set_hostname(self::DEFAULT_URL);
 				$this->enable_path_style(false);
 				break;
 
@@ -823,9 +838,11 @@ class AmazonS3 extends CFRuntime
 				$this->enable_path_style(); // Always use path-style access for EU endpoint.
 				break;
 
+			case self::REGION_US_W1: // Northern California
+			case self::REGION_APAC_SE1: // Singapore
+			case self::REGION_APAC_NE1: // Japan
 			default:
-				// REGION_US_E1 // Northern Virginia
-				$this->set_hostname(self::DEFAULT_URL);
+				$this->set_hostname('s3-' . $region . '.amazonaws.com');
 				$this->enable_path_style(false);
 				break;
 		}
@@ -870,7 +887,7 @@ class AmazonS3 extends CFRuntime
 	 * However, bucket names must be unique across all of Amazon S3.
 	 *
 	 * @param string $bucket (Required) The name of the bucket to create.
-	 * @param string $region (Required) The preferred geographical location for the bucket. [Allowed values: `AmazonS3::REGION_US_E1 `, `AmazonS3::REGION_US_W1`, `AmazonS3::REGION_EU_W1`, `AmazonS3::REGION_APAC_SE1`]
+	 * @param string $region (Required) The preferred geographical location for the bucket. [Allowed values: `AmazonS3::REGION_US_E1 `, `AmazonS3::REGION_US_W1`, `AmazonS3::REGION_EU_W1`, `AmazonS3::REGION_APAC_SE1`, `AmazonS3::REGION_APAC_NE1`]
 	 * @param string $acl (Optional) The ACL settings for the specified bucket. [Allowed values: <code>AmazonS3::ACL_PRIVATE</code>, <code>AmazonS3::ACL_PUBLIC</code>, <code>AmazonS3::ACL_OPEN</code>, <code>AmazonS3::ACL_AUTH_READ</code>, <code>AmazonS3::ACL_OWNER_READ</code>, <code>AmazonS3::ACL_OWNER_FULL_CONTROL</code>]. The default value is <ACL_PRIVATE>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request.</li></ul>
@@ -908,10 +925,8 @@ class AmazonS3 extends CFRuntime
 
 		switch ($region)
 		{
-			case self::REGION_US_W1:    // Northern California
-			case self::REGION_APAC_SE1: // Singapore
-				$xml->LocationConstraint = $region;
-				$opt['body'] = $xml->asXML();
+			case self::REGION_US_E1: // Northern Virginia
+				$opt['body'] = '';
 				break;
 
 			case self::REGION_EU_W1:    // Ireland
@@ -920,8 +935,12 @@ class AmazonS3 extends CFRuntime
 				$opt['body'] = $xml->asXML();
 				break;
 
-			default: // REGION_US_E1 // Northern Virginia
-				$opt['body'] = '';
+			case self::REGION_US_W1:    // Northern California
+			case self::REGION_APAC_SE1: // Singapore
+			case self::REGION_APAC_NE1: // Japan
+			default:
+				$xml->LocationConstraint = $region;
+				$opt['body'] = $xml->asXML();
 				break;
 		}
 

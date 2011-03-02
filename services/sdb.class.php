@@ -31,7 +31,7 @@
  *
  * Visit <a href="http://aws.amazon.com/simpledb/">http://aws.amazon.com/simpledb/</a> for more information.
  *
- * @version Thu Feb 24 12:24:00 PST 2011
+ * @version Tue Mar 01 17:19:23 PST 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/simpledb/Amazon SimpleDB
@@ -67,6 +67,11 @@ class AmazonSDB extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
 	const REGION_APAC_SE1 = 'sdb.ap-southeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Region.
+	 */
+	const REGION_APAC_NE1 = 'sdb.ap-northeast-1.amazonaws.com';
 
 
 	/*%******************************************************************************************%*/

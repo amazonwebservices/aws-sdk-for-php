@@ -102,9 +102,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.2.5');
+define('CFRUNTIME_VERSION', '1.2.6');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20110224213746');
+define('CFRUNTIME_BUILD', '20110302071252');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . php_uname('s') . '/' . php_uname('r') . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -115,7 +115,7 @@ define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/'
  * Core functionality and default settings shared across all SDK classes. All methods and properties in this
  * class are inherited by the service-specific classes.
  *
- * @version 2011.01.14
+ * @version 2011.03.01
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -303,6 +303,16 @@ class CFRuntime
 	 * The number of times to retry failed requests.
 	 */
 	public $max_retries = 3;
+
+	/**
+	 * The user-defined callback function to call when a stream is read from.
+	 */
+	public $registered_streaming_read_callback = null;
+
+	/**
+	 * The user-defined callback function to call when a stream is written to.
+	 */
+	public $registered_streaming_write_callback = null;
 
 
 	/*%******************************************************************************************%*/
@@ -578,6 +588,53 @@ class CFRuntime
 		return $this;
 	}
 
+	/**
+	 * Register a callback function to execute whenever a data stream is read from using
+	 * <CFRequest::streaming_read_callback()>.
+	 *
+	 * The user-defined callback function should accept three arguments:
+	 *
+	 * <ul>
+	 * 	<li><code>$curl_handle</code> - <code>resource</code> - Required - The cURL handle resource that represents the in-progress transfer.</li>
+	 * 	<li><code>$file_handle</code> - <code>resource</code> - Required - The file handle resource that represents the file on the local file system.</li>
+	 * 	<li><code>$length</code> - <code>integer</code> - Required - The length in kilobytes of the data chunk that was transferred.</li>
+	 * </ul>
+	 *
+	 * @param string|array|function $callback (Required) The callback function is called by <php:call_user_func()>, so you can pass the following values: <ul>
+	 * 	<li>The name of a global function to execute, passed as a string.</li>
+	 * 	<li>A method to execute, passed as <code>array('ClassName', 'MethodName')</code>.</li>
+	 * 	<li>An anonymous function (PHP 5.3+).</li></ul>
+	 * @return $this A reference to the current instance.
+	 */
+	public function register_streaming_read_callback($callback)
+	{
+		$this->registered_streaming_read_callback = $callback;
+		return $this;
+	}
+
+	/**
+	 * Register a callback function to execute whenever a data stream is written to using
+	 * <CFRequest::streaming_write_callback()>.
+	 *
+	 * The user-defined callback function should accept two arguments:
+	 *
+	 * <ul>
+	 * 	<li><code>$curl_handle</code> - <code>resource</code> - Required - The cURL handle resource that represents the in-progress transfer.</li>
+	 * 	<li><code>$length</code> - <code>integer</code> - Required - The length in kilobytes of the data chunk that was transferred.</li>
+	 * </ul>
+	 *
+	 * @param string|array|function $callback (Required) The callback function is called by <php:call_user_func()>, so you can pass the following values: <ul>
+	 * 	<li>The name of a global function to execute, passed as a string.</li>
+	 * 	<li>A method to execute, passed as <code>array('ClassName', 'MethodName')</code>.</li>
+	 * 	<li>An anonymous function (PHP 5.3+).</li></ul>
+	 * @return $this A reference to the current instance.
+	 */
+	public function register_streaming_write_callback($callback)
+	{
+		$this->registered_streaming_write_callback = $callback;
+		return $this;
+	}
+
 
 	/*%******************************************************************************************%*/
 	// SET CUSTOM CLASSES
@@ -807,6 +864,17 @@ class CFRuntime
 		$request->set_method('POST');
 		$request->add_header('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8');
 		$request->set_body($querystring);
+
+		// Pass along registered stream callbacks
+		if ($this->registered_streaming_read_callback)
+		{
+			$request->register_streaming_read_callback($this->registered_streaming_read_callback);
+		}
+
+		if ($this->registered_streaming_write_callback)
+		{
+			$request->register_streaming_write_callback($this->registered_streaming_write_callback);
+		}
 
 		// Add authentication headers
 		if ($signature_version === 3)
