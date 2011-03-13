@@ -893,7 +893,7 @@ class CFRuntime
 		$curlopts = array();
 
 		// Set custom CURLOPT settings
-		if (isset($opt['curlopts']) && is_array($opt))
+		if (is_array($opt) && isset($opt['curlopts']))
 		{
 			$curlopts = $opt['curlopts'];
 			unset($opt['curlopts']);
