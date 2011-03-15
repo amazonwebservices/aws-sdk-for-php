@@ -82,6 +82,11 @@ class RequestCore
 	public $curlopts = null;
 
 	/**
+	 * The state of debug mode.
+	 */
+	public $debug_mode = false;
+
+	/**
 	 * The default class to use for HTTP Requests (defaults to <RequestCore>).
 	 */
 	public $request_class = 'RequestCore';
@@ -94,7 +99,7 @@ class RequestCore
 	/**
 	 * Default useragent string to use.
 	 */
-	public $useragent = 'RequestCore/1.4.1';
+	public $useragent = 'RequestCore/1.4.2';
 
 	/**
 	 * File to read from while streaming up.
@@ -604,6 +609,11 @@ class RequestCore
 		curl_setopt($curl_handle, CURLOPT_REFERER, $this->request_url);
 		curl_setopt($curl_handle, CURLOPT_USERAGENT, $this->useragent);
 		curl_setopt($curl_handle, CURLOPT_READFUNCTION, array($this, 'streaming_read_callback'));
+
+		if ($this->debug_mode)
+		{
+			curl_setopt($curl_handle, CURLOPT_VERBOSE, true);
+		}
 
 		if (!ini_get('safe_mode'))
 		{

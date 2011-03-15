@@ -129,6 +129,16 @@ class CFSimpleXML extends SimpleXMLIterator
 	}
 
 	/**
+	 * Gets the current XML node as a JSON string.
+	 *
+	 * @return string The current XML node as a JSON string.
+	 */
+	public function to_json()
+	{
+		return json_encode($this);
+	}
+
+	/**
 	 * Whether or not the current node exactly matches the compared value.
 	 *
 	 * @param string $value (Required) The value to compare the current node to.

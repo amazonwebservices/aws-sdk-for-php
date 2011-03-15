@@ -70,35 +70,49 @@ included in the SDK download.
 
 ### Via GitHub
 
-Amazon Web Services publishes releases of the AWS SDK for PHP to [GitHub](http://github.com/amazonwebservices),
-which is a hosted service for [Git](http://git-scm.com) repositories.
+[Git](http://git-scm.com) is an extremely fast, efficient, distributed version control system ideal for the
+collaborative development of software. [GitHub](http://github.com/amazonwebservices) is the best way to
+collaborate with others. Fork, send pull requests and manage all your public and private git repositories.
+We believe that GitHub is the ideal service for working collaboratively with the open source PHP community.
 
-If you're unfamiliar with Git, there are a variety of resources on the net that will help you learn more:
+Git is primarily a command-line tool. GitHub provides instructions for installing Git on
+[Mac OS X](http://help.github.com/mac-git-installation/), [Windows](http://help.github.com/win-git-installation/),
+and [Linux](http://help.github.com/linux-git-installation/). If you're unfamiliar with Git, there are a variety
+of resources on the net that will help you learn more:
 
-* [Everyday Git](http://www.kernel.org/pub/software/scm/git/docs/everyday.html) will teach you just enough
-  about Git to get by.
-* The [PeepCode screencast](https://peepcode.com/products/git) on Git ($9) is easier to follow.
-* [GitHub](http://github.com/guides/home) offers links to a variety of Git resources.
-* [Pro Git](http://progit.org/book/) is an entire book about Git with a Creative Commons license.
-* [Git for the lazy](http://www.spheredev.org/wiki/Git_for_the_lazy) is a great mini-reference to remind you
-  how to do things.
-* If you want to dig even further, I've bookmarked [other Git references](http://delicious.com/skyzyx/git).
+* [Git Immersion](http://gitimmersion.com) is a guided tour that walks through the fundamentals of Git, inspired
+  by the premise that to know a thing is to do it.
+* The [PeepCode screencast on Git](https://peepcode.com/products/git) ($12) will teach you how to install and
+  use Git. You'll learn how to create a repository, use branches, and work with remote repositories.
+* [Git Reference](http://gitref.org) is meant to be a quick reference for learning and remembering the most
+  important and commonly used Git commands.
+* [Git Ready](http://gitready.com) provides a collection of Git tips and tricks.
+* If you want to dig even further, I've [bookmarked other Git references](http://pinboard.in/u:skyzyx/t:git).
 
-Here's how you would check out the source code from GitHub:
+If you're comfortable working with Git and/or GitHub, you can pull down the source code as follows:
 
-	git clone git://github.com/amazonwebservices/aws-sdk-for-php.git AWSSDKforPHP
-	cd ./AWSSDKforPHP
+    git clone git://github.com/amazonwebservices/aws-sdk-for-php.git AWSSDKforPHP
+    cd ./AWSSDKforPHP
 
 ### Via PEAR
 
-Amazon Web Services also publishes releases of the AWS SDK for PHP to a self-hosted
-[PEAR repository](http://pear.amazonwebservices.com).
+[PEAR](http://pear.php.net) stands for the _PHP Extension and Application Repository_ and is a framework and
+distribution system for reusable PHP components. It is the PHP equivalent to package management software such as
+[MacPorts](http://macports.org) and [Homebrew](https://github.com/mxcl/homebrew) for Mac OS X,
+[Yum](http://fedoraproject.org/wiki/Tools/yum) and [Apt](http://wiki.debian.org/Apt) for GNU/Linux,
+[RubyGems](http://rubygems.org) for Ruby, [Easy Install](http://packages.python.org/distribute/easy_install.html)
+for Python, [Maven](http://maven.apache.org) for Java, and [NPM](http://npm.mape.me) for Node.js.
 
-If you're unfamiliar with how to install PEAR packages, check out
-[Command line installer](http://pear.php.net/manual/en/guide.users.commandline.cli.php) in the PEAR user guide.
+PEAR packages are very easy to install, and are available in your PHP environment path so that they are accessible
+to any PHP project. PEAR packages are not specific to your project, but rather to the machine that they're
+installed on.
 
-	sudo pear channel-discover pear.amazonwebservices.com
-	sudo pear install aws/sdk
+From the command-line, you can install the SDK with PEAR as follows:
+
+    pear channel-discover pear.amazonwebservices.com
+    pear install aws/sdk
+
+You may need to use `sudo` for the above commands.
 
 ### Configuration
 
@@ -112,7 +126,6 @@ If you're unfamiliar with how to install PEAR packages, check out
 ## Additional Information
 
 * AWS SDK for PHP: <http://aws.amazon.com/sdkforphp>
-* PHP Developer Center: <http://aws.amazon.com/php>
 * Documentation: <http://docs.amazonwebservices.com/AWSSDKforPHP/latest/>
 * License: <http://aws.amazon.com/apache2.0/>
 * Discuss: <http://aws.amazon.com/forums>

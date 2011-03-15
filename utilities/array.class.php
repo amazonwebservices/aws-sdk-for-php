@@ -32,7 +32,7 @@
 class CFArray extends ArrayObject
 {
 	/**
-	 * Constructs a new instance of the class.
+	 * Constructs a new instance of <CFArray>.
 	 *
 	 * @param mixed $input (Optional) The input parameter accepts an array or an Object. The default value is an empty array.
 	 * @param integer $flags (Optional) Flags to control the behavior of the ArrayObject object. Defaults to <STD_PROP_LIST>.
@@ -151,13 +151,13 @@ class CFArray extends ArrayObject
 	}
 
 	/**
-	 * Reduces the list of nodes by passing each value in the current <CFArray> object through a function. The node will be removed if the function returns `false`.
+	 * Filters the list of nodes by passing each value in the current <CFArray> object through a function. The node will be removed if the function returns `false`.
 	 *
 	 * @param string|function $callback (Required) The callback function to execute. PHP 5.3 or newer can use an anonymous function.
 	 * @param mixed $bind (Optional) A variable from the calling scope to pass-by-reference into the local scope of the callback function.
 	 * @return CFArray A new <CFArray> object containing the return values.
 	 */
-	public function reduce($callback, &$bind = null)
+	public function filter($callback, &$bind = null)
 	{
 		$items = $this->getArrayCopy();
 		$max = count($items);
@@ -172,6 +172,18 @@ class CFArray extends ArrayObject
 		}
 
 		return new CFArray($collect);
+	}
+
+	/**
+	 * Alias for <filter()>. This functionality was incorrectly named _reduce_ in earlier versions of the SDK.
+	 *
+	 * @param string|function $callback (Required) The callback function to execute. PHP 5.3 or newer can use an anonymous function.
+	 * @param mixed $bind (Optional) A variable from the calling scope to pass-by-reference into the local scope of the callback function.
+	 * @return CFArray A new <CFArray> object containing the return values.
+	 */
+	public function reduce($callback, &$bind = null)
+	{
+		return $this->filter($callback, $bind);
 	}
 
 	/**

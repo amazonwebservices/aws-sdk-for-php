@@ -102,9 +102,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.2.6');
+define('CFRUNTIME_VERSION', '1.3');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20110302071252');
+define('CFRUNTIME_BUILD', '20110315164556');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . php_uname('s') . '/' . php_uname('r') . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -115,7 +115,7 @@ define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/'
  * Core functionality and default settings shared across all SDK classes. All methods and properties in this
  * class are inherited by the service-specific classes.
  *
- * @version 2011.03.01
+ * @version 2011.03.14
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -160,6 +160,11 @@ class CFRuntime
 	public $secret_key;
 
 	/**
+	 * The Amazon Authentication Token.
+	 */
+	public $auth_token;
+
+	/**
 	 * The Amazon Account ID, without hyphens.
 	 */
 	public $account_id;
@@ -183,6 +188,11 @@ class CFRuntime
 	 * The supported API version.
 	 */
 	public $api_version = null;
+
+	/**
+	 * The state of whether auth should be handled as AWS Query.
+	 */
+	public $use_aws_query = true;
 
 	/**
 	 * The default class to use for utilities (defaults to <CFUtilities>).
@@ -739,6 +749,7 @@ class CFRuntime
 		}
 
 		$method_arguments = func_get_args();
+		$headers = array();
 
 		// Use the caching flow to determine if we need to do a round-trip to the server.
 		if ($this->use_cache_flow)
@@ -767,6 +778,7 @@ class CFRuntime
 		}
 
 		$return_curl_handle = false;
+		$x_amz_target = null;
 
 		// Do we have a custom resource prefix?
 		if ($this->resource_prefix)
@@ -781,7 +793,14 @@ class CFRuntime
 		$nonce = $this->util->generate_guid();
 
 		// Manage the key-value pairs that are used in the query.
-		$query['Action'] = $action;
+		if (stripos($action, 'x-amz-target') !== false)
+		{
+			$x_amz_target = trim(str_ireplace('x-amz-target:', '', $action));
+		}
+		else
+		{
+			$query['Action'] = $action;
+		}
 		$query['Version'] = $this->api_version;
 
 		// Only Signature v2
@@ -805,8 +824,22 @@ class CFRuntime
 		// Do a case-sensitive, natural order sort on the array keys.
 		uksort($query, 'strcmp');
 
-		// Create the string that needs to be hashed.
-		$canonical_query_string = $this->util->to_signable_string($query);
+		// Normalize JSON input
+		if ($query['body'] === '[]')
+		{
+			$query['body'] = '';
+		}
+
+		if ($this->use_aws_query)
+		{
+			// Create the string that needs to be hashed.
+			$canonical_query_string = $this->util->to_signable_string($query);
+		}
+		else
+		{
+			// Create the string that needs to be hashed.
+			$canonical_query_string = $this->util->encode_signature2($query['body']);
+		}
 
 		// Remove the default scheme from the domain.
 		$domain = str_replace(array('http://', 'https://'), '', $domain);
@@ -827,16 +860,7 @@ class CFRuntime
 		// Set the proper request URI.
 		$request_uri = isset($parsed_url['path']) ? $parsed_url['path'] : '/';
 
-		// Handle signing differently between v2 and v3
-		if ($signature_version === 3)
-		{
-			// Prepare the string to sign
-			$string_to_sign = $date . $nonce;
-
-			// Hash the AWS secret key and generate a signature for the request.
-			$signature = base64_encode(hash_hmac('sha256', $string_to_sign, $this->secret_key, true));
-		}
-		elseif ($signature_version === 2)
+		if ($signature_version === 2)
 		{
 			// Prepare the string to sign
 			$string_to_sign = "POST\n$host_header\n$request_uri\n$canonical_query_string";
@@ -856,14 +880,31 @@ class CFRuntime
 		);
 
 		// Compose the request.
-		$request_url = (($this->use_ssl) ? 'https://' : 'http://') . $domain;
+		$request_url = ($this->use_ssl ? 'https://' : 'http://') . $domain;
 		$request_url .= !isset($parsed_url['path']) ? '/' : '';
 
 		// Instantiate the request class
 		$request = new $this->request_class($request_url, $this->proxy, $helpers);
 		$request->set_method('POST');
-		$request->add_header('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8');
 		$request->set_body($querystring);
+		$headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
+
+		// Do we have an authentication token?
+		if ($this->auth_token)
+		{
+			$headers['x-amz-security-token'] = $this->auth_token;
+		}
+
+		// Signing using X-Amz-Target is handled differently.
+		if ($signature_version === 3 && $x_amz_target)
+		{
+			$headers['X-Amz-Target'] = $x_amz_target;
+			$headers['Content-Type'] = 'application/json; amzn-1.0';
+			$headers['Content-Encoding'] = 'amz-1.0';
+
+			$request->set_body($query['body']);
+			$querystring = $query['body'];
+		}
 
 		// Pass along registered stream callbacks
 		if ($this->registered_streaming_read_callback)
@@ -879,11 +920,71 @@ class CFRuntime
 		// Add authentication headers
 		if ($signature_version === 3)
 		{
-			$request->add_header('Date', $date);
-			$request->add_header('Content-Length', strlen($querystring));
-			$request->add_header('Content-MD5', $this->util->hex_to_base64(md5($querystring)));
-			$request->add_header('x-amz-nonce', $nonce);
-			$request->add_header('X-Amzn-Authorization', 'AWS3-HTTPS AWSAccessKeyId=' . $this->key . ',Algorithm=HmacSHA256,Signature=' . $signature);
+			$headers['Date'] = $date;
+			$headers['Content-Length'] = strlen($querystring);
+			$headers['Content-MD5'] = $this->util->hex_to_base64(md5($querystring));
+			$headers['x-amz-nonce'] = $nonce;
+		}
+
+		// Sort headers
+		uksort($headers, 'strnatcasecmp');
+
+		if ($signature_version === 3 && $this->use_ssl)
+		{
+			// Prepare the string to sign (HTTPS)
+			$string_to_sign = $date . $nonce;
+		}
+		elseif ($signature_version === 3)
+		{
+			// Prepare the string to sign (HTTP)
+			$string_to_sign = "POST\n$host_header\n$request_uri\n$canonical_query_string";
+		}
+
+		// Add headers to request and compute the string to sign
+		foreach ($headers as $header_key => $header_value)
+		{
+			// Strip linebreaks from header values as they're illegal and can allow for security issues
+			$header_value = str_replace(array("\r", "\n"), '', $header_value);
+
+			// Add the header if it has a value
+			if ($header_value !== '')
+			{
+				$request->add_header($header_key, $header_value);
+			}
+
+			// Signature v3 over HTTP
+			if ($signature_version === 3 && !$this->use_ssl)
+			{
+				// Generate the string to sign
+				if (
+					substr(strtolower($header_key), 0, 8) === 'content-' ||
+					strtolower($header_key) === 'date' ||
+					strtolower($header_key) === 'expires'
+				)
+				{
+					$string_to_sign .= strtolower($header_key) . ':' . $header_value . "\n";
+				}
+				elseif (substr(strtolower($header_key), 0, 6) === 'x-amz-')
+				{
+					$string_to_sign .= strtolower($header_key) . ':' . $header_value . "\n";
+				}
+			}
+		}
+
+		if ($signature_version === 3)
+		{
+			if ($this->use_ssl)
+			{
+				// Hash the AWS secret key and generate a signature for the request.
+				$signature = base64_encode(hash_hmac('sha256', $string_to_sign, $this->secret_key, true));
+				$request->add_header('X-Amzn-Authorization', 'AWS3-HTTPS AWSAccessKeyId=' . $this->key . ',Algorithm=HmacSHA256,Signature=' . $signature);
+			}
+			else
+			{
+				// Hash the AWS secret key and generate a signature for the request.
+				$signature = base64_encode(hash_hmac('sha256', $string_to_sign, $this->secret_key, true));
+				$request->add_header('X-Amzn-Authorization', 'AWS3 AWSAccessKeyId=' . $this->key . ',Algorithm=HmacSHA256,Signature=' . $signature);
+			}
 		}
 
 		// Update RequestCore settings
@@ -902,7 +1003,7 @@ class CFRuntime
 		// Debug mode
 		if ($this->debug_mode)
 		{
-			$curlopts[CURLOPT_VERBOSE] = true;
+			$request->debug_mode = $this->debug_mode;
 		}
 
 		if (count($curlopts))
@@ -932,7 +1033,8 @@ class CFRuntime
 		$headers['x-aws-stringtosign'] = $string_to_sign;
 		$headers['x-aws-body'] = $querystring;
 
-		$data = new $this->response_class($headers, $this->parse_callback($request->get_response_body()), $request->get_response_code());
+		$mime = isset($headers['content-type']) ? $headers['content-type'] : null;
+		$data = new $this->response_class($headers, $this->parse_callback($request->get_response_body(), $mime), $request->get_response_code());
 
 		// Was it Amazon's fault the request failed? Retry the request until we reach $max_retries.
 		if ((integer) $request->get_response_code() === 500 || (integer) $request->get_response_code() === 503)
@@ -1048,9 +1150,10 @@ class CFRuntime
 	 * Parses a response body into a PHP object if appropriate.
 	 *
 	 * @param CFResponse|string $response (Required) The <CFResponse> object to parse, or an XML string that would otherwise be a response body.
+	 * @param string $content_type (Optional) The content-type to use when determining how to parse the content.
 	 * @return CFResponse|string A parsed <CFResponse> object, or parsed XML.
 	 */
-	public function parse_callback($response)
+	public function parse_callback($response, $content_type = null)
 	{
 		// Shorten this so we have a (mostly) single code path
 		if (isset($response->body))
@@ -1058,6 +1161,11 @@ class CFRuntime
 			if (is_string($response->body))
 			{
 				$body = $response->body;
+
+				if (!$content_type)
+				{
+					$content_type = $response->header['content-type'];
+				}
 			}
 			else
 			{
@@ -1075,8 +1183,8 @@ class CFRuntime
 
 		// Look for XML cues
 		if (
-			(stripos($body, '<?xml') === 0 || strpos($body, '<Error>') === 0) ||
-			preg_match('/^<(\w*) xmlns="http(s?):\/\/(\w*).amazon(aws)?.com/im', $body)
+			($content_type && ($content_type === 'text/xml' || $content_type === 'application/xml')) || // We know it's XML
+			(!$content_type && (stripos($body, '<?xml') === 0 || strpos($body, '<Error>') === 0) || preg_match('/^<(\w*) xmlns="http(s?):\/\/(\w*).amazon(aws)?.com/im', $body)) // Sniff for XML
 		)
 		{
 			// Strip the default XML namespace to simplify XPath expressions
@@ -1084,6 +1192,15 @@ class CFRuntime
 
 			// Parse the XML body
 			$body = new $this->parser_class($body);
+		}
+		// Look for JSON cues
+		elseif (
+			($content_type && $content_type === 'application/json') || // We know it's JSON
+			(!$content_type && $this->util->is_json($body)) // Sniff for JSON
+		)
+		{
+			// Normalize JSON to a CFSimpleXML object
+			$body = CFJSON::to_xml($body);
 		}
 
 		// Put the parsed data back where it goes
