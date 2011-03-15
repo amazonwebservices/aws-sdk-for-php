@@ -17,26 +17,17 @@
 /**
  *
  *
+ * This is the AWS Identity and Access Management (IAM) API Reference. This guide provides descriptions of the IAM API as
+ * well as links to related content in the guide, <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/">Using
+ * IAM</a>.
+ *
  * AWS Identity and Access Management (IAM) is a web service that enables Amazon Web Services (AWS) customers to manage
  * Users and User permissions under their AWS Account.
  *
- * This is the AWS Identity and Access Management API Reference. This guide describes who should read this guide and other
- * resources related to IAM.
- *
- * Use of this guide assumes you are familiar with the following:
- *
- * <ul> <li>Basic understanding of web services (for information, go to W3 Schools Web Services Tutorial at <a
- * href="http://www.w3schools.com/webservices/default.asp">http://www.w3schools.com/webservices/default.asp</a>).</li>
- *
- * <li>XML (for information, go to W3 Schools XML Tutorial at <a
- * href="http://www.w3schools.com/xml/default.asp">http://www.w3schools.com/xml/default.asp</a>).</li>
- *
- * <li>JSON (for information, go to <a href="http://json.org">http://json.org</a>)</li>
- *
- * <li>The specific AWS products you are using or plan to use (e.g., Amazon Elastic Compute Cloud (Amazon EC2), Amazon
- * Simple Storage Service (Amazon S3), and so on.)</li>
- *
- * </ul>
+ * For more information about this product go to <a href="http://aws.amazon.com/iam/">AWS Identity and Access Management
+ * (IAM)</a>. For specific information about setting up signatures and authorization through the API, go to <a
+ * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html">Making Query Requests</a> in the
+ * Using IAM guide.
  *
  * If you're new to AWS and need additional technical information about a specific AWS product, you can find the product's
  * technical documentation at <a href="http://aws.amazon.com/documentation/">http://aws.amazon.com/documentation/</a>.
@@ -44,7 +35,7 @@
  * We will refer to Amazon AWS Identity and Access Management using the abbreviated form IAM. All copyrights and legal
  * protections still apply.
  *
- * @version Tue Mar 01 17:17:30 PST 2011
+ * @version Tue Mar 15 11:13:44 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/iam/Amazon Identity and Access Management Service
@@ -105,6 +96,7 @@ class AmazonIAM extends CFRuntime
 	 * 	<li><code>PathPrefix</code> - <code>string</code> - Optional - The path prefix for filtering the results. For example: <code>/division_abc/subdivision_xyz/</code>, which would get all groups whose path starts with <code>/division_abc/subdivision_xyz/</code>. This parameter is optional. If it is not included, it defaults to a slash (/), listing all groups. </li>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of groups you want in the response. If there are additional groups beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -126,6 +118,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $access_key_id (Required) The Access Key ID for the Access Key ID and Secret Access Key you want to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User whose key you want to delete. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -139,10 +132,13 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Deletes the specified account alias.
+	 * Deletes the specified AWS Account alias. For information about using an AWS Account alias, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html">Using an Alias for Your AWS Account
+	 * ID</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
 	 * @param string $account_alias (Required) Name of the account alias to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -170,6 +166,7 @@ class AmazonIAM extends CFRuntime
 	 * 	<li><code>UserName</code> - <code>string</code> - Optional - The name of the User. </li>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of certificate IDs you want in the response. If there are additional certificate IDs beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -198,6 +195,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $certificate_body (Required) The contents of the signing certificate.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User the signing certificate is for. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -216,6 +214,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $user_name (Required) Name of the User the policy is associated with.
 	 * @param string $policy_name (Required) Name of the policy document to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -247,6 +246,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $policy_name (Required) Name of the policy document.
 	 * @param string $policy_document (Required) The policy document.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -270,6 +270,7 @@ class AmazonIAM extends CFRuntime
 	 * 	<li><code>PathPrefix</code> - <code>string</code> - Optional - The path prefix for filtering the results. For example: <code>/company/servercerts</code> would get all server certificates for which the path starts with <code>/company/servercerts</code>. This parameter is optional. If it is not included, it defaults to a slash (/), listing all server certificates. </li>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of server certificates you want in the response. If there are additional server certificates beyond the maximum you specify, the <code>IsTruncated</code> response element will be set to <code>true</code>. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -289,6 +290,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $user_name (Required) Name of the User who the policy is associated with.
 	 * @param string $policy_name (Required) Name of the policy document to get.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -305,13 +307,10 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * Updates the login profile for the specified User. Use this API to change the User's password.
 	 *
-	 * In the full release you will be able to use IAM to access your services through the AWS Management Console. Although
-	 * this feature is not currently available, you can create login profiles for your Users now. Then, when this feature is
-	 * implemented, your Users can use IAM to access your services through the AWS Management Console.
-	 *
 	 * @param string $user_name (Required) Name of the User whose login profile you want to update.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Password</code> - <code>string</code> - Optional - The new password for the User name. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -341,6 +340,7 @@ class AmazonIAM extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>NewPath</code> - <code>string</code> - Optional - The new path for the server certificate. Include this only if you are updating the server certificate's path. </li>
 	 * 	<li><code>NewServerCertificateName</code> - <code>string</code> - Optional - The new name for the server certificate. Include this only if you are updating the server certificate's name. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -370,6 +370,7 @@ class AmazonIAM extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>NewPath</code> - <code>string</code> - Optional - New path for the User. Include this parameter only if you're changing the User's path. </li>
 	 * 	<li><code>NewUserName</code> - <code>string</code> - Optional - New name for the User. Include this parameter only if you're changing the User's name. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -390,12 +391,9 @@ class AmazonIAM extends CFRuntime
 	 * API. To prevent all User access you must also either make the access key inactive or delete it. For more information
 	 * about making keys inactive or deleting them, see UpdateAccessKey and DeleteAccessKey.
 	 *
-	 * In the full release you will be able to use IAM to access your services through the AWS Management Console. Although
-	 * this feature is not currently available, you can create login profiles for your Users now. Then, when this feature is
-	 * implemented, your Users can use IAM to access your services through the AWS Management Console.
-	 *
 	 * @param string $user_name (Required) Name of the User whose login profile you want to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -424,6 +422,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $status (Required) The status you want to assign to the certificate. <code>Active</code> means the certificate can be used for API calls to AWS, while <code>Inactive</code> means the certificate cannot be used. [Allowed values: <code>Active</code>, <code>Inactive</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User the signing certificate belongs to. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -443,6 +442,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $group_name (Required) Name of the group the policy is associated with.
 	 * @param string $policy_name (Required) Name of the policy document to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -465,6 +465,7 @@ class AmazonIAM extends CFRuntime
 	 * 	<li><code>PathPrefix</code> - <code>string</code> - Optional - The path prefix for filtering the results. For example: <code>/division_abc/subdivision_xyz/</code>, which would get all User names whose path starts with <code>/division_abc/subdivision_xyz/</code>. This parameter is optional. If it is not included, it defaults to a slash (/), listing all User names. </li>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this parameter only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this parameter only when paginating results to indicate the maximum number of User names you want in the response. If there are additional User names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -493,6 +494,7 @@ class AmazonIAM extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>NewPath</code> - <code>string</code> - Optional - New path for the group. Only include this if changing the group's path. </li>
 	 * 	<li><code>NewGroupName</code> - <code>string</code> - Optional - New name for the group. Only include this if changing the group's name. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -510,6 +512,7 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * @param string $server_certificate_name (Required) The name of the server certificate you want to retrieve information about.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -540,6 +543,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $policy_name (Required) Name of the policy document.
 	 * @param string $policy_document (Required) The policy document.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -564,6 +568,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $user_name (Required) Name of the User to create.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Path</code> - <code>string</code> - Optional - The path for the User name. For more information about paths, see Identifiers for IAM Entities in <i>Using AWS Identity and Access Management</i>. This parameter is optional. If it is not included, it defaults to a slash (/). </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -586,6 +591,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $certificate_id (Required) ID of the signing certificate to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User the signing certificate belongs to. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -599,7 +605,7 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Enables the specified MFA device and associates it with the specified User name. Once enabled, the MFA device is
+	 * Enables the specified MFA device and associates it with the specified User name. When enabled, the MFA device is
 	 * required for every subsequent login by the User name associated with the device.
 	 *
 	 * @param string $user_name (Required) Name of the User for whom you want to enable the MFA device.
@@ -607,6 +613,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $authentication_code1 (Required) An authentication code emitted by the device.
 	 * @param string $authentication_code2 (Required) A subsequent authentication code emitted by the device.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -631,6 +638,7 @@ class AmazonIAM extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of policy names you want in the response. If there are additional policy names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -658,8 +666,9 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User. </li>
-	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
-	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of keys you want in the response. If there are additional keys beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this parameter only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this parameter only when paginating results to indicate the maximum number of keys you want in the response. If there are additional keys beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -674,12 +683,9 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * Retrieves the login profile for the specified User.
 	 *
-	 * In the full release you will be able to use IAM to access your services through the AWS Management Console. Although
-	 * this feature is not currently available, you can create login profiles for your Users now. Then, when this feature is
-	 * implemented, your Users can use IAM to access your services through the AWS Management Console.
-	 *
 	 * @param string $user_name (Required) Name of the User whose login profile you want to retrieve.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -701,6 +707,7 @@ class AmazonIAM extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of groups you want in the response. If there are additional groups beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -723,6 +730,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $group_name (Required) Name of the group to create. Do not include the path in this value.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Path</code> - <code>string</code> - Optional - The path to the group. For more information about paths, see Identifiers for IAM Entities in <i>Using AWS Identity and Access Management</i>. This parameter is optional. If it is not included, it defaults to a slash (/). </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -754,6 +762,7 @@ class AmazonIAM extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Path</code> - <code>string</code> - Optional - The path for the server certificate. For more information about paths, see Identifiers for IAM Entities in <i>Using AWS Identity and Access Management</i>. This parameter is optional. If it is not included, it defaults to a slash (/). </li>
 	 * 	<li><code>CertificateChain</code> - <code>string</code> - Optional - The contents of the certificate chain. This is typically a concatenation of the PEM-encoded public key certificates of the chain. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -769,10 +778,13 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Creates an account alias.
+	 * This action creates an alias for your AWS Account. For information about using an AWS Account alias, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html">Using an Alias for Your AWS Account
+	 * ID</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
 	 * @param string $account_alias (Required) Name of the account alias to create
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -793,6 +805,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $group_name (Required) Name of the group the policy is associated with.
 	 * @param string $policy_name (Required) Name of the policy document to get.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -812,6 +825,7 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * @param string $user_name (Required) Name of the User to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -831,6 +845,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $user_name (Required) Name of the User whose MFA device you want to deactivate.
 	 * @param string $serial_number (Required) The serial number that uniquely identifies the MFA device.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -850,6 +865,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $group_name (Required) Name of the group to update.
 	 * @param string $user_name (Required) Name of the User to remove.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -874,6 +890,7 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * @param string $server_certificate_name (Required) The name of the server certificate you want to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -896,6 +913,7 @@ class AmazonIAM extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of policy names you want in the response. If there are additional policy names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -914,13 +932,10 @@ class AmazonIAM extends CFRuntime
 	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_ManagingLoginsAndMFA.html">Managing Login
 	 * Profiles and MFA Devices</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * In the full release you will be able to use IAM to access your services through the AWS Management Console. Although
-	 * this feature is not currently available, you can create login profiles for your Users now. Then, when this feature is
-	 * implemented, your Users can use IAM to access your services through the AWS Management Console.
-	 *
 	 * @param string $user_name (Required) Name of the User to create a login profile for.
 	 * @param string $password (Required) The new password for the User name.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -952,6 +967,7 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>UserName</code> - <code>string</code> - Optional - The User name that the new key will belong to. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -971,6 +987,7 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User to get information about. This parameter is optional. If it is not included, it defaults to the User making the request. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -990,6 +1007,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $authentication_code1 (Required) An authentication code emitted by the device.
 	 * @param string $authentication_code2 (Required) A subsequent authentication code emitted by the device.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1014,6 +1032,7 @@ class AmazonIAM extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of keys you want in the response. If there are additional keys beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1042,6 +1061,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $status (Required) The status you want to assign to the Secret Access Key. <code>Active</code> means the key can be used for API calls to AWS, while <code>Inactive</code> means the key cannot be used. [Allowed values: <code>Active</code>, <code>Inactive</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User whose key you want to update. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1056,9 +1076,14 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Retrieves account level information about usage and quota.
+	 * Retrieves account level information about account entity usage and IAM quotas.
+	 *
+	 * For information about limitations on IAM entities, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM
+	 * Entities</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1076,6 +1101,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $group_name (Required) Name of the group to update.
 	 * @param string $user_name (Required) Name of the User to add.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1097,6 +1123,7 @@ class AmazonIAM extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of User names you want in the response. If there are additional User names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1110,13 +1137,16 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Lists the account aliases associated with the account.
+	 * Lists the account aliases associated with the account. For information about using an AWS Account alias, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html">Using an Alias for Your AWS Account
+	 * ID</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. </li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of account aliases you want in the response. If there are additional account aliases beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1133,6 +1163,7 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * @param string $group_name (Required) Name of the group to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */

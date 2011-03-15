@@ -334,6 +334,17 @@ class CFUtilities
 	}
 
 	/**
+	 * Determines whether the data is a JSON string or not.
+	 *
+	 * @param string $s (Required) The string to test.
+	 * @return boolean Whether the string is a JSON string or not.
+	 */
+	public function is_json($s)
+	{
+		return json_decode($s) ? true : false;
+	}
+
+	/**
 	 * Decodes `\uXXXX` entities into their real unicode character equivalents.
 	 *
 	 * @param string $s (Required) The string to decode.

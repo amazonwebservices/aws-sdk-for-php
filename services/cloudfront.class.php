@@ -36,7 +36,7 @@ class CloudFront_Exception extends Exception {}
  * seamlessly with the Amazon Simple Storage Service, which durably stores the original, definitive versions
  * of your files.
  *
- * @version 2011.02.24
+ * @version 2011.03.11
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/cloudfront/ Amazon CloudFront
@@ -849,6 +849,7 @@ class AmazonCloudFront extends CFRuntime
 	 * 	<li><code>OriginProtocolPolicy</code> - <code>string</code> - Optional - The origin protocol policy to apply to your origin. If you specify <code>http-only</code>, CloudFront will use HTTP only to access the origin. If you specify <code>match-viewer</code>, CloudFront will fetch from your origin using HTTP or HTTPS, based on the protocol of the viewer request. [Allowed values: <code>http-only</code>, <code>match-viewer</code>]. The default value is <code>match-viewer</code>. Requires a non-S3 origin.</li>
 	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> creates a streaming distribution. A value of <code>false</code> creates a standard distribution. The default value is <code>false</code>.</li>
 	 * 	<li><code>TrustedSigners</code> - <code>array</code> - Optional - An array of AWS account numbers for users who are trusted signers. Explicity add the value <code>Self</code> to the array to add your own account as a trusted signer.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/CreateDistribution.html POST Distribution
@@ -875,6 +876,7 @@ class AmazonCloudFront extends CFRuntime
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this setting when paginating results to indicate where in your list of distributions to begin. The results include distributions in the list that occur after the marker. To get the next page of results, set the <code>Marker</code> to the value of the <code>NextMarker</code> from the current page's response (which is also the ID of the last distribution on that page).</li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - The maximum number of distributions you want in the response body. Maximum of 100.</li>
 	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> will create a streaming distribution. A value of <code>false</code> will create a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/ListDistributions.html GET Distribution List
@@ -908,6 +910,7 @@ class AmazonCloudFront extends CFRuntime
 	 * @param string $distribution_id (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> will create a streaming distribution. A value of <code>false</code> will create a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetDistribution.html GET Distribution
@@ -935,6 +938,7 @@ class AmazonCloudFront extends CFRuntime
 	 * @param string $etag (Required) The <code>ETag</code> header value retrieved from <get_distribution_config()>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> will create a streaming distribution. A value of <code>false</code> will create a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/DeleteDistribution.html DELETE Distribution
@@ -959,6 +963,7 @@ class AmazonCloudFront extends CFRuntime
 	 * @param string $distribution_id (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> will create a streaming distribution. A value of <code>false</code> will create a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetConfig.html GET Distribution Config
@@ -985,6 +990,7 @@ class AmazonCloudFront extends CFRuntime
 	 * @param string $etag (Required) The ETag header value retrieved from <get_distribution_config()>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> will create a streaming distribution. A value of <code>false</code> will create a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/PutConfig.html PUT Distribution Config
@@ -1011,6 +1017,7 @@ class AmazonCloudFront extends CFRuntime
 	 * @param string $caller_reference (Required) A unique identifier for the request. A timestamp-appended string is recommended.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Comment</code> - <code>string</code> - Optional - A comment about the OAI.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/CreateOAI.html POST Origin Access Identity
@@ -1033,6 +1040,7 @@ class AmazonCloudFront extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this when paginating results to indicate where in your list of distributions to begin. The results include distributions in the list that occur after the marker. To get the next page of results, set the Marker to the value of the NextMarker from the current page's response (which is also the ID of the last distribution on that page).</li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - The maximum number of distributions you want in the response body. Maximum of 100.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/ListOAIs.html GET Origin Access Identity List
@@ -1061,6 +1069,7 @@ class AmazonCloudFront extends CFRuntime
 	 *
 	 * @param string $identity_id (Required) The Identity ID for an existing OAI.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetOAI.html GET Origin Access Identity
@@ -1083,6 +1092,7 @@ class AmazonCloudFront extends CFRuntime
 	 * @param string $identity_id (Required) An Identity ID for an existing OAI.
 	 * @param string $etag (Required) The <code>ETag</code> header value retrieved from a call to <get_oai()>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/DeleteOAI.html DELETE Origin Access Identity
@@ -1101,6 +1111,7 @@ class AmazonCloudFront extends CFRuntime
 	 *
 	 * @param string $identity_id (Required) An Identity ID for an existing OAI.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetOAIConfig.html GET Origin Access Identity Config
@@ -1127,6 +1138,7 @@ class AmazonCloudFront extends CFRuntime
 	 * @param string $xml (Required) The configuration XML generated by <generate_oai_xml()>.
 	 * @param string $etag (Required) The ETag header value retrieved from a call to <get_distribution_config()>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/PutOAIConfig.html PUT Origin Access Identity Config
@@ -1151,6 +1163,7 @@ class AmazonCloudFront extends CFRuntime
 	 * @param string $caller_reference (Required) A unique identifier for the request. A timestamp-appended string is recommended.
 	 * @param string|array $paths (Required) One or more paths to set for invalidation. Pass a string for a single value, or an indexed array for multiple values. values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/CreateInvalidation.html POST Invalidation
@@ -1174,6 +1187,7 @@ class AmazonCloudFront extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this when paginating results to indicate where in the list of invalidations to begin. The results include invalidations in the list that occur after the marker. To get the next page of results, set the <code>Marker</code> parameter to the value of the <code>NextMarker</code> parameter from the current page's response, which is also the ID of the last invalidation on that page.</li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - The maximum number of invalidations you want in the response body. A maximum value of 100 can be used.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/ListInvalidation.html GET Invalidation List
@@ -1203,6 +1217,7 @@ class AmazonCloudFront extends CFRuntime
 	 * @param string $distribution_id (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
 	 * @param string $invalidation_id (Required) The invalidation ID returned from <create_invalidation()> or <list_invalidations()>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/GetInvalidation.html GET Invalidation

@@ -1,3 +1,43 @@
+# Changelog: 1.3 "Jecht"
+
+Launched Tuesday, March 15, 2011
+
+## New Features & Highlights (Summary)
+* Support for VPC Internet Access has been added to the SDK.
+* Bug fixes and enhancements:
+	* [AmazonEC2::register_image issue](https://forums.aws.amazon.com/thread.jspa?threadID=52499)
+	* [Automatic Parseing of XML objects](https://forums.aws.amazon.com/thread.jspa?threadID=61882)
+
+## Service Classes
+### AmazonEC2
+* **New:** Support for VPC Internet Access has been added to the SDK.
+* **Fixed:** The `$image_location` parameter in the `register_image()` method is no longer required. This is a backwards-incompatible change.
+
+### AmazonS3
+* **Fixed:** Resolved an issue in <code>get_object()</code> where using the `lastmodified` and `etag` parameters required both to be set before taking effect. They can now be set independently from each other.
+
+
+## Utility classes
+### CFArray
+* **Changed:** The `reduce()` method has been renamed to `filter()`. `reduce()` is now simply an alias for `filter()`.
+
+### CFJSON
+* **New:** Simplifies the task of normalizing XML and JSON responses as `CFSimpleXML` objects.
+
+### CFRuntime
+* **New:** Preliminary support for Signature v3 over HTTP has been added to the SDK. This is useful for debugging Signature v3 issues over non-HTTPS connections.
+* **Changed:** Classes that use the shared authentication method (i.e., NOT `AmazonS3` or `AmazonCloudFront`) will automatically convert JSON service responses into a `CFSimpleXML` object.
+* **Changed:** Formerly, the SDK would attempt to sniff the content to determine the type. Now, the SDK will check the HTTP response headers for `text/xml`, `application/xml` or `application/json` to determine whether or not to parse the content. If the HTTP response headers are not available, the SDK will still attempt content sniffing.
+
+### CFSimpleXML
+* **New:** The `to_json()` method has been added to the class.
+
+### CFUtilities
+* **New:** The `is_json()` method has been added to the class.
+
+
+----
+
 # Changelog: 1.2.6 "Ifrit"
 
 Launched Wednesday, March 2, 2011
