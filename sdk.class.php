@@ -825,7 +825,7 @@ class CFRuntime
 		uksort($query, 'strcmp');
 
 		// Normalize JSON input
-		if ($query['body'] === '[]')
+		if (isset($query['body']) && $query['body'] === '[]')
 		{
 			$query['body'] = '';
 		}
