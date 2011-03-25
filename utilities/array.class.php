@@ -54,6 +54,10 @@ class CFArray extends ArrayObject
 		return 'Array';
 	}
 
+
+	/*%******************************************************************************************%*/
+	// REFORMATTING
+
 	/**
 	 * Maps each element in the <CFArray> object as an integer.
 	 *
@@ -88,6 +92,10 @@ class CFArray extends ArrayObject
 		return $list;
 	}
 
+
+	/*%******************************************************************************************%*/
+	// CONFIRMATION
+
 	/**
 	 * Verifies that _all_ responses were successful. A single failed request will cause <areOK()> to return false. Equivalent to <CFResponse::isOK()>, except it applies to all responses.
 	 *
@@ -108,6 +116,10 @@ class CFArray extends ArrayObject
 
 		return (array_search(false, $dlist, true) !== false) ? false : true;
 	}
+
+
+	/*%******************************************************************************************%*/
+	// ITERATING AND EXECUTING
 
 	/**
 	 * Iterates over a <CFArray> object, and executes a function for each matched element.
@@ -186,6 +198,10 @@ class CFArray extends ArrayObject
 		return $this->filter($callback, $bind);
 	}
 
+
+	/*%******************************************************************************************%*/
+	// TRAVERSAL
+
 	/**
 	 * Gets the first result in the array.
 	 *
@@ -226,5 +242,29 @@ class CFArray extends ArrayObject
 	public function reindex()
 	{
 		return new CFArray(array_values($this->getArrayCopy()));
+	}
+
+
+	/*%******************************************************************************************%*/
+	// ALTERNATE FORMATS
+
+	/**
+	 * Gets the current XML node as a JSON string.
+	 *
+	 * @return string The current XML node as a JSON string.
+	 */
+	public function to_json()
+	{
+		return json_encode($this->getArrayCopy());
+	}
+
+	/**
+	 * Gets the current XML node as a YAML string.
+	 *
+	 * @return string The current XML node as a YAML string.
+	 */
+	public function to_yaml()
+	{
+		return sfYaml::dump($this->getArrayCopy(), 5);
 	}
 }

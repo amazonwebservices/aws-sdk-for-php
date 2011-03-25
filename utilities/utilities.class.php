@@ -112,7 +112,10 @@ class CFUtilities
 
 		foreach ($array as $key => $value)
 		{
-			$temp[] = rawurlencode($key) . '=' . rawurlencode($value);
+			if (is_string($key) && !is_array($value))
+			{
+				$temp[] = rawurlencode($key) . '=' . rawurlencode($value);
+			}
 		}
 
 		return implode('&', $temp);

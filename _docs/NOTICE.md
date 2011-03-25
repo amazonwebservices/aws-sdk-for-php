@@ -129,13 +129,13 @@ POSSIBILITY OF SUCH DAMAGE.
 <http://opensource.org/licenses/bsd-license.php>
 
 
-## SimplePie Compatibility Test
+## SimplePie
 
 <http://simplepie.org>
 
 * Copyright 2004-2010 [Ryan Parman](http://ryanparman.com)
 * Copyright 2005-2010 [Geoffrey Sneddon](http://gsnedders.com)
-* Copyright 2008-2010 [Ryan McCue](http://ryanmccue.info)
+* Copyright 2008-2011 [Ryan McCue](http://ryanmccue.info)
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

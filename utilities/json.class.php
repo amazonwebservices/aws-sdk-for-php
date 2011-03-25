@@ -21,7 +21,7 @@
 /**
  * Handles the conversion of data from JSON to other formats.
  *
- * @version 2011.03.02
+ * @version 2011.03.25
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
