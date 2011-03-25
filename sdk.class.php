@@ -102,9 +102,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.3');
+define('CFRUNTIME_VERSION', '1.3.1');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20110315164556');
+define('CFRUNTIME_BUILD', '20110325210828');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . php_uname('s') . '/' . php_uname('r') . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -115,7 +115,7 @@ define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/'
  * Core functionality and default settings shared across all SDK classes. All methods and properties in this
  * class are inherited by the service-specific classes.
  *
- * @version 2011.03.14
+ * @version 2011.03.25
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -750,6 +750,7 @@ class CFRuntime
 
 		$method_arguments = func_get_args();
 		$headers = array();
+		$signed_headers = array();
 
 		// Use the caching flow to determine if we need to do a round-trip to the server.
 		if ($this->use_cache_flow)
@@ -788,8 +789,8 @@ class CFRuntime
 
 		// Determine signing values
 		$current_time = time() + $this->adjust_offset;
-		$date = gmdate($this->util->konst($this->util, 'DATE_FORMAT_RFC2616'), $current_time);
-		$timestamp = gmdate($this->util->konst($this->util, 'DATE_FORMAT_ISO8601'), $current_time);
+		$date = gmdate(CFUtilities::DATE_FORMAT_RFC2616, $current_time);
+		$timestamp = gmdate(CFUtilities::DATE_FORMAT_ISO8601, $current_time);
 		$nonce = $this->util->generate_guid();
 
 		// Manage the key-value pairs that are used in the query.
@@ -825,9 +826,9 @@ class CFRuntime
 		uksort($query, 'strcmp');
 
 		// Normalize JSON input
-		if ($query['body'] === '[]')
+		if (isset($query['body']) && $query['body'] === '[]')
 		{
-			$query['body'] = '';
+			$query['body'] = '{}';
 		}
 
 		if ($this->use_aws_query)
@@ -892,7 +893,7 @@ class CFRuntime
 		// Do we have an authentication token?
 		if ($this->auth_token)
 		{
-			$headers['x-amz-security-token'] = $this->auth_token;
+			$headers['X-Amz-Security-Token'] = $this->auth_token;
 		}
 
 		// Signing using X-Amz-Target is handled differently.
@@ -920,10 +921,11 @@ class CFRuntime
 		// Add authentication headers
 		if ($signature_version === 3)
 		{
+			$headers['X-Amz-Nonce'] = $nonce;
 			$headers['Date'] = $date;
 			$headers['Content-Length'] = strlen($querystring);
 			$headers['Content-MD5'] = $this->util->hex_to_base64(md5($querystring));
-			$headers['x-amz-nonce'] = $nonce;
+			$headers['Host'] = $host_header;
 		}
 
 		// Sort headers
@@ -934,10 +936,10 @@ class CFRuntime
 			// Prepare the string to sign (HTTPS)
 			$string_to_sign = $date . $nonce;
 		}
-		elseif ($signature_version === 3)
+		elseif ($signature_version === 3 && !$this->use_ssl)
 		{
 			// Prepare the string to sign (HTTP)
-			$string_to_sign = "POST\n$host_header\n$request_uri\n$canonical_query_string";
+			$string_to_sign = "POST\n$request_uri\n\n";
 		}
 
 		// Add headers to request and compute the string to sign
@@ -959,32 +961,47 @@ class CFRuntime
 				if (
 					substr(strtolower($header_key), 0, 8) === 'content-' ||
 					strtolower($header_key) === 'date' ||
-					strtolower($header_key) === 'expires'
+					strtolower($header_key) === 'expires' ||
+					strtolower($header_key) === 'host' ||
+					substr(strtolower($header_key), 0, 6) === 'x-amz-'
 				)
 				{
 					$string_to_sign .= strtolower($header_key) . ':' . $header_value . "\n";
-				}
-				elseif (substr(strtolower($header_key), 0, 6) === 'x-amz-')
-				{
-					$string_to_sign .= strtolower($header_key) . ':' . $header_value . "\n";
+					$signed_headers[] = $header_key;
 				}
 			}
 		}
 
 		if ($signature_version === 3)
 		{
-			if ($this->use_ssl)
+			if (!$this->use_ssl)
 			{
+				$string_to_sign .= "\n";
+
+				if (isset($query['body']) && $query['body'] !== '')
+				{
+					$string_to_sign .= $query['body'];
+				}
+
+				// Convert from string-to-sign to bytes-to-sign
+				$bytes_to_sign = hash('sha256', $string_to_sign, true);
+
 				// Hash the AWS secret key and generate a signature for the request.
-				$signature = base64_encode(hash_hmac('sha256', $string_to_sign, $this->secret_key, true));
-				$request->add_header('X-Amzn-Authorization', 'AWS3-HTTPS AWSAccessKeyId=' . $this->key . ',Algorithm=HmacSHA256,Signature=' . $signature);
+				$signature = base64_encode(hash_hmac('sha256', $bytes_to_sign, $this->secret_key, true));
 			}
 			else
 			{
 				// Hash the AWS secret key and generate a signature for the request.
 				$signature = base64_encode(hash_hmac('sha256', $string_to_sign, $this->secret_key, true));
-				$request->add_header('X-Amzn-Authorization', 'AWS3 AWSAccessKeyId=' . $this->key . ',Algorithm=HmacSHA256,Signature=' . $signature);
 			}
+
+			$headers['X-Amzn-Authorization'] = 'AWS3' . ($this->use_ssl ? '-HTTPS' : '')
+				. ' AWSAccessKeyId=' . $this->key
+				. ',Algorithm=HmacSHA256'
+				. ',SignedHeaders=' . implode(';', $signed_headers)
+				. ',Signature=' . $signature;
+
+			$request->add_header('X-Amzn-Authorization', $headers['X-Amzn-Authorization']);
 		}
 
 		// Update RequestCore settings
@@ -994,7 +1011,7 @@ class CFRuntime
 		$curlopts = array();
 
 		// Set custom CURLOPT settings
-		if (isset($opt['curlopts']))
+		if (is_array($opt) && isset($opt['curlopts']))
 		{
 			$curlopts = $opt['curlopts'];
 			unset($opt['curlopts']);
@@ -1028,13 +1045,15 @@ class CFRuntime
 		// Send!
 		$request->send_request();
 
+		$request_headers = $headers;
+
 		// Prepare the response.
 		$headers = $request->get_response_header();
 		$headers['x-aws-stringtosign'] = $string_to_sign;
+		$headers['x-aws-request-headers'] = $request_headers;
 		$headers['x-aws-body'] = $querystring;
 
-		$mime = isset($headers['content-type']) ? $headers['content-type'] : null;
-		$data = new $this->response_class($headers, $this->parse_callback($request->get_response_body(), $mime), $request->get_response_code());
+		$data = new $this->response_class($headers, $this->parse_callback($request->get_response_body(), $headers), $request->get_response_code());
 
 		// Was it Amazon's fault the request failed? Retry the request until we reach $max_retries.
 		if ((integer) $request->get_response_code() === 500 || (integer) $request->get_response_code() === 503)
@@ -1153,7 +1172,7 @@ class CFRuntime
 	 * @param string $content_type (Optional) The content-type to use when determining how to parse the content.
 	 * @return CFResponse|string A parsed <CFResponse> object, or parsed XML.
 	 */
-	public function parse_callback($response, $content_type = null)
+	public function parse_callback($response, $headers = null)
 	{
 		// Shorten this so we have a (mostly) single code path
 		if (isset($response->body))
@@ -1161,11 +1180,6 @@ class CFRuntime
 			if (is_string($response->body))
 			{
 				$body = $response->body;
-
-				if (!$content_type)
-				{
-					$content_type = $response->header['content-type'];
-				}
 			}
 			else
 			{
@@ -1181,10 +1195,36 @@ class CFRuntime
 			return $response;
 		}
 
+		// Decompress gzipped content
+		if (isset($headers['content-encoding']))
+		{
+			switch (strtolower(trim($headers['content-encoding'], "\x09\x0A\x0D\x20")))
+			{
+				case 'gzip':
+				case 'x-gzip':
+					$decoder = new CFGzipDecode($body);
+					if ($decoder->parse())
+					{
+						$body = $decoder->data;
+					}
+					break;
+
+				case 'deflate':
+					if (($body = gzuncompress($body)) === false)
+					{
+						if (($body = gzinflate($body)) === false)
+						{
+							continue;
+						}
+					}
+					break;
+			}
+		}
+
 		// Look for XML cues
 		if (
-			($content_type && ($content_type === 'text/xml' || $content_type === 'application/xml')) || // We know it's XML
-			(!$content_type && (stripos($body, '<?xml') === 0 || strpos($body, '<Error>') === 0) || preg_match('/^<(\w*) xmlns="http(s?):\/\/(\w*).amazon(aws)?.com/im', $body)) // Sniff for XML
+			(isset($headers['content-type']) && ($headers['content-type'] === 'text/xml' || $headers['content-type'] === 'application/xml')) || // We know it's XML
+			(!isset($headers['content-type']) && (stripos($body, '<?xml') === 0 || strpos($body, '<Error>') === 0) || preg_match('/^<(\w*) xmlns="http(s?):\/\/(\w*).amazon(aws)?.com/im', $body)) // Sniff for XML
 		)
 		{
 			// Strip the default XML namespace to simplify XPath expressions
@@ -1195,8 +1235,8 @@ class CFRuntime
 		}
 		// Look for JSON cues
 		elseif (
-			($content_type && $content_type === 'application/json') || // We know it's JSON
-			(!$content_type && $this->util->is_json($body)) // Sniff for JSON
+			(isset($headers['content-type']) && $headers['content-type'] === 'application/json') || // We know it's JSON
+			(!isset($headers['content-type']) && $this->util->is_json($body)) // Sniff for JSON
 		)
 		{
 			// Normalize JSON to a CFSimpleXML object

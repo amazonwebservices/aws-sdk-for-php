@@ -47,7 +47,7 @@
  *
  * </ul>
  *
- * @version Tue Mar 15 11:06:05 PDT 2011
+ * @version Fri Mar 25 13:12:03 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/autoscaling/Amazon Auto-Scaling

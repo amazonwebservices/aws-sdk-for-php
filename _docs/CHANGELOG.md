@@ -1,3 +1,33 @@
+# Changelog: 1.3.1 "Kraken"
+
+Launched Friday, March 25, 2011
+
+## New Features & Highlights (Summary)
+* Fixed issues with Signature v3 authentication (SES).
+* Added gzip decoding.
+* Added support for converting data to more alternate formats.
+* Bug fixes and enhancements:
+	* [Cannot send email](https://forums.aws.amazon.com/thread.jspa?threadID=62833)
+	* [AmazonCloudWatch get_metric_statistics returns gzipped body](https://forums.aws.amazon.com/thread.jspa?threadID=62625)
+
+## Utility Classes
+### CFArray
+* **New:** The `to_json()` and `to_yaml()` methoda have been added to the class.
+
+### CFGzipDecode
+* **New:** Handles a variety of primary and edge cases around gzip/deflate decoding in PHP.
+
+### CFRuntime
+* **New:** Gzip decoding has been added to the SDK.
+* **Fixed:** The previous release contained a regression in the Signature v3 support that affected AmazonSES. This has been resolved.
+* **Fixed:** Completed support for Signature v3 over HTTP connections.
+
+### CFSimpleXML
+* **New:** The `to_stdClass()` and `to_yaml()` methoda have been added to the class.
+
+
+----
+
 # Changelog: 1.3 "Jecht"
 
 Launched Tuesday, March 15, 2011

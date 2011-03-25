@@ -33,7 +33,7 @@
  * Amazon CloudFormation makes use of other AWS products. If you need additional technical information about a specific AWS
  * product, you can find the product's technical documentation at http://aws.amazon.com/documentation/.
  *
- * @version Tue Mar 15 11:07:12 PDT 2011
+ * @version Fri Mar 25 13:12:48 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudformation/Amazon CloudFormation
