@@ -16,19 +16,18 @@
 
 /**
  *
- * Amazon Elastic Compute Cloud (Amazon EC2) is a web service that provides resizable compute capacity in the cloud. It is
- * designed to make web-scale computing easier for developers.
+ * Amazon Elastic Compute Cloud (Amazon EC2) is a web service that provides resizable compute capacity in the cloud. It is designed to make
+ * web-scale computing easier for developers.
  *
- * Amazon EC2's simple web service interface allows you to obtain and configure capacity with minimal friction. It
- * provides you with complete control of your computing resources and lets you run on Amazon's proven computing
- * environment. Amazon EC2 reduces the time required to obtain and boot new server instances to minutes, allowing you to
- * quickly scale capacity, both up and down, as your computing requirements change. Amazon EC2 changes the economics of
- * computing by allowing you to pay only for capacity that you actually use. Amazon EC2 provides developers the tools to
- * build failure resilient applications and isolate themselves from common failure scenarios.
+ * Amazon EC2's simple web service interface allows you to obtain and configure capacity with minimal friction. It provides you with complete
+ * control of your computing resources and lets you run on Amazon's proven computing environment. Amazon EC2 reduces the time required to
+ * obtain and boot new server instances to minutes, allowing you to quickly scale capacity, both up and down, as your computing requirements
+ * change. Amazon EC2 changes the economics of computing by allowing you to pay only for capacity that you actually use. Amazon EC2 provides
+ * developers the tools to build failure resilient applications and isolate themselves from common failure scenarios.
  *
  * Visit <a href="http://aws.amazon.com/ec2/">http://aws.amazon.com/ec2/</a> for more information.
  *
- * @version Fri Mar 25 13:14:50 PDT 2011
+ * @version Tue Apr 05 15:18:08 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ec2/Amazon Elastic Compute Cloud
@@ -129,7 +128,7 @@ class AmazonEC2 extends CFRuntime
 	 */
 	public function __construct($key = null, $secret_key = null)
 	{
-		$this->api_version = '2011-01-01';
+		$this->api_version = '2011-02-28';
 		$this->hostname = self::DEFAULT_URL;
 
 		if (!$key && !defined('AWS_KEY'))
@@ -151,9 +150,9 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The RebootInstances operation requests a reboot of one or more instances. This operation is asynchronous; it only
-	 * queues a request to reboot the specified instance(s). The operation will succeed if the instances are valid and belong
-	 * to the user. Requests to reboot terminated instances are ignored.
+	 * The RebootInstances operation requests a reboot of one or more instances. This operation is asynchronous; it only queues a request to
+	 * reboot the specified instance(s). The operation will succeed if the instances are valid and belong to the user. Requests to reboot
+	 * terminated instances are ignored.
 	 *
 	 * @param string|array $instance_id (Required) The list of instances to terminate.  Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -216,12 +215,10 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The DescribeAvailabilityZones operation describes availability zones that are currently available to the account and
-	 * their states.
+	 * The DescribeAvailabilityZones operation describes availability zones that are currently available to the account and their states.
 	 *
-	 * Availability zones are not the same across accounts. The availability zone <code>us-east-1a</code> for account A is not
-	 * necessarily the same as <code>us-east-1a</code> for account B. Zone assignments are mapped independently for each
-	 * account.
+	 * Availability zones are not the same across accounts. The availability zone <code>us-east-1a</code> for account A is not necessarily the
+	 * same as <code>us-east-1a</code> for account B. Zone assignments are mapped independently for each account.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ZoneName</code> - <code>string|array</code> - Optional - A list of the availability zone names to describe.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -323,9 +320,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Attaches a VPN gateway to a VPC. This is the last step required to get your VPC fully connected to your data center
-	 * before launching instances in it. For more information, go to Process for Using Amazon VPC in the Amazon Virtual Private
-	 * Cloud Developer Guide.
+	 * Attaches a VPN gateway to a VPC. This is the last step required to get your VPC fully connected to your data center before launching
+	 * instances in it. For more information, go to Process for Using Amazon VPC in the Amazon Virtual Private Cloud Developer Guide.
 	 *
 	 * @param string $vpn_gateway_id (Required) The ID of the VPN gateway to attach to the VPC.
 	 * @param string $vpc_id (Required) The ID of the VPC to attach to the VPN gateway.
@@ -345,9 +341,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates an Amazon EBS-backed AMI from a "running" or "stopped" instance. AMIs that use an Amazon EBS root device boot
-	 * faster than AMIs that use instance stores. They can be up to 1 TiB in size, use storage that persists on instance
-	 * failure, and can be stopped and started.
+	 * Creates an Amazon EBS-backed AMI from a "running" or "stopped" instance. AMIs that use an Amazon EBS root device boot faster than AMIs that
+	 * use instance stores. They can be up to 1 TiB in size, use storage that persists on instance failure, and can be stopped and started.
 	 *
 	 * @param string $instance_id (Required) The ID of the instance from which to create the new image.
 	 * @param string $name (Required) The name for the new AMI being created.
@@ -373,9 +368,8 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * If you attempt to delete a security group that contains instances, a fault is returned.
 	 *
-	 * If you attempt to delete a security group that is referenced by another security group, a fault is returned. For
-	 * example, if security group B has a rule that allows access from security group A, security group A cannot be deleted
-	 * until the allow rule is removed.
+	 * If you attempt to delete a security group that is referenced by another security group, a fault is returned. For example, if security group
+	 * B has a rule that allows access from security group A, security group A cannot be deleted until the allow rule is removed.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>GroupName</code> - <code>string</code> - Optional - The name of the Amazon EC2 security group to delete. </li>
@@ -393,22 +387,19 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * This action applies only to security groups in a VPC; it's not supported for EC2 security groups. For information about
-	 * Amazon Virtual Private Cloud and VPC security groups, go to the Amazon Virtual Private Cloud User Guide.
+	 * This action applies only to security groups in a VPC; it's not supported for EC2 security groups. For information about Amazon Virtual
+	 * Private Cloud and VPC security groups, go to the Amazon Virtual Private Cloud User Guide.
 	 *
-	 * The action adds one or more egress rules to a VPC security group. Specifically, this permits instances in a security
-	 * group to send traffic to either one or more destination CIDR IP address ranges, or to one or more destination security
-	 * groups in the same VPC.
+	 * The action adds one or more egress rules to a VPC security group. Specifically, this permits instances in a security group to send traffic
+	 * to either one or more destination CIDR IP address ranges, or to one or more destination security groups in the same VPC.
 	 *
-	 * Each rule consists of the protocol (e.g., TCP), plus either a CIDR range, or a source group. For the TCP and UDP
-	 * protocols, you must also specify the destination port or port range. For the ICMP protocol, you must also specify the
-	 * ICMP type and code. You can use <code>-1</code> as a wildcard for the ICMP type or code.
+	 * Each rule consists of the protocol (e.g., TCP), plus either a CIDR range, or a source group. For the TCP and UDP protocols, you must also
+	 * specify the destination port or port range. For the ICMP protocol, you must also specify the ICMP type and code. You can use <code>-1</code>
+	 * as a wildcard for the ICMP type or code.
 	 *
-	 * Rule changes are propagated to instances within the security group as quickly as possible. However, a small delay might
-	 * occur.
+	 * Rule changes are propagated to instances within the security group as quickly as possible. However, a small delay might occur.
 	 *
-	 * <b>Important: </b> For VPC security groups: You can have up to 50 rules total per group (covering both ingress and
-	 * egress).
+	 * <b>Important: </b> For VPC security groups: You can have up to 50 rules total per group (covering both ingress and egress).
 	 *
 	 * @param string $group_id (Required) ID of the VPC security group to modify.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -501,11 +492,11 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Associates a set of DHCP options (that you've previously created) with the specified VPC. Or, associates the default
-	 * DHCP options with the VPC. The default set consists of the standard EC2 host name, no domain name, no DNS server, no NTP
-	 * server, and no NetBIOS server or node type. After you associate the options with the VPC, any existing instances and all
-	 * new instances that you launch in that VPC use the options. For more information about the supported DHCP options and
-	 * using them with Amazon VPC, go to Using DHCP Options in the Amazon Virtual Private Cloud Developer Guide.
+	 * Associates a set of DHCP options (that you've previously created) with the specified VPC. Or, associates the default DHCP options with the
+	 * VPC. The default set consists of the standard EC2 host name, no domain name, no DNS server, no NTP server, and no NetBIOS server or node
+	 * type. After you associate the options with the VPC, any existing instances and all new instances that you launch in that VPC use the
+	 * options. For more information about the supported DHCP options and using them with Amazon VPC, go to Using DHCP Options in the Amazon
+	 * Virtual Private Cloud Developer Guide.
 	 *
 	 * @param string $dhcp_options_id (Required) The ID of the DHCP options to associate with the VPC. Specify "default" to associate the default DHCP options with the VPC.
 	 * @param string $vpc_id (Required) The ID of the VPC to associate the DHCP options with.
@@ -525,13 +516,13 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Stops an instance that uses an Amazon EBS volume as its root device. Instances that use Amazon EBS volumes as their
-	 * root devices can be quickly stopped and started. When an instance is stopped, the compute resources are released and you
-	 * are not billed for hourly instance usage. However, your root partition Amazon EBS volume remains, continues to persist
-	 * your data, and you are charged for Amazon EBS volume usage. You can restart your instance at any time.
+	 * Stops an instance that uses an Amazon EBS volume as its root device. Instances that use Amazon EBS volumes as their root devices can be
+	 * quickly stopped and started. When an instance is stopped, the compute resources are released and you are not billed for hourly instance
+	 * usage. However, your root partition Amazon EBS volume remains, continues to persist your data, and you are charged for Amazon EBS volume
+	 * usage. You can restart your instance at any time.
 	 *
-	 * Before stopping an instance, make sure it is in a state from which it can be restarted. Stopping an instance does not
-	 * preserve data stored in RAM.
+	 * Before stopping an instance, make sure it is in a state from which it can be restarted. Stopping an instance does not preserve data stored
+	 * in RAM.
 	 *
 	 * Performing this operation on an instance that uses an instance store as its root device returns an error.
 	 *
@@ -590,11 +581,10 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * The CreateSecurityGroup operation creates a new security group.
 	 *
-	 * Every instance is launched in a security group. If no security group is specified during launch, the instances are
-	 * launched in the default security group. Instances within the same security group have unrestricted network access to
-	 * each other. Instances will reject network access attempts from other instances in a different security group. As the
-	 * owner of instances you can grant or revoke specific permissions using the AuthorizeSecurityGroupIngress and
-	 * RevokeSecurityGroupIngress operations.
+	 * Every instance is launched in a security group. If no security group is specified during launch, the instances are launched in the default
+	 * security group. Instances within the same security group have unrestricted network access to each other. Instances will reject network
+	 * access attempts from other instances in a different security group. As the owner of instances you can grant or revoke specific permissions
+	 * using the AuthorizeSecurityGroupIngress and RevokeSecurityGroupIngress operations.
 	 *
 	 * @param string $group_name (Required) Name of the security group.
 	 * @param string $group_description (Required) Description of the group. This is informational only.
@@ -617,12 +607,11 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Describes the Spot Price history.
 	 *
-	 * Spot Instances are instances that Amazon EC2 starts on your behalf when the maximum price that you specify exceeds the
-	 * current Spot Price. Amazon EC2 periodically sets the Spot Price based on available Spot Instance capacity and current
-	 * spot instance requests.
+	 * Spot Instances are instances that Amazon EC2 starts on your behalf when the maximum price that you specify exceeds the current Spot Price.
+	 * Amazon EC2 periodically sets the Spot Price based on available Spot Instance capacity and current spot instance requests.
 	 *
-	 * For conceptual information about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon
-	 * Elastic Compute Cloud User Guide.
+	 * For conceptual information about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon Elastic Compute Cloud
+	 * User Guide.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>StartTime</code> - <code>string</code> - Optional - The start date and time of the Spot Instance price history data. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
@@ -728,10 +717,9 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates a set of DHCP options that you can then associate with one or more VPCs, causing all existing and new instances
-	 * that you launch in those VPCs to use the set of DHCP options. The following table lists the individual DHCP options you
-	 * can specify. For more information about the options, go to <a
-	 * href="http://www.ietf.org/rfc/rfc2132.txt">http://www.ietf.org/rfc/rfc2132.txt</a>
+	 * Creates a set of DHCP options that you can then associate with one or more VPCs, causing all existing and new instances that you launch in
+	 * those VPCs to use the set of DHCP options. The following table lists the individual DHCP options you can specify. For more information about
+	 * the options, go to <a href="http://www.ietf.org/rfc/rfc2132.txt">http://www.ietf.org/rfc/rfc2132.txt</a>
 	 *
 	 * @param array $dhcp_configuration (Required) A set of one or more DHCP configurations. <ul>
 	 * 	<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
@@ -779,8 +767,8 @@ class AmazonEC2 extends CFRuntime
 	/**
 	 *
 	 * Deletes a route from a route table in a VPC. For more information about route tables, go to <a
-	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon
-	 * Virtual Private Cloud User Guide.
+	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon Virtual Private
+	 * Cloud User Guide.
 	 *
 	 * @param string $route_table_id (Required) The ID of the route table where the route will be deleted.
 	 * @param string $destination_cidr_block (Required) The CIDR range for the route you want to delete. The value you specify must exactly match the CIDR for the route you want to delete.
@@ -800,18 +788,17 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Gives you information about your Internet gateways. You can filter the results to return information only about
-	 * Internet gateways that match criteria you specify. For example, you could get information only about gateways with
-	 * particular tags. The Internet gateway must match at least one of the specified values for it to be included in the
-	 * results.
+	 * Gives you information about your Internet gateways. You can filter the results to return information only about Internet gateways that
+	 * match criteria you specify. For example, you could get information only about gateways with particular tags. The Internet gateway must match
+	 * at least one of the specified values for it to be included in the results.
 	 *
-	 * You can specify multiple filters (e.g., the Internet gateway is attached to a particular VPC and is tagged with a
-	 * particular value). The result includes information for a particular Internet gateway only if the gateway matches all
-	 * your filters. If there's no match, no special message is returned; the response is simply empty.
+	 * You can specify multiple filters (e.g., the Internet gateway is attached to a particular VPC and is tagged with a particular value). The
+	 * result includes information for a particular Internet gateway only if the gateway matches all your filters. If there's no match, no special
+	 * message is returned; the response is simply empty.
 	 *
-	 * You can use wildcards with the filter values: an asterisk matches zero or more characters, and <code>?</code> matches
-	 * exactly one character. You can escape special characters using a backslash before the character. For example, a value of
-	 * <code>\*amazon\?\\</code> searches for the literal string <code>*amazon?\</code>.
+	 * You can use wildcards with the filter values: an asterisk matches zero or more characters, and <code>?</code> matches exactly one
+	 * character. You can escape special characters using a backslash before the character. For example, a value of <code>\*amazon\?\\</code>
+	 * searches for the literal string <code>*amazon?\</code>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>InternetGatewayId</code> - <code>string|array</code> - Optional - One or more Internet gateway IDs.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -854,8 +841,8 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * The DescribeSecurityGroups operation returns information about security groups that you own.
 	 *
-	 * If you specify security group names, information about those security group is returned. Otherwise, information for all
-	 * security group is returned. If you specify a group that does not exist, a fault is returned.
+	 * If you specify security group names, information about those security group is returned. Otherwise, information for all security group is
+	 * returned. If you specify a group that does not exist, a fault is returned.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>GroupName</code> - <code>string|array</code> - Optional - The optional list of Amazon EC2 security groups to describe.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -906,12 +893,10 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Detaches a VPN gateway from a VPC. You do this if you're planning to turn off the VPC and not use it anymore. You can
-	 * confirm a VPN gateway has been completely detached from a VPC by describing the VPN gateway (any attachments to the VPN
-	 * gateway are also described).
+	 * Detaches a VPN gateway from a VPC. You do this if you're planning to turn off the VPC and not use it anymore. You can confirm a VPN gateway
+	 * has been completely detached from a VPC by describing the VPN gateway (any attachments to the VPN gateway are also described).
 	 *
-	 * You must wait for the attachment's state to switch to detached before you can delete the VPC or attach a different VPC
-	 * to the VPN gateway.
+	 * You must wait for the attachment's state to switch to detached before you can delete the VPC or attach a different VPC to the VPN gateway.
 	 *
 	 * @param string $vpn_gateway_id (Required) The ID of the VPN gateway to detach from the VPC.
 	 * @param string $vpc_id (Required) The ID of the VPC to detach the VPN gateway from.
@@ -951,8 +936,8 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Describes the data feed for Spot Instances.
 	 *
-	 * For conceptual information about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon
-	 * Elastic Compute Cloud User Guide.
+	 * For conceptual information about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon Elastic Compute Cloud
+	 * User Guide.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -1005,8 +990,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Deletes a subnet from a VPC. You must terminate all running instances in the subnet before deleting it, otherwise
-	 * Amazon VPC returns an error.
+	 * Deletes a subnet from a VPC. You must terminate all running instances in the subnet before deleting it, otherwise Amazon VPC returns an
+	 * error.
 	 *
 	 * @param string $subnet_id (Required) The ID of the subnet you want to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1024,8 +1009,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates a new VPN gateway. A VPN gateway is the VPC-side endpoint for your VPN connection. You can create a VPN gateway
-	 * before creating the VPC itself.
+	 * Creates a new VPN gateway. A VPN gateway is the VPC-side endpoint for your VPN connection. You can create a VPN gateway before creating the
+	 * VPC itself.
 	 *
 	 * @param string $type (Required) The type of VPN connection this VPN gateway supports.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1044,10 +1029,9 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Deletes a VPN gateway. Use this when you want to delete a VPC and all its associated components because you no longer
-	 * need them. We recommend that before you delete a VPN gateway, you detach it from the VPC and delete the VPN connection.
-	 * Note that you don't need to delete the VPN gateway if you just want to delete and re-create the VPN connection between
-	 * your VPC and data center.
+	 * Deletes a VPN gateway. Use this when you want to delete a VPC and all its associated components because you no longer need them. We
+	 * recommend that before you delete a VPN gateway, you detach it from the VPC and delete the VPN connection. Note that you don't need to delete
+	 * the VPN gateway if you just want to delete and re-create the VPN connection between your VPC and data center.
 	 *
 	 * @param string $vpn_gateway_id (Required) The ID of the VPN gateway to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1087,8 +1071,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Provides details of a user's registered licenses. Zero or more IDs may be specified on the call. When one or more
-	 * license IDs are specified, only data for the specified IDs are returned.
+	 * Provides details of a user's registered licenses. Zero or more IDs may be specified on the call. When one or more license IDs are
+	 * specified, only data for the specified IDs are returned.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>LicenseId</code> - <code>string|array</code> - Optional - Specifies the license registration for which details are to be returned.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -1173,15 +1157,14 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Gives you information about your VPN connections.
 	 *
-	 * We strongly recommend you use HTTPS when calling this operation because the response contains sensitive cryptographic
-	 * information for configuring your customer gateway.
+	 * We strongly recommend you use HTTPS when calling this operation because the response contains sensitive cryptographic information for
+	 * configuring your customer gateway.
 	 *
-	 * You can filter the results to return information only about VPN connections that match criteria you specify. For
-	 * example, you could ask to get information about a particular VPN connection (or all) only if the VPN's state is pending
-	 * or available. You can specify multiple filters (e.g., the VPN connection is associated with a particular VPN gateway,
-	 * and the gateway's state is pending or available). The result includes information for a particular VPN connection only
-	 * if the VPN connection matches all your filters. If there's no match, no special message is returned; the response is
-	 * simply empty. The following table shows the available filters.
+	 * You can filter the results to return information only about VPN connections that match criteria you specify. For example, you could ask to
+	 * get information about a particular VPN connection (or all) only if the VPN's state is pending or available. You can specify multiple filters
+	 * (e.g., the VPN connection is associated with a particular VPN gateway, and the gateway's state is pending or available). The result includes
+	 * information for a particular VPN connection only if the VPN connection matches all your filters. If there's no match, no special message is
+	 * returned; the response is simply empty. The following table shows the available filters.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>VpnConnectionId</code> - <code>string|array</code> - Optional - A VPN connection ID. More than one may be specified per request.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -1222,13 +1205,11 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Create a snapshot of the volume identified by volume ID. A volume does not have to be detached at the time the snapshot
-	 * is taken.
+	 * Create a snapshot of the volume identified by volume ID. A volume does not have to be detached at the time the snapshot is taken.
 	 *
-	 * Snapshot creation requires that the system is in a consistent state. For instance, this means that if taking a snapshot
-	 * of a database, the tables must be read-only locked to ensure that the snapshot will not contain a corrupted version of
-	 * the database. Therefore, be careful when using this API to ensure that the system remains in the consistent state until
-	 * the create snapshot status has returned.
+	 * Snapshot creation requires that the system is in a consistent state. For instance, this means that if taking a snapshot of a database, the
+	 * tables must be read-only locked to ensure that the snapshot will not contain a corrupted version of the database. Therefore, be careful when
+	 * using this API to ensure that the system remains in the consistent state until the create snapshot status has returned.
 	 *
 	 * @param string $volume_id (Required) The ID of the volume from which to create the snapshot.
 	 * @param string $description (Required) The description for the new snapshot.
@@ -1266,15 +1247,13 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Gives you information about your VPCs. You can filter the results to return information only about VPCs that match
-	 * criteria you specify.
+	 * Gives you information about your VPCs. You can filter the results to return information only about VPCs that match criteria you specify.
 	 *
-	 * For example, you could ask to get information about a particular VPC or VPCs (or all your VPCs) only if the VPC's state
-	 * is available. You can specify multiple filters (e.g., the VPC uses one of several sets of DHCP options, and the VPC's
-	 * state is available). The result includes information for a particular VPC only if the VPC matches all your filters.
+	 * For example, you could ask to get information about a particular VPC or VPCs (or all your VPCs) only if the VPC's state is available. You
+	 * can specify multiple filters (e.g., the VPC uses one of several sets of DHCP options, and the VPC's state is available). The result includes
+	 * information for a particular VPC only if the VPC matches all your filters.
 	 *
-	 * If there's no match, no special message is returned; the response is simply empty. The following table shows the
-	 * available filters.
+	 * If there's no match, no special message is returned; the response is simply empty. The following table shows the available filters.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>VpcId</code> - <code>string|array</code> - Optional - The ID of a VPC you want information about.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -1315,8 +1294,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Deactivates a specific number of licenses. Deactivations can be done against a specific license ID after they have
-	 * persisted for at least a 90-day period.
+	 * Deactivates a specific number of licenses. Deactivations can be done against a specific license ID after they have persisted for at least a
+	 * 90-day period.
 	 *
 	 * @param string $license_id (Required) Specifies the ID for the specific license to deactivate against.
 	 * @param integer $capacity (Required) Specifies the amount of capacity to deactivate against the license.
@@ -1338,8 +1317,8 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * The AssociateAddress operation associates an elastic IP address with an instance.
 	 *
-	 * If the IP address is currently assigned to another instance, the IP address is assigned to the new instance. This is an
-	 * idempotent operation. If you enter it more than once, Amazon EC2 does not return an error.
+	 * If the IP address is currently assigned to another instance, the IP address is assigned to the new instance. This is an idempotent
+	 * operation. If you enter it more than once, Amazon EC2 does not return an error.
 	 *
 	 * @param string $instance_id (Required) The instance to associate with the IP address.
 	 * @param string $public_ip (Required) IP address that you are assigning to the instance.
@@ -1362,8 +1341,8 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Deletes a customer gateway. You must delete the VPN connection before deleting the customer gateway.
 	 *
-	 * You can have a single active customer gateway per AWS account (active means that you've created a VPN connection with
-	 * that customer gateway). AWS might delete any customer gateway you leave inactive for an extended period of time.
+	 * You can have a single active customer gateway per AWS account (active means that you've created a VPN connection with that customer
+	 * gateway). AWS might delete any customer gateway you leave inactive for an extended period of time.
 	 *
 	 * @param string $customer_gateway_id (Required) The ID of the customer gateway to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1381,14 +1360,12 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates an entry (i.e., rule) in a network ACL with a rule number you specify. Each network ACL has a set of numbered
-	 * ingress rules and a separate set of numbered egress rules. When determining whether a packet should be allowed in or out
-	 * of a subnet associated with the ACL, Amazon VPC processes the entries in the ACL according to the rule numbers, in
-	 * ascending order.
+	 * Creates an entry (i.e., rule) in a network ACL with a rule number you specify. Each network ACL has a set of numbered ingress rules and a
+	 * separate set of numbered egress rules. When determining whether a packet should be allowed in or out of a subnet associated with the ACL,
+	 * Amazon VPC processes the entries in the ACL according to the rule numbers, in ascending order.
 	 *
-	 * <b>Important: </b> We recommend that you leave room between the rules (e.g., 100, 110, 120, etc.), and not number them
-	 * sequentially (101, 102, 103, etc.). This allows you to easily add a new rule between existing ones without having to
-	 * renumber the rules.
+	 * <b>Important: </b> We recommend that you leave room between the rules (e.g., 100, 110, 120, etc.), and not number them sequentially (101,
+	 * 102, 103, etc.). This allows you to easily add a new rule between existing ones without having to renumber the rules.
 	 *
 	 * After you add an entry, you can't modify it; you must either replace it, or create a new entry and delete the old one.
 	 *
@@ -1444,12 +1421,11 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Detaches an Internet gateway from a VPC, disabling connectivity between the Internet and the VPC. The VPC must not
-	 * contain any running instances with elastic IP addresses. For more information about your VPC and Internet gateway, go to
-	 * Amazon Virtual Private Cloud User Guide.
+	 * Detaches an Internet gateway from a VPC, disabling connectivity between the Internet and the VPC. The VPC must not contain any running
+	 * instances with elastic IP addresses. For more information about your VPC and Internet gateway, go to Amazon Virtual Private Cloud User
+	 * Guide.
 	 *
-	 * For more information about Amazon Virtual Private Cloud and Internet gateways, go to the Amazon Virtual Private Cloud
-	 * User Guide.
+	 * For more information about Amazon Virtual Private Cloud and Internet gateways, go to the Amazon Virtual Private Cloud User Guide.
 	 *
 	 * @param string $internet_gateway_id (Required) The ID of the Internet gateway to detach.
 	 * @param string $vpc_id (Required) The ID of the VPC.
@@ -1469,10 +1445,10 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates a new route table within a VPC. After you create a new route table, you can add routes and associate the table
-	 * with a subnet. For more information about route tables, go to <a
-	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon
-	 * Virtual Private Cloud User Guide.
+	 * Creates a new route table within a VPC. After you create a new route table, you can add routes and associate the table with a subnet. For
+	 * more information about route tables, go to <a
+	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon Virtual Private
+	 * Cloud User Guide.
 	 *
 	 * @param string $vpc_id (Required) The ID of the VPC where the route table will be created.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1490,8 +1466,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Describes the status of the indicated volume or, in lieu of any specified, all volumes belonging to the caller. Volumes
-	 * that have been deleted are not described.
+	 * Describes the status of the indicated volume or, in lieu of any specified, all volumes belonging to the caller. Volumes that have been
+	 * deleted are not described.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>VolumeId</code> - <code>string|array</code> - Optional - The optional list of EBS volumes to describe.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -1532,18 +1508,17 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Gives you information about your route tables. You can filter the results to return information only about tables that
-	 * match criteria you specify. For example, you could get information only about a table associated with a particular
-	 * subnet. You can specify multiple values for the filter. The table must match at least one of the specified values for it
-	 * to be included in the results.
+	 * Gives you information about your route tables. You can filter the results to return information only about tables that match criteria you
+	 * specify. For example, you could get information only about a table associated with a particular subnet. You can specify multiple values for
+	 * the filter. The table must match at least one of the specified values for it to be included in the results.
 	 *
-	 * You can specify multiple filters (e.g., the table has a particular route, and is associated with a particular subnet).
-	 * The result includes information for a particular table only if it matches all your filters. If there's no match, no
-	 * special message is returned; the response is simply empty.
+	 * You can specify multiple filters (e.g., the table has a particular route, and is associated with a particular subnet). The result includes
+	 * information for a particular table only if it matches all your filters. If there's no match, no special message is returned; the response is
+	 * simply empty.
 	 *
-	 * You can use wildcards with the filter values: an asterisk matches zero or more characters, and <code>?</code> matches
-	 * exactly one character. You can escape special characters using a backslash before the character. For example, a value of
-	 * <code>\*amazon\?\\</code> searches for the literal string <code>*amazon?\</code>.
+	 * You can use wildcards with the filter values: an asterisk matches zero or more characters, and <code>?</code> matches exactly one
+	 * character. You can escape special characters using a backslash before the character. For example, a value of <code>\*amazon\?\\</code>
+	 * searches for the literal string <code>*amazon?\</code>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>RouteTableId</code> - <code>string|array</code> - Optional - One or more route table IDs.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -1606,8 +1581,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Gives you information about one or more sets of DHCP options. You can specify one or more DHCP options set IDs, or no
-	 * IDs (to describe all your sets of DHCP options). The returned information consists of:
+	 * Gives you information about one or more sets of DHCP options. You can specify one or more DHCP options set IDs, or no IDs (to describe all
+	 * your sets of DHCP options). The returned information consists of:
 	 *
 	 * <ul> <li> The DHCP options set ID </li>
 	 *
@@ -1654,17 +1629,17 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Gives you information about the network ACLs in your VPC. You can filter the results to return information only about
-	 * ACLs that match criteria you specify. For example, you could get information only the ACL associated with a particular
-	 * subnet. The ACL must match at least one of the specified values for it to be included in the results.
+	 * Gives you information about the network ACLs in your VPC. You can filter the results to return information only about ACLs that match
+	 * criteria you specify. For example, you could get information only the ACL associated with a particular subnet. The ACL must match at least
+	 * one of the specified values for it to be included in the results.
 	 *
-	 * You can specify multiple filters (e.g., the ACL is associated with a particular subnet and has an egress entry that
-	 * denies traffic to a particular port). The result includes information for a particular ACL only if it matches all your
-	 * filters. If there's no match, no special message is returned; the response is simply empty.
+	 * You can specify multiple filters (e.g., the ACL is associated with a particular subnet and has an egress entry that denies traffic to a
+	 * particular port). The result includes information for a particular ACL only if it matches all your filters. If there's no match, no special
+	 * message is returned; the response is simply empty.
 	 *
-	 * You can use wildcards with the filter values: an asterisk matches zero or more characters, and <code>?</code> matches
-	 * exactly one character. You can escape special characters using a backslash before the character. For example, a value of
-	 * <code>\*amazon\?\\</code> searches for the literal string <code>*amazon?\</code>.
+	 * You can use wildcards with the filter values: an asterisk matches zero or more characters, and <code>?</code> matches exactly one
+	 * character. You can escape special characters using a backslash before the character. For example, a value of <code>\*amazon\?\\</code>
+	 * searches for the literal string <code>*amazon?\</code>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>NetworkAclId</code> - <code>string|array</code> - Optional - One or more network ACL IDs.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -1705,8 +1680,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The DescribeBundleTasks operation describes in-progress and recent bundle tasks. Complete and failed tasks are removed
-	 * from the list a short time after completion. If no bundle ids are given, all bundle tasks are returned.
+	 * The DescribeBundleTasks operation describes in-progress and recent bundle tasks. Complete and failed tasks are removed from the list a
+	 * short time after completion. If no bundle ids are given, all bundle tasks are returned.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>BundleId</code> - <code>string|array</code> - Optional - The list of bundle task IDs to describe.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -1747,14 +1722,14 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The RevokeSecurityGroupIngress operation revokes permissions from a security group. The permissions used to revoke must
-	 * be specified using the same values used to grant the permissions.
+	 * The RevokeSecurityGroupIngress operation revokes permissions from a security group. The permissions used to revoke must be specified using
+	 * the same values used to grant the permissions.
 	 *
-	 * Permissions are specified by IP protocol (TCP, UDP, or ICMP), the source of the request (by IP range or an Amazon EC2
-	 * user-group pair), the source and destination port ranges (for TCP and UDP), and the ICMP codes and types (for ICMP).
+	 * Permissions are specified by IP protocol (TCP, UDP, or ICMP), the source of the request (by IP range or an Amazon EC2 user-group pair), the
+	 * source and destination port ranges (for TCP and UDP), and the ICMP codes and types (for ICMP).
 	 *
-	 * Permission changes are quickly propagated to instances within the security group. However, depending on the number of
-	 * instances in the group, a small delay might occur.
+	 * Permission changes are quickly propagated to instances within the security group. However, depending on the number of instances in the
+	 * group, a small delay might occur.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>GroupName</code> - <code>string</code> - Optional - Name of the standard (EC2) security group to modify. The group must belong to your account. Can be used instead of GroupID for standard (EC2) security groups. </li>
@@ -1825,9 +1800,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates a new Internet gateway in your AWS account. After creating the Internet gateway, you then attach it to a VPC
-	 * using <code>AttachInternetGateway</code>. For more information about your VPC and Internet gateway, go to Amazon Virtual
-	 * Private Cloud User Guide.
+	 * Creates a new Internet gateway in your AWS account. After creating the Internet gateway, you then attach it to a VPC using
+	 * <code>AttachInternetGateway</code>. For more information about your VPC and Internet gateway, go to Amazon Virtual Private Cloud User Guide.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -1895,19 +1869,17 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Provides information to AWS about your customer gateway device. The customer gateway is the appliance at your end of
-	 * the VPN connection (compared to the VPN gateway, which is the device at the AWS side of the VPN connection). You can
-	 * have a single active customer gateway per AWS account (active means that you've created a VPN connection to use with the
-	 * customer gateway). AWS might delete any customer gateway that you create with this operation if you leave it inactive
-	 * for an extended period of time.
+	 * Provides information to AWS about your customer gateway device. The customer gateway is the appliance at your end of the VPN connection
+	 * (compared to the VPN gateway, which is the device at the AWS side of the VPN connection). You can have a single active customer gateway per
+	 * AWS account (active means that you've created a VPN connection to use with the customer gateway). AWS might delete any customer gateway that
+	 * you create with this operation if you leave it inactive for an extended period of time.
 	 *
-	 * You must provide the Internet-routable IP address of the customer gateway's external interface. The IP address must be
-	 * static.
+	 * You must provide the Internet-routable IP address of the customer gateway's external interface. The IP address must be static.
 	 *
-	 * You must also provide the device's Border Gateway Protocol (BGP) Autonomous System Number (ASN). You can use an
-	 * existing ASN assigned to your network. If you don't have an ASN already, you can use a private ASN (in the 64512 - 65534
-	 * range). For more information about ASNs, go to <a
-	 * .wikipedia.org/wiki/Autonomous_system_%28Internet%29">http://en.wikipedia.org/wiki/Autonomous_system_%28Internet%29</a>.
+	 * You must also provide the device's Border Gateway Protocol (BGP) Autonomous System Number (ASN). You can use an existing ASN assigned to
+	 * your network. If you don't have an ASN already, you can use a private ASN (in the 64512 - 65534 range). For more information about ASNs, go
+	 * to <a
+	 * href="http://en.wikipedia.org/wiki/Autonomous_system_%28Internet%29">http://en.wikipedia.org/wiki/Autonomous_system_%28Internet%29</a>.
 	 *
 	 * @param string $type (Required) The type of VPN connection this customer gateway supports.
 	 * @param string $ip_address (Required) The Internet-routable IP address for the customer gateway's outside interface. The address must be static
@@ -1929,11 +1901,10 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates the data feed for Spot Instances, enabling you to view Spot Instance usage logs. You can create one data feed
-	 * per account.
+	 * Creates the data feed for Spot Instances, enabling you to view Spot Instance usage logs. You can create one data feed per account.
 	 *
-	 * For conceptual information about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon
-	 * Elastic Compute Cloud User Guide.
+	 * For conceptual information about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon Elastic Compute Cloud
+	 * User Guide.
 	 *
 	 * @param string $bucket (Required) The Amazon S3 bucket in which to store the Spot Instance datafeed.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1952,8 +1923,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Attaches an Internet gateway to a VPC, enabling connectivity between the Internet and the VPC. For more information
-	 * about your VPC and Internet gateway, go to the Amazon Virtual Private Cloud User Guide.
+	 * Attaches an Internet gateway to a VPC, enabling connectivity between the Internet and the VPC. For more information about your VPC and
+	 * Internet gateway, go to the Amazon Virtual Private Cloud User Guide.
 	 *
 	 * @param string $internet_gateway_id (Required) The ID of the Internet gateway to attach.
 	 * @param string $vpc_id (Required) The ID of the VPC.
@@ -1973,14 +1944,13 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Deletes a VPN connection. Use this if you want to delete a VPC and all its associated components. Another reason to use
-	 * this operation is if you believe the tunnel credentials for your VPN connection have been compromised. In that
-	 * situation, you can delete the VPN connection and create a new one that has new keys, without needing to delete the VPC
-	 * or VPN gateway. If you create a new VPN connection, you must reconfigure the customer gateway using the new
-	 * configuration information returned with the new VPN connection ID.
+	 * Deletes a VPN connection. Use this if you want to delete a VPC and all its associated components. Another reason to use this operation is
+	 * if you believe the tunnel credentials for your VPN connection have been compromised. In that situation, you can delete the VPN connection
+	 * and create a new one that has new keys, without needing to delete the VPC or VPN gateway. If you create a new VPN connection, you must
+	 * reconfigure the customer gateway using the new configuration information returned with the new VPN connection ID.
 	 *
-	 * If you're deleting the VPC and all its associated parts, we recommend you detach the VPN gateway from the VPC and
-	 * delete the VPC before deleting the VPN connection.
+	 * If you're deleting the VPC and all its associated parts, we recommend you detach the VPN gateway from the VPC and delete the VPC before
+	 * deleting the VPN connection.
 	 *
 	 * @param string $vpn_connection_id (Required) The ID of the VPN connection to delete
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1998,20 +1968,18 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates a new VPN connection between an existing VPN gateway and customer gateway. The only supported connection type
-	 * is ipsec.1.
+	 * Creates a new VPN connection between an existing VPN gateway and customer gateway. The only supported connection type is ipsec.1.
 	 *
-	 * The response includes information that you need to configure your customer gateway, in XML format. We recommend you use
-	 * the command line version of this operation (<code>ec2-create-vpn-connection</code>), which takes an <code>-f</code>
-	 * option (for format) and returns configuration information formatted as expected by the vendor you specified, or in a
-	 * generic, human readable format. For information about the command, go to <code>ec2-create-vpn-connection</code> in the
-	 * Amazon Virtual Private Cloud Command Line Reference.
+	 * The response includes information that you need to configure your customer gateway, in XML format. We recommend you use the command line
+	 * version of this operation (<code>ec2-create-vpn-connection</code>), which takes an <code>-f</code> option (for format) and returns
+	 * configuration information formatted as expected by the vendor you specified, or in a generic, human readable format. For information about
+	 * the command, go to <code>ec2-create-vpn-connection</code> in the Amazon Virtual Private Cloud Command Line Reference.
 	 *
-	 * We strongly recommend you use HTTPS when calling this operation because the response contains sensitive cryptographic
-	 * information for configuring your customer gateway.
+	 * We strongly recommend you use HTTPS when calling this operation because the response contains sensitive cryptographic information for
+	 * configuring your customer gateway.
 	 *
-	 * If you decide to shut down your VPN connection for any reason and then create a new one, you must re-configure your
-	 * customer gateway with the new information returned from this call.
+	 * If you decide to shut down your VPN connection for any reason and then create a new one, you must re-configure your customer gateway with
+	 * the new information returned from this call.
 	 *
 	 * @param string $type (Required) The type of VPN connection.
 	 * @param string $customer_gateway_id (Required) The ID of the customer gateway.
@@ -2053,15 +2021,14 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Gives you information about your subnets. You can filter the results to return information only about subnets that
-	 * match criteria you specify.
+	 * Gives you information about your subnets. You can filter the results to return information only about subnets that match criteria you
+	 * specify.
 	 *
-	 * For example, you could ask to get information about a particular subnet (or all) only if the subnet's state is
-	 * available. You can specify multiple filters (e.g., the subnet is in a particular VPC, and the subnet's state is
-	 * available).
+	 * For example, you could ask to get information about a particular subnet (or all) only if the subnet's state is available. You can specify
+	 * multiple filters (e.g., the subnet is in a particular VPC, and the subnet's state is available).
 	 *
-	 * The result includes information for a particular subnet only if the subnet matches all your filters. If there's no
-	 * match, no special message is returned; the response is simply empty. The following table shows the available filters.
+	 * The result includes information for a particular subnet only if the subnet matches all your filters. If there's no match, no special
+	 * message is returned; the response is simply empty. The following table shows the available filters.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>SubnetId</code> - <code>string|array</code> - Optional - A set of one or more subnet IDs.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -2104,36 +2071,35 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * The RunInstances operation launches a specified number of instances.
 	 *
-	 * If Amazon EC2 cannot launch the minimum number AMIs you request, no instances launch. If there is insufficient capacity
-	 * to launch the maximum number of AMIs you request, Amazon EC2 launches as many as possible to satisfy the requested
-	 * maximum values.
+	 * If Amazon EC2 cannot launch the minimum number AMIs you request, no instances launch. If there is insufficient capacity to launch the
+	 * maximum number of AMIs you request, Amazon EC2 launches as many as possible to satisfy the requested maximum values.
 	 *
-	 * Every instance is launched in a security group. If you do not specify a security group at launch, the instances start
-	 * in your default security group. For more information on creating security groups, see CreateSecurityGroup.
+	 * Every instance is launched in a security group. If you do not specify a security group at launch, the instances start in your default
+	 * security group. For more information on creating security groups, see CreateSecurityGroup.
 	 *
 	 * An optional instance type can be specified. For information about instance types, see Instance Types.
 	 *
-	 * You can provide an optional key pair ID for each image in the launch request (for more information, see CreateKeyPair).
-	 * All instances that are created from images that use this key pair will have access to the associated public key at boot.
-	 * You can use this key to provide secure access to an instance of an image on a per-instance basis. Amazon EC2 public
-	 * images use this feature to provide secure access without passwords.
+	 * You can provide an optional key pair ID for each image in the launch request (for more information, see CreateKeyPair). All instances that
+	 * are created from images that use this key pair will have access to the associated public key at boot. You can use this key to provide secure
+	 * access to an instance of an image on a per-instance basis. Amazon EC2 public images use this feature to provide secure access without
+	 * passwords.
 	 *
 	 * Launching public images without a key pair ID will leave them inaccessible.
 	 *
-	 * The public key material is made available to the instance at boot time by placing it in the <code>openssh_id.pub</code>
-	 * file on a logical device that is exposed to the instance as <code>/dev/sda2</code> (the ephemeral store). The format of
-	 * this file is suitable for use as an entry within <code>~/.ssh/authorized_keys</code> (the OpenSSH format). This can be
-	 * done at boot (e.g., as part of <code>rc.local</code>) allowing for secure access without passwords.
+	 * The public key material is made available to the instance at boot time by placing it in the <code>openssh_id.pub</code> file on a logical
+	 * device that is exposed to the instance as <code>/dev/sda2</code> (the ephemeral store). The format of this file is suitable for use as an
+	 * entry within <code>~/.ssh/authorized_keys</code> (the OpenSSH format). This can be done at boot (e.g., as part of <code>rc.local</code>)
+	 * allowing for secure access without passwords.
 	 *
-	 * Optional user data can be provided in the launch request. All instances that collectively comprise the launch request
-	 * have access to this data For more information, see Instance Metadata.
+	 * Optional user data can be provided in the launch request. All instances that collectively comprise the launch request have access to this
+	 * data For more information, see Instance Metadata.
 	 *
 	 *
 	 * If any of the AMIs have a product code attached for which the user has not subscribed, the RunInstances call will fail.
 	 *
-	 * We strongly recommend using the 2.6.18 Xen stock kernel with the <code>c1.medium</code> and <code>c1.xlarge</code>
-	 * instances. Although the default Amazon EC2 kernels will work, the new kernels provide greater stability and performance
-	 * for these instance types. For more information about kernels, see Kernels, RAM Disks, and Block Device Mappings.
+	 * We strongly recommend using the 2.6.18 Xen stock kernel with the <code>c1.medium</code> and <code>c1.xlarge</code> instances. Although the
+	 * default Amazon EC2 kernels will work, the new kernels provide greater stability and performance for these instance types. For more
+	 * information about kernels, see Kernels, RAM Disks, and Block Device Mappings.
 	 *
 	 * @param string $image_id (Required) Unique ID of a machine image, returned by a call to DescribeImages.
 	 * @param integer $min_count (Required) Minimum number of instances to launch. If the value is more than Amazon EC2 can launch, no instances are launched at all.
@@ -2146,7 +2112,8 @@ class AmazonEC2 extends CFRuntime
 	 * 	<li><code>InstanceType</code> - <code>string</code> - Optional - Specifies the instance type for the launched instances. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>cc1.4xlarge</code>, <code>cg1.4xlarge</code>]</li>
 	 * 	<li><code>Placement</code> - <code>array</code> - Optional -  Specifies the placement constraints (Availability Zones) for launching the instances. <ul>
 	 * 		<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The availability zone in which an Amazon EC2 instance runs. </li>
-	 * 		<li><code>GroupName</code> - <code>string</code> - Optional - The name of a PlacementGroup. </li></ul></li>
+	 * 		<li><code>GroupName</code> - <code>string</code> - Optional - The name of the PlacementGroup in which an Amazon EC2 instance runs. Placement groups are primarily used for launching High Performance Computing instances in the same group to ensure fast connection speeds. </li>
+	 * 		<li><code>Tenancy</code> - <code>string</code> - Optional - The allowed tenancy of instances launched into the VPC. A value of default means instances can be launched with any tenancy; a value of dedicated means instances must be launched with tenancy as dedicated. </li></ul></li>
 	 * 	<li><code>KernelId</code> - <code>string</code> - Optional - The ID of the kernel with which to launch the instance. </li>
 	 * 	<li><code>RamdiskId</code> - <code>string</code> - Optional - The ID of the RAM disk with which to launch the instance. Some kernels require additional drivers at launch. Check the kernel requirements for information on whether you need to specify a RAM disk. To find kernel requirements, go to the Resource Center and search for the kernel ID. </li>
 	 * 	<li><code>BlockDeviceMapping</code> - <code>array</code> - Optional - Specifies how block devices are exposed to the instance. Each mapping is made up of a virtualName and a deviceName. <ul>
@@ -2272,14 +2239,13 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Associates a subnet with a route table. The subnet and route table must be in the same VPC. This association causes
-	 * traffic originating from the subnet to be routed according to the routes in the route table. The action returns an
-	 * association ID, which you need if you want to disassociate the route table from the subnet later. A route table can be
-	 * associated with multiple subnets.
+	 * Associates a subnet with a route table. The subnet and route table must be in the same VPC. This association causes traffic originating
+	 * from the subnet to be routed according to the routes in the route table. The action returns an association ID, which you need if you want to
+	 * disassociate the route table from the subnet later. A route table can be associated with multiple subnets.
 	 *
 	 * For more information about route tables, go to <a
-	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon
-	 * Virtual Private Cloud User Guide.
+	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon Virtual Private
+	 * Cloud User Guide.
 	 *
 	 * @param string $subnet_id (Required) The ID of the subnet.
 	 * @param string $route_table_id (Required) The ID of the route table.
@@ -2301,9 +2267,9 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * The DescribeInstances operation returns information about instances that you own.
 	 *
-	 * If you specify one or more instance IDs, Amazon EC2 returns information for those instances. If you do not specify
-	 * instance IDs, Amazon EC2 returns information for all relevant instances. If you specify an invalid instance ID, a fault
-	 * is returned. If you specify an instance that you do not own, it will not be included in the returned results.
+	 * If you specify one or more instance IDs, Amazon EC2 returns information for those instances. If you do not specify instance IDs, Amazon EC2
+	 * returns information for all relevant instances. If you specify an invalid instance ID, a fault is returned. If you specify an instance that
+	 * you do not own, it will not be included in the returned results.
 	 *
 	 * Recently terminated instances might appear in the returned results. This interval is usually less than one hour.
 	 *
@@ -2346,8 +2312,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Deletes a network ACL from a VPC. The ACL must not have any subnets associated with it. You can't delete the default
-	 * network ACL. For more information about network ACLs, go to Network ACLs in the Amazon Virtual Private Cloud User Guide.
+	 * Deletes a network ACL from a VPC. The ACL must not have any subnets associated with it. You can't delete the default network ACL. For more
+	 * information about network ACLs, go to Network ACLs in the Amazon Virtual Private Cloud User Guide.
 	 *
 	 * @param string $network_acl_id (Required) The ID of the network ACL to be deleted.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -2365,15 +2331,15 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The DescribeImages operation returns information about AMIs, AKIs, and ARIs available to the user. Information returned
-	 * includes image type, product codes, architecture, and kernel and RAM disk IDs. Images available to the user include
-	 * public images available for any user to launch, private images owned by the user making the request, and private images
-	 * owned by other users for which the user has explicit launch permissions.
+	 * The DescribeImages operation returns information about AMIs, AKIs, and ARIs available to the user. Information returned includes image
+	 * type, product codes, architecture, and kernel and RAM disk IDs. Images available to the user include public images available for any user to
+	 * launch, private images owned by the user making the request, and private images owned by other users for which the user has explicit launch
+	 * permissions.
 	 *
 	 * Launch permissions fall into three categories:
 	 *
-	 * <ul> <li> <b>Public:</b> The owner of the AMI granted launch permissions for the AMI to the all group. All users have
-	 * launch permissions for these AMIs. </li>
+	 * <ul> <li> <b>Public:</b> The owner of the AMI granted launch permissions for the AMI to the all group. All users have launch permissions
+	 * for these AMIs. </li>
 	 *
 	 * <li> <b>Explicit:</b> The owner of the AMI granted launch permissions to a specific user. </li>
 	 *
@@ -2381,20 +2347,17 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * </ul>
 	 *
-	 * The list of AMIs returned can be modified by specifying AMI IDs, AMI owners, or users with launch permissions. If no
-	 * options are specified, Amazon EC2 returns all AMIs for which the user has launch permissions.
+	 * The list of AMIs returned can be modified by specifying AMI IDs, AMI owners, or users with launch permissions. If no options are specified,
+	 * Amazon EC2 returns all AMIs for which the user has launch permissions.
 	 *
-	 * If you specify one or more AMI IDs, only AMIs that have the specified IDs are returned. If you specify an invalid AMI
-	 * ID, a fault is returned. If you specify an AMI ID for which you do not have access, it will not be included in the
-	 * returned results.
+	 * If you specify one or more AMI IDs, only AMIs that have the specified IDs are returned. If you specify an invalid AMI ID, a fault is
+	 * returned. If you specify an AMI ID for which you do not have access, it will not be included in the returned results.
 	 *
-	 * If you specify one or more AMI owners, only AMIs from the specified owners and for which you have access are returned.
-	 * The results can include the account IDs of the specified owners, amazon for AMIs owned by Amazon or self for AMIs that
-	 * you own.
+	 * If you specify one or more AMI owners, only AMIs from the specified owners and for which you have access are returned. The results can
+	 * include the account IDs of the specified owners, amazon for AMIs owned by Amazon or self for AMIs that you own.
 	 *
-	 * If you specify a list of executable users, only users that have launch permissions for the AMIs are returned. You can
-	 * specify account IDs (if you own the AMI(s)), self for AMIs for which you own or have explicit permissions, or all for
-	 * public AMIs.
+	 * If you specify a list of executable users, only users that have launch permissions for the AMIs are returned. You can specify account IDs
+	 * (if you own the AMI(s)), self for AMIs for which you own or have explicit permissions, or all for public AMIs.
 	 *
 	 * Deregistered images are included in the returned results for an unspecified interval after deregistration.
 	 *
@@ -2457,10 +2420,10 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Starts an instance that uses an Amazon EBS volume as its root device. Instances that use Amazon EBS volumes as their
-	 * root devices can be quickly stopped and started. When an instance is stopped, the compute resources are released and you
-	 * are not billed for hourly instance usage. However, your root partition Amazon EBS volume remains, continues to persist
-	 * your data, and you are charged for Amazon EBS volume usage. You can restart your instance at any time.
+	 * Starts an instance that uses an Amazon EBS volume as its root device. Instances that use Amazon EBS volumes as their root devices can be
+	 * quickly stopped and started. When an instance is stopped, the compute resources are released and you are not billed for hourly instance
+	 * usage. However, your root partition Amazon EBS volume remains, continues to persist your data, and you are charged for Amazon EBS volume
+	 * usage. You can restart your instance at any time.
 	 *
 	 * Performing this operation on an instance that uses an instance store as its root device returns an error.
 	 *
@@ -2536,9 +2499,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Deletes a set of DHCP options that you specify. Amazon VPC returns an error if the set of options you specify is
-	 * currently associated with a VPC. You can disassociate the set of options by associating either a new set of options or
-	 * the default options with the VPC.
+	 * Deletes a set of DHCP options that you specify. Amazon VPC returns an error if the set of options you specify is currently associated with
+	 * a VPC. You can disassociate the set of options by associating either a new set of options or the default options with the VPC.
 	 *
 	 * @param string $dhcp_options_id (Required) The ID of the DHCP options set to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -2558,12 +2520,12 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * The AuthorizeSecurityGroupIngress operation adds permissions to a security group.
 	 *
-	 * Permissions are specified by the IP protocol (TCP, UDP or ICMP), the source of the request (by IP range or an Amazon
-	 * EC2 user-group pair), the source and destination port ranges (for TCP and UDP), and the ICMP codes and types (for ICMP).
-	 * When authorizing ICMP, <code>-1</code> can be used as a wildcard in the type and code fields.
+	 * Permissions are specified by the IP protocol (TCP, UDP or ICMP), the source of the request (by IP range or an Amazon EC2 user-group pair),
+	 * the source and destination port ranges (for TCP and UDP), and the ICMP codes and types (for ICMP). When authorizing ICMP, <code>-1</code>
+	 * can be used as a wildcard in the type and code fields.
 	 *
-	 * Permission changes are propagated to instances within the security group as quickly as possible. However, depending on
-	 * the number of instances, a small delay might occur.
+	 * Permission changes are propagated to instances within the security group as quickly as possible. However, depending on the number of
+	 * instances, a small delay might occur.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>GroupName</code> - <code>string</code> - Optional - Name of the standard (EC2) security group to modify. The group must belong to your account. Can be used instead of GroupID for standard (EC2) security groups. </li>
@@ -2605,26 +2567,24 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Describes Spot Instance requests. Spot Instances are instances that Amazon EC2 starts on your behalf when the maximum
-	 * price that you specify exceeds the current Spot Price. Amazon EC2 periodically sets the Spot Price based on available
-	 * Spot Instance capacity and current spot instance requests. For conceptual information about Spot Instances, refer to the
-	 * <a href="http://docs.amazonwebservices.com/AWSEC2/2010-08-31/DeveloperGuide/">Amazon Elastic Compute Cloud Developer
-	 * Guide</a> or <a href="http://docs.amazonwebservices.com/AWSEC2/2010-08-31/UserGuide/">Amazon Elastic Compute Cloud User
-	 * Guide</a>.
+	 * Describes Spot Instance requests. Spot Instances are instances that Amazon EC2 starts on your behalf when the maximum price that you
+	 * specify exceeds the current Spot Price. Amazon EC2 periodically sets the Spot Price based on available Spot Instance capacity and current
+	 * spot instance requests. For conceptual information about Spot Instances, refer to the <a
+	 * href="http://docs.amazonwebservices.com/AWSEC2/2010-08-31/DeveloperGuide/">Amazon Elastic Compute Cloud Developer Guide</a> or <a
+	 * href="http://docs.amazonwebservices.com/AWSEC2/2010-08-31/UserGuide/">Amazon Elastic Compute Cloud User Guide</a>.
 	 *
-	 * You can filter the results to return information only about Spot Instance requests that match criteria you specify. For
-	 * example, you could get information about requests where the Spot Price you specified is a certain value (you can't use
-	 * greater than or less than comparison, but you can use <code>*</code> and <code>?</code> wildcards). You can specify
-	 * multiple values for a filter. A Spot Instance request must match at least one of the specified values for it to be
-	 * included in the results.
+	 * You can filter the results to return information only about Spot Instance requests that match criteria you specify. For example, you could
+	 * get information about requests where the Spot Price you specified is a certain value (you can't use greater than or less than comparison,
+	 * but you can use <code>*</code> and <code>?</code> wildcards). You can specify multiple values for a filter. A Spot Instance request must
+	 * match at least one of the specified values for it to be included in the results.
 	 *
-	 * You can specify multiple filters (e.g., the Spot Price is equal to a particular value, and the instance type is
-	 * <code>m1.small</code>). The result includes information for a particular request only if it matches all your filters. If
-	 * there's no match, no special message is returned; the response is simply empty.
+	 * You can specify multiple filters (e.g., the Spot Price is equal to a particular value, and the instance type is <code>m1.small</code>). The
+	 * result includes information for a particular request only if it matches all your filters. If there's no match, no special message is
+	 * returned; the response is simply empty.
 	 *
-	 * You can use wildcards with the filter values: an asterisk matches zero or more characters, and <code>?</code> matches
-	 * exactly one character. You can escape special characters using a backslash before the character. For example, a value of
-	 * <code>\*amazon\?\\</code> searches for the literal string <code>*amazon?\</code>.
+	 * You can use wildcards with the filter values: an asterisk matches zero or more characters, and <code>?</code> matches exactly one
+	 * character. You can escape special characters using a backslash before the character. For example, a value of <code>\*amazon\?\\</code>
+	 * searches for the literal string <code>*amazon?\</code>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>SpotInstanceRequestId</code> - <code>string|array</code> - Optional - The ID of the request.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -2665,15 +2625,16 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates a VPC with the CIDR block you specify. The smallest VPC you can create uses a <code>/28</code> netmask (16 IP
-	 * addresses), and the largest uses a <code>/18</code> netmask (16,384 IP addresses). To help you decide how big to make
-	 * your VPC, go to the topic about creating VPCs in the Amazon Virtual Private Cloud Developer Guide.
+	 * Creates a VPC with the CIDR block you specify. The smallest VPC you can create uses a <code>/28</code> netmask (16 IP addresses), and the
+	 * largest uses a <code>/18</code> netmask (16,384 IP addresses). To help you decide how big to make your VPC, go to the topic about creating
+	 * VPCs in the Amazon Virtual Private Cloud Developer Guide.
 	 *
-	 * By default, each instance you launch in the VPC has the default DHCP options (the standard EC2 host name, no domain
-	 * name, no DNS server, no NTP server, and no NetBIOS server or node type).
+	 * By default, each instance you launch in the VPC has the default DHCP options (the standard EC2 host name, no domain name, no DNS server, no
+	 * NTP server, and no NetBIOS server or node type).
 	 *
 	 * @param string $cidr_block (Required) A valid CIDR block.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>InstanceTenancy</code> - <code>string</code> - Optional - The allowed tenancy of instances launched into the VPC. A value of default means instances can be launched with any tenancy; a value of dedicated means instances must be launched with tenancy as dedicated. </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -2688,13 +2649,12 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Gives you information about your customer gateways. You can filter the results to return information only about
-	 * customer gateways that match criteria you specify. For example, you could ask to get information about a particular
-	 * customer gateway (or all) only if the gateway's state is pending or available. You can specify multiple filters (e.g.,
-	 * the customer gateway has a particular IP address for the Internet-routable external interface, and the gateway's state
-	 * is pending or available). The result includes information for a particular customer gateway only if the gateway matches
-	 * all your filters. If there's no match, no special message is returned; the response is simply empty. The following table
-	 * shows the available filters.
+	 * Gives you information about your customer gateways. You can filter the results to return information only about customer gateways that
+	 * match criteria you specify. For example, you could ask to get information about a particular customer gateway (or all) only if the gateway's
+	 * state is pending or available. You can specify multiple filters (e.g., the customer gateway has a particular IP address for the
+	 * Internet-routable external interface, and the gateway's state is pending or available). The result includes information for a particular
+	 * customer gateway only if the gateway matches all your filters. If there's no match, no special message is returned; the response is simply
+	 * empty. The following table shows the available filters.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>CustomerGatewayId</code> - <code>string|array</code> - Optional - A set of one or more customer gateway IDs.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -2735,11 +2695,11 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates a new route in a route table within a VPC. The route's target can be either a gateway attached to the VPC or a
-	 * NAT instance in the VPC.
+	 * Creates a new route in a route table within a VPC. The route's target can be either a gateway attached to the VPC or a NAT instance in the
+	 * VPC.
 	 *
-	 * When determining how to route traffic, we use the route with the most specific match. For example, let's say the
-	 * traffic is destined for <code>192.0.2.3</code>, and the route table includes the following two routes:
+	 * When determining how to route traffic, we use the route with the most specific match. For example, let's say the traffic is destined for
+	 * <code>192.0.2.3</code>, and the route table includes the following two routes:
 	 *
 	 * <ul> <li> <code>192.0.2.0/24</code> (goes to some target A) </li>
 	 *
@@ -2747,12 +2707,12 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * </ul>
 	 *
-	 * Both routes apply to the traffic destined for <code>192.0.2.3</code>. However, the second route in the list is more
-	 * specific, so we use that route to determine where to target the traffic.
+	 * Both routes apply to the traffic destined for <code>192.0.2.3</code>. However, the second route in the list is more specific, so we use
+	 * that route to determine where to target the traffic.
 	 *
 	 * For more information about route tables, go to <a
-	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon
-	 * Virtual Private Cloud User Guide.
+	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon Virtual Private
+	 * Cloud User Guide.
 	 *
 	 * @param string $route_table_id (Required) The ID of the route table where the route will be added.
 	 * @param string $destination_cidr_block (Required) The CIDR address block used for the destination match. For example: <code>0.0.0.0/0</code>. Routing decisions are based on the most specific match.
@@ -2774,10 +2734,9 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Deletes a route table from a VPC. The route table must not be associated with a subnet. You can't delete the main route
-	 * table. For more information about route tables, go to <a
-	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon
-	 * Virtual Private Cloud User Guide.
+	 * Deletes a route table from a VPC. The route table must not be associated with a subnet. You can't delete the main route table. For more
+	 * information about route tables, go to <a href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route
+	 * Tables</a> in the Amazon Virtual Private Cloud User Guide.
 	 *
 	 * @param string $route_table_id (Required) The ID of the route table to be deleted.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -2797,12 +2756,11 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Creates a Spot Instance request.
 	 *
-	 * Spot Instances are instances that Amazon EC2 starts on your behalf when the maximum price that you specify exceeds the
-	 * current Spot Price. Amazon EC2 periodically sets the Spot Price based on available Spot Instance capacity and current
-	 * spot instance requests.
+	 * Spot Instances are instances that Amazon EC2 starts on your behalf when the maximum price that you specify exceeds the current Spot Price.
+	 * Amazon EC2 periodically sets the Spot Price based on available Spot Instance capacity and current spot instance requests.
 	 *
-	 * For conceptual information about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon
-	 * Elastic Compute Cloud User Guide.
+	 * For conceptual information about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon Elastic Compute Cloud
+	 * User Guide.
 	 *
 	 * @param string $spot_price (Required) Specifies the maximum hourly price for any Spot Instance launched to fulfill the request.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -2815,12 +2773,18 @@ class AmazonEC2 extends CFRuntime
 	 * 	<li><code>LaunchSpecification</code> - <code>array</code> - Optional -  Specifies additional launch instance information. <ul>
 	 * 		<li><code>ImageId</code> - <code>string</code> - Optional - The AMI ID. </li>
 	 * 		<li><code>KeyName</code> - <code>string</code> - Optional - The name of the key pair. </li>
-	 * 		<li><code>SecurityGroup</code> - <code>string|array</code> - Optional -   Pass a string for a single value, or an indexed array for multiple values. </li>
+	 * 		<li><code>GroupSet</code> - <code>array</code> - Optional - Name of the security group. <ul>
+	 * 			<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
+	 * 				<li><code>GroupName</code> - <code>string</code> - Optional -  </li>
+	 * 				<li><code>GroupId</code> - <code>string</code> - Optional -  </li>
+	 * 			</ul></li>
+	 * 		</ul></li>
+	 * 		<li><code>SecurityGroup</code> - <code>string|array</code> - Optional - Name of the security group.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 		<li><code>UserData</code> - <code>string</code> - Optional - Optional data, specific to a user's application, to provide in the launch request. All instances that collectively comprise the launch request have access to this data. User data is never returned through API responses. </li>
 	 * 		<li><code>InstanceType</code> - <code>string</code> - Optional - Specifies the instance type. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>cc1.4xlarge</code>, <code>cg1.4xlarge</code>]</li>
 	 * 		<li><code>Placement</code> - <code>array</code> - Optional - Defines a placement item. Takes an associative array of parameters that can have the following keys: <ul>
 	 * 			<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The availability zone in which an Amazon EC2 instance runs. </li>
-	 * 			<li><code>GroupName</code> - <code>string</code> - Optional - The name of a PlacementGroup. </li>
+	 * 			<li><code>GroupName</code> - <code>string</code> - Optional - The name of the PlacementGroup in which an Amazon EC2 instance runs. Placement groups are primarily used for launching High Performance Computing instances in the same group to ensure fast connection speeds. </li>
 	 * 		</ul></li>
 	 * 		<li><code>KernelId</code> - <code>string</code> - Optional - Specifies the ID of the kernel to select. </li>
 	 * 		<li><code>RamdiskId</code> - <code>string</code> - Optional - Specifies the ID of the RAM disk to select. Some kernels require additional drivers at launch. Check the kernel requirements for information on whether or not you need to specify a RAM disk and search for the kernel ID. </li>
@@ -2873,8 +2837,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Adds or overwrites tags for the specified resources. Each resource can have a maximum of 10 tags. Each tag consists of
-	 * a key-value pair. Tag keys must be unique per resource.
+	 * Adds or overwrites tags for the specified resources. Each resource can have a maximum of 10 tags. Each tag consists of a key-value pair.
+	 * Tag keys must be unique per resource.
 	 *
 	 * @param string|array $resource_id (Required) One or more IDs of resources to tag. This could be the ID of an AMI, an instance, an EBS volume, or snapshot, etc.  Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $tag (Required) The tags to add or overwrite for the specified resources. Each tag item consists of a key-value pair. <ul>
@@ -2908,8 +2872,8 @@ class AmazonEC2 extends CFRuntime
 	/**
 	 *
 	 * Replaces an existing route within a route table in a VPC. For more information about route tables, go to <a
-	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon
-	 * Virtual Private Cloud User Guide.
+	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon Virtual Private
+	 * Cloud User Guide.
 	 *
 	 * @param string $route_table_id (Required) The ID of the route table where the route will be replaced.
 	 * @param string $destination_cidr_block (Required) The CIDR address block used for the destination match. For example: <code>0.0.0.0/0</code>. The value you provide must match the CIDR of an existing route in the table.
@@ -2962,9 +2926,9 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * CancelBundleTask operation cancels a pending or in-progress bundling task. This is an asynchronous call and it make
-	 * take a while for the task to be canceled. If a task is canceled while it is storing items, there may be parts of the
-	 * incomplete AMI stored in S3. It is up to the caller to clean up these parts from S3.
+	 * CancelBundleTask operation cancels a pending or in-progress bundling task. This is an asynchronous call and it make take a while for the
+	 * task to be canceled. If a task is canceled while it is storing items, there may be parts of the incomplete AMI stored in S3. It is up to the
+	 * caller to clean up these parts from S3.
 	 *
 	 * @param string $bundle_id (Required) The ID of the bundle task to cancel.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -2984,12 +2948,11 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Cancels one or more Spot Instance requests.
 	 *
-	 * Spot Instances are instances that Amazon EC2 starts on your behalf when the maximum price that you specify exceeds the
-	 * current Spot Price. Amazon EC2 periodically sets the Spot Price based on available Spot Instance capacity and current
-	 * spot instance requests.
+	 * Spot Instances are instances that Amazon EC2 starts on your behalf when the maximum price that you specify exceeds the current Spot Price.
+	 * Amazon EC2 periodically sets the Spot Price based on available Spot Instance capacity and current spot instance requests.
 	 *
-	 * For conceptual information about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon
-	 * Elastic Compute Cloud User Guide.
+	 * For conceptual information about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon Elastic Compute Cloud
+	 * User Guide.
 	 *
 	 * @param string|array $spot_instance_request_id (Required) Specifies the ID of the Spot Instance request.  Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -3011,9 +2974,9 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The PurchaseReservedInstancesOffering operation purchases a Reserved Instance for use with your account. With Amazon
-	 * EC2 Reserved Instances, you purchase the right to launch Amazon EC2 instances for a period of time (without getting
-	 * insufficient capacity errors) and pay a lower usage rate for the actual time used.
+	 * The PurchaseReservedInstancesOffering operation purchases a Reserved Instance for use with your account. With Amazon EC2 Reserved
+	 * Instances, you purchase the right to launch Amazon EC2 instances for a period of time (without getting insufficient capacity errors) and pay
+	 * a lower usage rate for the actual time used.
 	 *
 	 * @param string $reserved_instances_offering_id (Required) The unique ID of the Reserved Instances offering being purchased.
 	 * @param integer $instance_count (Required) The number of Reserved Instances to purchase.
@@ -3075,8 +3038,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The TerminateInstances operation shuts down one or more instances. This operation is idempotent; if you terminate an
-	 * instance more than once, each call will succeed.
+	 * The TerminateInstances operation shuts down one or more instances. This operation is idempotent; if you terminate an instance more than
+	 * once, each call will succeed.
 	 *
 	 * Terminated instances will remain visible after termination (approximately one hour).
 	 *
@@ -3102,8 +3065,8 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Deletes the data feed for Spot Instances.
 	 *
-	 * For conceptual information about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon
-	 * Elastic Compute Cloud User Guide.
+	 * For conceptual information about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon Elastic Compute Cloud
+	 * User Guide.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -3119,8 +3082,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Deletes an Internet gateway from your AWS account. The gateway must not be attached to a VPC. For more information
-	 * about your VPC and Internet gateway, go to Amazon Virtual Private Cloud User Guide.
+	 * Deletes an Internet gateway from your AWS account. The gateway must not be attached to a VPC. For more information about your VPC and
+	 * Internet gateway, go to Amazon Virtual Private Cloud User Guide.
 	 *
 	 * @param string $internet_gateway_id (Required) The ID of the Internet gateway to be deleted.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -3138,13 +3101,13 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Changes the route table associated with a given subnet in a VPC. After you execute this action, the subnet uses the
-	 * routes in the new route table it's associated with. For more information about route tables, go to <a
-	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon
-	 * Virtual Private Cloud User Guide.
+	 * Changes the route table associated with a given subnet in a VPC. After you execute this action, the subnet uses the routes in the new route
+	 * table it's associated with. For more information about route tables, go to <a
+	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon Virtual Private
+	 * Cloud User Guide.
 	 *
-	 * You can also use this to change which table is the main route table in the VPC. You just specify the main route table's
-	 * association ID and the route table that you want to be the new main route table.
+	 * You can also use this to change which table is the main route table in the VPC. You just specify the main route table's association ID and
+	 * the route table that you want to be the new main route table.
 	 *
 	 * @param string $association_id (Required) The ID representing the current association between the original route table and the subnet.
 	 * @param string $route_table_id (Required) The ID of the new route table to associate with the subnet.
@@ -3235,8 +3198,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The DescribeKeyPairs operation returns information about key pairs available to you. If you specify key pairs,
-	 * information about those key pairs is returned. Otherwise, information for all registered key pairs is returned.
+	 * The DescribeKeyPairs operation returns information about key pairs available to you. If you specify key pairs, information about those key
+	 * pairs is returned. Otherwise, information for all registered key pairs is returned.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>KeyName</code> - <code>string|array</code> - Optional - The optional list of key pair names to describe.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -3277,8 +3240,7 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The DescribeImageAttribute operation returns information about an attribute of an AMI. Only one attribute can be
-	 * specified per call.
+	 * The DescribeImageAttribute operation returns information about an attribute of an AMI. Only one attribute can be specified per call.
 	 *
 	 * @param string $image_id (Required) The ID of the AMI whose attribute is to be described.
 	 * @param string $attribute (Required) The name of the attribute to describe. Available attribute names: <code>productCodes</code>, <code>kernel</code>, <code>ramdisk</code>, <code>launchPermisson</code>, <code>blockDeviceMapping</code>
@@ -3300,10 +3262,10 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * Disassociates a subnet from a route table.
 	 *
-	 * After you perform this action, the subnet no longer uses the routes in the route table. Instead it uses the routes in
-	 * the VPC's main route table. For more information about route tables, go to <a
-	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon
-	 * Virtual Private Cloud User Guide.
+	 * After you perform this action, the subnet no longer uses the routes in the route table. Instead it uses the routes in the VPC's main route
+	 * table. For more information about route tables, go to <a
+	 * href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html">Route Tables</a> in the Amazon Virtual Private
+	 * Cloud User Guide.
 	 *
 	 * @param string $association_id (Required) The association ID representing the current association between the route table and subnet.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -3321,11 +3283,11 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The ConfirmProductInstance operation returns true if the specified product code is attached to the specified instance.
-	 * The operation returns false if the product code is not attached to the instance.
+	 * The ConfirmProductInstance operation returns true if the specified product code is attached to the specified instance. The operation
+	 * returns false if the product code is not attached to the instance.
 	 *
-	 * The ConfirmProductInstance operation can only be executed by the owner of the AMI. This feature is useful when an AMI
-	 * owner is providing support and wants to verify whether a user's instance is eligible.
+	 * The ConfirmProductInstance operation can only be executed by the owner of the AMI. This feature is useful when an AMI owner is providing
+	 * support and wants to verify whether a user's instance is eligible.
 	 *
 	 * @param string $product_code (Required) The product code to confirm.
 	 * @param string $instance_id (Required) The ID of the instance to confirm.
@@ -3345,8 +3307,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Deletes an ingress or egress entry (i.e., rule) from a network ACL. For more information about network ACLs, go to
-	 * Network ACLs in the Amazon Virtual Private Cloud User Guide.
+	 * Deletes an ingress or egress entry (i.e., rule) from a network ACL. For more information about network ACLs, go to Network ACLs in the
+	 * Amazon Virtual Private Cloud User Guide.
 	 *
 	 * @param string $network_acl_id (Required) ID of the network ACL.
 	 * @param integer $rule_number (Required) Rule number for the entry to delete.
@@ -3368,18 +3330,16 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * This action applies only to security groups in a VPC. It doesn't work with EC2 security groups. For information about
-	 * Amazon Virtual Private Cloud and VPC security groups, go to the Amazon Virtual Private Cloud User Guide.
+	 * This action applies only to security groups in a VPC. It doesn't work with EC2 security groups. For information about Amazon Virtual
+	 * Private Cloud and VPC security groups, go to the Amazon Virtual Private Cloud User Guide.
 	 *
-	 * The action removes one or more egress rules from a VPC security group. The values that you specify in the revoke
-	 * request (e.g., ports, etc.) must match the existing rule's values in order for the rule to be revoked.
+	 * The action removes one or more egress rules from a VPC security group. The values that you specify in the revoke request (e.g., ports,
+	 * etc.) must match the existing rule's values in order for the rule to be revoked.
 	 *
-	 * Each rule consists of the protocol, and the CIDR range or destination security group. For the TCP and UDP protocols,
-	 * you must also specify the destination port or range of ports. For the ICMP protocol, you must also specify the ICMP type
-	 * and code.
+	 * Each rule consists of the protocol, and the CIDR range or destination security group. For the TCP and UDP protocols, you must also specify
+	 * the destination port or range of ports. For the ICMP protocol, you must also specify the ICMP type and code.
 	 *
-	 * Rule changes are propagated to instances within the security group as quickly as possible. However, a small delay might
-	 * occur.
+	 * Rule changes are propagated to instances within the security group as quickly as possible. However, a small delay might occur.
 	 *
 	 * @param string $group_id (Required) ID of the VPC security group to modify.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -3441,15 +3401,15 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Gives you information about your VPN gateways. You can filter the results to return information only about VPN gateways
-	 * that match criteria you specify.
+	 * Gives you information about your VPN gateways. You can filter the results to return information only about VPN gateways that match criteria
+	 * you specify.
 	 *
-	 * For example, you could ask to get information about a particular VPN gateway (or all) only if the gateway's state is
-	 * pending or available. You can specify multiple filters (e.g., the VPN gateway is in a particular Availability Zone and
-	 * the gateway's state is pending or available).
+	 * For example, you could ask to get information about a particular VPN gateway (or all) only if the gateway's state is pending or available.
+	 * You can specify multiple filters (e.g., the VPN gateway is in a particular Availability Zone and the gateway's state is pending or
+	 * available).
 	 *
-	 * The result includes information for a particular VPN gateway only if the gateway matches all your filters. If there's
-	 * no match, no special message is returned; the response is simply empty. The following table shows the available filters.
+	 * The result includes information for a particular VPN gateway only if the gateway matches all your filters. If there's no match, no special
+	 * message is returned; the response is simply empty. The following table shows the available filters.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>VpnGatewayId</code> - <code>string|array</code> - Optional - A list of filters used to match properties for VPN Gateways. For a complete reference to the available filter keys for this operation, see the Amazon EC2 API reference.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -3490,13 +3450,12 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates a subnet in an existing VPC. You can create up to 20 subnets in a VPC. If you add more than one subnet to a
-	 * VPC, they're set up in a star topology with a logical router in the middle. When you create each subnet, you provide the
-	 * VPC ID and the CIDR block you want for the subnet. Once you create a subnet, you can't change its CIDR block. The
-	 * subnet's CIDR block can be the same as the VPC's CIDR block (assuming you want only a single subnet in the VPC), or a
-	 * subset of the VPC's CIDR block. If you create more than one subnet in a VPC, the subnets' CIDR blocks must not overlap.
-	 * The smallest subnet (and VPC) you can create uses a <code>/28</code> netmask (16 IP addresses), and the largest uses a
-	 * <code>/18</code> netmask (16,384 IP addresses).
+	 * Creates a subnet in an existing VPC. You can create up to 20 subnets in a VPC. If you add more than one subnet to a VPC, they're set up in
+	 * a star topology with a logical router in the middle. When you create each subnet, you provide the VPC ID and the CIDR block you want for the
+	 * subnet. Once you create a subnet, you can't change its CIDR block. The subnet's CIDR block can be the same as the VPC's CIDR block (assuming
+	 * you want only a single subnet in the VPC), or a subset of the VPC's CIDR block. If you create more than one subnet in a VPC, the subnets'
+	 * CIDR blocks must not overlap. The smallest subnet (and VPC) you can create uses a <code>/28</code> netmask (16 IP addresses), and the
+	 * largest uses a <code>/18</code> netmask (16,384 IP addresses).
 	 *
 	 * AWS reserves both the first four and the last IP address in each subnet's CIDR block. They're not available for use.
 	 *
@@ -3519,9 +3478,9 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The DescribeReservedInstancesOfferings operation describes Reserved Instance offerings that are available for purchase.
-	 * With Amazon EC2 Reserved Instances, you purchase the right to launch Amazon EC2 instances for a period of time (without
-	 * getting insufficient capacity errors) and pay a lower usage rate for the actual time used.
+	 * The DescribeReservedInstancesOfferings operation describes Reserved Instance offerings that are available for purchase. With Amazon EC2
+	 * Reserved Instances, you purchase the right to launch Amazon EC2 instances for a period of time (without getting insufficient capacity
+	 * errors) and pay a lower usage rate for the actual time used.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ReservedInstancesOfferingId</code> - <code>string|array</code> - Optional - An optional list of the unique IDs of the Reserved Instance offerings to describe.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -3534,6 +3493,7 @@ class AmazonEC2 extends CFRuntime
 	 * 			<li><code>Value</code> - <code>string|array</code> - Optional - Contains one or more values for the filter.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 		</ul></li>
 	 * 	</ul></li>
+	 * 	<li><code>InstanceTenancy</code> - <code>string</code> - Optional - The tenancy of the Reserved Instance offering. A Reserved Instance with tenancy of dedicated will run on single-tenant hardware and can only be launched within a VPC. </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -3583,9 +3543,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Changes which network ACL a subnet is associated with. By default when you create a subnet, it's automatically
-	 * associated with the default network ACL. For more information about network ACLs, go to Network ACLs in the Amazon
-	 * Virtual Private Cloud User Guide.
+	 * Changes which network ACL a subnet is associated with. By default when you create a subnet, it's automatically associated with the default
+	 * network ACL. For more information about network ACLs, go to Network ACLs in the Amazon Virtual Private Cloud User Guide.
 	 *
 	 * @param string $association_id (Required) The ID representing the current association between the original network ACL and the subnet.
 	 * @param string $network_acl_id (Required) The ID of the new ACL to associate with the subnet.
@@ -3605,8 +3564,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The DisassociateAddress operation disassociates the specified elastic IP address from the instance to which it is
-	 * assigned. This is an idempotent operation. If you enter it more than once, Amazon EC2 does not return an error.
+	 * The DisassociateAddress operation disassociates the specified elastic IP address from the instance to which it is assigned. This is an
+	 * idempotent operation. If you enter it more than once, Amazon EC2 does not return an error.
 	 *
 	 * @param string $public_ip (Required) The elastic IP address that you are disassociating from the instance.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -3625,8 +3584,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates a PlacementGroup into which multiple Amazon EC2 instances can be launched. Users must give the group a name
-	 * unique within the scope of the user account.
+	 * Creates a PlacementGroup into which multiple Amazon EC2 instances can be launched. Users must give the group a name unique within the scope
+	 * of the user account.
 	 *
 	 * @param string $group_name (Required) The name of the <code>PlacementGroup</code>.
 	 * @param string $strategy (Required) The <code>PlacementGroup</code> strategy. [Allowed values: <code>cluster</code>]
@@ -3675,8 +3634,7 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Deletes a PlacementGroup from a user's account. Terminate all Amazon EC2 instances in the placement group before
-	 * deletion.
+	 * Deletes a PlacementGroup from a user's account. Terminate all Amazon EC2 instances in the placement group before deletion.
 	 *
 	 * @param string $group_name (Required) The name of the <code>PlacementGroup</code> to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -3694,9 +3652,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Deletes a VPC. You must detach or delete all gateways or other objects that are dependent on the VPC first. For
-	 * example, you must terminate all running instances, delete all VPC security groups (except the default), delete all the
-	 * route tables (except the default), etc.
+	 * Deletes a VPC. You must detach or delete all gateways or other objects that are dependent on the VPC first. For example, you must terminate
+	 * all running instances, delete all VPC security groups (except the default), delete all the route tables (except the default), etc.
 	 *
 	 * @param string $vpc_id (Required) The ID of the VPC you want to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -3733,14 +3690,14 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * The ReleaseAddress operation releases an elastic IP address associated with your account.
 	 *
-	 * Releasing an IP address automatically disassociates it from any instance with which it is associated. For more
-	 * information, see DisassociateAddress.
+	 * Releasing an IP address automatically disassociates it from any instance with which it is associated. For more information, see
+	 * DisassociateAddress.
 	 *
-	 * After releasing an elastic IP address, it is released to the IP address pool and might no longer be available to your
-	 * account. Make sure to update your DNS records and any servers or devices that communicate with the address.
+	 * After releasing an elastic IP address, it is released to the IP address pool and might no longer be available to your account. Make sure to
+	 * update your DNS records and any servers or devices that communicate with the address.
 	 *
-	 * If you run this operation on an elastic IP address that is already released, the address might be assigned to another
-	 * account which will cause Amazon EC2 to return an error.
+	 * If you run this operation on an elastic IP address that is already released, the address might be assigned to another account which will
+	 * cause Amazon EC2 to return an error.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>PublicIp</code> - <code>string</code> - Optional - The elastic IP address that you are releasing from your account. </li>
@@ -3778,8 +3735,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The CreateKeyPair operation creates a new 2048 bit RSA key pair and returns a unique ID that can be used to reference
-	 * this key pair when launching new instances. For more information, see RunInstances.
+	 * The CreateKeyPair operation creates a new 2048 bit RSA key pair and returns a unique ID that can be used to reference this key pair when
+	 * launching new instances. For more information, see RunInstances.
 	 *
 	 * @param string $key_name (Required) The unique name for the new key pair.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -3797,8 +3754,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Replaces an entry (i.e., rule) in a network ACL. For more information about network ACLs, go to Network ACLs in the
-	 * Amazon Virtual Private Cloud User Guide.
+	 * Replaces an entry (i.e., rule) in a network ACL. For more information about network ACLs, go to Network ACLs in the Amazon Virtual Private
+	 * Cloud User Guide.
 	 *
 	 * @param string $network_acl_id (Required) ID of the ACL where the entry will be replaced.
 	 * @param integer $rule_number (Required) Rule number of the entry to replace.
@@ -3850,9 +3807,9 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Returns information about the Amazon EBS snapshots available to you. Snapshots available to you include public
-	 * snapshots available for any AWS account to launch, private snapshots you own, and private snapshots owned by another AWS
-	 * account but for which you've been given explicit create volume permissions.
+	 * Returns information about the Amazon EBS snapshots available to you. Snapshots available to you include public snapshots available for any
+	 * AWS account to launch, private snapshots you own, and private snapshots owned by another AWS account but for which you've been given
+	 * explicit create volume permissions.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>SnapshotId</code> - <code>string|array</code> - Optional - The optional list of EBS snapshot IDs to describe.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -3913,9 +3870,8 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * Creates a new network ACL in a VPC. Network ACLs provide an optional layer of security (on top of security groups) for
-	 * the instances in your VPC. For more information about network ACLs, go to Network ACLs in the Amazon Virtual Private
-	 * Cloud User Guide.
+	 * Creates a new network ACL in a VPC. Network ACLs provide an optional layer of security (on top of security groups) for the instances in
+	 * your VPC. For more information about network ACLs, go to Network ACLs in the Amazon Virtual Private Cloud User Guide.
 	 *
 	 * @param string $vpc_id (Required) The ID of the VPC where the network ACL will be created.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -3933,16 +3889,16 @@ class AmazonEC2 extends CFRuntime
 
 	/**
 	 *
-	 * The RegisterImage operation registers an AMI with Amazon EC2. Images must be registered before they can be launched.
-	 * For more information, see RunInstances.
+	 * The RegisterImage operation registers an AMI with Amazon EC2. Images must be registered before they can be launched. For more information,
+	 * see RunInstances.
 	 *
-	 * Each AMI is associated with an unique ID which is provided by the Amazon EC2 service through the RegisterImage
-	 * operation. During registration, Amazon EC2 retrieves the specified image manifest from Amazon S3 and verifies that the
-	 * image is owned by the user registering the image.
+	 * Each AMI is associated with an unique ID which is provided by the Amazon EC2 service through the RegisterImage operation. During
+	 * registration, Amazon EC2 retrieves the specified image manifest from Amazon S3 and verifies that the image is owned by the user registering
+	 * the image.
 	 *
-	 * The image manifest is retrieved once and stored within the Amazon EC2. Any modifications to an image in Amazon S3
-	 * invalidates this registration. If you make changes to an image, deregister the previous image and register the new
-	 * image. For more information, see DeregisterImage.
+	 * The image manifest is retrieved once and stored within the Amazon EC2. Any modifications to an image in Amazon S3 invalidates this
+	 * registration. If you make changes to an image, deregister the previous image and register the new image. For more information, see
+	 * DeregisterImage.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ImageLocation</code> - <code>string</code> - Optional - The full path to your AMI manifest in Amazon S3 storage. </li>

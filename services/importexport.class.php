@@ -17,12 +17,12 @@
 /**
  *
  *
- * AWS Import/Export accelerates transferring large amounts of data between the AWS cloud and portable storage devices
- * that you mail to us. AWS Import/Export transfers data directly onto and off of your storage devices using Amazon's
- * high-speed internal network and bypassing the Internet. For large data sets, AWS Import/Export is often faster than
- * Internet transfer and more cost effective than upgrading your connectivity.
+ * AWS Import/Export accelerates transferring large amounts of data between the AWS cloud and portable storage devices that you mail to us.
+ * AWS Import/Export transfers data directly onto and off of your storage devices using Amazon's high-speed internal network and bypassing the
+ * Internet. For large data sets, AWS Import/Export is often faster than Internet transfer and more cost effective than upgrading your
+ * connectivity.
  *
- * @version Fri Mar 25 13:17:53 PDT 2011
+ * @version Tue Apr 05 15:21:13 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/importexport/Amazon Import/Export Service
@@ -75,10 +75,9 @@ class AmazonImportExport extends CFRuntime
 
 	/**
 	 *
-	 * This operation initiates the process of scheduling an upload or download of your data. You include in the request a
-	 * manifest that describes the data transfer specifics. The response to the request includes a job ID, which you can use in
-	 * other operations, a signature that you use to identify your storage device, and the address where you should ship your
-	 * storage device.
+	 * This operation initiates the process of scheduling an upload or download of your data. You include in the request a manifest that describes
+	 * the data transfer specifics. The response to the request includes a job ID, which you can use in other operations, a signature that you use
+	 * to identify your storage device, and the address where you should ship your storage device.
 	 *
 	 * @param string $job_type (Required) Specifies whether the job to initiate is an import or export job. [Allowed values: <code>Import</code>, <code>Export</code>]
 	 * @param string $manifest (Required) The UTF-8 encoded text of the manifest file.
@@ -101,8 +100,8 @@ class AmazonImportExport extends CFRuntime
 
 	/**
 	 *
-	 * This operation cancels a specified job. Only the job owner can cancel it. The operation fails if the job has already
-	 * started or is complete.
+	 * This operation cancels a specified job. Only the job owner can cancel it. The operation fails if the job has already started or is
+	 * complete.
 	 *
 	 * @param string $job_id (Required) A unique identifier which refers to a particular job.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -120,8 +119,8 @@ class AmazonImportExport extends CFRuntime
 
 	/**
 	 *
-	 * This operation returns information about a job, including where the job is in the processing pipeline, the status of
-	 * the results, and the signature value associated with the job. You can only return information about jobs you own.
+	 * This operation returns information about a job, including where the job is in the processing pipeline, the status of the results, and the
+	 * signature value associated with the job. You can only return information about jobs you own.
 	 *
 	 * @param string $job_id (Required) A unique identifier which refers to a particular job.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -139,9 +138,9 @@ class AmazonImportExport extends CFRuntime
 
 	/**
 	 *
-	 * This operation returns the jobs associated with the requester. AWS Import/Export lists the jobs in reverse
-	 * chronological order based on the date of creation. For example if Job Test1 was created 2009Dec30 and Test2 was created
-	 * 2010Feb05, the ListJobs operation would return Test2 followed by Test1.
+	 * This operation returns the jobs associated with the requester. AWS Import/Export lists the jobs in reverse chronological order based on the
+	 * date of creation. For example if Job Test1 was created 2009Dec30 and Test2 was created 2010Feb05, the ListJobs operation would return Test2
+	 * followed by Test1.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>MaxJobs</code> - <code>integer</code> - Optional - Sets the maximum number of jobs returned in the response. If there are additional jobs that were not returned because MaxJobs was exceeded, the response contains <IsTruncated>true</IsTruncated>. To return the additional jobs, see Marker. </li>
@@ -159,9 +158,9 @@ class AmazonImportExport extends CFRuntime
 
 	/**
 	 *
-	 * You use this operation to change the parameters specified in the original manifest file by supplying a new manifest
-	 * file. The manifest file attached to this request replaces the original manifest file. You can only use the operation
-	 * after a CreateJob request but before the data transfer starts and you can only use it on jobs you own.
+	 * You use this operation to change the parameters specified in the original manifest file by supplying a new manifest file. The manifest file
+	 * attached to this request replaces the original manifest file. You can only use the operation after a CreateJob request but before the data
+	 * transfer starts and you can only use it on jobs you own.
 	 *
 	 * @param string $job_id (Required) A unique identifier which refers to a particular job.
 	 * @param string $manifest (Required) The UTF-8 encoded text of the manifest file.

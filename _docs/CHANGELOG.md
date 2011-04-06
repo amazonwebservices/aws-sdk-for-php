@@ -1,3 +1,22 @@
+# Changelog: 1.3.2 "Luna"
+
+Launched Tuesday, April 5, 2011
+
+## New Features & Highlights (Summary)
+* Support for Dedicated Instances within a Virtual Private Cloud on single-tenant hardware has been added to the SDK.
+* Bug fixes and enhancements:
+	* [AmazonCloudWatch get_metric_statistics returns gzipped body](https://forums.aws.amazon.com/thread.jspa?threadID=62625)
+
+## Service Classes
+### AmazonCloudWatch
+* **Fixed:** Worked around an issue where when CloudWatch sends back `Content-Encoding: gzip`, it really means `deflate`. When CloudWatch sends back `Content-Encoding: deflate`, it really means the data isn't encoded at all.
+
+### AmazonEC2
+* **New:** Support for Dedicated Instances within a Virtual Private Cloud on single-tenant hardware has been added to the SDK.
+
+
+----
+
 # Changelog: 1.3.1 "Kraken"
 
 Launched Friday, March 25, 2011

@@ -102,9 +102,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.3.1');
+define('CFRUNTIME_VERSION', '1.3.2');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20110325210828');
+define('CFRUNTIME_BUILD', '20110405215944');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . php_uname('s') . '/' . php_uname('r') . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -1202,19 +1202,46 @@ class CFRuntime
 			{
 				case 'gzip':
 				case 'x-gzip':
-					$decoder = new CFGzipDecode($body);
-					if ($decoder->parse())
+					if (strpos($headers['_info']['url'], 'monitoring.') !== false)
 					{
-						$body = $decoder->data;
+						// CloudWatch incorrectly uses the deflate algorithm when they say gzip.
+						if (($uncompressed = gzuncompress($body)) !== false)
+						{
+							$body = $uncompressed;
+						}
+						elseif (($uncompressed = gzinflate($body)) !== false)
+						{
+							$body = $uncompressed;
+						}
+						break;
 					}
-					break;
+					else
+					{
+						// Everyone else uses gzip correctly.
+						$decoder = new CFGzipDecode($body);
+						if ($decoder->parse())
+						{
+							$body = $decoder->data;
+						}
+						break;
+					}
 
 				case 'deflate':
-					if (($body = gzuncompress($body)) === false)
+					if (strpos($headers['_info']['url'], 'monitoring.') !== false)
 					{
-						if (($body = gzinflate($body)) === false)
+						// CloudWatch incorrectly does nothing when they say deflate.
+						continue;
+					}
+					else
+					{
+						// Everyone else uses deflate correctly.
+						if (($uncompressed = gzuncompress($body)) !== false)
 						{
-							continue;
+							$body = $uncompressed;
+						}
+						elseif (($uncompressed = gzinflate($body)) !== false)
+						{
+							$body = $uncompressed;
 						}
 					}
 					break;

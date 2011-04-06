@@ -16,11 +16,11 @@
 
 /**
  *
- * Elastic Load Balancing is a cost-effective and easy to use web service to help you improve availability and scalability
- * of your application. It makes it easy for you to distribute application loads between two or more EC2 instances. Elastic
- * Load Balancing enables availability through redundancy and supports traffic growth of your application.
+ * Elastic Load Balancing is a cost-effective and easy to use web service to help you improve availability and scalability of your
+ * application. It makes it easy for you to distribute application loads between two or more EC2 instances. Elastic Load Balancing enables
+ * availability through redundancy and supports traffic growth of your application.
  *
- * @version Fri Mar 25 13:15:34 PDT 2011
+ * @version Tue Apr 05 15:18:51 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticloadbalancing/Amazon Elastic Load Balancing
@@ -113,9 +113,8 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 *
-	 * Creates one or more listeners on a LoadBalancer for the specified port. If a listener with the given port does not
-	 * already exist, it will be created; otherwise, the properties of the new listener must match the properties of the
-	 * existing listener.
+	 * Creates one or more listeners on a LoadBalancer for the specified port. If a listener with the given port does not already exist, it will
+	 * be created; otherwise, the properties of the new listener must match the properties of the existing listener.
 	 *
 	 * @param string $load_balancer_name (Required) The name of the new LoadBalancer. The name must be unique within your AWS account.
 	 * @param array $listeners (Required) A list of LoadBalancerPort, <code>InstancePort</code>, <code>Protocol</code>, and <code>SSLCertificateID</code> items. <ul>
@@ -146,16 +145,16 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 *
-	 * Generates a stickiness policy with sticky session lifetimes controlled by the lifetime of the browser (user-agent) or a
-	 * specified expiration period. This policy can only be associated only with HTTP listeners.
+	 * Generates a stickiness policy with sticky session lifetimes controlled by the lifetime of the browser (user-agent) or a specified
+	 * expiration period. This policy can only be associated only with HTTP listeners.
 	 *
-	 * When a load balancer implements this policy, the load balancer uses a special cookie to track the backend server
-	 * instance for each request. When the load balancer receives a request, it first checks to see if this cookie is present
-	 * in the request. If so, the load balancer sends the request to the application server specified in the cookie. If not,
-	 * the load balancer sends the request to a server that is chosen based on the existing load balancing algorithm.
+	 * When a load balancer implements this policy, the load balancer uses a special cookie to track the backend server instance for each request.
+	 * When the load balancer receives a request, it first checks to see if this cookie is present in the request. If so, the load balancer sends
+	 * the request to the application server specified in the cookie. If not, the load balancer sends the request to a server that is chosen based
+	 * on the existing load balancing algorithm.
 	 *
-	 * A cookie is inserted into the response for binding subsequent requests from the same user to that server. The validity
-	 * of the cookie is based on the cookie expiration time, which is specified in the policy configuration.
+	 * A cookie is inserted into the response for binding subsequent requests from the same user to that server. The validity of the cookie is
+	 * based on the cookie expiration time, which is specified in the policy configuration.
 	 *
 	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
 	 * @param string $policy_name (Required) The name of the policy being created. The name must be unique within the set of policies for this Load Balancer.
@@ -206,11 +205,11 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 *
-	 * Returns detailed configuration information for the specified LoadBalancers. If no LoadBalancers are specified, the
-	 * operation returns configuration information for all LoadBalancers created by the caller.
+	 * Returns detailed configuration information for the specified LoadBalancers. If no LoadBalancers are specified, the operation returns
+	 * configuration information for all LoadBalancers created by the caller.
 	 *
-	 * The client must have created the specified input LoadBalancers in order to retrieve this information; the client must
-	 * provide the same account credentials as those that were used to create the LoadBalancer.
+	 * The client must have created the specified input LoadBalancers in order to retrieve this information; the client must provide the same
+	 * account credentials as those that were used to create the LoadBalancer.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>LoadBalancerNames</code> - <code>string|array</code> - Optional - A list of names associated with the LoadBalancers at creation time.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -236,8 +235,8 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 *
-	 * Sets the certificate that terminates the specified listener's SSL connections. The specified certificate replaces any
-	 * prior certificate that was used on the same LoadBalancer and port.
+	 * Sets the certificate that terminates the specified listener's SSL connections. The specified certificate replaces any prior certificate
+	 * that was used on the same LoadBalancer and port.
 	 *
 	 * @param string $load_balancer_name (Required) The name of the the LoadBalancer.
 	 * @param integer $load_balancer_port (Required) The port that uses the specified SSL certificate.
@@ -261,15 +260,14 @@ class AmazonELB extends CFRuntime
 	 *
 	 * Creates a new LoadBalancer.
 	 *
-	 * Once the call has completed successfully, a new LoadBalancer is created; however, it will not be usable until at least
-	 * one instance has been registered. When the LoadBalancer creation is completed, the client can check whether or not it is
-	 * usable by using the DescribeInstanceHealth API. The LoadBalancer is usable as soon as any registered instance is
-	 * <i>InService</i>.
+	 * Once the call has completed successfully, a new LoadBalancer is created; however, it will not be usable until at least one instance has
+	 * been registered. When the LoadBalancer creation is completed, the client can check whether or not it is usable by using the
+	 * DescribeInstanceHealth API. The LoadBalancer is usable as soon as any registered instance is <i>InService</i>.
 	 *
 	 * Currently, the client's quota of LoadBalancers is limited to five per Region.
 	 *
-	 * Load balancer DNS names vary depending on the Region they're created in. For load balancers created in the United
-	 * States, the DNS name ends with:
+	 * Load balancer DNS names vary depending on the Region they're created in. For load balancers created in the United States, the DNS name ends
+	 * with:
 	 *
 	 * <ul> <li> <i>us-east-1.elb.amazonaws.com</i> (for the US Standard Region) </li>
 	 *
@@ -320,11 +318,10 @@ class AmazonELB extends CFRuntime
 	 *
 	 * Adds one or more EC2 Availability Zones to the LoadBalancer.
 	 *
-	 * The LoadBalancer evenly distributes requests across all its registered Availability Zones that contain instances. As a
-	 * result, the client must ensure that its LoadBalancer is appropriately scaled for each registered Availability Zone.
+	 * The LoadBalancer evenly distributes requests across all its registered Availability Zones that contain instances. As a result, the client
+	 * must ensure that its LoadBalancer is appropriately scaled for each registered Availability Zone.
 	 *
-	 * The new EC2 Availability Zones to be added must be in the same EC2 Region as the Availability Zones for which the
-	 * LoadBalancer was created.
+	 * The new EC2 Availability Zones to be added must be in the same EC2 Region as the Availability Zones for which the LoadBalancer was created.
 	 *
 	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
 	 * @param string|array $availability_zones (Required) A list of new Availability Zones for the LoadBalancer. Each Availability Zone must be in the same Region as the LoadBalancer.  Pass a string for a single value, or an indexed array for multiple values.
@@ -348,11 +345,11 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 *
-	 * Returns the current state of the instances of the specified LoadBalancer. If no instances are specified, the state of
-	 * all the instances for the LoadBalancer is returned.
+	 * Returns the current state of the instances of the specified LoadBalancer. If no instances are specified, the state of all the instances for
+	 * the LoadBalancer is returned.
 	 *
-	 * The client must have created the specified input LoadBalancer in order to retrieve this information; the client must
-	 * provide the same account credentials as those that were used to create the LoadBalancer.
+	 * The client must have created the specified input LoadBalancer in order to retrieve this information; the client must provide the same
+	 * account credentials as those that were used to create the LoadBalancer.
 	 *
 	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -406,14 +403,14 @@ class AmazonELB extends CFRuntime
 	 *
 	 * Removes the specified EC2 Availability Zones from the set of configured Availability Zones for the LoadBalancer.
 	 *
-	 * There must be at least one Availability Zone registered with a LoadBalancer at all times. A client cannot remove all
-	 * the Availability Zones from a LoadBalancer. Once an Availability Zone is removed, all the instances registered with the
-	 * LoadBalancer that are in the removed Availability Zone go into the OutOfService state. Upon Availability Zone removal,
-	 * the LoadBalancer attempts to equally balance the traffic among its remaining usable Availability Zones. Trying to remove
-	 * an Availability Zone that was not associated with the LoadBalancer does nothing.
+	 * There must be at least one Availability Zone registered with a LoadBalancer at all times. A client cannot remove all the Availability Zones
+	 * from a LoadBalancer. Once an Availability Zone is removed, all the instances registered with the LoadBalancer that are in the removed
+	 * Availability Zone go into the OutOfService state. Upon Availability Zone removal, the LoadBalancer attempts to equally balance the traffic
+	 * among its remaining usable Availability Zones. Trying to remove an Availability Zone that was not associated with the LoadBalancer does
+	 * nothing.
 	 *
-	 * In order for this call to be successful, the client must have created the LoadBalancer. The client must provide the
-	 * same account credentials as those that were used to create the LoadBalancer.
+	 * In order for this call to be successful, the client must have created the LoadBalancer. The client must provide the same account
+	 * credentials as those that were used to create the LoadBalancer.
 	 *
 	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
 	 * @param string|array $availability_zones (Required) A list of Availability Zones to be removed from the LoadBalancer. There must be at least one Availability Zone registered with a LoadBalancer at all times. The client cannot remove all the Availability Zones from a LoadBalancer. Specified Availability Zones must be in the same Region.  Pass a string for a single value, or an indexed array for multiple values.
@@ -437,11 +434,9 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 *
-	 * Deregisters instances from the LoadBalancer. Once the instance is deregistered, it will stop receiving traffic from the
-	 * LoadBalancer.
+	 * Deregisters instances from the LoadBalancer. Once the instance is deregistered, it will stop receiving traffic from the LoadBalancer.
 	 *
-	 * In order to successfully call this API, the same account credentials as those used to create the LoadBalancer must be
-	 * provided.
+	 * In order to successfully call this API, the same account credentials as those used to create the LoadBalancer must be provided.
 	 *
 	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
 	 * @param array $instances (Required) A list of EC2 instance IDs consisting of all instances to be deregistered. <ul>
@@ -495,13 +490,12 @@ class AmazonELB extends CFRuntime
 	 *
 	 * Deletes the specified LoadBalancer.
 	 *
-	 * If attempting to recreate the LoadBalancer, the client must reconfigure all the settings. The DNS name associated with
-	 * a deleted LoadBalancer will no longer be usable. Once deleted, the name and associated DNS record of the LoadBalancer no
-	 * longer exist and traffic sent to any of its IP addresses will no longer be delivered to client instances. The client
-	 * will not receive the same DNS name even if a new LoadBalancer with same LoadBalancerName is created.
+	 * If attempting to recreate the LoadBalancer, the client must reconfigure all the settings. The DNS name associated with a deleted
+	 * LoadBalancer will no longer be usable. Once deleted, the name and associated DNS record of the LoadBalancer no longer exist and traffic sent
+	 * to any of its IP addresses will no longer be delivered to client instances. The client will not receive the same DNS name even if a new
+	 * LoadBalancer with same LoadBalancerName is created.
 	 *
-	 * To successfully call this API, the client must provide the same account credentials as were used to create the
-	 * LoadBalancer.
+	 * To successfully call this API, the client must provide the same account credentials as were used to create the LoadBalancer.
 	 *
 	 * By design, if the LoadBalancer does not exist or has already been deleted, DeleteLoadBalancer still succeeds.
 	 *
@@ -521,16 +515,14 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 *
-	 * Generates a stickiness policy with sticky session lifetimes that follow that of an application-generated cookie. This
-	 * policy can only be associated with HTTP listeners.
+	 * Generates a stickiness policy with sticky session lifetimes that follow that of an application-generated cookie. This policy can only be
+	 * associated with HTTP listeners.
 	 *
-	 * This policy is similar to the policy created by CreateLBCookieStickinessPolicy, except that the lifetime of the special
-	 * Elastic Load Balancing cookie follows the lifetime of the application-generated cookie specified in the policy
-	 * configuration. The load balancer only inserts a new stickiness cookie when the application response includes a new
-	 * application cookie.
+	 * This policy is similar to the policy created by CreateLBCookieStickinessPolicy, except that the lifetime of the special Elastic Load
+	 * Balancing cookie follows the lifetime of the application-generated cookie specified in the policy configuration. The load balancer only
+	 * inserts a new stickiness cookie when the application response includes a new application cookie.
 	 *
-	 * If the application cookie is explicitly removed or expires, the session stops being sticky until a new application
-	 * cookie is issued.
+	 * If the application cookie is explicitly removed or expires, the session stops being sticky until a new application cookie is issued.
 	 *
 	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
 	 * @param string $policy_name (Required) The name of the policy being created. The name must be unique within the set of policies for this Load Balancer.
@@ -554,15 +546,15 @@ class AmazonELB extends CFRuntime
 	 *
 	 * Adds new instances to the LoadBalancer.
 	 *
-	 * Once the instance is registered, it starts receiving traffic and requests from the LoadBalancer. Any instance that is
-	 * not in any of the Availability Zones registered for the LoadBalancer will be moved to the <i>OutOfService</i> state. It
-	 * will move to the <i>InService</i> state when the Availability Zone is added to the LoadBalancer.
+	 * Once the instance is registered, it starts receiving traffic and requests from the LoadBalancer. Any instance that is not in any of the
+	 * Availability Zones registered for the LoadBalancer will be moved to the <i>OutOfService</i> state. It will move to the <i>InService</i>
+	 * state when the Availability Zone is added to the LoadBalancer.
 	 *
-	 * In order for this call to be successful, the client must have created the LoadBalancer. The client must provide the
-	 * same account credentials as those that were used to create the LoadBalancer.
+	 * In order for this call to be successful, the client must have created the LoadBalancer. The client must provide the same account
+	 * credentials as those that were used to create the LoadBalancer.
 	 *
-	 * Completion of this API does not guarantee that operation has completed. Rather, it means that the request has been
-	 * registered and the changes will happen shortly.
+	 * Completion of this API does not guarantee that operation has completed. Rather, it means that the request has been registered and the
+	 * changes will happen shortly.
 	 *
 	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
 	 * @param array $instances (Required) A list of instances IDs that should be registered with the LoadBalancer. <ul>
@@ -590,8 +582,8 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 *
-	 * Associates, updates, or disables a policy with a listener on the load balancer. Currently only zero (0) or one (1)
-	 * policy can be associated with a listener.
+	 * Associates, updates, or disables a policy with a listener on the load balancer. Currently only zero (0) or one (1) policy can be associated
+	 * with a listener.
 	 *
 	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
 	 * @param integer $load_balancer_port (Required) The external port of the LoadBalancer with which this policy has to be associated.

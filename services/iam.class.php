@@ -17,25 +17,22 @@
 /**
  *
  *
- * This is the AWS Identity and Access Management (IAM) API Reference. This guide provides descriptions of the IAM API as
- * well as links to related content in the guide, <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/">Using
- * IAM</a>.
+ * This is the AWS Identity and Access Management (IAM) API Reference. This guide provides descriptions of the IAM API as well as links to
+ * related content in the guide, <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/">Using IAM</a>.
  *
- * AWS Identity and Access Management (IAM) is a web service that enables Amazon Web Services (AWS) customers to manage
- * Users and User permissions under their AWS Account.
+ * AWS Identity and Access Management (IAM) is a web service that enables Amazon Web Services (AWS) customers to manage Users and User
+ * permissions under their AWS Account.
  *
- * For more information about this product go to <a href="http://aws.amazon.com/iam/">AWS Identity and Access Management
- * (IAM)</a>. For specific information about setting up signatures and authorization through the API, go to <a
- * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html">Making Query Requests</a> in the
- * Using IAM guide.
+ * For more information about this product go to <a href="http://aws.amazon.com/iam/">AWS Identity and Access Management (IAM)</a>. For
+ * specific information about setting up signatures and authorization through the API, go to <a
+ * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html">Making Query Requests</a> in the Using IAM guide.
  *
- * If you're new to AWS and need additional technical information about a specific AWS product, you can find the product's
- * technical documentation at <a href="http://aws.amazon.com/documentation/">http://aws.amazon.com/documentation/</a>.
+ * If you're new to AWS and need additional technical information about a specific AWS product, you can find the product's technical
+ * documentation at <a href="http://aws.amazon.com/documentation/">http://aws.amazon.com/documentation/</a>.
  *
- * We will refer to Amazon AWS Identity and Access Management using the abbreviated form IAM. All copyrights and legal
- * protections still apply.
+ * We will refer to Amazon AWS Identity and Access Management using the abbreviated form IAM. All copyrights and legal protections still apply.
  *
- * @version Fri Mar 25 13:17:16 PDT 2011
+ * @version Tue Apr 05 15:20:35 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/iam/Amazon Identity and Access Management Service
@@ -111,9 +108,9 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * Deletes the access key associated with the specified User.
 	 *
-	 * If you do not specify a User name, IAM determines the User name implicitly based on the AWS Access Key ID signing the
-	 * request. Because this action works for access keys under the AWS Account, you can use this API to manage root
-	 * credentials even if the AWS Account has no associated Users.
+	 * If you do not specify a User name, IAM determines the User name implicitly based on the AWS Access Key ID signing the request. Because this
+	 * action works for access keys under the AWS Account, you can use this API to manage root credentials even if the AWS Account has no
+	 * associated Users.
 	 *
 	 * @param string $access_key_id (Required) The Access Key ID for the Access Key ID and Secret Access Key you want to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -133,8 +130,8 @@ class AmazonIAM extends CFRuntime
 	/**
 	 *
 	 * Deletes the specified AWS Account alias. For information about using an AWS Account alias, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html">Using an Alias for Your AWS Account
-	 * ID</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html">Using an Alias for Your AWS Account ID</a> in <i>Using AWS
+	 * Identity and Access Management</i>.
 	 *
 	 * @param string $account_alias (Required) Name of the account alias to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -152,15 +149,14 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Returns information about the signing certificates associated with the specified User. If there are none, the action
-	 * returns an empty list.
+	 * Returns information about the signing certificates associated with the specified User. If there are none, the action returns an empty list.
 	 *
-	 * Although each User is limited to a small number of signing certificates, you can still paginate the results using the
-	 * <code>MaxItems</code> and <code>Marker</code> parameters.
+	 * Although each User is limited to a small number of signing certificates, you can still paginate the results using the <code>MaxItems</code>
+	 * and <code>Marker</code> parameters.
 	 *
-	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly based on the AWS Access Key
-	 * ID used to sign the request. Because this action works for access keys under the AWS Account, this API can be used to
-	 * manage root credentials even if the AWS Account has no associated Users.
+	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly based on the AWS Access Key ID used to sign the
+	 * request. Because this action works for access keys under the AWS Account, this API can be used to manage root credentials even if the AWS
+	 * Account has no associated Users.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>UserName</code> - <code>string</code> - Optional - The name of the User. </li>
@@ -179,18 +175,17 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Uploads an X.509 signing certificate and associates it with the specified User. Some AWS services use X.509 signing
-	 * certificates to validate requests that are signed with a corresponding private key. When you upload the certificate, its
-	 * default status is <code>Active</code>.
+	 * Uploads an X.509 signing certificate and associates it with the specified User. Some AWS services use X.509 signing certificates to validate
+	 * requests that are signed with a corresponding private key. When you upload the certificate, its default status is <code>Active</code>.
 	 *
-	 * If the <code>UserName</code> field is not specified, the User name is determined implicitly based on the AWS Access Key
-	 * ID used to sign the request. Because this action works for access keys under the AWS Account, this API can be used to
-	 * manage root credentials even if the AWS Account has no associated Users.
+	 * If the <code>UserName</code> field is not specified, the User name is determined implicitly based on the AWS Access Key ID used to sign the
+	 * request. Because this action works for access keys under the AWS Account, this API can be used to manage root credentials even if the AWS
+	 * Account has no associated Users.
 	 *
 	 * Because the body of a X.509 certificate can be large, you should use POST rather than GET when calling
 	 * <code>UploadSigningCertificate</code>. For more information, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?IAM_UsingQueryAPI.html">Making Query
-	 * Requests</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?IAM_UsingQueryAPI.html">Making Query Requests</a> in <i>Using AWS
+	 * Identity and Access Management</i>.
 	 *
 	 * @param string $certificate_body (Required) The contents of the signing certificate.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -230,17 +225,16 @@ class AmazonIAM extends CFRuntime
 	/**
 	 *
 	 * Adds (or updates) a policy document associated with the specified User. For information about policies, refer to <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html">Overview of Policies</a>
-	 * in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html">Overview of Policies</a> in <i>Using AWS
+	 * Identity and Access Management</i>.
 	 *
 	 * For information about limits on the number of policies you can associate with a User, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/index.html?LimitationsOnEntities.html">Limitations on
-	 * IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM Entities</a> in
+	 * <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Because policy documents can be large, you should use POST rather than GET when calling <code>PutUserPolicy</code>. For
-	 * more information, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?IAM_UsingQueryAPI.html">Making Query
-	 * Requests</a> in <i>Using AWS Identity and Access Management</i>.
+	 * Because policy documents can be large, you should use POST rather than GET when calling <code>PutUserPolicy</code>. For more information,
+	 * see <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?IAM_UsingQueryAPI.html">Making Query Requests</a> in <i>Using
+	 * AWS Identity and Access Management</i>.
 	 *
 	 * @param string $user_name (Required) Name of the User to associate the policy with.
 	 * @param string $policy_name (Required) Name of the policy document.
@@ -283,9 +277,8 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Retrieves the specified policy document for the specified User. The returned policy is URL-encoded according to RFC
-	 * 3986. For more information about RFC 3986, go to <a
-	 * href="http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
+	 * Retrieves the specified policy document for the specified User. The returned policy is URL-encoded according to RFC 3986. For more
+	 * information about RFC 3986, go to <a href="http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
 	 *
 	 * @param string $user_name (Required) Name of the User who the policy is associated with.
 	 * @param string $policy_name (Required) Name of the policy document to get.
@@ -327,14 +320,13 @@ class AmazonIAM extends CFRuntime
 	 * Updates the name and/or the path of the specified server certificate.
 	 *
 	 * You should understand the implications of changing a server certificate's path or name. For more information, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/ManagingServerCerts.html">Managing Server Certificates</a>
-	 * in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/ManagingServerCerts.html">Managing Server Certificates</a> in <i>Using AWS
+	 * Identity and Access Management</i>.
 	 *
-	 * To change a server certificate name the requester must have appropriate permissions on both the source object and the
-	 * target object. For example, to change the name from ProductionCert to ProdCert, the entity making the request must have
-	 * permission on ProductionCert and ProdCert, or must have permission on all (*). For more information about permissions,
-	 * see <a href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/PermissionsAndPolicies.html">Permissions and
-	 * Policies</a>.
+	 * To change a server certificate name the requester must have appropriate permissions on both the source object and the target object. For
+	 * example, to change the name from ProductionCert to ProdCert, the entity making the request must have permission on ProductionCert and
+	 * ProdCert, or must have permission on all (*). For more information about permissions, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/PermissionsAndPolicies.html">Permissions and Policies</a>.
 	 *
 	 * @param string $server_certificate_name (Required) The name of the server certificate that you want to update.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -357,14 +349,13 @@ class AmazonIAM extends CFRuntime
 	 * Updates the name and/or the path of the specified User.
 	 *
 	 * You should understand the implications of changing a User's path or name. For more information, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_Renaming.html">Renaming Users and
-	 * Groups</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_Renaming.html">Renaming Users and Groups</a> in <i>Using AWS
+	 * Identity and Access Management</i>.
 	 *
-	 * To change a User name the requester must have appropriate permissions on both the source object and the target object.
-	 * For example, to change Bob to Robert, the entity making the request must have permission on Bob and Robert, or must have
-	 * permission on all (*). For more information about permissions, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/PermissionsAndPolicies.html">Permissions and
-	 * Policies</a>.
+	 * To change a User name the requester must have appropriate permissions on both the source object and the target object. For example, to
+	 * change Bob to Robert, the entity making the request must have permission on Bob and Robert, or must have permission on all (*). For more
+	 * information about permissions, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/PermissionsAndPolicies.html">Permissions and Policies</a>.
 	 *
 	 * @param string $user_name (Required) Name of the User to update. If you're changing the name of the User, this is the original User name.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -384,12 +375,11 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Deletes the login profile for the specified User, which terminates the User's ability to access AWS services through the
-	 * IAM login page.
+	 * Deletes the login profile for the specified User, which terminates the User's ability to access AWS services through the IAM login page.
 	 *
-	 * Deleting a User's login profile does not prevent a User from accessing IAM through the command line interface or the
-	 * API. To prevent all User access you must also either make the access key inactive or delete it. For more information
-	 * about making keys inactive or deleting them, see UpdateAccessKey and DeleteAccessKey.
+	 * Deleting a User's login profile does not prevent a User from accessing IAM through the command line interface or the API. To prevent all
+	 * User access you must also either make the access key inactive or delete it. For more information about making keys inactive or deleting
+	 * them, see UpdateAccessKey and DeleteAccessKey.
 	 *
 	 * @param string $user_name (Required) Name of the User whose login profile you want to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -407,16 +397,16 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Changes the status of the specified signing certificate from active to disabled, or vice versa. This action can be used
-	 * to disable a User's signing certificate as part of a certificate rotation workflow.
+	 * Changes the status of the specified signing certificate from active to disabled, or vice versa. This action can be used to disable a User's
+	 * signing certificate as part of a certificate rotation workflow.
 	 *
-	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly based on the AWS Access Key
-	 * ID used to sign the request. Because this action works for access keys under the AWS Account, this API can be used to
-	 * manage root credentials even if the AWS Account has no associated Users.
+	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly based on the AWS Access Key ID used to sign the
+	 * request. Because this action works for access keys under the AWS Account, this API can be used to manage root credentials even if the AWS
+	 * Account has no associated Users.
 	 *
 	 * For information about rotating certificates, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?ManagingCredentials.html">Managing Keys and
-	 * Certificates</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?ManagingCredentials.html">Managing Keys and Certificates</a> in
+	 * <i>Using AWS Identity and Access Management</i>.
 	 *
 	 * @param string $certificate_id (Required) The ID of the signing certificate you want to update.
 	 * @param string $status (Required) The status you want to assign to the certificate. <code>Active</code> means the certificate can be used for API calls to AWS, while <code>Inactive</code> means the certificate cannot be used. [Allowed values: <code>Active</code>, <code>Inactive</code>]
@@ -481,14 +471,13 @@ class AmazonIAM extends CFRuntime
 	 * Updates the name and/or the path of the specified group.
 	 *
 	 * You should understand the implications of changing a group's path or name. For more information, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_Renaming.html">Renaming Users and
-	 * Groups</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_Renaming.html">Renaming Users and Groups</a> in <i>Using AWS
+	 * Identity and Access Management</i>.
 	 *
-	 * To change a group name the requester must have appropriate permissions on both the source object and the target object.
-	 * For example, to change Managers to MGRs, the entity making the request must have permission on Managers and MGRs, or
-	 * must have permission on all (*). For more information about permissions, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/PermissionsAndPolicies.html">Permissions and
-	 * Policies</a>.
+	 * To change a group name the requester must have appropriate permissions on both the source object and the target object. For example, to
+	 * change Managers to MGRs, the entity making the request must have permission on Managers and MGRs, or must have permission on all (*). For
+	 * more information about permissions, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/PermissionsAndPolicies.html">Permissions and Policies</a>.
 	 *
 	 * @param string $group_name (Required) Name of the group to update. If you're changing the name of the group, this is the original name.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -527,17 +516,16 @@ class AmazonIAM extends CFRuntime
 	/**
 	 *
 	 * Adds (or updates) a policy document associated with the specified group. For information about policies, refer to <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html">Overview of Policies</a>
-	 * in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html">Overview of Policies</a> in <i>Using AWS
+	 * Identity and Access Management</i>.
 	 *
 	 * For information about limits on the number of policies you can associate with a group, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/index.html?LimitationsOnEntities.html">Limitations on
-	 * IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM Entities</a> in
+	 * <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * Because policy documents can be large, you should use POST rather than GET when calling <code>PutGroupPolicy</code>. For
-	 * more information, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?IAM_UsingQueryAPI.html">Making Query
-	 * Requests</a> in <i>Using AWS Identity and Access Management</i>.
+	 * Because policy documents can be large, you should use POST rather than GET when calling <code>PutGroupPolicy</code>. For more information,
+	 * see <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?IAM_UsingQueryAPI.html">Making Query Requests</a> in <i>Using
+	 * AWS Identity and Access Management</i>.
 	 *
 	 * @param string $group_name (Required) Name of the group to associate the policy with.
 	 * @param string $policy_name (Required) Name of the policy document.
@@ -562,8 +550,8 @@ class AmazonIAM extends CFRuntime
 	 * Creates a new User for your AWS Account.
 	 *
 	 * For information about limitations on the number of Users you can create, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM
-	 * Entities</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM Entities</a> in
+	 * <i>Using AWS Identity and Access Management</i>.
 	 *
 	 * @param string $user_name (Required) Name of the User to create.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -584,9 +572,9 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * Deletes the specified signing certificate associated with the specified User.
 	 *
-	 * If you do not specify a User name, IAM determines the User name implicitly based on the AWS Access Key ID signing the
-	 * request. Because this action works for access keys under the AWS Account, you can use this API to manage root
-	 * credentials even if the AWS Account has no associated Users.
+	 * If you do not specify a User name, IAM determines the User name implicitly based on the AWS Access Key ID signing the request. Because this
+	 * action works for access keys under the AWS Account, you can use this API to manage root credentials even if the AWS Account has no
+	 * associated Users.
 	 *
 	 * @param string $certificate_id (Required) ID of the signing certificate to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -605,8 +593,8 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Enables the specified MFA device and associates it with the specified User name. When enabled, the MFA device is
-	 * required for every subsequent login by the User name associated with the device.
+	 * Enables the specified MFA device and associates it with the specified User name. When enabled, the MFA device is required for every
+	 * subsequent login by the User name associated with the device.
 	 *
 	 * @param string $user_name (Required) Name of the User for whom you want to enable the MFA device.
 	 * @param string $serial_number (Required) The serial number that uniquely identifies the MFA device.
@@ -652,15 +640,14 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Returns information about the Access Key IDs associated with the specified User. If there are none, the action returns
-	 * an empty list.
+	 * Returns information about the Access Key IDs associated with the specified User. If there are none, the action returns an empty list.
 	 *
-	 * Although each User is limited to a small number of keys, you can still paginate the results using the
-	 * <code>MaxItems</code> and <code>Marker</code> parameters.
+	 * Although each User is limited to a small number of keys, you can still paginate the results using the <code>MaxItems</code> and
+	 * <code>Marker</code> parameters.
 	 *
-	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly based on the AWS Access Key
-	 * ID used to sign the request. Because this action works for access keys under the AWS Account, this API can be used to
-	 * manage root credentials even if the AWS Account has no associated Users.
+	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly based on the AWS Access Key ID used to sign the
+	 * request. Because this action works for access keys under the AWS Account, this API can be used to manage root credentials even if the AWS
+	 * Account has no associated Users.
 	 *
 	 * To ensure the security of your AWS Account, the secret access key is accessible only during key and User creation.
 	 *
@@ -724,8 +711,8 @@ class AmazonIAM extends CFRuntime
 	 * Creates a new group.
 	 *
 	 * For information about the number of groups you can create, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM
-	 * Entities</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM Entities</a> in
+	 * <i>Using AWS Identity and Access Management</i>.
 	 *
 	 * @param string $group_name (Required) Name of the group to create. Do not include the path in this value.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -744,17 +731,17 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Uploads a server certificate entity for the AWS Account. The server certificate entity includes a public key
-	 * certificate, a private key, and an optional certificate chain, which should all be PEM-encoded.
+	 * Uploads a server certificate entity for the AWS Account. The server certificate entity includes a public key certificate, a private key, and
+	 * an optional certificate chain, which should all be PEM-encoded.
 	 *
 	 * For information about the number of server certificates you can upload, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM
-	 * Entities</a> in <i>Using AWS Identity and Access Management</i>.
-	 *
-	 * Because the body of the public key certificate, private key, and the certificate chain can be large, you should use POST
-	 * rather than GET when calling <code>UploadServerCertificate</code>. For more information, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html">Making Query Requests</a> in
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM Entities</a> in
 	 * <i>Using AWS Identity and Access Management</i>.
+	 *
+	 * Because the body of the public key certificate, private key, and the certificate chain can be large, you should use POST rather than GET
+	 * when calling <code>UploadServerCertificate</code>. For more information, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html">Making Query Requests</a> in <i>Using AWS Identity and
+	 * Access Management</i>.
 	 *
 	 * @param string $server_certificate_name (Required) The name for the server certificate. Do not include the path in this value.
 	 * @param string $certificate_body (Required) The contents of the public key certificate in PEM-encoded format.
@@ -779,8 +766,8 @@ class AmazonIAM extends CFRuntime
 	/**
 	 *
 	 * This action creates an alias for your AWS Account. For information about using an AWS Account alias, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html">Using an Alias for Your AWS Account
-	 * ID</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html">Using an Alias for Your AWS Account ID</a> in <i>Using AWS
+	 * Identity and Access Management</i>.
 	 *
 	 * @param string $account_alias (Required) Name of the account alias to create
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -798,9 +785,8 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Retrieves the specified policy document for the specified group. The returned policy is URL-encoded according to RFC
-	 * 3986. For more information about RFC 3986, go to <a
-	 * href="http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
+	 * Retrieves the specified policy document for the specified group. The returned policy is URL-encoded according to RFC 3986. For more
+	 * information about RFC 3986, go to <a href="http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
 	 *
 	 * @param string $group_name (Required) Name of the group the policy is associated with.
 	 * @param string $policy_name (Required) Name of the policy document to get.
@@ -820,8 +806,7 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Deletes the specified User. The User must not belong to any groups, have any keys or signing certificates, or have any
-	 * attached policies.
+	 * Deletes the specified User. The User must not belong to any groups, have any keys or signing certificates, or have any attached policies.
 	 *
 	 * @param string $user_name (Required) Name of the User to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -839,8 +824,7 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Deactivates the specified MFA device and removes it from association with the User name for which it was originally
-	 * enabled.
+	 * Deactivates the specified MFA device and removes it from association with the User name for which it was originally enabled.
 	 *
 	 * @param string $user_name (Required) Name of the User whose MFA device you want to deactivate.
 	 * @param string $serial_number (Required) The serial number that uniquely identifies the MFA device.
@@ -882,11 +866,10 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * Deletes the specified server certificate.
 	 *
-	 * If your Elastic Load Balancing instances are using a server certificate, deleting the certificate could have
-	 * implications for your application. If your Elastic Load Balancing instances do not detect the deletion of bound
-	 * certificates, they may continue to use the certificates. This could cause them to stop accepting traffic. We recommend
-	 * that you remove the reference to the certificate from your Elastic Load Balancing instances before using this command to
-	 * delete the certificate.
+	 * If your Elastic Load Balancing instances are using a server certificate, deleting the certificate could have implications for your
+	 * application. If your Elastic Load Balancing instances do not detect the deletion of bound certificates, they may continue to use the
+	 * certificates. This could cause them to stop accepting traffic. We recommend that you remove the reference to the certificate from your
+	 * Elastic Load Balancing instances before using this command to delete the certificate.
 	 *
 	 * @param string $server_certificate_name (Required) The name of the server certificate you want to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -904,8 +887,7 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Lists the names of the policies associated with the specified group. If there are none, the action returns an empty
-	 * list.
+	 * Lists the names of the policies associated with the specified group. If there are none, the action returns an empty list.
 	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
@@ -927,10 +909,10 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Creates a login profile for the specified User, giving the User the ability to access AWS services such as the AWS
-	 * Management Console. For more information about login profiles, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_ManagingLoginsAndMFA.html">Managing Login
-	 * Profiles and MFA Devices</a> in <i>Using AWS Identity and Access Management</i>.
+	 * Creates a login profile for the specified User, giving the User the ability to access AWS services such as the AWS Management Console. For
+	 * more information about login profiles, see <a
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_ManagingLoginsAndMFA.html">Managing Login Profiles and MFA
+	 * Devices</a> in <i>Using AWS Identity and Access Management</i>.
 	 *
 	 * @param string $user_name (Required) Name of the User to create a login profile for.
 	 * @param string $password (Required) The new password for the User name.
@@ -950,20 +932,20 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Creates a new AWS Secret Access Key and corresponding AWS Access Key ID for the specified User. The default status for
-	 * new keys is <code>Active</code>.
+	 * Creates a new AWS Secret Access Key and corresponding AWS Access Key ID for the specified User. The default status for new keys is
+	 * <code>Active</code>.
 	 *
-	 * If you do not specify a User name, IAM determines the User name implicitly based on the AWS Access Key ID signing the
-	 * request. Because this action works for access keys under the AWS Account, you can use this API to manage root
-	 * credentials even if the AWS Account has no associated Users.
+	 * If you do not specify a User name, IAM determines the User name implicitly based on the AWS Access Key ID signing the request. Because this
+	 * action works for access keys under the AWS Account, you can use this API to manage root credentials even if the AWS Account has no
+	 * associated Users.
 	 *
 	 * For information about limits on the number of keys you can create, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/index.html?LimitationsOnEntities.html">Limitations on
-	 * IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/2010-05-08/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM Entities</a> in
+	 * <i>Using AWS Identity and Access Management</i>.
 	 *
-	 * To ensure the security of your AWS Account, the Secret Access Key is accessible only during key and User creation. You
-	 * must save the key (for example, in a text file) if you want to be able to access it again. If a secret key is lost, you
-	 * can delete the access keys for the associated User and then create new keys.
+	 * To ensure the security of your AWS Account, the Secret Access Key is accessible only during key and User creation. You must save the key
+	 * (for example, in a text file) if you want to be able to access it again. If a secret key is lost, you can delete the access keys for the
+	 * associated User and then create new keys.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>UserName</code> - <code>string</code> - Optional - The User name that the new key will belong to. </li>
@@ -982,8 +964,7 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * Retrieves information about the specified User, including the User's path, GUID, and ARN.
 	 *
-	 * If you do not specify a User name, IAM determines the User name implicitly based on the AWS Access Key ID signing the
-	 * request.
+	 * If you do not specify a User name, IAM determines the User name implicitly based on the AWS Access Key ID signing the request.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the User to get information about. This parameter is optional. If it is not included, it defaults to the User making the request. </li>
@@ -1046,16 +1027,16 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Changes the status of the specified access key from Active to Inactive, or vice versa. This action can be used to
-	 * disable a User's key as part of a key rotation workflow.
+	 * Changes the status of the specified access key from Active to Inactive, or vice versa. This action can be used to disable a User's key as
+	 * part of a key rotation workflow.
 	 *
-	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly based on the AWS Access Key
-	 * ID used to sign the request. Because this action works for access keys under the AWS Account, this API can be used to
-	 * manage root credentials even if the AWS Account has no associated Users.
+	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly based on the AWS Access Key ID used to sign the
+	 * request. Because this action works for access keys under the AWS Account, this API can be used to manage root credentials even if the AWS
+	 * Account has no associated Users.
 	 *
 	 * For information about rotating keys, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?ManagingCredentials.html">Managing Keys and
-	 * Certificates</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?ManagingCredentials.html">Managing Keys and Certificates</a> in
+	 * <i>Using AWS Identity and Access Management</i>.
 	 *
 	 * @param string $access_key_id (Required) The Access Key ID of the Secret Access Key you want to update.
 	 * @param string $status (Required) The status you want to assign to the Secret Access Key. <code>Active</code> means the key can be used for API calls to AWS, while <code>Inactive</code> means the key cannot be used. [Allowed values: <code>Active</code>, <code>Inactive</code>]
@@ -1079,8 +1060,8 @@ class AmazonIAM extends CFRuntime
 	 * Retrieves account level information about account entity usage and IAM quotas.
 	 *
 	 * For information about limitations on IAM entities, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM
-	 * Entities</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html">Limitations on IAM Entities</a> in
+	 * <i>Using AWS Identity and Access Management</i>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -1116,8 +1097,8 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 *
-	 * Returns a list of Users that are in the specified group. You can paginate the results using the <code>MaxItems</code>
-	 * and <code>Marker</code> parameters.
+	 * Returns a list of Users that are in the specified group. You can paginate the results using the <code>MaxItems</code> and
+	 * <code>Marker</code> parameters.
 	 *
 	 * @param string $group_name (Required) Name of the group.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1138,8 +1119,8 @@ class AmazonIAM extends CFRuntime
 	/**
 	 *
 	 * Lists the account aliases associated with the account. For information about using an AWS Account alias, see <a
-	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html">Using an Alias for Your AWS Account
-	 * ID</a> in <i>Using AWS Identity and Access Management</i>.
+	 * href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html">Using an Alias for Your AWS Account ID</a> in <i>Using AWS
+	 * Identity and Access Management</i>.
 	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *

@@ -17,16 +17,15 @@
 /**
  *
  *
- * This is the AWS Elastic Beanstalk API Reference. This guide provides detailed information about AWS Elastic Beanstalk
- * actions, data types, parameters, and errors.
+ * This is the AWS Elastic Beanstalk API Reference. This guide provides detailed information about AWS Elastic Beanstalk actions, data types,
+ * parameters, and errors.
  *
- * AWS Elastic Beanstalk is a tool that makes it easy for you to create, deploy, and manage scalable, fault-tolerant
- * applications running on Amazon Web Services cloud resources.
+ * AWS Elastic Beanstalk is a tool that makes it easy for you to create, deploy, and manage scalable, fault-tolerant applications running on
+ * Amazon Web Services cloud resources.
  *
- * For more information about this product, go to the <a href="http://aws.amazon.com/elasticbeanstalk/">AWS Elastic
- * Beanstalk</a> details page. For specific information about setting up signatures and authorization through the API, go
- * to the <a href="http://docs.amazonwebservices.com/elasticbeanstalk/latest/ug/available-apis.html">AWS Elastic Beanstalk
- * User Guide</a>.
+ * For more information about this product, go to the <a href="http://aws.amazon.com/elasticbeanstalk/">AWS Elastic Beanstalk</a> details page.
+ * For specific information about setting up signatures and authorization through the API, go to the <a
+ * href="http://docs.amazonwebservices.com/elasticbeanstalk/latest/ug/available-apis.html">AWS Elastic Beanstalk User Guide</a>.
  *
  * <b>Endpoints</b>
  *
@@ -36,7 +35,7 @@
  *
  * </ul>
  *
- * @version Fri Mar 25 13:14:04 PDT 2011
+ * @version Tue Apr 05 15:17:23 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticbeanstalk/AWS Elastic Beanstalk
@@ -127,9 +126,9 @@ class AmazonElasticBeanstalk extends CFRuntime
 
 	/**
 	 *
-	 * Describes the configuration options that are used in a particular configuration template or environment, or that a
-	 * specified solution stack defines. The description includes the values the options, their default values, and an
-	 * indication of the required action on a running environment if an option value is changed.
+	 * Describes the configuration options that are used in a particular configuration template or environment, or that a specified solution stack
+	 * defines. The description includes the values the options, their default values, and an indication of the required action on a running
+	 * environment if an option value is changed.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ApplicationName</code> - <code>string</code> - Optional - The name of the application associated with the configuration template or environment. Only needed if you want to describe the configuration options associated with either the configuration template or environment. </li>
@@ -166,8 +165,8 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 *
 	 * Deletes the specified configuration template.
 	 *
-	 * When you launch an environment using a configuration template, the environment gets a copy of the template. You can
-	 * delete or modify the environment's copy of the template without affecting the running environment.
+	 * When you launch an environment using a configuration template, the environment gets a copy of the template. You can delete or modify the
+	 * environment's copy of the template without affecting the running environment.
 	 *
 	 * @param string $application_name (Required) The name of the application to delete the configuration template from.
 	 * @param string $template_name (Required) The name of the configuration template to delete.
@@ -263,8 +262,8 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 *
 	 * Initiates a request to compile the specified type of information of the deployed environment.
 	 *
-	 * Setting the <code>InfoType</code> to <code>tail</code> compiles the last lines from the application server log files of
-	 * every Amazon EC2 instance in your environment. Use RetrieveEnvironmentInfo to access the compiled information.
+	 * Setting the <code>InfoType</code> to <code>tail</code> compiles the last lines from the application server log files of every Amazon EC2
+	 * instance in your environment. Use RetrieveEnvironmentInfo to access the compiled information.
 	 *
 	 * Related Topics
 	 *
@@ -294,9 +293,8 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 *
 	 * Creates an application version for the specified application.
 	 *
-	 * Once you create an application version with a specified Amazon S3 bucket and key location, you cannot change that Amazon
-	 * S3 location. If you change the Amazon S3 location, you receive an exception when you attempt to launch an environment
-	 * from the application version.
+	 * Once you create an application version with a specified Amazon S3 bucket and key location, you cannot change that Amazon S3 location. If you
+	 * change the Amazon S3 location, you receive an exception when you attempt to launch an environment from the application version.
 	 *
 	 * @param string $application_name (Required) The name of the application. If no application is found with this name, and <code>AutoCreateApplication</code> is <code>false</code>, returns an <code>InvalidParameterValue</code> error.
 	 * @param string $version_label (Required) A label identifying this version. Constraint: Must be unique per application. If an application version already exists with this label for the specified application, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error.
@@ -402,8 +400,8 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 *
 	 * Updates the specified application version to have the specified properties.
 	 *
-	 * If a property (for example, <code>description</code>) is not provided, the value remains unchanged. To clear
-	 * properties, specify an empty string.
+	 * If a property (for example, <code>description</code>) is not provided, the value remains unchanged. To clear properties, specify an empty
+	 * string.
 	 *
 	 * @param string $application_name (Required) The name of the application associated with this version. If no application is found with this name, <code>UpdateApplication</code> returns an <code>InvalidParameterValue</code> error.
 	 * @param string $version_label (Required) The name of the version to update. If no application version is found with this label, <code>UpdateApplication</code> returns an <code>InvalidParameterValue</code> error.
@@ -426,8 +424,8 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 *
 	 * Creates an application that has one configuration template named <code>default</code> and no application versions.
 	 *
-	 * The <code>default</code> configuration template is for a 32-bit version of the Amazon Linux operating system running
-	 * the Tomcat 6 application container.
+	 * The <code>default</code> configuration template is for a 32-bit version of the Amazon Linux operating system running the Tomcat 6
+	 * application container.
 	 *
 	 * @param string $application_name (Required) The name of the application. Constraint: This name must be unique within your account. If the specified name already exists, the action returns an <code>InvalidParameterValue</code> error.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -448,8 +446,8 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 *
 	 * Updates the specified configuration template to have the specified properties or configuration option values.
 	 *
-	 * If a property (for example, <code>ApplicationName</code>) is not provided, its value remains unchanged. To clear such
-	 * properties, specify an empty string.
+	 * If a property (for example, <code>ApplicationName</code>) is not provided, its value remains unchanged. To clear such properties, specify
+	 * an empty string.
 	 *
 	 * Related Topics
 	 *
@@ -553,8 +551,8 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 *
 	 * Updates the specified application to have the specified properties.
 	 *
-	 * If a property (for example, <code>description</code>) is not provided, the value remains unchanged. To clear these
-	 * properties, specify an empty string.
+	 * If a property (for example, <code>description</code>) is not provided, the value remains unchanged. To clear these properties, specify an
+	 * empty string.
 	 *
 	 * @param string $application_name (Required) The name of the application to update. If no such application is found, <code>UpdateApplication</code> returns an <code>InvalidParameterValue</code> error.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -656,11 +654,9 @@ class AmazonElasticBeanstalk extends CFRuntime
 
 	/**
 	 *
-	 * Takes a set of configuration settings and either a configuration template or environment, and determines whether those
-	 * values are valid.
+	 * Takes a set of configuration settings and either a configuration template or environment, and determines whether those values are valid.
 	 *
-	 * This action returns a list of messages indicating any errors or warnings associated with the selection of option
-	 * values.
+	 * This action returns a list of messages indicating any errors or warnings associated with the selection of option values.
 	 *
 	 * @param string $application_name (Required) The name of the application that the configuration template or environment belongs to.
 	 * @param array $option_settings (Required) A list of the options and desired values to evaluate. <ul>
@@ -712,10 +708,10 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 *
 	 * Deletes the draft configuration associated with the running environment.
 	 *
-	 * Updating a running environment with any configuration changes creates a draft configuration set. You can get the draft
-	 * configuration using DescribeConfigurationSettings while the update is in progress or if the update fails. The
-	 * <code>DeploymentStatus</code> for the draft configuration indicates whether the deployment is in process or has failed.
-	 * The draft configuration remains in existence until it is deleted with this action.
+	 * Updating a running environment with any configuration changes creates a draft configuration set. You can get the draft configuration using
+	 * DescribeConfigurationSettings while the update is in progress or if the update fails. The <code>DeploymentStatus</code> for the draft
+	 * configuration indicates whether the deployment is in process or has failed. The draft configuration remains in existence until it is deleted
+	 * with this action.
 	 *
 	 * @param string $application_name (Required) The name of the application the environment is associated with.
 	 * @param string $environment_name (Required) The name of the environment to delete the draft configuration from.
@@ -735,15 +731,14 @@ class AmazonElasticBeanstalk extends CFRuntime
 
 	/**
 	 *
-	 * Updates the environment description, deploys a new application version, updates the configuration settings to an
-	 * entirely new configuration template, or updates select configuration option values in the running environment.
+	 * Updates the environment description, deploys a new application version, updates the configuration settings to an entirely new configuration
+	 * template, or updates select configuration option values in the running environment.
 	 *
 	 * Attempting to update both the release and configuration is not allowed and AWS Elastic Beanstalk returns an
 	 * <code>InvalidParameterCombination</code> error.
 	 *
 	 * When updating the configuration settings to a new template or individual settings, a draft configuration is created and
-	 * DescribeConfigurationSettings for this environment returns two setting descriptions with different
-	 * <code>DeploymentStatus</code> values.
+	 * DescribeConfigurationSettings for this environment returns two setting descriptions with different <code>DeploymentStatus</code> values.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>EnvironmentId</code> - <code>string</code> - Optional - The ID of the environment to update. If no environment with this ID exists, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </li>
@@ -795,8 +790,8 @@ class AmazonElasticBeanstalk extends CFRuntime
 
 	/**
 	 *
-	 * Creates a configuration template. Templates are associated with a specific application and are used to deploy different
-	 * versions of the application with the same configuration settings.
+	 * Creates a configuration template. Templates are associated with a specific application and are used to deploy different versions of the
+	 * application with the same configuration settings.
 	 *
 	 * Related Topics
 	 *
@@ -858,12 +853,12 @@ class AmazonElasticBeanstalk extends CFRuntime
 
 	/**
 	 *
-	 * Returns a description of the settings for the specified configuration set, that is, either a configuration template or
-	 * the configuration set associated with a running environment.
+	 * Returns a description of the settings for the specified configuration set, that is, either a configuration template or the configuration
+	 * set associated with a running environment.
 	 *
-	 * When describing the settings for the configuration set associated with a running environment, it is possible to receive
-	 * two sets of setting descriptions. One is the deployed configuration set, and the other is a draft configuration of an
-	 * environment that is either in the process of deployment or that failed to deploy.
+	 * When describing the settings for the configuration set associated with a running environment, it is possible to receive two sets of setting
+	 * descriptions. One is the deployed configuration set, and the other is a draft configuration of an environment that is either in the process
+	 * of deployment or that failed to deploy.
 	 *
 	 * Related Topics
 	 *
@@ -915,8 +910,8 @@ class AmazonElasticBeanstalk extends CFRuntime
 
 	/**
 	 *
-	 * Deletes and recreates all of the AWS resources (for example: the Auto Scaling group, load balancer, etc.) for a
-	 * specified environment and forces a restart.
+	 * Deletes and recreates all of the AWS resources (for example: the Auto Scaling group, load balancer, etc.) for a specified environment and
+	 * forces a restart.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>EnvironmentId</code> - <code>string</code> - Optional - The ID of the environment to rebuild. </li>
