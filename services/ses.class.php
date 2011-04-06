@@ -17,13 +17,13 @@
 /**
  *
  *
- * This is the API Reference for Amazon Simple Email Service (Amazon SES). This documentation is intended to be used in
- * conjunction with the Amazon SES Getting Started Guide and the Amazon SES Developer Guide.
+ * This is the API Reference for Amazon Simple Email Service (Amazon SES). This documentation is intended to be used in conjunction with the
+ * Amazon SES Getting Started Guide and the Amazon SES Developer Guide.
  *
  * For specific details on how to construct a service request, please consult the <a
  * href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
  *
- * @version Fri Mar 25 13:16:07 PDT 2011
+ * @version Tue Apr 05 15:19:25 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ses/Amazon Simple Email Service
@@ -138,8 +138,7 @@ class AmazonSES extends CFRuntime
 
 	/**
 	 *
-	 * Returns the user's sending statistics. The result is a list of data points, representing the last two weeks of sending
-	 * activity.
+	 * Returns the user's sending statistics. The result is a list of data points, representing the last two weeks of sending activity.
 	 *
 	 * Each data point in the list contains statistics for a 15-minute interval.
 	 *
@@ -159,9 +158,9 @@ class AmazonSES extends CFRuntime
 	 *
 	 * Composes an email message based on input data, and then immediately queues the message for sending.
 	 *
-	 * If you have not yet requested production access to Amazon SES, then you will only be able to send email to and from
-	 * verified email addresses. For more information, go to the <a
-	 * href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
+	 * If you have not yet requested production access to Amazon SES, then you will only be able to send email to and from verified email
+	 * addresses. For more information, go to the <a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer
+	 * Guide</a>.
 	 *
 	 * @param string $source (Required) The sender's email address.
 	 * @param array $destination (Required) The destination for this email, composed of To:, CC:, and BCC: fields. <ul>
@@ -281,13 +280,12 @@ class AmazonSES extends CFRuntime
 
 	/**
 	 *
-	 * Sends an email message, with header and content specified by the client. The <code>SendRawEmail</code> action is useful
-	 * for sending multipart MIME emails. The raw text of the message must comply with Internet email standards; otherwise, the
-	 * message cannot be sent.
+	 * Sends an email message, with header and content specified by the client. The <code>SendRawEmail</code> action is useful for sending
+	 * multipart MIME emails. The raw text of the message must comply with Internet email standards; otherwise, the message cannot be sent.
 	 *
-	 * If you have not yet requested production access to Amazon SES, then you will only be able to send email to and from
-	 * verified email addresses. For more information, go to the <a
-	 * href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
+	 * If you have not yet requested production access to Amazon SES, then you will only be able to send email to and from verified email
+	 * addresses. For more information, go to the <a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer
+	 * Guide</a>.
 	 *
 	 * @param array $raw_message (Required) The raw text of the message. The client is responsible for ensuring the following: <ul> <li>Message must contain a header and a body, separated by a blank line.</li><li>All required header fields must be present.</li><li>Each part of a multipart MIME message must be formatted properly.</li><li>MIME content types must be among those supported by Amazon SES. Refer to the Amazon SES Developer Guide for more details.</li><li>Content must be base64-encoded, if MIME requires it.</li> </ul> <ul>
 	 * 	<li><code>Data</code> - <code>blob</code> - Required - The raw data of the message. The client must ensure that the message format complies with Internet email standards regarding email header fields, MIME types, MIME encoding, and base64 encoding (if necessary). For more information, go to the Amazon SES Developer Guide. </li>

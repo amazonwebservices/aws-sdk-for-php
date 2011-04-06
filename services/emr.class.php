@@ -16,10 +16,10 @@
 
 /**
  *
- * This is the Amazon Elastic MapReduce API Reference Guide. This guide is for programmers who need detailed information
- * about the Amazon Elastic MapReduce APIs.
+ * This is the Amazon Elastic MapReduce API Reference Guide. This guide is for programmers who need detailed information about the Amazon
+ * Elastic MapReduce APIs.
  *
- * @version Fri Mar 25 13:16:39 PDT 2011
+ * @version Tue Apr 05 15:19:55 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticmapreduce/Amazon Elastic MapReduce
@@ -142,16 +142,14 @@ class AmazonEMR extends CFRuntime
 	 *
 	 * AddJobFlowSteps adds new steps to a running job flow. A maximum of 256 steps are allowed in each job flow.
 	 *
-	 * A step specifies the location of a JAR file stored either on the master node of the job flow or in Amazon S3. Each step
-	 * is performed by the main function of the main class of the JAR file. The main class can be specified either in the
-	 * manifest of the JAR or by using the MainFunction parameter of the step.
+	 * A step specifies the location of a JAR file stored either on the master node of the job flow or in Amazon S3. Each step is performed by the
+	 * main function of the main class of the JAR file. The main class can be specified either in the manifest of the JAR or by using the
+	 * MainFunction parameter of the step.
 	 *
-	 * Elastic MapReduce executes each step in the order listed. For a step to be considered complete, the main function must
-	 * exit with a zero exit code and all Hadoop jobs started while the step was running must have completed and run
-	 * successfully.
+	 * Elastic MapReduce executes each step in the order listed. For a step to be considered complete, the main function must exit with a zero
+	 * exit code and all Hadoop jobs started while the step was running must have completed and run successfully.
 	 *
-	 * You can only add steps to a job flow that is in one of the following states: STARTING, BOOTSTAPPING, RUNNING, or
-	 * WAITING.
+	 * You can only add steps to a job flow that is in one of the following states: STARTING, BOOTSTAPPING, RUNNING, or WAITING.
 	 *
 	 * @param string $job_flow_id (Required) A string that uniquely identifies the job flow. This identifier is returned by RunJobFlow and can also be obtained from DescribeJobFlows .
 	 * @param array $steps (Required) A list of StepConfig to be executed by the job flow. <ul>
@@ -191,9 +189,9 @@ class AmazonEMR extends CFRuntime
 
 	/**
 	 *
-	 * TerminateJobFlows shuts a list of job flows down. When a job flow is shut down, any step not yet completed is canceled
-	 * and the EC2 instances on which the job flow is running are stopped. Any log files not already saved are uploaded to
-	 * Amazon S3 if a LogUri was specified when the job flow was created.
+	 * TerminateJobFlows shuts a list of job flows down. When a job flow is shut down, any step not yet completed is canceled and the EC2
+	 * instances on which the job flow is running are stopped. Any log files not already saved are uploaded to Amazon S3 if a LogUri was specified
+	 * when the job flow was created.
 	 *
 	 * @param string|array $job_flow_ids (Required) A list of job flows to be shutdown.  Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -215,8 +213,8 @@ class AmazonEMR extends CFRuntime
 
 	/**
 	 *
-	 * DescribeJobFlows returns a list of job flows that match all of the supplied parameters. The parameters can include a
-	 * list of job flow IDs, job flow states, and restrictions on job flow creation date and time.
+	 * DescribeJobFlows returns a list of job flows that match all of the supplied parameters. The parameters can include a list of job flow IDs,
+	 * job flow states, and restrictions on job flow creation date and time.
 	 *
 	 * Regardless of supplied parameters, only job flows created within the last two months are returned.
 	 *
@@ -224,8 +222,8 @@ class AmazonEMR extends CFRuntime
 	 *
 	 * <ul> <li>Job flows created and completed in the last two weeks</li>
 	 *
-	 * <li> Job flows created within the last two months that are in one of the following states: <code>RUNNING</code> ,
-	 * <code>WAITING</code> , <code>SHUTTING_DOWN</code> , <code>STARTING</code> </li>
+	 * <li> Job flows created within the last two months that are in one of the following states: <code>RUNNING</code> , <code>WAITING</code> ,
+	 * <code>SHUTTING_DOWN</code> , <code>STARTING</code> </li>
 	 *
 	 * </ul>
 	 *
@@ -279,11 +277,10 @@ class AmazonEMR extends CFRuntime
 
 	/**
 	 *
-	 * RunJobFlow creates and starts running a new job flow. The job flow will run the steps specified. Once the job flow
-	 * completes, the cluster is stopped and the HDFS partition is lost. To prevent loss of data, configure the last step of
-	 * the job flow to store results in Amazon S3. If the JobFlowInstancesDetail : KeepJobFlowAliveWhenNoSteps parameter is set
-	 * to <code>TRUE</code>, the job flow will transition to the WAITING state rather than shutting down once the steps have
-	 * completed.
+	 * RunJobFlow creates and starts running a new job flow. The job flow will run the steps specified. Once the job flow completes, the cluster
+	 * is stopped and the HDFS partition is lost. To prevent loss of data, configure the last step of the job flow to store results in Amazon S3.
+	 * If the JobFlowInstancesDetail : KeepJobFlowAliveWhenNoSteps parameter is set to <code>TRUE</code>, the job flow will transition to the
+	 * WAITING state rather than shutting down once the steps have completed.
 	 *
 	 * A maximum of 256 steps are allowed in each job flow.
 	 *
@@ -384,9 +381,8 @@ class AmazonEMR extends CFRuntime
 
 	/**
 	 *
-	 * ModifyInstanceGroups modifies the number of nodes and configuration settings of an instance group. The input parameters
-	 * include the new target instance count for the group and the instance group ID. The call will either succeed or fail
-	 * atomically.
+	 * ModifyInstanceGroups modifies the number of nodes and configuration settings of an instance group. The input parameters include the new
+	 * target instance count for the group and the instance group ID. The call will either succeed or fail atomically.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>InstanceGroups</code> - <code>array</code> - Optional - Instance groups to change. <ul>

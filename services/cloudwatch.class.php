@@ -17,21 +17,37 @@
 /**
  *
  *
- * Amazon CloudWatch is a web service that enables you to monitor and manage various metrics, as well as configure alarm
- * actions based on data from metrics.
+ * This is the <i>Amazon CloudWatch API Reference</i>. This guide provides detailed information about Amazon CloudWatch actions, data types,
+ * parameters, and errors. For detailed information about Amazon CloudWatch features and their associated API calls, go to the <a
+ * href="http://docs.amazonwebservices.com/AmazonCloudWatch/latest/DeveloperGuide">Amazon CloudWatch Developer Guide</a>.
  *
- * Amazon CloudWatch monitoring enables you to collect, analyze, and view system and application metrics so that you can
- * make operational and business decisions more quickly and with greater confidence. You can use Amazon CloudWatch to
- * collect metrics about your AWS resources, such as the performance of your Amazon EC2 instances.
+ * Amazon CloudWatch is a web service that enables you to publish, monitor, and manage various metrics, as well as configure alarm actions
+ * based on data from metrics. For more information about this product go to <a
+ * href="http://aws.amazon.com/cloudwatch">http://aws.amazon.com/cloudwatch</a>.
  *
- * If you are registered for an AWS product that supports Amazon CloudWatch, the service automatically pushes basic metrics
- * to CloudWatch for you. Once Amazon CloudWatch contains metrics, you can calculate statistics based on that data.
+ * Use the following links to get started using the <i>Amazon CloudWatch API Reference</i>:
  *
- * Amazon CloudWatch alarms help you implement decisions more easily by enabling you do things like send notifications or
- * automatically make changes to the resources you are monitoring, based on rules that you define. For example, you can
- * create alarms that initiate Auto Scaling and Simple Notification Service actions on your behalf.
+ * <ul> <li> <a href="http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_Operations.html">Actions</a>: An alphabetical
+ * list of all Amazon CloudWatch actions.</li>
  *
- * @version Fri Mar 25 13:13:27 PDT 2011
+ * <li> <a href="http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_Types.html">Data Types</a>: An alphabetical list
+ * of all Amazon CloudWatch data types.</li>
+ *
+ * <li> <a href="http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/CommonParameters.html">Common Parameters</a>:
+ * Parameters that all Query actions can use.</li>
+ *
+ * <li> <a href="http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/CommonErrors.html">Common Errors</a>: Client and
+ * server errors that all actions can return.</li>
+ *
+ * <li> <a href="http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html">Regions and Endpoints</a>: Itemized regions and
+ * endpoints for all AWS products.</li>
+ *
+ * <li> <a href="http://monitoring.amazonaws.com/doc/2010-08-01/CloudWatch.wsdl">WSDL Location</a>:
+ * http://monitoring.amazonaws.com/doc/2010-08-01/CloudWatch.wsdl</li>
+ *
+ * </ul>
+ *
+ * @version Tue Apr 05 15:16:49 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudwatch/Amazon CloudWatch
@@ -124,12 +140,11 @@ class AmazonCloudWatch extends CFRuntime
 
 	/**
 	 *
-	 * Creates or updates an alarm and associates it with the specified Amazon CloudWatch metric. Optionally, this operation
-	 * can associate one or more Amazon Simple Notification Service resources with the alarm.
+	 * Creates or updates an alarm and associates it with the specified Amazon CloudWatch metric. Optionally, this operation can associate one or
+	 * more Amazon Simple Notification Service resources with the alarm.
 	 *
-	 * When this operation creates an alarm, the alarm state is immediately set to <code>UNKNOWN</code>. The alarm is
-	 * evaluated and its <code>StateValue</code> is set appropriately. Any actions associated with the <code>StateValue</code>
-	 * is then executed.
+	 * When this operation creates an alarm, the alarm state is immediately set to <code>INSUFFICIENT_DATA</code>. The alarm is evaluated and its
+	 * <code>StateValue</code> is set appropriately. Any actions associated with the <code>StateValue</code> is then executed.
 	 *
 	 * When updating an existing alarm, its <code>StateValue</code> is left unchanged.
 	 *
@@ -146,7 +161,7 @@ class AmazonCloudWatch extends CFRuntime
 	 * 	<li><code>ActionsEnabled</code> - <code>boolean</code> - Optional - Indicates whether or not actions should be executed during any changes to the alarm's state. </li>
 	 * 	<li><code>OKActions</code> - <code>string|array</code> - Optional - The list of actions to execute when this alarm transitions into an <code>OK</code> state from any other state. Each action is specified as an Amazon Resource Number (ARN). Currently the only action supported is publishing to an Amazon SNS topic or an Amazon Auto Scaling policy.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>AlarmActions</code> - <code>string|array</code> - Optional - The list of actions to execute when this alarm transitions into an <code>ALARM</code> state from any other state. Each action is specified as an Amazon Resource Number (ARN). Currently the only action supported is publishing to an Amazon SNS topic or an Amazon Auto Scaling policy.  Pass a string for a single value, or an indexed array for multiple values. </li>
-	 * 	<li><code>InsufficientDataActions</code> - <code>string|array</code> - Optional - The list of actions to execute when this alarm transitions into an <code>UNKNOWN</code> state from any other state. Each action is specified as an Amazon Resource Number (ARN). Currently the only action supported is publishing to an Amazon SNS topic or an Amazon Auto Scaling policy.  Pass a string for a single value, or an indexed array for multiple values. </li>
+	 * 	<li><code>InsufficientDataActions</code> - <code>string|array</code> - Optional - The list of actions to execute when this alarm transitions into an <code>INSUFFICIENT_DATA</code> state from any other state. Each action is specified as an Amazon Resource Number (ARN). Currently the only action supported is publishing to an Amazon SNS topic or an Amazon Auto Scaling policy.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>Dimensions</code> - <code>array</code> - Optional - The dimensions for the alarm's associated metric. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
 	 * 			<li><code>Name</code> - <code>string</code> - Required - The name of the dimension. </li>
@@ -211,11 +226,14 @@ class AmazonCloudWatch extends CFRuntime
 
 	/**
 	 *
-	 * Returns a list of valid metrics stored for the AWS account owner. Returned metrics can be used with
-	 * <code>GetMetricStatistics</code> to obtain statistical data for a given metric.
+	 * Returns a list of valid metrics stored for the AWS account owner. Returned metrics can be used with <code>GetMetricStatistics</code> to
+	 * obtain statistical data for a given metric.
 	 *
-	 * Up to 500 results are returned for any one call. To retrieve further results, use returned <code>NextToken</code>
-	 * values with subsequent <code>ListMetrics</code> operations.
+	 * Up to 500 results are returned for any one call. To retrieve further results, use returned <code>NextToken</code> values with subsequent
+	 * <code>ListMetrics</code> operations.
+	 *
+	 * If you create a metric with the PutMetricData action, allow up to fifteen minutes for the metric to appear in calls to the
+	 * <code>ListMetrics</code> action.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Namespace</code> - <code>string</code> - Optional - The namespace to filter against. </li>
@@ -223,7 +241,7 @@ class AmazonCloudWatch extends CFRuntime
 	 * 	<li><code>Dimensions</code> - <code>array</code> - Optional - A list of dimensions to filter against. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
 	 * 			<li><code>Name</code> - <code>string</code> - Required - The dimension name to be matched. </li>
-	 * 			<li><code>Value</code> - <code>string</code> - Optional - The value of the dimension to be matched. Specifying a <code>Name</code> without specifying a <code>Value</code> is equivalent to "wildcarding" the <code>Name</code> for all values. </li>
+	 * 			<li><code>Value</code> - <code>string</code> - Optional - The value of the dimension to be matched. Specifying a <code>Name</code> without specifying a <code>Value</code> returns all values associated with that <code>Name</code>. </li>
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - The token returned by a previous call to indicate that there is more data available. </li>
@@ -251,14 +269,30 @@ class AmazonCloudWatch extends CFRuntime
 	 *
 	 * Gets statistics for the specified metric.
 	 *
-	 * The maximum number of datapoints returned from a single <code>GetMetricStatistics</code> request is 1,440. If a request
-	 * is made that generates more than 1,440 datapoints, Amazon CloudWatch returns an error. In such a case, alter the request
-	 * by narrowing the specified time range or increasing the specified period. Alternatively, make multiple requests across
-	 * adjacent time ranges.
+	 * The maximum number of data points returned from a single <code>GetMetricStatistics</code> request is 1,440. If a request is made that
+	 * generates more than 1,440 data points, Amazon CloudWatch returns an error. In such a case, alter the request by narrowing the specified time
+	 * range or increasing the specified period. Alternatively, make multiple requests across adjacent time ranges.
+	 *
+	 * Amazon CloudWatch aggregates data points based on the length of the <code>period</code> that you specify. For example, if you request
+	 * statistics with a one-minute granularity, Amazon CloudWatch aggregates data points with time stamps that fall within the same one-minute
+	 * period. In such a case, the data points queried can greatly outnumber the data points returned.
+	 *
+	 * The maximum number of data points that can be queried is 50,850; whereas the maximum number of data points returned is 1,440.
+	 *
+	 * The following examples show various statistics allowed by the data point query maximum of 50,850 when you call
+	 * <code>GetMetricStatistics</code> on Amazon EC2 instances with detailed (one-minute) monitoring enabled:
+	 *
+	 * <ul> <li>Statistics for up to 400 instances for a span of one hour</li>
+	 *
+	 * <li>Statistics for up to 35 instances over a span of 24 hours</li>
+	 *
+	 * <li>Statistics for up to 2 instances over a span of 2 weeks</li>
+	 *
+	 * </ul>
 	 *
 	 * @param string $namespace (Required) The namespace of the metric.
 	 * @param string $metric_name (Required) The name of the metric.
-	 * @param string $start_time (Required) The timestamp to use for determining the first datapoint to return. The value specified is inclusive; results include datapoints with the timestamp specified. The specified start time is rounded down to the nearest value. Datapoints are returned for start times up to two weeks in the past. Specified start times that are more than two weeks in the past will not return datapoints for metrics that are older than two weeks. Accepts any value that <php:strtotime()> understands.
+	 * @param string $start_time (Required) The time stamp to use for determining the first datapoint to return. The value specified is inclusive; results include datapoints with the time stamp specified. The specified start time is rounded down to the nearest value. Datapoints are returned for start times up to two weeks in the past. Specified start times that are more than two weeks in the past will not return datapoints for metrics that are older than two weeks. Accepts any value that <php:strtotime()> understands.
 	 * @param string $end_time (Required) The time stamp to use for determining the last datapoint to return. The value specified is exclusive; results will include datapoints up to the time stamp specified. Accepts any value that <php:strtotime()> understands.
 	 * @param integer $period (Required) The granularity, in seconds, of the returned datapoints. <code>Period</code> must be at least 60 seconds and must be a multiple of 60. The default value is 60.
 	 * @param string|array $statistics (Required) The metric statistics to return.  Pass a string for a single value, or an indexed array for multiple values.
@@ -303,8 +337,8 @@ class AmazonCloudWatch extends CFRuntime
 
 	/**
 	 *
-	 * Disables actions for the specified alarms. When an alarm's actions are disabled the alarm's state may change, but none
-	 * of the alarm's actions will execute.
+	 * Disables actions for the specified alarms. When an alarm's actions are disabled the alarm's state may change, but none of the alarm's
+	 * actions will execute.
 	 *
 	 * @param string|array $alarm_names (Required) The names of the alarms to disable actions for.  Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -326,8 +360,8 @@ class AmazonCloudWatch extends CFRuntime
 
 	/**
 	 *
-	 * Retrieves alarms with the specified names. If no name is specified, all alarms for the user are returned. Alarms can be
-	 * retrieved by using only a prefix for the alarm name, the alarm state, or a prefix for any action.
+	 * Retrieves alarms with the specified names. If no name is specified, all alarms for the user are returned. Alarms can be retrieved by using
+	 * only a prefix for the alarm name, the alarm state, or a prefix for any action.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>AlarmNames</code> - <code>string|array</code> - Optional - A list of alarm names to retrieve information for.  Pass a string for a single value, or an indexed array for multiple values. </li>
@@ -396,11 +430,10 @@ class AmazonCloudWatch extends CFRuntime
 
 	/**
 	 *
-	 * Retrieves history for the specified alarm. Filter alarms by date range or item type. If an alarm name is not specified,
-	 * Amazon CloudWatch returns histories for all of the owner's alarms.
+	 * Retrieves history for the specified alarm. Filter alarms by date range or item type. If an alarm name is not specified, Amazon CloudWatch
+	 * returns histories for all of the owner's alarms.
 	 *
-	 * Amazon CloudWatch retains the history of deleted alarms for a period of six weeks. If an alarm has been deleted, its
-	 * history can still be queried.
+	 * Amazon CloudWatch retains the history of an alarm for two weeks, whether or not you delete the alarm.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>AlarmName</code> - <code>string</code> - Optional - The name of the alarm. </li>
@@ -478,11 +511,11 @@ class AmazonCloudWatch extends CFRuntime
 
 	/**
 	 *
-	 * Temporarily sets the state of an alarm. When the updated <code>StateValue</code> differs from the previous value, the
-	 * action configured for the appropriate state is invoked. This is not a permanent change. The next periodic alarm check
-	 * (in about a minute) will set the alarm to its actual state.
+	 * Temporarily sets the state of an alarm. When the updated <code>StateValue</code> differs from the previous value, the action configured for
+	 * the appropriate state is invoked. This is not a permanent change. The next periodic alarm check (in about a minute) will set the alarm to
+	 * its actual state.
 	 *
-	 * @param string $alarm_name (Required) The descriptive name for the alarm. This name must be unique within the user's AWS account
+	 * @param string $alarm_name (Required) The descriptive name for the alarm. This name must be unique within the user's AWS account. The maximum length is 255 characters.
 	 * @param string $state_value (Required) The value of the state. [Allowed values: <code>OK</code>, <code>ALARM</code>, <code>INSUFFICIENT_DATA</code>]
 	 * @param string $state_reason (Required) The reason that this alarm is set to this specific state (in human-readable text format)
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>

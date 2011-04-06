@@ -17,7 +17,7 @@
 /**
 
  *
- * @version Fri Mar 25 13:19:36 PDT 2011
+ * @version Tue Apr 05 15:22:52 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sns/Amazon Simple Notification Service
@@ -139,10 +139,9 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 *
-	 * The ConfirmSubscription action verifies an endpoint owner's intent to receive messages by validating the token sent to
-	 * the endpoint by an earlier Subscribe action. If the token is valid, the action creates a new subscription and returns
-	 * its Amazon Resource Name (ARN). This call requires an AWS signature only when the AuthenticateOnUnsubscribe flag is set
-	 * to "true".
+	 * The ConfirmSubscription action verifies an endpoint owner's intent to receive messages by validating the token sent to the endpoint by an
+	 * earlier Subscribe action. If the token is valid, the action creates a new subscription and returns its Amazon Resource Name (ARN). This call
+	 * requires an AWS signature only when the AuthenticateOnUnsubscribe flag is set to "true".
 	 *
 	 * @param string $topic_arn (Required) The ARN of the topic for which you wish to confirm a subscription.
 	 * @param string $token (Required) Short-lived token sent to an endpoint during the Subscribe action.
@@ -163,8 +162,8 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 *
-	 * The GetTopicAttribtues action returns all of the properties of a topic customers have created. Topic properties returned
-	 * might differ based on the authorization of the user.
+	 * The GetTopicAttribtues action returns all of the properties of a topic customers have created. Topic properties returned might differ based
+	 * on the authorization of the user.
 	 *
 	 * @param string $topic_arn (Required) The ARN of the topic whose properties you want to get.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -182,9 +181,9 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 *
-	 * The Subscribe action prepares to subscribe an endpoint by sending the endpoint a confirmation message. To actually
-	 * create a subscription, the endpoint owner must call the ConfirmSubscription action with the token from the confirmation
-	 * message. Confirmation tokens are valid for twenty-four hours.
+	 * The Subscribe action prepares to subscribe an endpoint by sending the endpoint a confirmation message. To actually create a subscription,
+	 * the endpoint owner must call the ConfirmSubscription action with the token from the confirmation message. Confirmation tokens are valid for
+	 * twenty-four hours.
 	 *
 	 * @param string $topic_arn (Required) The ARN of topic you want to subscribe to.
 	 * @param string $protocol (Required) The protocol you want to use. Supported protocols include: <ul> <li>http -- delivery of JSON-encoded message via HTTP POST</li><li>https -- delivery of JSON-encoded message via HTTPS POST</li><li>email -- delivery of message via SMTP</li><li>email-json -- delivery of JSON-encoded message via SMTP</li><li>sqs -- delivery of JSON-encoded message to an Amazon SQS queue</li> </ul>
@@ -228,9 +227,8 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 *
-	 * The DeleteTopic action deletes a topic and all its subscriptions. Deleting a topic might prevent some messages
-	 * previously sent to the topic from being delivered to subscribers. This action is idempotent, so deleting a topic that
-	 * does not exist will not result in an error.
+	 * The DeleteTopic action deletes a topic and all its subscriptions. Deleting a topic might prevent some messages previously sent to the topic
+	 * from being delivered to subscribers. This action is idempotent, so deleting a topic that does not exist will not result in an error.
 	 *
 	 * @param string $topic_arn (Required) The ARN of the topic you want to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -268,9 +266,8 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 *
-	 * The ListSubscriptions action returns a list of the requester's subscriptions. Each call returns a limited list of
-	 * subscriptions. If there are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a new
-	 * ListSubscriptions call to get further results.
+	 * The ListSubscriptions action returns a list of the requester's subscriptions. Each call returns a limited list of subscriptions. If there
+	 * are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a new ListSubscriptions call to get further results.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - Token returned by the previous ListSubscriptions request. </li>
@@ -287,8 +284,8 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 *
-	 * The AddPermission action adds a statement to a topic's access control policy, granting access for the specified AWS
-	 * accounts to the specified actions.
+	 * The AddPermission action adds a statement to a topic's access control policy, granting access for the specified AWS accounts to the
+	 * specified actions.
 	 *
 	 * @param string $topic_arn (Required) The ARN of the topic whose access control policy you wish to modify.
 	 * @param string $label (Required) A unique identifier for the new policy statement.
@@ -320,9 +317,9 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 *
-	 * The CreateTopic action creates a topic to which notifications can be published. Users can create at most 25 topics. This
-	 * action is idempotent, so if the requester already owns a topic with the specified name, that topic's ARN will be
-	 * returned without creating a new topic.
+	 * The CreateTopic action creates a topic to which notifications can be published. Users can create at most 25 topics. This action is
+	 * idempotent, so if the requester already owns a topic with the specified name, that topic's ARN will be returned without creating a new
+	 * topic.
 	 *
 	 * @param string $name (Required) The name of the topic you want to create. Constraints: Topic names must be made up of only uppercase and lowercase ASCII letters, numbers, and hyphens, and must be between 1 and 256 characters long.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -340,8 +337,8 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 *
-	 * The ListTopics action returns a list of the requester's topics. Each call returns a limited list of topics. If there are
-	 * more topics, a NextToken is also returned. Use the NextToken parameter in a new ListTopics call to get further results.
+	 * The ListTopics action returns a list of the requester's topics. Each call returns a limited list of topics. If there are more topics, a
+	 * NextToken is also returned. Use the NextToken parameter in a new ListTopics call to get further results.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - Token returned by the previous ListTopics request. </li>
@@ -358,11 +355,10 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 *
-	 * The Unsubscribe action deletes a subscription. If the subscription requires authentication for deletion, only the owner
-	 * of the subscription or the its topic's owner can unsubscribe, and an AWS signature is required. If the Unsubscribe call
-	 * does not require authentication and the requester is not the subscription owner, a final cancellation message is
-	 * delivered to the endpoint, so that the endpoint owner can easily resubscribe to the topic if the Unsubscribe request was
-	 * unintended.
+	 * The Unsubscribe action deletes a subscription. If the subscription requires authentication for deletion, only the owner of the subscription
+	 * or the its topic's owner can unsubscribe, and an AWS signature is required. If the Unsubscribe call does not require authentication and the
+	 * requester is not the subscription owner, a final cancellation message is delivered to the endpoint, so that the endpoint owner can easily
+	 * resubscribe to the topic if the Unsubscribe request was unintended.
 	 *
 	 * @param string $subscription_arn (Required) The ARN of the subscription to be deleted.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -380,9 +376,9 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 *
-	 * The ListSubscriptionsByTopic action returns a list of the subscriptions to a specific topic. Each call returns a limited
-	 * list of subscriptions. If there are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a
-	 * new ListSubscriptionsByTopic call to get further results.
+	 * The ListSubscriptionsByTopic action returns a list of the subscriptions to a specific topic. Each call returns a limited list of
+	 * subscriptions. If there are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a new ListSubscriptionsByTopic
+	 * call to get further results.
 	 *
 	 * @param string $topic_arn (Required) The ARN of the topic for which you wish to find subscriptions.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -401,9 +397,9 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 *
-	 * The Publish action sends a message to all of a topic's subscribed endpoints. When a messageId is returned, the message
-	 * has been saved and Amazon SNS will attempt to deliver it to the topic's subscribers shortly. The format of the outgoing
-	 * message to each subscribed endpoint depends on the notification protocol selected.
+	 * The Publish action sends a message to all of a topic's subscribed endpoints. When a messageId is returned, the message has been saved and
+	 * Amazon SNS will attempt to deliver it to the topic's subscribers shortly. The format of the outgoing message to each subscribed endpoint
+	 * depends on the notification protocol selected.
 	 *
 	 * @param string $topic_arn (Required) The topic you want to publish to.
 	 * @param string $message (Required) The message you want to send to the topic. Constraints: Messages must be UTF-8 encoded strings at most 8 KB in size (8192 bytes, not 8192 characters).
