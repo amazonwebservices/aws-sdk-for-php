@@ -1,3 +1,53 @@
+# Changelog: 1.3.3 "Moogle"
+
+Launched Tuesday, May 10, 2011
+
+## Bug fixes and enhancements
+* [Bug in AmazonCloudFront::get_private_object_url](https://forums.aws.amazon.com/thread.jspa?threadID=64004)
+* [SDK 1.3.2 - Call to undefined function json_last_error()](https://forums.aws.amazon.com/thread.jspa?threadID=64767)
+* [CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir](https://forums.aws.amazon.com/thread.jspa?threadID=61333)
+
+
+## Service Classes
+### AmazonCloudFront
+* **Fixed:** Resolved an issue where the expires value for `get_private_object_url()` only accepted a string instead of a string or integer.
+
+### AmazonCloudWatch
+* **New:** Support for CloudWatch custom user metrics has been added to the SDK.
+
+
+## Extensions
+### S3BrowserUpload
+* **New:** Added the `S3BrowserUpload` class to the SDK. This class assists in generating the correct HTML/XHTML markup for uploading files to S3 via an HTML <form> element.
+
+
+## Utility Classes
+### CFArray
+* **New:** Added the `init()` method which simplifies the process of instantiating and chaining a class.
+
+### CFHadoopBase
+* **New:** The `CFHadoopBase` class has been extracted out of `CFHadoopStep` as a shared library.
+
+### CFHadoopStep
+* **New:** The `CFHadoopBase` class has been extracted out of `CFHadoopStep` as a shared library.
+* **New:** This class now extends from the `CFHadoopBase` class.
+
+### CFJSON
+* **Fixed:** Resolved an issue where a PHP 5.3-specific function was being used.
+
+### CFPolicy
+* **New:** Added the init() method which simplifies the process of instantiating and chaining a class.
+
+### CFSimpleXML
+* **New:** Added the init() method which simplifies the process of instantiating and chaining a class.
+
+### RequestCore
+* **Fixed:** Improvements to running in PHP environments with open_basedir enabled.
+* **Fixed:** RequestCore now uses an up-to-date `cacert.pem` file from Mozilla instead of the Certificate Authority that libcurl or libopenssl was compiled with, which should resolve certain issues with making SSL connections to AWS services.
+
+
+----
+
 # Changelog: 1.3.2 "Luna"
 
 Launched Tuesday, April 5, 2011
@@ -6,6 +56,7 @@ Launched Tuesday, April 5, 2011
 * Support for Dedicated Instances within a Virtual Private Cloud on single-tenant hardware has been added to the SDK.
 * Bug fixes and enhancements:
 	* [AmazonCloudWatch get_metric_statistics returns gzipped body](https://forums.aws.amazon.com/thread.jspa?threadID=62625)
+
 
 ## Service Classes
 ### AmazonCloudWatch
@@ -28,6 +79,7 @@ Launched Friday, March 25, 2011
 * Bug fixes and enhancements:
 	* [Cannot send email](https://forums.aws.amazon.com/thread.jspa?threadID=62833)
 	* [AmazonCloudWatch get_metric_statistics returns gzipped body](https://forums.aws.amazon.com/thread.jspa?threadID=62625)
+
 
 ## Utility Classes
 ### CFArray

@@ -22,7 +22,7 @@
  * Wraps the underlying `SimpleXMLIterator` class with enhancements for rapidly traversing the DOM tree,
  * converting types, and comparisons.
  *
- * @version 2011.03.25
+ * @version 2011.04.25
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -75,6 +75,27 @@ class CFSimpleXML extends SimpleXMLIterator
 		}
 
 		return $results;
+	}
+
+	/**
+	 * Alternate approach to constructing a new instance. Supports chaining.
+	 *
+	 * @param string $data (Required) A well-formed XML string or the path or URL to an XML document if $data_is_url is <code>true</code>.
+	 * @param integer $options (Optional) Used to specify additional LibXML parameters. The default value is <code>0</code>.
+	 * @param boolean $data_is_url (Optional) Specify a value of <code>true</code> to specify that data is a path or URL to an XML document instead of string data. The default value is <code>false</code>.
+	 * @param string $ns (Optional) The XML namespace to return values for.
+	 * @param boolean $is_prefix (Optional) (No description provided by PHP.net.)
+	 * @return CFSimpleXML Creates a new <CFSimpleXML> element.
+	 */
+	public static function init($data, $options = 0, $data_is_url, $ns, $is_prefix = false)
+	{
+		if (version_compare(PHP_VERSION, '5.3.0', '<'))
+		{
+			throw new Exception('PHP 5.3 or newer is required to instantiate a new class with CLASS::init().');
+		}
+
+		$self = get_called_class();
+		return new $self($data, $options, $data_is_url, $ns, $is_prefix);
 	}
 
 

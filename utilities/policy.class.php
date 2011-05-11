@@ -21,14 +21,13 @@
 /**
  * Simplifies the process of signing JSON policy documents.
  *
- * @version 2010.08.31
+ * @version 2011.04.25
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
  */
 class CFPolicy
 {
-
 	/**
 	 * Stores the object that contains the authentication credentials.
 	 */
@@ -62,6 +61,24 @@ class CFPolicy
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Alternate approach to constructing a new instance. Supports chaining.
+	 *
+	 * @param CFRuntime $auth (Required) An instance of any authenticated AWS object that is an instance of <CFRuntime> (e.g. <AmazonEC2>, <AmazonS3>).
+	 * @param string|array $policy (Required) The associative array representing the S3 policy to use, or a string of JSON content.
+	 * @return $this A reference to the current instance.
+	 */
+	public static function init($auth, $policy)
+	{
+		if (version_compare(PHP_VERSION, '5.3.0', '<'))
+		{
+			throw new Exception('PHP 5.3 or newer is required to instantiate a new class with CLASS::init().');
+		}
+
+		$self = get_called_class();
+		return new $self($auth, $policy);
 	}
 
 	/**
