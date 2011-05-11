@@ -16,11 +16,12 @@
 
 /**
  *
+ *
  * Elastic Load Balancing is a cost-effective and easy to use web service to help you improve availability and scalability of your
  * application. It makes it easy for you to distribute application loads between two or more EC2 instances. Elastic Load Balancing enables
  * availability through redundancy and supports traffic growth of your application.
  *
- * @version Tue Apr 05 15:18:51 PDT 2011
+ * @version Tue May 10 18:26:54 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticloadbalancing/Amazon Elastic Load Balancing
@@ -96,12 +97,16 @@ class AmazonELB extends CFRuntime
 
 		if (!$key && !defined('AWS_KEY'))
 		{
+			// @codeCoverageIgnoreStart
 			throw new ELB_Exception('No account key was passed into the constructor, nor was it set in the AWS_KEY constant.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		if (!$secret_key && !defined('AWS_SECRET_KEY'))
 		{
+			// @codeCoverageIgnoreStart
 			throw new ELB_Exception('No account secret was passed into the constructor, nor was it set in the AWS_SECRET_KEY constant.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		return parent::__construct($key, $secret_key);
@@ -126,7 +131,7 @@ class AmazonELB extends CFRuntime
 	 * 	</ul></li>
 	 * </ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -145,32 +150,26 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 *
-	 * Generates a stickiness policy with sticky session lifetimes controlled by the lifetime of the browser (user-agent) or a specified
-	 * expiration period. This policy can only be associated only with HTTP listeners.
+	 * Deletes listeners from the LoadBalancer for the specified port.
 	 *
-	 * When a load balancer implements this policy, the load balancer uses a special cookie to track the backend server instance for each request.
-	 * When the load balancer receives a request, it first checks to see if this cookie is present in the request. If so, the load balancer sends
-	 * the request to the application server specified in the cookie. If not, the load balancer sends the request to a server that is chosen based
-	 * on the existing load balancing algorithm.
-	 *
-	 * A cookie is inserted into the response for binding subsequent requests from the same user to that server. The validity of the cookie is
-	 * based on the cookie expiration time, which is specified in the policy configuration.
-	 *
-	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
-	 * @param string $policy_name (Required) The name of the policy being created. The name must be unique within the set of policies for this Load Balancer.
+	 * @param string $load_balancer_name (Required) The mnemonic name associated with the LoadBalancer.
+	 * @param integer LoadBalancerPorts (Required) The client port number(s) of the LoadBalancerListener(s) to be removed.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>CookieExpirationPeriod</code> - <code>long</code> - Optional - The time period in seconds after which the cookie should be considered stale. Not specifying this parameter indicates that the sticky session will last for the duration of the browser session. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function create_lb_cookie_stickiness_policy($load_balancer_name, $policy_name, $opt = null)
+	public function delete_load_balancer_listeners($load_balancer_name, $load_balancer_ports, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		$opt['PolicyName'] = $policy_name;
 
-		return $this->authenticate('CreateLBCookieStickinessPolicy', $opt, $this->hostname);
+		// Required parameter
+		$opt = array_merge($opt, CFComplexType::map(array(
+			'LoadBalancerPorts' => (is_array($load_balancer_ports) ? $load_balancer_ports : array($load_balancer_ports))
+		), 'member'));
+
+		return $this->authenticate('DeleteLoadBalancerListeners', $opt, $this->hostname);
 	}
 
 	/**
@@ -186,7 +185,7 @@ class AmazonELB extends CFRuntime
 	 * 	<li><code>HealthyThreshold</code> - <code>integer</code> - Required - Specifies the number of consecutive health probe successes required before moving the instance to the <i>Healthy</i> state. </li>
 	 * </ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -213,7 +212,7 @@ class AmazonELB extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>LoadBalancerNames</code> - <code>string|array</code> - Optional - A list of names associated with the LoadBalancers at creation time.  Pass a string for a single value, or an indexed array for multiple values. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -235,6 +234,101 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 *
+	 * Generates a stickiness policy with sticky session lifetimes controlled by the lifetime of the browser (user-agent) or a specified
+	 * expiration period. This policy can only be associated only with HTTP listeners.
+	 *
+	 * When a load balancer implements this policy, the load balancer uses a special cookie to track the backend server instance for each request.
+	 * When the load balancer receives a request, it first checks to see if this cookie is present in the request. If so, the load balancer sends
+	 * the request to the application server specified in the cookie. If not, the load balancer sends the request to a server that is chosen based
+	 * on the existing load balancing algorithm.
+	 *
+	 * A cookie is inserted into the response for binding subsequent requests from the same user to that server. The validity of the cookie is
+	 * based on the cookie expiration time, which is specified in the policy configuration.
+	 *
+	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
+	 * @param string $policy_name (Required) The name of the policy being created. The name must be unique within the set of policies for this Load Balancer.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>CookieExpirationPeriod</code> - <code>long</code> - Optional - The time period in seconds after which the cookie should be considered stale. Not specifying this parameter indicates that the sticky session will last for the duration of the browser session. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_lb_cookie_stickiness_policy($load_balancer_name, $policy_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['LoadBalancerName'] = $load_balancer_name;
+		$opt['PolicyName'] = $policy_name;
+
+		return $this->authenticate('CreateLBCookieStickinessPolicy', $opt, $this->hostname);
+	}
+
+	/**
+	 *
+	 * Adds one or more EC2 Availability Zones to the LoadBalancer.
+	 *
+	 * The LoadBalancer evenly distributes requests across all its registered Availability Zones that contain instances. As a result, the client
+	 * must ensure that its LoadBalancer is appropriately scaled for each registered Availability Zone.
+	 *
+	 * The new EC2 Availability Zones to be added must be in the same EC2 Region as the Availability Zones for which the LoadBalancer was created.
+	 *
+	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
+	 * @param string|array $availability_zones (Required) A list of new Availability Zones for the LoadBalancer. Each Availability Zone must be in the same Region as the LoadBalancer.  Pass a string for a single value, or an indexed array for multiple values.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function enable_availability_zones_for_load_balancer($load_balancer_name, $availability_zones, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['LoadBalancerName'] = $load_balancer_name;
+
+		// Required parameter
+		$opt = array_merge($opt, CFComplexType::map(array(
+			'AvailabilityZones' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
+		), 'member'));
+
+		return $this->authenticate('EnableAvailabilityZonesForLoadBalancer', $opt, $this->hostname);
+	}
+
+	/**
+	 *
+	 * Returns the current state of the instances of the specified LoadBalancer. If no instances are specified, the state of all the instances for
+	 * the LoadBalancer is returned.
+	 *
+	 * The client must have created the specified input LoadBalancer in order to retrieve this information; the client must provide the same
+	 * account credentials as those that were used to create the LoadBalancer.
+	 *
+	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Instances</code> - <code>array</code> - Optional - A list of instance IDs whose states are being queried. <ul>
+	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
+	 * 			<li><code>InstanceId</code> - <code>string</code> - Optional - Provides an EC2 instance ID. </li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_instance_health($load_balancer_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['LoadBalancerName'] = $load_balancer_name;
+
+		// Optional parameter
+		if (isset($opt['Instances']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Instances' => $opt['Instances']
+			), 'member'));
+			unset($opt['Instances']);
+		}
+
+		return $this->authenticate('DescribeInstanceHealth', $opt, $this->hostname);
+	}
+
+	/**
+	 *
 	 * Sets the certificate that terminates the specified listener's SSL connections. The specified certificate replaces any prior certificate
 	 * that was used on the same LoadBalancer and port.
 	 *
@@ -242,7 +336,7 @@ class AmazonELB extends CFRuntime
 	 * @param integer $load_balancer_port (Required) The port that uses the specified SSL certificate.
 	 * @param string $ssl_certificate_id (Required) The ID of the SSL certificate chain to use. For more information on SSL certificates, see Managing Server Certificates in the AWS Identity and Access Management documentation.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -254,6 +348,33 @@ class AmazonELB extends CFRuntime
 		$opt['SSLCertificateId'] = $ssl_certificate_id;
 
 		return $this->authenticate('SetLoadBalancerListenerSSLCertificate', $opt, $this->hostname);
+	}
+
+	/**
+	 *
+	 * Associates, updates, or disables a policy with a listener on the load balancer. Currently only zero (0) or one (1) policy can be associated
+	 * with a listener.
+	 *
+	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
+	 * @param integer $load_balancer_port (Required) The external port of the LoadBalancer with which this policy has to be associated.
+	 * @param string|array $policy_names (Required) List of policies to be associated with the listener. Currently this list can have at most one policy. If the list is empty, the current policy is removed from the listener.  Pass a string for a single value, or an indexed array for multiple values.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function set_load_balancer_policies_of_listener($load_balancer_name, $load_balancer_port, $policy_names, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['LoadBalancerName'] = $load_balancer_name;
+		$opt['LoadBalancerPort'] = $load_balancer_port;
+
+		// Required parameter
+		$opt = array_merge($opt, CFComplexType::map(array(
+			'PolicyNames' => (is_array($policy_names) ? $policy_names : array($policy_names))
+		), 'member'));
+
+		return $this->authenticate('SetLoadBalancerPoliciesOfListener', $opt, $this->hostname);
 	}
 
 	/**
@@ -292,7 +413,7 @@ class AmazonELB extends CFRuntime
 	 * </ul>
 	 * @param string|array $availability_zones (Required) A list of Availability Zones. At least one Availability Zone must be specified. Specified Availability Zones must be in the same EC2 Region as the LoadBalancer. Traffic will be equally distributed across all zones. This list can be modified after the creation of the LoadBalancer.  Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -316,234 +437,6 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 *
-	 * Adds one or more EC2 Availability Zones to the LoadBalancer.
-	 *
-	 * The LoadBalancer evenly distributes requests across all its registered Availability Zones that contain instances. As a result, the client
-	 * must ensure that its LoadBalancer is appropriately scaled for each registered Availability Zone.
-	 *
-	 * The new EC2 Availability Zones to be added must be in the same EC2 Region as the Availability Zones for which the LoadBalancer was created.
-	 *
-	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
-	 * @param string|array $availability_zones (Required) A list of new Availability Zones for the LoadBalancer. Each Availability Zone must be in the same Region as the LoadBalancer.  Pass a string for a single value, or an indexed array for multiple values.
-	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
-	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
-	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
-	 */
-	public function enable_availability_zones_for_load_balancer($load_balancer_name, $availability_zones, $opt = null)
-	{
-		if (!$opt) $opt = array();
-		$opt['LoadBalancerName'] = $load_balancer_name;
-
-		// Required parameter
-		$opt = array_merge($opt, CFComplexType::map(array(
-			'AvailabilityZones' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
-		), 'member'));
-
-		return $this->authenticate('EnableAvailabilityZonesForLoadBalancer', $opt, $this->hostname);
-	}
-
-	/**
-	 *
-	 * Returns the current state of the instances of the specified LoadBalancer. If no instances are specified, the state of all the instances for
-	 * the LoadBalancer is returned.
-	 *
-	 * The client must have created the specified input LoadBalancer in order to retrieve this information; the client must provide the same
-	 * account credentials as those that were used to create the LoadBalancer.
-	 *
-	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
-	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>Instances</code> - <code>array</code> - Optional - A list of instance IDs whose states are being queried. <ul>
-	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
-	 * 			<li><code>InstanceId</code> - <code>string</code> - Optional - Provides an EC2 instance ID. </li>
-	 * 		</ul></li>
-	 * 	</ul></li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
-	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
-	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
-	 */
-	public function describe_instance_health($load_balancer_name, $opt = null)
-	{
-		if (!$opt) $opt = array();
-		$opt['LoadBalancerName'] = $load_balancer_name;
-
-		// Optional parameter
-		if (isset($opt['Instances']))
-		{
-			$opt = array_merge($opt, CFComplexType::map(array(
-				'Instances' => $opt['Instances']
-			), 'member'));
-			unset($opt['Instances']);
-		}
-
-		return $this->authenticate('DescribeInstanceHealth', $opt, $this->hostname);
-	}
-
-	/**
-	 *
-	 * Deletes a policy from the LoadBalancer. The specified policy must not be enabled for any listeners.
-	 *
-	 * @param string $load_balancer_name (Required) The mnemonic name associated with the LoadBalancer. The name must be unique within your AWS account.
-	 * @param string $policy_name (Required) The mnemonic name for the policy being deleted.
-	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
-	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
-	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
-	 */
-	public function delete_load_balancer_policy($load_balancer_name, $policy_name, $opt = null)
-	{
-		if (!$opt) $opt = array();
-		$opt['LoadBalancerName'] = $load_balancer_name;
-		$opt['PolicyName'] = $policy_name;
-
-		return $this->authenticate('DeleteLoadBalancerPolicy', $opt, $this->hostname);
-	}
-
-	/**
-	 *
-	 * Removes the specified EC2 Availability Zones from the set of configured Availability Zones for the LoadBalancer.
-	 *
-	 * There must be at least one Availability Zone registered with a LoadBalancer at all times. A client cannot remove all the Availability Zones
-	 * from a LoadBalancer. Once an Availability Zone is removed, all the instances registered with the LoadBalancer that are in the removed
-	 * Availability Zone go into the OutOfService state. Upon Availability Zone removal, the LoadBalancer attempts to equally balance the traffic
-	 * among its remaining usable Availability Zones. Trying to remove an Availability Zone that was not associated with the LoadBalancer does
-	 * nothing.
-	 *
-	 * In order for this call to be successful, the client must have created the LoadBalancer. The client must provide the same account
-	 * credentials as those that were used to create the LoadBalancer.
-	 *
-	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
-	 * @param string|array $availability_zones (Required) A list of Availability Zones to be removed from the LoadBalancer. There must be at least one Availability Zone registered with a LoadBalancer at all times. The client cannot remove all the Availability Zones from a LoadBalancer. Specified Availability Zones must be in the same Region.  Pass a string for a single value, or an indexed array for multiple values.
-	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
-	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
-	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
-	 */
-	public function disable_availability_zones_for_load_balancer($load_balancer_name, $availability_zones, $opt = null)
-	{
-		if (!$opt) $opt = array();
-		$opt['LoadBalancerName'] = $load_balancer_name;
-
-		// Required parameter
-		$opt = array_merge($opt, CFComplexType::map(array(
-			'AvailabilityZones' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
-		), 'member'));
-
-		return $this->authenticate('DisableAvailabilityZonesForLoadBalancer', $opt, $this->hostname);
-	}
-
-	/**
-	 *
-	 * Deregisters instances from the LoadBalancer. Once the instance is deregistered, it will stop receiving traffic from the LoadBalancer.
-	 *
-	 * In order to successfully call this API, the same account credentials as those used to create the LoadBalancer must be provided.
-	 *
-	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
-	 * @param array $instances (Required) A list of EC2 instance IDs consisting of all instances to be deregistered. <ul>
-	 * 	<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
-	 * 		<li><code>InstanceId</code> - <code>string</code> - Optional - Provides an EC2 instance ID. </li>
-	 * 	</ul></li>
-	 * </ul>
-	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
-	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
-	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
-	 */
-	public function deregister_instances_from_load_balancer($load_balancer_name, $instances, $opt = null)
-	{
-		if (!$opt) $opt = array();
-		$opt['LoadBalancerName'] = $load_balancer_name;
-
-		// Required parameter
-		$opt = array_merge($opt, CFComplexType::map(array(
-			'Instances' => (is_array($instances) ? $instances : array($instances))
-		), 'member'));
-
-		return $this->authenticate('DeregisterInstancesFromLoadBalancer', $opt, $this->hostname);
-	}
-
-	/**
-	 *
-	 * Deletes listeners from the LoadBalancer for the specified port.
-	 *
-	 * @param string $load_balancer_name (Required) The mnemonic name associated with the LoadBalancer.
-	 * @param integer LoadBalancerPorts (Required) The client port number(s) of the LoadBalancerListener(s) to be removed.
-	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
-	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
-	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
-	 */
-	public function delete_load_balancer_listeners($load_balancer_name, $load_balancer_ports, $opt = null)
-	{
-		if (!$opt) $opt = array();
-		$opt['LoadBalancerName'] = $load_balancer_name;
-
-		// Required parameter
-		$opt = array_merge($opt, CFComplexType::map(array(
-			'LoadBalancerPorts' => (is_array($load_balancer_ports) ? $load_balancer_ports : array($load_balancer_ports))
-		), 'member'));
-
-		return $this->authenticate('DeleteLoadBalancerListeners', $opt, $this->hostname);
-	}
-
-	/**
-	 *
-	 * Deletes the specified LoadBalancer.
-	 *
-	 * If attempting to recreate the LoadBalancer, the client must reconfigure all the settings. The DNS name associated with a deleted
-	 * LoadBalancer will no longer be usable. Once deleted, the name and associated DNS record of the LoadBalancer no longer exist and traffic sent
-	 * to any of its IP addresses will no longer be delivered to client instances. The client will not receive the same DNS name even if a new
-	 * LoadBalancer with same LoadBalancerName is created.
-	 *
-	 * To successfully call this API, the client must provide the same account credentials as were used to create the LoadBalancer.
-	 *
-	 * By design, if the LoadBalancer does not exist or has already been deleted, DeleteLoadBalancer still succeeds.
-	 *
-	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
-	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
-	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
-	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
-	 */
-	public function delete_load_balancer($load_balancer_name, $opt = null)
-	{
-		if (!$opt) $opt = array();
-		$opt['LoadBalancerName'] = $load_balancer_name;
-
-		return $this->authenticate('DeleteLoadBalancer', $opt, $this->hostname);
-	}
-
-	/**
-	 *
-	 * Generates a stickiness policy with sticky session lifetimes that follow that of an application-generated cookie. This policy can only be
-	 * associated with HTTP listeners.
-	 *
-	 * This policy is similar to the policy created by CreateLBCookieStickinessPolicy, except that the lifetime of the special Elastic Load
-	 * Balancing cookie follows the lifetime of the application-generated cookie specified in the policy configuration. The load balancer only
-	 * inserts a new stickiness cookie when the application response includes a new application cookie.
-	 *
-	 * If the application cookie is explicitly removed or expires, the session stops being sticky until a new application cookie is issued.
-	 *
-	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
-	 * @param string $policy_name (Required) The name of the policy being created. The name must be unique within the set of policies for this Load Balancer.
-	 * @param string $cookie_name (Required) Name of the application cookie used for stickiness.
-	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
-	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
-	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
-	 */
-	public function create_app_cookie_stickiness_policy($load_balancer_name, $policy_name, $cookie_name, $opt = null)
-	{
-		if (!$opt) $opt = array();
-		$opt['LoadBalancerName'] = $load_balancer_name;
-		$opt['PolicyName'] = $policy_name;
-		$opt['CookieName'] = $cookie_name;
-
-		return $this->authenticate('CreateAppCookieStickinessPolicy', $opt, $this->hostname);
-	}
-
-	/**
-	 *
 	 * Adds new instances to the LoadBalancer.
 	 *
 	 * Once the instance is registered, it starts receiving traffic and requests from the LoadBalancer. Any instance that is not in any of the
@@ -563,7 +456,7 @@ class AmazonELB extends CFRuntime
 	 * 	</ul></li>
 	 * </ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -582,29 +475,141 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 *
-	 * Associates, updates, or disables a policy with a listener on the load balancer. Currently only zero (0) or one (1) policy can be associated
-	 * with a listener.
+	 * Generates a stickiness policy with sticky session lifetimes that follow that of an application-generated cookie. This policy can only be
+	 * associated with HTTP listeners.
+	 *
+	 * This policy is similar to the policy created by CreateLBCookieStickinessPolicy, except that the lifetime of the special Elastic Load
+	 * Balancing cookie follows the lifetime of the application-generated cookie specified in the policy configuration. The load balancer only
+	 * inserts a new stickiness cookie when the application response includes a new application cookie.
+	 *
+	 * If the application cookie is explicitly removed or expires, the session stops being sticky until a new application cookie is issued.
 	 *
 	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
-	 * @param integer $load_balancer_port (Required) The external port of the LoadBalancer with which this policy has to be associated.
-	 * @param string|array $policy_names (Required) List of policies to be associated with the listener. Currently this list can have at most one policy. If the list is empty, the current policy is removed from the listener.  Pass a string for a single value, or an indexed array for multiple values.
+	 * @param string $policy_name (Required) The name of the policy being created. The name must be unique within the set of policies for this Load Balancer.
+	 * @param string $cookie_name (Required) Name of the application cookie used for stickiness.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function set_load_balancer_policies_of_listener($load_balancer_name, $load_balancer_port, $policy_names, $opt = null)
+	public function create_app_cookie_stickiness_policy($load_balancer_name, $policy_name, $cookie_name, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		$opt['LoadBalancerPort'] = $load_balancer_port;
+		$opt['PolicyName'] = $policy_name;
+		$opt['CookieName'] = $cookie_name;
+
+		return $this->authenticate('CreateAppCookieStickinessPolicy', $opt, $this->hostname);
+	}
+
+	/**
+	 *
+	 * Deletes the specified LoadBalancer.
+	 *
+	 * If attempting to recreate the LoadBalancer, the client must reconfigure all the settings. The DNS name associated with a deleted
+	 * LoadBalancer will no longer be usable. Once deleted, the name and associated DNS record of the LoadBalancer no longer exist and traffic sent
+	 * to any of its IP addresses will no longer be delivered to client instances. The client will not receive the same DNS name even if a new
+	 * LoadBalancer with same LoadBalancerName is created.
+	 *
+	 * To successfully call this API, the client must provide the same account credentials as were used to create the LoadBalancer.
+	 *
+	 * By design, if the LoadBalancer does not exist or has already been deleted, DeleteLoadBalancer still succeeds.
+	 *
+	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_load_balancer($load_balancer_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['LoadBalancerName'] = $load_balancer_name;
+
+		return $this->authenticate('DeleteLoadBalancer', $opt, $this->hostname);
+	}
+
+	/**
+	 *
+	 * Removes the specified EC2 Availability Zones from the set of configured Availability Zones for the LoadBalancer.
+	 *
+	 * There must be at least one Availability Zone registered with a LoadBalancer at all times. A client cannot remove all the Availability Zones
+	 * from a LoadBalancer. Once an Availability Zone is removed, all the instances registered with the LoadBalancer that are in the removed
+	 * Availability Zone go into the OutOfService state. Upon Availability Zone removal, the LoadBalancer attempts to equally balance the traffic
+	 * among its remaining usable Availability Zones. Trying to remove an Availability Zone that was not associated with the LoadBalancer does
+	 * nothing.
+	 *
+	 * In order for this call to be successful, the client must have created the LoadBalancer. The client must provide the same account
+	 * credentials as those that were used to create the LoadBalancer.
+	 *
+	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
+	 * @param string|array $availability_zones (Required) A list of Availability Zones to be removed from the LoadBalancer. There must be at least one Availability Zone registered with a LoadBalancer at all times. The client cannot remove all the Availability Zones from a LoadBalancer. Specified Availability Zones must be in the same Region.  Pass a string for a single value, or an indexed array for multiple values.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function disable_availability_zones_for_load_balancer($load_balancer_name, $availability_zones, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['LoadBalancerName'] = $load_balancer_name;
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
-			'PolicyNames' => (is_array($policy_names) ? $policy_names : array($policy_names))
+			'AvailabilityZones' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
 		), 'member'));
 
-		return $this->authenticate('SetLoadBalancerPoliciesOfListener', $opt, $this->hostname);
+		return $this->authenticate('DisableAvailabilityZonesForLoadBalancer', $opt, $this->hostname);
+	}
+
+	/**
+	 *
+	 * Deletes a policy from the LoadBalancer. The specified policy must not be enabled for any listeners.
+	 *
+	 * @param string $load_balancer_name (Required) The mnemonic name associated with the LoadBalancer. The name must be unique within your AWS account.
+	 * @param string $policy_name (Required) The mnemonic name for the policy being deleted.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_load_balancer_policy($load_balancer_name, $policy_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['LoadBalancerName'] = $load_balancer_name;
+		$opt['PolicyName'] = $policy_name;
+
+		return $this->authenticate('DeleteLoadBalancerPolicy', $opt, $this->hostname);
+	}
+
+	/**
+	 *
+	 * Deregisters instances from the LoadBalancer. Once the instance is deregistered, it will stop receiving traffic from the LoadBalancer.
+	 *
+	 * In order to successfully call this API, the same account credentials as those used to create the LoadBalancer must be provided.
+	 *
+	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
+	 * @param array $instances (Required) A list of EC2 instance IDs consisting of all instances to be deregistered. <ul>
+	 * 	<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
+	 * 		<li><code>InstanceId</code> - <code>string</code> - Optional - Provides an EC2 instance ID. </li>
+	 * 	</ul></li>
+	 * </ul>
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function deregister_instances_from_load_balancer($load_balancer_name, $instances, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['LoadBalancerName'] = $load_balancer_name;
+
+		// Required parameter
+		$opt = array_merge($opt, CFComplexType::map(array(
+			'Instances' => (is_array($instances) ? $instances : array($instances))
+		), 'member'));
+
+		return $this->authenticate('DeregisterInstancesFromLoadBalancer', $opt, $this->hostname);
 	}
 }
 

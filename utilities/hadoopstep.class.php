@@ -21,58 +21,14 @@
 /**
  * Contains a set of pre-built Amazon EMR Hadoop steps.
  *
- * @version 2010.11.16
+ * @version 2011.05.03
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
  * @link http://hadoop.apache.org Apache Hadoop
  */
-class CFHadoopStep
+class CFHadoopStep extends CFHadoopBase
 {
-
-	/*%******************************************************************************************%*/
-	// CORE METHODS
-
-	/**
-	 * Runs a specified script on the master node of your cluster.
-	 *
-	 * @param string $script (Required) The script to run with `script-runner.jar`.
-	 * @param array $args (Optional) An indexed array of arguments to pass to the script.
-	 * @return array A standard array that is intended to be passed into a <CFStepConfig> object.
-	 */
-	protected static function script_runner($script, $args = null)
-	{
-		if (!$args) $args = array();
-		array_unshift($args, $script);
-
-		return array(
-			'Jar' => 's3://us-east-1.elasticmapreduce/libs/script-runner/script-runner.jar',
-			'Args' => $args
-		);
-	}
-
-	/**
-	 * Prepares a Hive or Pig script before passing it to the script runner.
-	 *
-	 * @param string $type (Required) The type of script to run. [Allowed values: `hive`, `pig`].
-	 * @param array $args (Optional) An indexed array of arguments to pass to the script.
-	 * @return array A standard array that is intended to be passed into a <CFStepConfig> object.
-	 * @link http://hive.apache.org Apache Hive
-	 * @link http://pig.apache.org Apache Pig
-	 */
-	protected static function hive_pig_script($type, $args = null)
-	{
-		if (!$args) $args = array();
-		$args = is_array($args) ? $args : array($args);
-		$args = array_merge(array('--base-path', 's3://us-east-1.elasticmapreduce/libs/' . $type . '/'), $args);
-
-        return self::script_runner('s3://us-east-1.elasticmapreduce/libs/' . $type . '/' . $type . '-script', $args);
-	}
-
-
-	/*%******************************************************************************************%*/
-	// USER-FACING METHODS
-
 	/**
 	 * When ran as the first step in your job flow, enables the Hadoop debugging UI in the AWS
 	 * Management Console.

@@ -23,7 +23,7 @@
  * rapidly manipulating array data. Specifically, the `CFArray` object is intended for working with
  * <CFResponse> and <CFSimpleXML> objects that are returned by AWS services.
  *
- * @version 2010.12.06
+ * @version 2011.04.25
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -42,6 +42,25 @@ class CFArray extends ArrayObject
 	public function __construct($input = array(), $flags = self::STD_PROP_LIST, $iterator_class = 'ArrayIterator')
 	{
 		return parent::__construct($input, $flags, $iterator_class);
+	}
+
+	/**
+	 * Alternate approach to constructing a new instance. Supports chaining.
+	 *
+	 * @param mixed $input (Optional) The input parameter accepts an array or an Object. The default value is an empty array.
+	 * @param integer $flags (Optional) Flags to control the behavior of the ArrayObject object. Defaults to <STD_PROP_LIST>.
+	 * @param string $iterator_class (Optional) Specify the class that will be used for iteration of the <php:ArrayObject> object. <php:ArrayIterator> is the default class used.
+	 * @return mixed Either an array of matches, or a single <CFSimpleXML> element.
+	 */
+	public static function init($input = array(), $flags = self::STD_PROP_LIST, $iterator_class = 'ArrayIterator')
+	{
+		if (version_compare(PHP_VERSION, '5.3.0', '<'))
+		{
+			throw new Exception('PHP 5.3 or newer is required to instantiate a new class with CLASS::init().');
+		}
+
+		$self = get_called_class();
+		return new $self($input, $flags, $iterator_class);
 	}
 
 	/**

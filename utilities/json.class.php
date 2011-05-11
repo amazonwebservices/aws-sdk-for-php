@@ -49,20 +49,27 @@ class CFJSON
 		{
 			$json = json_decode($json, true);
 
-			// Did we encounter an error?
-			switch (json_last_error())
+			if (function_exists('json_last_error'))
 			{
-				case JSON_ERROR_DEPTH:
-					throw new JSON_Exception('Maximum stack depth exceeded');
+				// Did we encounter an error?
+				switch (json_last_error())
+				{
+					case JSON_ERROR_DEPTH:
+						throw new JSON_Exception('Maximum stack depth exceeded.');
 
-				case JSON_ERROR_CTRL_CHAR:
-					throw new JSON_Exception('Unexpected control character found');
+					case JSON_ERROR_CTRL_CHAR:
+						throw new JSON_Exception('Unexpected control character found.');
 
-				case JSON_ERROR_SYNTAX:
-					throw new JSON_Exception('Syntax error; Malformed JSON');
+					case JSON_ERROR_SYNTAX:
+						throw new JSON_Exception('Syntax error; Malformed JSON.');
 
-				case JSON_ERROR_STATE_MISMATCH:
-					throw new JSON_Exception('Invalid or malformed JSON');
+					case JSON_ERROR_STATE_MISMATCH:
+						throw new JSON_Exception('Invalid or malformed JSON.');
+				}
+			}
+			else
+			{
+				throw new JSON_Exception('Unknown JSON error. Be sure to validate your JSON and read the notes on http://php.net/json_decode.');
 			}
 		}
 

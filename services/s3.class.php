@@ -49,7 +49,7 @@ class S3_Exception extends Exception {}
  *
  * Visit <http://aws.amazon.com/s3/> for more information.
  *
- * @version 2011.03.11
+ * @version 2011.04.22
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/s3/ Amazon Simple Storage Service
@@ -267,12 +267,16 @@ class AmazonS3 extends CFRuntime
 
 		if (!$key && !defined('AWS_KEY'))
 		{
+			// @codeCoverageIgnoreStart
 			throw new S3_Exception('No account key was passed into the constructor, nor was it set in the AWS_KEY constant.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		if (!$secret_key && !defined('AWS_SECRET_KEY'))
 		{
+			// @codeCoverageIgnoreStart
 			throw new S3_Exception('No account secret was passed into the constructor, nor was it set in the AWS_SECRET_KEY constant.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		return parent::__construct($key, $secret_key);
@@ -332,7 +336,9 @@ class AmazonS3 extends CFRuntime
 		// Validate the S3 bucket name
 		if (!$this->validate_bucketname_support($bucket))
 		{
+			// @codeCoverageIgnoreStart
 			throw new S3_Exception('S3 does not support "' . $bucket . '" as a valid bucket name. Review "Bucket Restrictions and Limitations" in the S3 Developer Guide for more information.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		// Die if $opt isn't set.
@@ -719,6 +725,7 @@ class AmazonS3 extends CFRuntime
 
 		// Did Amazon tell us to redirect? Typically happens for multiple rapid requests EU datacenters.
 		// @see: http://docs.amazonwebservices.com/AmazonS3/latest/dev/Redirects.html
+		// @codeCoverageIgnoreStart
 		if ((integer) $request->get_response_code() === 307) // Temporary redirect to new endpoint.
 		{
 			$data = $this->authenticate($bucket, $opt, $headers['location'], ++$redirects);
@@ -735,6 +742,7 @@ class AmazonS3 extends CFRuntime
 				$data = $this->authenticate($bucket, $opt, null, ++$redirects);
 			}
 		}
+		// @codeCoverageIgnoreEnd
 
 		// Return!
 		return $data;
@@ -850,7 +858,10 @@ class AmazonS3 extends CFRuntime
 				$this->set_hostname('s3-' . $region . '.amazonaws.com');
 				$this->enable_path_style(false);
 				break;
+
+		// @codeCoverageIgnoreStart
 		}
+		// @codeCoverageIgnoreEnd
 
 		return $this;
 	}
@@ -895,7 +906,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $region (Required) The preferred geographical location for the bucket. [Allowed values: `AmazonS3::REGION_US_E1 `, `AmazonS3::REGION_US_W1`, `AmazonS3::REGION_EU_W1`, `AmazonS3::REGION_APAC_SE1`, `AmazonS3::REGION_APAC_NE1`]
 	 * @param string $acl (Optional) The ACL settings for the specified bucket. [Allowed values: <code>AmazonS3::ACL_PRIVATE</code>, <code>AmazonS3::ACL_PUBLIC</code>, <code>AmazonS3::ACL_OPEN</code>, <code>AmazonS3::ACL_AUTH_READ</code>, <code>AmazonS3::ACL_OWNER_READ</code>, <code>AmazonS3::ACL_OWNER_FULL_CONTROL</code>]. The default value is <ACL_PRIVATE>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/UsingBucket.html Working with Amazon S3 Buckets
@@ -915,7 +926,9 @@ class AmazonS3 extends CFRuntime
 		// Validate the S3 bucket name for creation
 		if (!$this->validate_bucketname_create($bucket))
 		{
+			// @codeCoverageIgnoreStart
 			throw new S3_Exception('"' . $bucket . '" is not DNS-valid (i.e., <bucketname>.s3.amazonaws.com), and cannot be used as an S3 bucket name. Review "Bucket Restrictions and Limitations" in the S3 Developer Guide for more information.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		if (!$opt) $opt = array();
@@ -948,7 +961,10 @@ class AmazonS3 extends CFRuntime
 				$xml->LocationConstraint = $region;
 				$opt['body'] = $xml->asXML();
 				break;
+
+		// @codeCoverageIgnoreStart
 		}
+		// @codeCoverageIgnoreEnd
 
 		$response = $this->authenticate($bucket, $opt);
 
@@ -989,7 +1005,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>preauth</code> - <code>integer|string</code> - Optional - Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1007,7 +1023,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param boolean $force (Optional) Whether to force-delete the bucket and all of its contents. The default value is <code>false</code>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return mixed A <CFResponse> object if the bucket was deleted successfully. Returns boolean <code>false</code> if otherwise.
 	 */
@@ -1031,7 +1047,9 @@ class AmazonS3 extends CFRuntime
 			return $this->authenticate($bucket, $opt);
 		}
 
+		// @codeCoverageIgnoreStart
 		return false;
+		// @codeCoverageIgnoreEnd
 	}
 
 	/**
@@ -1039,7 +1057,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>preauth</code> - <code>integer|string</code> - Optional - Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1057,7 +1075,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>preauth</code> - <code>integer|string</code> - Optional - Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/RESTAccessPolicy.html REST Access Control Policy
@@ -1079,7 +1097,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param string $acl (Optional) The ACL settings for the specified bucket. [Allowed values: <code>AmazonS3::ACL_PRIVATE</code>, <code>AmazonS3::ACL_PUBLIC</code>, <code>AmazonS3::ACL_OPEN</code>, <code>AmazonS3::ACL_AUTH_READ</code>, <code>AmazonS3::ACL_OWNER_READ</code>, <code>AmazonS3::ACL_OWNER_FULL_CONTROL</code>]. Alternatively, an array of associative arrays. Each associative array contains an `id` and a `permission` key. The default value is <ACL_PRIVATE>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/RESTAccessPolicy.html REST Access Control Policy
@@ -1095,6 +1113,7 @@ class AmazonS3 extends CFRuntime
 		);
 
 		// Make sure these are defined.
+		// @codeCoverageIgnoreStart
 		if (!defined('AWS_CANONICAL_ID') || !defined('AWS_CANONICAL_NAME'))
 		{
 			// Fetch the data live.
@@ -1102,6 +1121,7 @@ class AmazonS3 extends CFRuntime
 			define('AWS_CANONICAL_ID', $canonical['id']);
 			define('AWS_CANONICAL_NAME', $canonical['display_name']);
 		}
+		// @codeCoverageIgnoreEnd
 
 		if (is_array($acl))
 		{
@@ -1210,7 +1230,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>range</code> - <code>string</code> - Optional - The range of bytes to fetch from the object. Specify this parameter when downloading partial bits or completing incomplete object downloads. The specified range must be notated with a hyphen (e.g., 0-10485759). Defaults to the byte range of the complete Amazon S3 object.</li>
 	 * 	<li><code>response</code> - <code>array</code> - Optional - Allows adjustments to specific response headers. Pass an associative array where each key is one of the following: <code>cache-control</code>, <code>content-disposition</code>, <code>content-encoding</code>, <code>content-language</code>, <code>content-type</code>, <code>expires</code>. The <code>expires</code> value should use <php:gmdate()> and be formatted with the <code>DATE_RFC2822</code> constant.</li>
 	 * 	<li><code>versionId</code> - <code>string</code> - Optional - The version of the object to retrieve. Version IDs are returned in the <code>x-amz-version-id</code> header of any previous object-related request.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1265,7 +1285,7 @@ class AmazonS3 extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>versionId</code> - <code>string</code> - Optional - The version of the object to retrieve. Version IDs are returned in the <code>x-amz-version-id</code> header of any previous object-related request.</li>
 	 * 	<li><code>preauth</code> - <code>integer|string</code> - Optional - Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1289,7 +1309,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>versionId</code> - <code>string</code> - Optional - The version of the object to delete. Version IDs are returned in the <code>x-amz-version-id</code> header of any previous object-related request.</li>
 	 * 	<li><code>MFASerial</code> - <code>string</code> - Optional - The serial number on the back of the Gemalto device. <code>MFASerial</code> and <code>MFAToken</code> must both be set for MFA to work.</li>
 	 * 	<li><code>MFAToken</code> - <code>string</code> - Optional - The current token displayed on the Gemalto device. <code>MFASerial</code> and <code>MFAToken</code> must both be set for MFA to work.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://aws.amazon.com/mfa/ Multi-Factor Authentication
@@ -1302,12 +1322,14 @@ class AmazonS3 extends CFRuntime
 		$opt['resource'] = $filename;
 
 		// Enable MFA delete?
+		// @codeCoverageIgnoreStart
 		if (isset($opt['MFASerial']) && isset($opt['MFAToken']))
 		{
 			$opt['headers'] = array(
 				'x-amz-mfa' => ($opt['MFASerial'] . ' ' . $opt['MFAToken'])
 			);
 		}
+		// @codeCoverageIgnoreEnd
 
 		// Authenticate to S3
 		return $this->authenticate($bucket, $opt);
@@ -1323,7 +1345,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>max-keys</code> - <code>string</code> - Optional - The maximum number of results returned by the method call. The returned list will contain no more results than the specified value, but may return less.</li>
 	 * 	<li><code>preauth</code> - <code>integer|string</code> - Optional - Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
 	 * 	<li><code>prefix</code> - <code>string</code> - Optional - Restricts the response to contain results that begin only with the specified prefix.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1367,7 +1389,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>headers</code> - <code>array</code> - Optional - Standard HTTP headers to send along in the request.</li>
 	 * 	<li><code>meta</code> - <code>array</code> - Optional - Associative array of key-value pairs. Represented by <code>x-amz-meta-:</code> Any header starting with this prefix is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.</li>
 	 * 	<li><code>metadataDirective</code> - <code>string</code> - Optional - Accepts either COPY or REPLACE. You will likely never need to use this, as it manages itself with no issues.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/API/RESTObjectCOPY.html Copying Amazon S3 Objects
@@ -1489,7 +1511,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>acl</code> - <code>string</code> - Optional - The ACL settings for the specified object. [Allowed values: <code>AmazonS3::ACL_PRIVATE</code>, <code>AmazonS3::ACL_PUBLIC</code>, <code>AmazonS3::ACL_OPEN</code>, <code>AmazonS3::ACL_AUTH_READ</code>, <code>AmazonS3::ACL_OWNER_READ</code>, <code>AmazonS3::ACL_OWNER_FULL_CONTROL</code>]. The default value is <ACL_PRIVATE>.</li>
 	 * 	<li><code>headers</code> - <code>array</code> - Optional - The standard HTTP headers to update the Amazon S3 object with.</li>
 	 * 	<li><code>meta</code> - <code>array</code> - Optional - An associative array of key-value pairs. Any header with the <code>x-amz-meta-</code> prefix is considered user metadata and is stored with the Amazon S3 object. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/API/RESTObjectCOPY.html Copying Amazon S3 Objects
@@ -1519,7 +1541,7 @@ class AmazonS3 extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>versionId</code> - <code>string</code> - Optional - The version of the object to retrieve. Version IDs are returned in the <code>x-amz-version-id</code> header of any previous object-related request.</li>
 	 * 	<li><code>preauth</code> - <code>integer|string</code> - Optional - Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/RESTAccessPolicy.html REST Access Control Policy
@@ -1543,7 +1565,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $filename (Required) The file name for the object.
 	 * @param string $acl (Optional) The ACL settings for the specified object. Accepts any of the following constants: [Allowed values: <code>AmazonS3::ACL_PRIVATE</code>, <code>AmazonS3::ACL_PUBLIC</code>, <code>AmazonS3::ACL_OPEN</code>, <code>AmazonS3::ACL_AUTH_READ</code>, <code>AmazonS3::ACL_OWNER_READ</code>, <code>AmazonS3::ACL_OWNER_FULL_CONTROL</code>]. Alternatively, an array of associative arrays. Each associative array contains an <code>id</code> and a <code>permission</code> key. The default value is <code>ACL_PRIVATE</code>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/RESTAccessPolicy.html REST Access Control Policy
@@ -1568,6 +1590,7 @@ class AmazonS3 extends CFRuntime
 		}
 
 		// Make sure these are defined.
+		// @codeCoverageIgnoreStart
 		if (!defined('AWS_CANONICAL_ID') || !defined('AWS_CANONICAL_NAME'))
 		{
 			// Fetch the data live.
@@ -1575,6 +1598,7 @@ class AmazonS3 extends CFRuntime
 			define('AWS_CANONICAL_ID', $canonical['id']);
 			define('AWS_CANONICAL_NAME', $canonical['display_name']);
 		}
+		// @codeCoverageIgnoreEnd
 
 		if (is_array($acl))
 		{
@@ -1664,7 +1688,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $bucket (Required) The name of the bucket to use. Pass a `null` value when using the <set_vhost()> method.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>preauth</code> - <code>integer|string</code> - Optional - Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/ServerLogs.html Server Access Logging
@@ -1688,7 +1712,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $target_prefix (Required) The prefix to give to the log file names.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>users</code> - <code>array</code> - Optional - An array of associative arrays specifying any user to give access to. Each associative array contains an <code>id</code> and <code>permission</code> value.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/LoggingAPI.html Server Access Logging Configuration API
@@ -1767,7 +1791,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use. Pass `null` if using <set_vhost()>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/LoggingAPI.html Server Access Logging Configuration API
@@ -1827,7 +1851,10 @@ class AmazonS3 extends CFRuntime
 
 		if ($header->isOK()) { return true; }
 		elseif ($header->status === 404) { return false; }
+
+		// @codeCoverageIgnoreStart
 		return null;
+		// @codeCoverageIgnoreEnd
 	}
 
 	/**
@@ -1840,14 +1867,19 @@ class AmazonS3 extends CFRuntime
 	{
 		if ($this->use_batch_flow)
 		{
+			// @codeCoverageIgnoreStart
 			throw new S3_Exception(__FUNCTION__ . '() cannot be batch requested');
+			// @codeCoverageIgnoreEnd
 		}
 
 		$response = $this->get_bucket_policy($bucket);
 
 		if ($response->isOK()) { return true; }
 		elseif ($response->status === 404) { return false; }
+
+		// @codeCoverageIgnoreStart
 		return null;
+		// @codeCoverageIgnoreEnd
 	}
 
 	/**
@@ -1860,7 +1892,9 @@ class AmazonS3 extends CFRuntime
 	{
 		if ($this->use_batch_flow)
 		{
+			// @codeCoverageIgnoreStart
 			throw new S3_Exception(__FUNCTION__ . '() cannot be batch requested');
+			// @codeCoverageIgnoreEnd
 		}
 
 		return count($this->get_object_list($bucket));
@@ -1942,7 +1976,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $filename (Required) The file name for the object.
 	 * @param string $contentType (Required) The content-type to apply to the object.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -1983,7 +2017,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $filename (Required) The file name for the object.
 	 * @param string $storage (Required) The storage setting to apply to the object. [Allowed values: <code>AmazonS3::STORAGE_STANDARD</code>, <code>AmazonS3::STORAGE_REDUCED</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -2037,7 +2071,9 @@ class AmazonS3 extends CFRuntime
 			return $list;
 		}
 
+		// @codeCoverageIgnoreStart
 		return array();
+		// @codeCoverageIgnoreEnd
 	}
 
 	/**
@@ -2050,7 +2086,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>max-keys</code> - <code>string</code> - Optional - The maximum number of results returned by the method call. The returned list will contain no more results than the specified value, but may return less.</li>
 	 * 	<li><code>pcre</code> - <code>string</code> - Optional - A Perl-Compatible Regular Expression (PCRE) to filter the names against. This is applied only AFTER any native Amazon S3 filtering from specified <code>prefix</code>, <code>marker</code>, <code>max-keys</code>, or <code>delimiter</code> values are applied.</li>
 	 * 	<li><code>prefix</code> - <code>string</code> - Optional - Restricts the response to contain results that begin only with the specified prefix.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return array The list of matching object names. If there are no results, the method will return an empty array.
 	 * @link http://php.net/pcre Regular Expressions (Perl-Compatible)
@@ -2173,7 +2209,9 @@ class AmazonS3 extends CFRuntime
 	{
 		if ($this->use_batch_flow)
 		{
+			// @codeCoverageIgnoreStart
 			throw new S3_Exception(__FUNCTION__ . '() cannot be batch requested');
+			// @codeCoverageIgnoreEnd
 		}
 
 		// Instantiate
@@ -2249,7 +2287,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $filename (Required) The file name for the Amazon S3 object.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>versionId</code> - <code>string</code> - Optional - The version of the object to retrieve. Version IDs are returned in the <code>x-amz-version-id</code> header of any previous object-related request.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return mixed If the object exists, the method returns the collective metadata for the Amazon S3 object. If the object does not exist, the method returns boolean <code>false</code>.
 	 */
@@ -2398,7 +2436,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>MFASerial</code> - string (Optional) The serial number on the back of the Gemalto device. <code>MFASerial</code>, <code>MFAToken</code> and <code>MFAStatus</code> must all be set for MFA to work.</li>
 	 * 	<li><code>MFAToken</code> - string (Optional) The current token displayed on the Gemalto device. <code>MFASerial</code>, <code>MFAToken</code> and <code>MFAStatus</code> must all be set for MFA to work.</li>
 	 * 	<li><code>MFAStatus</code> - string (Optional) The MFA Delete status. Can be <code>Enabled</code> or <code>Disabled</code>. <code>MFASerial</code>, <code>MFAToken</code> and <code>MFAStatus</code> must all be set for MFA to work.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://aws.amazon.com/mfa/ Multi-Factor Authentication
@@ -2418,12 +2456,13 @@ class AmazonS3 extends CFRuntime
 		$xml->addChild('Status', 'Enabled');
 
 		// Enable MFA delete?
+		// @codeCoverageIgnoreStart
 		if (isset($opt['MFASerial']) && isset($opt['MFAToken']) && isset($opt['MFAStatus']))
 		{
 			$xml->addChild('MfaDelete', $opt['MFAStatus']);
-
 			$opt['headers']['x-amz-mfa'] = ($opt['MFASerial'] . ' ' . $opt['MFAToken']);
 		}
+		// @codeCoverageIgnoreEnd
 
 		$opt['body'] = $xml->asXML();
 
@@ -2439,7 +2478,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>MFASerial</code> - <code>string</code> - Optional - The serial number on the back of the Gemalto device. <code>MFASerial</code>, <code>MFAToken</code> and <code>MFAStatus</code> must all be set for MFA to work.</li>
 	 * 	<li><code>MFAToken</code> - <code>string</code> - Optional - The current token displayed on the Gemalto device. <code>MFASerial</code>, <code>MFAToken</code> and <code>MFAStatus</code> must all be set for MFA to work.</li>
 	 * 	<li><code>MFAStatus</code> - <code>string</code> - Optional - The MFA Delete status. Can be <code>Enabled</code> or <code>Disabled</code>. <code>MFASerial</code>, <code>MFAToken</code> and <code>MFAStatus</code> must all be set for MFA to work.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://aws.amazon.com/mfa/ Multi-Factor Authentication
@@ -2459,12 +2498,13 @@ class AmazonS3 extends CFRuntime
 		$xml->addChild('Status', 'Suspended');
 
 		// Enable MFA delete?
+		// @codeCoverageIgnoreStart
 		if (isset($opt['MFASerial']) && isset($opt['MFAToken']) && isset($opt['MFAStatus']))
 		{
 			$xml->addChild('MfaDelete', $opt['MFAStatus']);
-
 			$opt['headers']['x-amz-mfa'] = ($opt['MFASerial'] . ' ' . $opt['MFAToken']);
 		}
+		// @codeCoverageIgnoreEnd
 
 		$opt['body'] = $xml->asXML();
 
@@ -2478,7 +2518,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>preauth</code> - <code>integer|string</code> - Optional - Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -2503,7 +2543,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>prefix</code> - <code>string</code> - Optional - Restricts the response to only contain results that begin with the specified prefix.</li>
 	 * 	<li><code>version-id-marker</code> - <code>string</code> - Optional - Restricts the response to contain results that only occur alphabetically after the value of the <code>version-id-marker</code>.</li>
 	 * 	<li><code>preauth</code> - <code>integer|string</code> - Optional - Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -2542,7 +2582,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param CFPolicy $policy (Required) The JSON policy to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/AccessPolicyLanguage.html Appendix: The Access Policy Language
@@ -2569,7 +2609,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -2589,7 +2629,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response. If you do not have `DeletePolicy` permissions, Amazon S3 returns a `403 Access Denied` error. If you have the correct permissions, but are not the bucket owner, Amazon S3 returns a `405 Method Not Allowed` error. If the bucket doesn't have a policy, Amazon S3 returns a `204 No Content` error.
 	 */
@@ -2631,7 +2671,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $topic_arn (Required) The SNS topic ARN to send notifications to.
 	 * @param string $event (Required) The event type to listen for.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/NotificationHowTo.html Setting Up Notification of Bucket Events
@@ -2671,7 +2711,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/NotificationHowTo.html Setting Up Notification of Bucket Events
@@ -2691,7 +2731,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/NotificationHowTo.html Setting Up Notification of Bucket Events
@@ -2749,7 +2789,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>headers</code> - <code>array</code> - Optional - The standard HTTP headers to send along in the request.</li>
 	 * 	<li><code>meta</code> - <code>array</code> - Optional - An associative array of key-value pairs. Any header starting with <code>x-amz-meta-:</code> is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.</li>
 	 * 	<li><code>storage</code> - <code>string</code> - Optional - Whether to use Standard or Reduced Redundancy storage. [Allowed values: <code>AmazonS3::STORAGE_STANDARD</code>, <code>AmazonS3::STORAGE_REDUCED</code>]. The default value is <code>STORAGE_STANDARD</code>.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/RESTAccessPolicy.html REST Access Control Policy
@@ -2825,7 +2865,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>length</code> - <code>integer</code> - Optional - The size of the part in bytes. For more information, see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.13">RFC 2616, section 14.13</a>. The value can also be passed to the <code>header</code> option as <code>Content-Length</code>.</li>
 	 * 	<li><code>md5</code> - <code>string</code> - Optional - The base64 encoded 128-bit MD5 digest of the part data. This header can be used as a message integrity check to verify that the part data is the same data that was originally sent. Although it is optional, we recommend using this mechanism as an end-to-end integrity check. For more information, see <a href="http://www.ietf.org/rfc/rfc1864.txt">RFC 1864</a>. The value can also be passed to the <code>header</code> option as <code>Content-MD5</code>.</li>
 	 * 	<li><code>seekTo</code> - <code>integer</code> - Optional - The starting position in bytes for the piece of the file/stream to upload.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -2877,7 +2917,7 @@ class AmazonS3 extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>max-parts</code> - <code>integer</code> - Optional - The maximum number of parts to return in the response body.</li>
 	 * 	<li><code>part-number-marker</code> - <code>string</code> - Optional - Restricts the response to contain results that only occur numerically after the value of the <code>part-number-marker</code>.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -2911,7 +2951,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $filename (Required) The file name for the object.
 	 * @param string $upload_id (Required) The upload ID identifying the multipart upload whose parts are being listed. The upload ID is retrieved from a call to <initiate_multipart_upload()>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -2937,7 +2977,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $upload_id (Required) The upload ID identifying the multipart upload whose parts are being listed. The upload ID is retrieved from a call to <initiate_multipart_upload()>.
 	 * @param string|array|SimpleXMLElement|CFResponse $parts (Required) The completion XML document. This document can be provided in multiple ways; as a string of XML, as a <php:SimpleXMLElement> object representing the XML document, as an indexed array of associative arrays where the keys are <code>PartNumber</code> and <code>ETag</code>, or as a <CFResponse> object returned by <list_parts()>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -3007,7 +3047,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>delimiter</code> - <code>string</code> - Optional - Keys that contain the same string between the prefix and the first occurrence of the delimiter will be rolled up into a single result element in the CommonPrefixes collection.</li>
 	 * 	<li><code>key-marker</code> - <code>string</code> - Optional - Restricts the response to contain results that only occur alphabetically after the value of the <code>key-marker</code>. If used in conjunction with <code>upload-id-marker</code>, the results will be filtered to include keys whose upload ID is alphabetically after the value of <code>upload-id-marker</code>.</li>
 	 * 	<li><code>upload-id-marker</code> - <code>string</code> - Optional - Restricts the response to contain results that only occur alphabetically after the value of the <code>upload-id-marker</code>. Must be used in conjunction with <code>key-marker</code>.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -3219,7 +3259,9 @@ class AmazonS3 extends CFRuntime
 	{
 		if ($this->use_batch_flow)
 		{
+			// @codeCoverageIgnoreStart
 			throw new S3_Exception(__FUNCTION__ . '() cannot be batch requested');
+			// @codeCoverageIgnoreEnd
 		}
 
 		$when = $when ? $when : time();
@@ -3283,7 +3325,7 @@ class AmazonS3 extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>indexDocument</code> - <code>string</code> - Optional - The file path to use as the root document. The default value is <code>index.html</code>.</li>
 	 * 	<li><code>errorDocument</code> - <code>string</code> - Optional - The file path to use as the error document. The default value is <code>error.html</code>.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -3316,7 +3358,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -3338,7 +3380,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
