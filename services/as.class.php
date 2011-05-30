@@ -17,21 +17,20 @@
 /**
  *
  *
- * Auto Scaling is a web service designed to automatically launch or terminate EC2 instances based on user-defined
- * policies, schedules, and health checks. Auto Scaling responds automatically to changing conditions. All you need to do
- * is specify how it should respond to those changes.
+ * Auto Scaling is a web service designed to automatically launch or terminate EC2 instances based on user-defined policies, schedules, and
+ * health checks. Auto Scaling responds automatically to changing conditions. All you need to do is specify how it should respond to those
+ * changes.
  *
- * Auto Scaling groups can work across multiple Availability Zones - distinct physical locations for the hosted Amazon EC2
- * instances - so that if an Availability Zone becomes unavailable, Auto Scaling will automatically redistribute
- * applications to a different Availability Zone.
+ * Auto Scaling groups can work across multiple Availability Zones - distinct physical locations for the hosted Amazon EC2 instances - so that
+ * if an Availability Zone becomes unavailable, Auto Scaling will automatically redistribute applications to a different Availability Zone.
  *
- * Every API call returns a response meta data object that contains a request identifier. Successful requests return an
- * HTTP 200 status code. Unsuccessful requests return an error object and an HTTP status code of 400 or 500.
+ * Every API call returns a response meta data object that contains a request identifier. Successful requests return an HTTP 200 status code.
+ * Unsuccessful requests return an error object and an HTTP status code of 400 or 500.
  *
  * The current WSDL is available at:
  *
  * <a
- * ling.amazonaws.com/doc/2010-08-01/AutoScaling.wsdl">http://autoscaling.amazonaws.com/doc/2010-08-01/AutoScaling.wsdl</a>
+ * href="http://autoscaling.amazonaws.com/doc/2010-08-01/AutoScaling.wsdl">http://autoscaling.amazonaws.com/doc/2010-08-01/AutoScaling.wsdl</a>
  *
  * <b>Endpoints</b>
  *
@@ -47,7 +46,7 @@
  *
  * </ul>
  *
- * @version Tue Mar 15 11:06:05 PDT 2011
+ * @version Tue May 10 18:23:42 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/autoscaling/Amazon Auto-Scaling
@@ -123,12 +122,16 @@ class AmazonAS extends CFRuntime
 
 		if (!$key && !defined('AWS_KEY'))
 		{
+			// @codeCoverageIgnoreStart
 			throw new AS_Exception('No account key was passed into the constructor, nor was it set in the AWS_KEY constant.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		if (!$secret_key && !defined('AWS_SECRET_KEY'))
 		{
+			// @codeCoverageIgnoreStart
 			throw new AS_Exception('No account secret was passed into the constructor, nor was it set in the AWS_SECRET_KEY constant.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		return parent::__construct($key, $secret_key);
@@ -140,8 +143,8 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 *
-	 * Creates a scheduled scaling action for a Auto Scaling group. If you leave a parameter unspecified, the corresponding
-	 * value remains unchanged in the affected Auto Scaling group.
+	 * Creates a scheduled scaling action for a Auto Scaling group. If you leave a parameter unspecified, the corresponding value remains
+	 * unchanged in the affected Auto Scaling group.
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name or ARN of the Auto Scaling Group.
 	 * @param string $scheduled_action_name (Required) The name of this scaling action.
@@ -150,7 +153,7 @@ class AmazonAS extends CFRuntime
 	 * 	<li><code>MinSize</code> - <code>integer</code> - Optional - The minimum size for the new Auto Scaling group. </li>
 	 * 	<li><code>MaxSize</code> - <code>integer</code> - Optional - The maximum size for the Auto Scaling group. </li>
 	 * 	<li><code>DesiredCapacity</code> - <code>integer</code> - Optional - The number of EC2 instances that should be running in the group. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -166,30 +169,27 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 *
-	 * Adjusts the desired size of the AutoScalingGroup by initiating scaling activities. When reducing the size of the group,
-	 * it is not possible to define which EC2 instances will be terminated. This applies to any auto-scaling decisions that
-	 * might result in terminating instances.
+	 * Adjusts the desired size of the AutoScalingGroup by initiating scaling activities. When reducing the size of the group, it is not possible
+	 * to define which EC2 instances will be terminated. This applies to any auto-scaling decisions that might result in terminating instances.
 	 *
-	 * There are two common use cases for <code>SetDesiredCapacity</code>: one for users of the Auto Scaling triggering
-	 * system, and another for developers who write their own triggering systems. Both use cases relate to the concept of
-	 * cooldown.
+	 * There are two common use cases for <code>SetDesiredCapacity</code>: one for users of the Auto Scaling triggering system, and another for
+	 * developers who write their own triggering systems. Both use cases relate to the concept of cooldown.
 	 *
-	 * In the first case, if you use the Auto Scaling triggering system, <code>SetDesiredCapacity</code> changes the size of
-	 * your Auto Scaling group without regard to the cooldown period. This could be useful, for example, if Auto Scaling did
-	 * something unexpected for some reason. If your cooldown period is 10 minutes, Auto Scaling would normally reject requests
-	 * to change the size of the group for that entire 10 minute period. The <code>SetDesiredCapacity</code> command allows you
-	 * to circumvent this restriction and change the size of the group before the end of the cooldown period.
+	 * In the first case, if you use the Auto Scaling triggering system, <code>SetDesiredCapacity</code> changes the size of your Auto Scaling
+	 * group without regard to the cooldown period. This could be useful, for example, if Auto Scaling did something unexpected for some reason. If
+	 * your cooldown period is 10 minutes, Auto Scaling would normally reject requests to change the size of the group for that entire 10 minute
+	 * period. The <code>SetDesiredCapacity</code> command allows you to circumvent this restriction and change the size of the group before the
+	 * end of the cooldown period.
 	 *
-	 * In the second case, if you write your own triggering system, you can use <code>SetDesiredCapacity</code> to control the
-	 * size of your Auto Scaling group. If you want the same cooldown functionality that Auto Scaling offers, you can configure
-	 * <code>SetDesiredCapacity</code> to honor cooldown by setting the <code>HonorCooldown</code> parameter to
-	 * <code>true</code>.
+	 * In the second case, if you write your own triggering system, you can use <code>SetDesiredCapacity</code> to control the size of your Auto
+	 * Scaling group. If you want the same cooldown functionality that Auto Scaling offers, you can configure <code>SetDesiredCapacity</code> to
+	 * honor cooldown by setting the <code>HonorCooldown</code> parameter to <code>true</code>.
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name of the AutoScalingGroup.
 	 * @param integer $desired_capacity (Required) The new capacity setting for the AutoScalingGroup.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>HonorCooldown</code> - <code>boolean</code> - Optional - By default, <code>SetDesiredCapacity</code> overrides any cooldown period. Set to True if you want Auto Scaling to reject this request if the Auto Scaling group is in cooldown. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -209,7 +209,7 @@ class AmazonAS extends CFRuntime
 	 * @param string $policy_name (Required) The name or PolicyARN of the policy you want to delete
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name of the Auto Scaling group. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -228,7 +228,7 @@ class AmazonAS extends CFRuntime
 	 * @param string $scheduled_action_name (Required) The name of the action you want to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name of the Auto Scaling group </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -250,7 +250,7 @@ class AmazonAS extends CFRuntime
 	 * 	<li><code>LaunchConfigurationNames</code> - <code>string|array</code> - Optional - A list of launch configuration names.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - A string that marks the start of the next batch of returned results. </li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of launch configurations. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -275,7 +275,7 @@ class AmazonAS extends CFRuntime
 	 * Returns scaling process types for use in the ResumeProcesses and SuspendProcesses actions.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -288,18 +288,17 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 *
-	 * Returns a full description of each Auto Scaling group in the given list. This includes all Amazon EC2 instances that
-	 * are members of the group. If a list of names is not provided, the service returns the full details of all Auto Scaling
-	 * groups.
+	 * Returns a full description of each Auto Scaling group in the given list. This includes all Amazon EC2 instances that are members of the
+	 * group. If a list of names is not provided, the service returns the full details of all Auto Scaling groups.
 	 *
-	 * This action supports pagination by returning a token if there are more pages to retrieve. To get the next page, call
-	 * this action again with the returned token as the NextToken parameter.
+	 * This action supports pagination by returning a token if there are more pages to retrieve. To get the next page, call this action again with
+	 * the returned token as the NextToken parameter.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>AutoScalingGroupNames</code> - <code>string|array</code> - Optional - A list of Auto Scaling group names.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - A string that marks the start of the next batch of returned results. </li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of records to return. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -321,17 +320,17 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 *
-	 * Enables monitoring of group metrics for the Auto Scaling group specified in AutoScalingGroupName. You can specify the
-	 * list of enabled metrics with the Metrics parameter.
+	 * Enables monitoring of group metrics for the Auto Scaling group specified in AutoScalingGroupName. You can specify the list of enabled
+	 * metrics with the Metrics parameter.
 	 *
-	 * Auto scaling metrics collection can be turned on only if the <code>InstanceMonitoring.Enabled</code> flag, in the Auto
-	 * Scaling group's launch configuration, is set to <code>true</code>.
+	 * Auto scaling metrics collection can be turned on only if the <code>InstanceMonitoring.Enabled</code> flag, in the Auto Scaling group's
+	 * launch configuration, is set to <code>true</code>.
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name or ARN of the Auto Scaling Group.
 	 * @param string $granularity (Required) The granularity to associate with the metrics to collect. Currently, the only legal granularity is "1Minute".
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Metrics</code> - <code>string|array</code> - Optional - The list of metrics to collect. If no metrics are specified, all metrics are enabled. The following metrics are supported: <ul> <li>GroupMinSize</li><li>GroupMaxSize</li><li>GroupDesiredCapacity</li><li>GroupInServiceInstances</li><li>GroupPendingInstances</li><li>GroupTerminatingInstances</li><li>GroupTotalInstances</li> </ul>  Pass a string for a single value, or an indexed array for multiple values. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -362,7 +361,7 @@ class AmazonAS extends CFRuntime
 	 * @param string $instance_id (Required) The ID of the EC2 instance to be terminated.
 	 * @param boolean $should_decrement_desired_capacity (Required) Specifies whether (<i>true</i>) or not (<i>false</i>) terminating this instance should also decrement the size of the AutoScalingGroup.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -379,18 +378,18 @@ class AmazonAS extends CFRuntime
 	 *
 	 * Returns the scaling activities for the specified Auto Scaling group.
 	 *
-	 * If the specified <i>ActivityIds</i> list is empty, all the activities from the past six weeks are returned. Activities
-	 * are sorted by completion time. Activities still in progress appear first on the list.
+	 * If the specified <i>ActivityIds</i> list is empty, all the activities from the past six weeks are returned. Activities are sorted by
+	 * completion time. Activities still in progress appear first on the list.
 	 *
-	 * This action supports pagination. If the response includes a token, there are more records available. To get the
-	 * additional records, repeat the request with the response token as the NextToken parameter.
+	 * This action supports pagination. If the response includes a token, there are more records available. To get the additional records, repeat
+	 * the request with the response token as the NextToken parameter.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ActivityIds</code> - <code>string|array</code> - Optional - A list containing the activity IDs of the desired scaling activities. If this list is omitted, all activities are described. If an AutoScalingGroupName is provided, the results are limited to that group. The list of requested activities cannot contain more than 50 items. If unknown activities are requested, they are ignored with no error.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name of the AutoScalingGroup. </li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of scaling activities to return. </li>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - A string that marks the start of the next batch of returned results for pagination. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -418,7 +417,7 @@ class AmazonAS extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name or ARN of the Auto Scaling Group. </li>
 	 * 	<li><code>HonorCooldown</code> - <code>boolean</code> - Optional - Set to True if you want Auto Scaling to reject this request if the Auto Scaling group is in cooldown. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -435,7 +434,7 @@ class AmazonAS extends CFRuntime
 	 * Returns a list of metrics and a corresponding list of granularities for each metric.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -448,16 +447,15 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 *
-	 * Returns descriptions of what each policy does. This action supports pagination. If the response includes a token, there
-	 * are more records available. To get the additional records, repeat the request with the response token as the NextToken
-	 * parameter.
+	 * Returns descriptions of what each policy does. This action supports pagination. If the response includes a token, there are more records
+	 * available. To get the additional records, repeat the request with the response token as the NextToken parameter.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name of the Auto Scaling group. </li>
 	 * 	<li><code>PolicyNames</code> - <code>string|array</code> - Optional - A list of policy names or policy ARNs to be described. If this list is omitted, all policy names are described. If an auto scaling group name is provided, the results are limited to that group.The list of requested policy names cannot contain more than 50 items. If unknown policy names are requested, they are ignored with no error.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - A string that is used to mark the start of the next batch of returned results for pagination. </li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of policies that will be described with each call. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -482,7 +480,7 @@ class AmazonAS extends CFRuntime
 	 * Returns policy adjustment types for use in the PutScalingPolicy action.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -497,12 +495,12 @@ class AmazonAS extends CFRuntime
 	 *
 	 * Deletes the specified auto scaling group if the group has no instances and no scaling activities in progress.
 	 *
-	 * To remove all instances before calling DeleteAutoScalingGroup, you can call UpdateAutoScalingGroup to set the minimum
-	 * and maximum size of the AutoScalingGroup to zero.
+	 * To remove all instances before calling DeleteAutoScalingGroup, you can call UpdateAutoScalingGroup to set the minimum and maximum size of
+	 * the AutoScalingGroup to zero.
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name of the Auto Scaling group.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -516,11 +514,11 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 *
-	 * Creates a new Auto Scaling group with the specified name. Once the creation request is completed, the AutoScalingGroup
-	 * is ready to be used in other calls.
+	 * Creates a new Auto Scaling group with the specified name. Once the creation request is completed, the AutoScalingGroup is ready to be used
+	 * in other calls.
 	 *
-	 * The Auto Scaling group name must be unique within the scope of your AWS account, and under the quota of Auto Scaling
-	 * groups allowed for your account.
+	 * The Auto Scaling group name must be unique within the scope of your AWS account, and under the quota of Auto Scaling groups allowed for
+	 * your account.
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name of the Auto Scaling group.
 	 * @param string $launch_configuration_name (Required) The name of the launch configuration to use with the Auto Scaling group.
@@ -535,7 +533,7 @@ class AmazonAS extends CFRuntime
 	 * 	<li><code>HealthCheckGracePeriod</code> - <code>integer</code> - Optional - Length of time in seconds after a new EC2 instance comes into service that Auto Scaling starts checking its health. </li>
 	 * 	<li><code>PlacementGroup</code> - <code>string</code> - Optional - Physical location of your cluster placement group created in Amazon EC2. </li>
 	 * 	<li><code>VPCZoneIdentifier</code> - <code>string</code> - Optional - The subnet identifier of the Virtual Private Cloud. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -566,17 +564,17 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 *
-	 * Returns a description of each Auto Scaling instance in the InstanceIds list. If a list is not provided, the service
-	 * returns the full details of all instances up to a maximum of fifty.
+	 * Returns a description of each Auto Scaling instance in the InstanceIds list. If a list is not provided, the service returns the full
+	 * details of all instances up to a maximum of fifty.
 	 *
-	 * This action supports pagination by returning a token if there are more pages to retrieve. To get the next page, call
-	 * this action again with the returned token as the NextToken parameter.
+	 * This action supports pagination by returning a token if there are more pages to retrieve. To get the next page, call this action again with
+	 * the returned token as the NextToken parameter.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>InstanceIds</code> - <code>string|array</code> - Optional - The list of Auto Scaling instances to describe. If this list is omitted, all auto scaling instances are described. The list of requested instances cannot contain more than 50 items. If unknown instances are requested, they are ignored with no error.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of Auto Scaling instances to be described with each call. </li>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - The token returned by a previous call to indicate that there is more data available. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -600,12 +598,12 @@ class AmazonAS extends CFRuntime
 	 *
 	 * Deletes the specified LaunchConfiguration.
 	 *
-	 * The specified launch configuration must not be attached to an Auto Scaling group. Once this call completes, the launch
-	 * configuration is no longer available for use.
+	 * The specified launch configuration must not be attached to an Auto Scaling group. Once this call completes, the launch configuration is no
+	 * longer available for use.
 	 *
 	 * @param string $launch_configuration_name (Required) The name of the launch configuration.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -619,9 +617,8 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 *
-	 * Creates or updates a policy for an Auto Scaling group. To update an existing policy, use the existing policy name and
-	 * set the parameter(s) you want to change. Any existing parameter not changed in an update to an existing policy is not
-	 * changed in this update request.
+	 * Creates or updates a policy for an Auto Scaling group. To update an existing policy, use the existing policy name and set the parameter(s)
+	 * you want to change. Any existing parameter not changed in an update to an existing policy is not changed in this update request.
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name or ARN of the Auto Scaling Group.
 	 * @param string $policy_name (Required) The name of the policy you want to create or update.
@@ -629,7 +626,7 @@ class AmazonAS extends CFRuntime
 	 * @param string $adjustment_type (Required) Specifies whether the <code>ScalingAdjustment</code> is an absolute number or a percentage of the current capacity. Valid values are <code>ChangeInCapacity</code>, <code>ExactCapacity</code>, and <code>PercentChangeInCapacity</code>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Cooldown</code> - <code>integer</code> - Optional - The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -652,7 +649,7 @@ class AmazonAS extends CFRuntime
 	 * @param string $health_status (Required) The health status of the instance. "Healthy" means that the instance is healthy and should remain in service. "Unhealthy" means that the instance is unhealthy. Auto Scaling should terminate and replace it.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ShouldRespectGracePeriod</code> - <code>boolean</code> - Optional - If True, this call should respect the grace period associated with the group. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -669,18 +666,17 @@ class AmazonAS extends CFRuntime
 	 *
 	 * Updates the configuration for the specified AutoScalingGroup.
 	 *
-	 * To update an Auto Scaling group with a launch configuration that has the <code>InstanceMonitoring.enabled</code> flag
-	 * set to <code>false</code>, you must first ensure that collection of group metrics is disabled. Otherwise, calls to
-	 * UpdateAutoScalingGroup will fail. If you have previously enabled group metrics collection, you can disable collection of
-	 * all group metrics by calling DisableMetricsCollection.
+	 * To update an Auto Scaling group with a launch configuration that has the <code>InstanceMonitoring.enabled</code> flag set to
+	 * <code>false</code>, you must first ensure that collection of group metrics is disabled. Otherwise, calls to UpdateAutoScalingGroup will
+	 * fail. If you have previously enabled group metrics collection, you can disable collection of all group metrics by calling
+	 * DisableMetricsCollection.
 	 *
 	 *
-	 * The new settings are registered upon the completion of this call. Any launch configuration settings take effect on any
-	 * triggers after this call returns. Triggers that are currently in progress aren't affected.
+	 * The new settings are registered upon the completion of this call. Any launch configuration settings take effect on any triggers after this
+	 * call returns. Triggers that are currently in progress aren't affected.
 	 *
-	 * If the new values are specified for the <i>MinSize</i> or <i>MaxSize</i> parameters, then there will be an implicit
-	 * call to SetDesiredCapacity to set the group to the new <i>MaxSize</i>. All optional parameters are left unchanged if not
-	 * passed in the request.
+	 * If the new values are specified for the <i>MinSize</i> or <i>MaxSize</i> parameters, then there will be an implicit call to
+	 * SetDesiredCapacity to set the group to the new <i>MaxSize</i>. All optional parameters are left unchanged if not passed in the request.
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name of the Auto Scaling group.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -694,7 +690,7 @@ class AmazonAS extends CFRuntime
 	 * 	<li><code>HealthCheckGracePeriod</code> - <code>integer</code> - Optional - The length of time that Auto Scaling waits before checking an instance's health status. The grace period begins when an instance comes into service. </li>
 	 * 	<li><code>PlacementGroup</code> - <code>string</code> - Optional - The name of the cluster placement group, if applicable. For more information, go to Using Cluster Instances in the Amazon EC2 User Guide. </li>
 	 * 	<li><code>VPCZoneIdentifier</code> - <code>string</code> - Optional - The identifier for the VPC connection, if applicable. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -717,8 +713,8 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 *
-	 * Lists all the actions scheduled for your Auto Scaling group that haven't been executed. To see a list of action already
-	 * executed, see the activity record returned in DescribeScalingActivities.
+	 * Lists all the actions scheduled for your Auto Scaling group that haven't been executed. To see a list of action already executed, see the
+	 * activity record returned in DescribeScalingActivities.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name of the Auto Scaling group. </li>
@@ -727,7 +723,7 @@ class AmazonAS extends CFRuntime
 	 * 	<li><code>EndTime</code> - <code>string</code> - Optional - The latest scheduled start time to return. If scheduled action names are provided, this field will be ignored. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - A string that marks the start of the next batch of returned results. </li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of scheduled actions to return. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -761,12 +757,11 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 *
-	 * Suspends Auto Scaling processes for an Auto Scaling group. To suspend specific process types, specify them by name with
-	 * the <code>ScalingProcesses.member.N</code> parameter. To suspend all process types, omit the
-	 * <code>ScalingProcesses.member.N</code> parameter.
+	 * Suspends Auto Scaling processes for an Auto Scaling group. To suspend specific process types, specify them by name with the
+	 * <code>ScalingProcesses.member.N</code> parameter. To suspend all process types, omit the <code>ScalingProcesses.member.N</code> parameter.
 	 *
-	 * Suspending either of the two primary process types, <code>Launch</code> or <code>Terminate</code>, can prevent other
-	 * process types from functioning properly. For more information about processes and their dependencies, see ProcessType.
+	 * Suspending either of the two primary process types, <code>Launch</code> or <code>Terminate</code>, can prevent other process types from
+	 * functioning properly. For more information about processes and their dependencies, see ProcessType.
 	 *
 	 *
 	 * To resume processes that have been suspended, use ResumeProcesses.
@@ -774,7 +769,7 @@ class AmazonAS extends CFRuntime
 	 * @param string $auto_scaling_group_name (Required) The name or Amazon Resource Name (ARN) of the Auto Scaling group.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ScalingProcesses</code> - <code>string|array</code> - Optional - The processes that you want to suspend or resume, which can include one or more of the following: <ul> <li>Launch</li><li>Terminate</li><li>HealthCheck</li><li>ReplaceUnhealthy</li><li>AZRebalance</li><li>AlarmNotifications</li><li>ScheduledActions</li> </ul> To suspend all process types, omit this parameter.  Pass a string for a single value, or an indexed array for multiple values. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -802,7 +797,7 @@ class AmazonAS extends CFRuntime
 	 * @param string $auto_scaling_group_name (Required) The name or Amazon Resource Name (ARN) of the Auto Scaling group.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ScalingProcesses</code> - <code>string|array</code> - Optional - The processes that you want to suspend or resume, which can include one or more of the following: <ul> <li>Launch</li><li>Terminate</li><li>HealthCheck</li><li>ReplaceUnhealthy</li><li>AZRebalance</li><li>AlarmNotifications</li><li>ScheduledActions</li> </ul> To suspend all process types, omit this parameter.  Pass a string for a single value, or an indexed array for multiple values. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -827,8 +822,8 @@ class AmazonAS extends CFRuntime
 	 *
 	 * Creates a new launch configuration. Once created, the new launch configuration is available for immediate use.
 	 *
-	 * The launch configuration name used must be unique, within the scope of the client's AWS account, and the maximum limit
-	 * of launch configurations must not yet have been met, or else the call will fail.
+	 * The launch configuration name used must be unique, within the scope of the client's AWS account, and the maximum limit of launch
+	 * configurations must not yet have been met, or else the call will fail.
 	 *
 	 * @param string $launch_configuration_name (Required) The name of the launch configuration to create.
 	 * @param string $image_id (Required) Unique ID of the <i>Amazon Machine Image</i> (AMI) which was assigned during registration. For more information about Amazon EC2 images, please see Amazon EC2 product documentation
@@ -851,7 +846,7 @@ class AmazonAS extends CFRuntime
 	 * 	</ul></li>
 	 * 	<li><code>InstanceMonitoring</code> - <code>array</code> - Optional -  Enables detailed monitoring. <ul>
 	 * 		<li><code>Enabled</code> - <code>boolean</code> - Optional - If true, instance monitoring is enabled. </li></ul></li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -894,13 +889,13 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 *
-	 * Disables monitoring of group metrics for the Auto Scaling group specified in AutoScalingGroupName. You can specify the
-	 * list of affected metrics with the Metrics parameter.
+	 * Disables monitoring of group metrics for the Auto Scaling group specified in AutoScalingGroupName. You can specify the list of affected
+	 * metrics with the Metrics parameter.
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name or ARN of the Auto Scaling Group.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Metrics</code> - <code>string|array</code> - Optional - The list of metrics to disable. If no metrics are specified, all metrics are disabled. The following metrics are supported: <ul> <li>GroupMinSize</li><li>GroupMaxSize</li><li>GroupDesiredCapacity</li><li>GroupInServiceInstances</li><li>GroupPendingInstances</li><li>GroupTerminatingInstances</li><li>GroupTotalInstances</li> </ul>  Pass a string for a single value, or an indexed array for multiple values. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */

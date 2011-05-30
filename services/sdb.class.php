@@ -17,21 +17,21 @@
 /**
  *
  *
- * Amazon SimpleDB is a web service providing the core database functions of data indexing and querying in the cloud. By
- * offloading the time and effort associated with building and operating a web-scale database, SimpleDB provides developers
- * the freedom to focus on application development.
+ * Amazon SimpleDB is a web service providing the core database functions of data indexing and querying in the cloud. By offloading the time
+ * and effort associated with building and operating a web-scale database, SimpleDB provides developers the freedom to focus on application
+ * development.
  *
  *
  *
- * A traditional, clustered relational database requires a sizable upfront capital outlay, is complex to design, and often
- * requires extensive and repetitive database administration. Amazon SimpleDB is dramatically simpler, requiring no schema,
- * automatically indexing your data and providing a simple API for storage and access. This approach eliminates the
- * administrative burden of data modeling, index maintenance, and performance tuning. Developers gain access to this
- * functionality within Amazon's proven computing environment, are able to scale instantly, and pay only for what they use.
+ * A traditional, clustered relational database requires a sizable upfront capital outlay, is complex to design, and often requires extensive
+ * and repetitive database administration. Amazon SimpleDB is dramatically simpler, requiring no schema, automatically indexing your data and
+ * providing a simple API for storage and access. This approach eliminates the administrative burden of data modeling, index maintenance, and
+ * performance tuning. Developers gain access to this functionality within Amazon's proven computing environment, are able to scale instantly,
+ * and pay only for what they use.
  *
  * Visit <a href="http://aws.amazon.com/simpledb/">http://aws.amazon.com/simpledb/</a> for more information.
  *
- * @version Tue Mar 15 11:16:25 PDT 2011
+ * @version Tue May 10 18:30:45 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/simpledb/Amazon SimpleDB
@@ -226,12 +226,16 @@ class AmazonSDB extends CFRuntime
 
 		if (!$key && !defined('AWS_KEY'))
 		{
+			// @codeCoverageIgnoreStart
 			throw new SDB_Exception('No account key was passed into the constructor, nor was it set in the AWS_KEY constant.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		if (!$secret_key && !defined('AWS_SECRET_KEY'))
 		{
+			// @codeCoverageIgnoreStart
 			throw new SDB_Exception('No account secret was passed into the constructor, nor was it set in the AWS_SECRET_KEY constant.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		return parent::__construct($key, $secret_key);
@@ -243,22 +247,20 @@ class AmazonSDB extends CFRuntime
 
 	/**
 	 *
-	 * The <code>Select</code> operation returns a set of attributes for <code>ItemNames</code> that match the select
-	 * expression. <code>Select</code> is similar to the standard SQL SELECT statement.
+	 * The <code>Select</code> operation returns a set of attributes for <code>ItemNames</code> that match the select expression.
+	 * <code>Select</code> is similar to the standard SQL SELECT statement.
 	 *
-	 * The total size of the response cannot exceed 1 MB in total size. Amazon SimpleDB automatically adjusts the number of
-	 * items returned per page to enforce this limit. For example, if the client asks to retrieve 2500 items, but each
-	 * individual item is 10 kB in size, the system returns 100 items and an appropriate <code>NextToken</code> so the client
-	 * can access the next page of results.
+	 * The total size of the response cannot exceed 1 MB in total size. Amazon SimpleDB automatically adjusts the number of items returned per
+	 * page to enforce this limit. For example, if the client asks to retrieve 2500 items, but each individual item is 10 kB in size, the system
+	 * returns 100 items and an appropriate <code>NextToken</code> so the client can access the next page of results.
 	 *
-	 * For information on how to construct select expressions, see Using Select to Create Amazon SimpleDB Queries in the
-	 * Developer Guide.
+	 * For information on how to construct select expressions, see Using Select to Create Amazon SimpleDB Queries in the Developer Guide.
 	 *
 	 * @param string $select_expression (Required) The expression used to query the domain.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - A string informing Amazon SimpleDB where to start the next list of <code>ItemNames</code>. </li>
 	 * 	<li><code>ConsistentRead</code> - <code>boolean</code> - Optional - Determines whether or not strong consistency should be enforced when data is read from SimpleDB. If <code>true</code>, any data previously written to SimpleDB will be returned. Otherwise, results will be consistent eventually, and the client may not see data that was written immediately before your read. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -314,7 +316,7 @@ class AmazonSDB extends CFRuntime
 	 * 		<li><code>Value</code> - <code>string</code> - Optional - The value of an attribute. This value can only be specified when the exists parameter is equal to true.</li>
 	 * 		<li><code>Exists</code> - <code>string</code> - Optional - True if the specified attribute must exist with the specified value in order for this update condition to be satisfied, otherwise false if the specified attribute should not exist in order for this update condition to be satisfied.</li>
 	 * 	</ul></li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 *  <li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This is useful for manually-managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -361,7 +363,7 @@ class AmazonSDB extends CFRuntime
 	 * </ul>
 	 *
 	 * @param string $domain_name (Required) The name of the domain in which the attributes are being deleted.
-	 * @param array $item_keypairs (Required) Associative array of parameters which are treated as item-key-value and item-key-multivalue pairs (i.e. a key can have one or more values; think tags).
+	 * @param array $item_keypairs (Required) Associative array of parameters which are treated as item-key-value and item-key-multivalue pairs (i.e. a key can have one or more values; think tags). <ul>
 	 * 	<li><code>[item]</code> - <code>array</code> - Set the custom item name as the key for this value.<ul>
 	 * 		<li><code>[key]</code> - <code>array</code> - Set the custom key name as the key for this value. For the value, pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	</ul></li></ul>
@@ -379,7 +381,7 @@ class AmazonSDB extends CFRuntime
 	 * 			</ul></li>
 	 * 		</ul></li>
 	 * 	</ul></li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 *  <li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This is useful for manually-managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -405,15 +407,15 @@ class AmazonSDB extends CFRuntime
 
 	/**
 	 *
-	 * The <code>DeleteDomain</code> operation deletes a domain. Any items (and their attributes) in the domain are deleted as
-	 * well. The <code>DeleteDomain</code> operation might take 10 or more seconds to complete.
+	 * The <code>DeleteDomain</code> operation deletes a domain. Any items (and their attributes) in the domain are deleted as well. The
+	 * <code>DeleteDomain</code> operation might take 10 or more seconds to complete.
 	 *
-	 * Running <code>DeleteDomain</code> on a domain that does not exist or running the function multiple times using the same
-	 * domain name will not result in an error response.
+	 * Running <code>DeleteDomain</code> on a domain that does not exist or running the function multiple times using the same domain name will
+	 * not result in an error response.
 	 *
 	 * @param string $domain_name (Required) The name of the domain to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -427,21 +429,19 @@ class AmazonSDB extends CFRuntime
 
 	/**
 	 *
-	 * The <code>CreateDomain</code> operation creates a new domain. The domain name should be unique among the domains
-	 * associated with the Access Key ID provided in the request. The <code>CreateDomain</code> operation may take 10 or more
-	 * seconds to complete.
+	 * The <code>CreateDomain</code> operation creates a new domain. The domain name should be unique among the domains associated with the Access
+	 * Key ID provided in the request. The <code>CreateDomain</code> operation may take 10 or more seconds to complete.
 	 *
-	 * CreateDomain is an idempotent operation; running it multiple times using the same domain name will not result in an
-	 * error response.
+	 * CreateDomain is an idempotent operation; running it multiple times using the same domain name will not result in an error response.
 	 *
 	 * The client can create up to 100 domains per account.
 	 *
 	 * If the client requires additional domains, go to <a
-	 * "http://aws.amazon.com/contact-us/simpledb-limit-request/">http://aws.amazon.com/contact-us/simpledb-limit-request/</a>.
+	 * href="http://aws.amazon.com/contact-us/simpledb-limit-request/">http://aws.amazon.com/contact-us/simpledb-limit-request/</a>.
 	 *
 	 * @param string $domain_name (Required) The name of the domain to create. The name can range between 3 and 255 characters and can contain the following characters: a-z, A-Z, 0-9, '_', '-', and '.'.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -484,7 +484,7 @@ class AmazonSDB extends CFRuntime
 	 * 		<li><code>Value</code> - <code>string</code> - Optional - The value of an attribute. This value can only be specified when the exists parameter is equal to true.</li>
 	 * 		<li><code>Exists</code> - <code>string</code> - Optional - True if the specified attribute must exist with the specified value in order for this update condition to be satisfied, otherwise false if the specified attribute should not exist in order for this update condition to be satisfied.</li>
 	 * 	</ul></li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 *  <li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This is useful for manually-managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -514,16 +514,15 @@ class AmazonSDB extends CFRuntime
 
 	/**
 	 *
-	 * The <code>ListDomains</code> operation lists all domains associated with the Access Key ID. It returns domain names up
-	 * to the limit set by <a href="#MaxNumberOfDomains">MaxNumberOfDomains</a>. A <a href="#NextToken">NextToken</a> is
-	 * returned if there are more than <code>MaxNumberOfDomains</code> domains. Calling <code>ListDomains</code> successive
-	 * times with the <code>NextToken</code> provided by the operation returns up to <code>MaxNumberOfDomains</code> more
-	 * domain names with each successive operation call.
+	 * The <code>ListDomains</code> operation lists all domains associated with the Access Key ID. It returns domain names up to the limit set by
+	 * <a href="#MaxNumberOfDomains">MaxNumberOfDomains</a>. A <a href="#NextToken">NextToken</a> is returned if there are more than
+	 * <code>MaxNumberOfDomains</code> domains. Calling <code>ListDomains</code> successive times with the <code>NextToken</code> provided by the
+	 * operation returns up to <code>MaxNumberOfDomains</code> more domain names with each successive operation call.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>MaxNumberOfDomains</code> - <code>integer</code> - Optional - The maximum number of domain names you want returned. The range is 1 to 100. The default setting is 100. </li>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - A string informing Amazon SimpleDB where to start the next list of domain names. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -550,7 +549,7 @@ class AmazonSDB extends CFRuntime
 	 * @param string|array $attribute_name (Optional) The names of the attributes. Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ConsistentRead</code> - <code>boolean</code> - Optional - True if strong consistency should be enforced when data is read from SimpleDB, meaning that any data previously written to SimpleDB will be returned. Without specifying this parameter, results will be eventually consistent, and you may not see data that was written immediately before your read.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 *  <li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This is useful for manually-managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -598,7 +597,7 @@ class AmazonSDB extends CFRuntime
 	 * </ul>
 	 *
 	 * @param string $domain_name (Required) The name of the domain in which the attributes are being deleted.
-	 * @param array $item_keypairs (Required) Associative array of parameters which are treated as item-key-value and item-key-multivalue pairs (i.e. a key can have one or more values; think tags).
+	 * @param array $item_keypairs (Required) Associative array of parameters which are treated as item-key-value and item-key-multivalue pairs (i.e. a key can have one or more values; think tags). <ul>
 	 * 	<li><code>[item]</code> - <code>array</code> - Set the custom item name as the key for this value.<ul>
 	 * 		<li><code>[key]</code> - <code>array</code> - Set the custom key name as the key for this value. For the value, pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	</ul></li></ul>
@@ -617,7 +616,7 @@ class AmazonSDB extends CFRuntime
 	 * 			</ul></li>
 	 * 		</ul></li>
 	 * 	</ul></li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 *  <li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This is useful for manually-managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -643,12 +642,12 @@ class AmazonSDB extends CFRuntime
 
 	/**
 	 *
-	 * Returns information about the domain, including when the domain was created, the number of items and attributes in the
-	 * domain, and the size of the attribute names and values.
+	 * Returns information about the domain, including when the domain was created, the number of items and attributes in the domain, and the size
+	 * of the attribute names and values.
 	 *
 	 * @param string $domain_name (Required) The name of the domain for which to display the metadata of.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */

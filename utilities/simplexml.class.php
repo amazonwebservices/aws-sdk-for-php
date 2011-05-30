@@ -22,7 +22,7 @@
  * Wraps the underlying `SimpleXMLIterator` class with enhancements for rapidly traversing the DOM tree,
  * converting types, and comparisons.
  *
- * @version 2010.11.08
+ * @version 2011.04.25
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -78,6 +78,31 @@ class CFSimpleXML extends SimpleXMLIterator
 	}
 
 	/**
+	 * Alternate approach to constructing a new instance. Supports chaining.
+	 *
+	 * @param string $data (Required) A well-formed XML string or the path or URL to an XML document if $data_is_url is <code>true</code>.
+	 * @param integer $options (Optional) Used to specify additional LibXML parameters. The default value is <code>0</code>.
+	 * @param boolean $data_is_url (Optional) Specify a value of <code>true</code> to specify that data is a path or URL to an XML document instead of string data. The default value is <code>false</code>.
+	 * @param string $ns (Optional) The XML namespace to return values for.
+	 * @param boolean $is_prefix (Optional) (No description provided by PHP.net.)
+	 * @return CFSimpleXML Creates a new <CFSimpleXML> element.
+	 */
+	public static function init($data, $options = 0, $data_is_url, $ns, $is_prefix = false)
+	{
+		if (version_compare(PHP_VERSION, '5.3.0', '<'))
+		{
+			throw new Exception('PHP 5.3 or newer is required to instantiate a new class with CLASS::init().');
+		}
+
+		$self = get_called_class();
+		return new $self($data, $options, $data_is_url, $ns, $is_prefix);
+	}
+
+
+	/*%******************************************************************************************%*/
+	// TRAVERSAL
+
+	/**
 	 * Wraps the results of an XPath query in a <CFArray> object.
 	 *
 	 * @param string $expr (Required) The XPath expression to use to query the XML response.
@@ -108,6 +133,10 @@ class CFSimpleXML extends SimpleXMLIterator
 		return $parents[0];
 	}
 
+
+	/*%******************************************************************************************%*/
+	// ALTERNATE FORMATS
+
 	/**
 	 * Gets the current XML node as a true string.
 	 *
@@ -129,6 +158,16 @@ class CFSimpleXML extends SimpleXMLIterator
 	}
 
 	/**
+	 * Gets the current XML node as a stdClass object.
+	 *
+	 * @return array The current XML node as a stdClass object.
+	 */
+	public function to_stdClass()
+	{
+		return json_decode(json_encode($this));
+	}
+
+	/**
 	 * Gets the current XML node as a JSON string.
 	 *
 	 * @return string The current XML node as a JSON string.
@@ -137,6 +176,20 @@ class CFSimpleXML extends SimpleXMLIterator
 	{
 		return json_encode($this);
 	}
+
+	/**
+	 * Gets the current XML node as a YAML string.
+	 *
+	 * @return string The current XML node as a YAML string.
+	 */
+	public function to_yaml()
+	{
+		return sfYaml::dump(json_decode(json_encode($this), true), 5);
+	}
+
+
+	/*%******************************************************************************************%*/
+	// COMPARISONS
 
 	/**
 	 * Whether or not the current node exactly matches the compared value.

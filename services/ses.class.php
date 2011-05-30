@@ -17,13 +17,13 @@
 /**
  *
  *
- * This is the API Reference for Amazon Simple Email Service (Amazon SES). This documentation is intended to be used in
- * conjunction with the Amazon SES Getting Started Guide and the Amazon SES Developer Guide.
+ * This is the API Reference for Amazon Simple Email Service (Amazon SES). This documentation is intended to be used in conjunction with the
+ * Amazon SES Getting Started Guide and the Amazon SES Developer Guide.
  *
  * For specific details on how to construct a service request, please consult the <a
  * href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
  *
- * @version Tue Mar 15 11:12:03 PDT 2011
+ * @version Tue May 10 18:27:31 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ses/Amazon Simple Email Service
@@ -89,12 +89,16 @@ class AmazonSES extends CFRuntime
 
 		if (!$key && !defined('AWS_KEY'))
 		{
+			// @codeCoverageIgnoreStart
 			throw new Email_Exception('No account key was passed into the constructor, nor was it set in the AWS_KEY constant.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		if (!$secret_key && !defined('AWS_SECRET_KEY'))
 		{
+			// @codeCoverageIgnoreStart
 			throw new Email_Exception('No account secret was passed into the constructor, nor was it set in the AWS_SECRET_KEY constant.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		return parent::__construct($key, $secret_key);
@@ -109,7 +113,7 @@ class AmazonSES extends CFRuntime
 	 * Returns the user's current activity limits.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -125,7 +129,7 @@ class AmazonSES extends CFRuntime
 	 * Returns a list containing all of the email addresses that have been verified.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -138,13 +142,12 @@ class AmazonSES extends CFRuntime
 
 	/**
 	 *
-	 * Returns the user's sending statistics. The result is a list of data points, representing the last two weeks of sending
-	 * activity.
+	 * Returns the user's sending statistics. The result is a list of data points, representing the last two weeks of sending activity.
 	 *
 	 * Each data point in the list contains statistics for a 15-minute interval.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -159,9 +162,9 @@ class AmazonSES extends CFRuntime
 	 *
 	 * Composes an email message based on input data, and then immediately queues the message for sending.
 	 *
-	 * If you have not yet requested production access to Amazon SES, then you will only be able to send email to and from
-	 * verified email addresses. For more information, go to the <a
-	 * href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
+	 * If you have not yet requested production access to Amazon SES, then you will only be able to send email to and from verified email
+	 * addresses. For more information, go to the <a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer
+	 * Guide</a>.
 	 *
 	 * @param string $source (Required) The sender's email address.
 	 * @param array $destination (Required) The destination for this email, composed of To:, CC:, and BCC: fields. <ul>
@@ -188,7 +191,7 @@ class AmazonSES extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ReplyToAddresses</code> - <code>string|array</code> - Optional - The reply-to email address(es) for the message. If the recipient replies to the message, each reply-to address will receive the reply.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>ReturnPath</code> - <code>string</code> - Optional - The email address to which bounce notifications are to be forwarded. If the message cannot be delivered to the recipient, then an error message will be returned from the recipient's ISP; this message will then be forwarded to the email address specified by the <code>ReturnPath</code> parameter. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -249,7 +252,7 @@ class AmazonSES extends CFRuntime
 	 *
 	 * @param string $email_address (Required) An email address to be removed from the list of verified addreses.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -267,7 +270,7 @@ class AmazonSES extends CFRuntime
 	 *
 	 * @param string $email_address (Required) The email address to be verified.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -281,21 +284,20 @@ class AmazonSES extends CFRuntime
 
 	/**
 	 *
-	 * Sends an email message, with header and content specified by the client. The <code>SendRawEmail</code> action is useful
-	 * for sending multipart MIME emails. The raw text of the message must comply with Internet email standards; otherwise, the
-	 * message cannot be sent.
+	 * Sends an email message, with header and content specified by the client. The <code>SendRawEmail</code> action is useful for sending
+	 * multipart MIME emails. The raw text of the message must comply with Internet email standards; otherwise, the message cannot be sent.
 	 *
-	 * If you have not yet requested production access to Amazon SES, then you will only be able to send email to and from
-	 * verified email addresses. For more information, go to the <a
-	 * href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
+	 * If you have not yet requested production access to Amazon SES, then you will only be able to send email to and from verified email
+	 * addresses. For more information, go to the <a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer
+	 * Guide</a>.
 	 *
 	 * @param array $raw_message (Required) The raw text of the message. The client is responsible for ensuring the following: <ul> <li>Message must contain a header and a body, separated by a blank line.</li><li>All required header fields must be present.</li><li>Each part of a multipart MIME message must be formatted properly.</li><li>MIME content types must be among those supported by Amazon SES. Refer to the Amazon SES Developer Guide for more details.</li><li>Content must be base64-encoded, if MIME requires it.</li> </ul> <ul>
 	 * 	<li><code>Data</code> - <code>blob</code> - Required - The raw data of the message. The client must ensure that the message format complies with Internet email standards regarding email header fields, MIME types, MIME encoding, and base64 encoding (if necessary). For more information, go to the Amazon SES Developer Guide. </li>
 	 * </ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>Source</code> - <code>string</code> - Optional - The sender's email address. </li>
+	 * 	<li><code>Source</code> - <code>string</code> - Optional - The sender's email address. If you specify the <code>Source</code> parameter, then bounce notifications and complaints will be sent to this email address. This takes precedence over any <i>Return-Path</i> header that you might include in the raw text of the message. </li>
 	 * 	<li><code>Destinations</code> - <code>string|array</code> - Optional - A list of destinations for the message.  Pass a string for a single value, or an indexed array for multiple values. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */

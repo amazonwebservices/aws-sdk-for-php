@@ -53,7 +53,7 @@ header('Content-type: text/html; charset=UTF-8');
 
 <style type="text/css">
 body {
-	font:14px/1.4em "Helvetica Neue", Helvetica, "Lucida Grande", Verdana, Arial, Clean, Sans, sans-serif;
+	font:14px/1.4em "Helvetica Neue", Helvetica, "Lucida Grande", "Droid Sans", Ubuntu, Verdana, Arial, Clean, Sans, sans-serif;
 	letter-spacing:0px;
 	color:#333;
 	margin:0;
