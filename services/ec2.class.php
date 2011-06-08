@@ -27,7 +27,7 @@
  *
  * Visit <a href="http://aws.amazon.com/ec2/">http://aws.amazon.com/ec2/</a> for more information.
  *
- * @version Tue May 10 18:26:09 PDT 2011
+ * @version Tue Jun 07 16:12:59 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ec2/Amazon Elastic Compute Cloud
@@ -628,6 +628,9 @@ class AmazonEC2 extends CFRuntime
 	 * 			<li><code>Value</code> - <code>string|array</code> - Optional - Contains one or more values for the filter.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 		</ul></li>
 	 * 	</ul></li>
+	 * 	<li><code>AvailabilityZone</code> - <code>string</code> - Optional - Filters the results by availability zone (ex: 'us-east-1a'). </li>
+	 * 	<li><code>MaxResults</code> - <code>integer</code> - Optional - Specifies the number of rows to return. </li>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - Specifies the next set of rows to return. </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -1216,17 +1219,16 @@ class AmazonEC2 extends CFRuntime
 	 * using this API to ensure that the system remains in the consistent state until the create snapshot status has returned.
 	 *
 	 * @param string $volume_id (Required) The ID of the volume from which to create the snapshot.
-	 * @param string $description (Required) The description for the new snapshot.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Description</code> - <code>string</code> - Optional - The description for the new snapshot. </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function create_snapshot($volume_id, $description, $opt = null)
+	public function create_snapshot($volume_id, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['VolumeId'] = $volume_id;
-		$opt['Description'] = $description;
 
 		return $this->authenticate('CreateSnapshot', $opt, $this->hostname);
 	}
@@ -1824,22 +1826,35 @@ class AmazonEC2 extends CFRuntime
 	 * The ModifyImageAttribute operation modifies an attribute of an AMI.
 	 *
 	 * @param string $image_id (Required) The ID of the AMI whose attribute you want to modify.
-	 * @param string $attribute (Required) The name of the AMI attribute you want to modify. Available attributes: <code>launchPermission</code>, <code>productCodes</code>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Attribute</code> - <code>string</code> - Optional - The name of the AMI attribute you want to modify. Available attributes: <code>launchPermission</code>, <code>productCodes</code> </li>
 	 * 	<li><code>OperationType</code> - <code>string</code> - Optional - The type of operation being requested. Available operation types: <code>add</code>, <code>remove</code> </li>
 	 * 	<li><code>UserId</code> - <code>string|array</code> - Optional - The AWS user ID being added to or removed from the list of users with launch permissions for this AMI. Only valid when the launchPermission attribute is being modified.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>UserGroup</code> - <code>string|array</code> - Optional - The user group being added to or removed from the list of user groups with launch permissions for this AMI. Only valid when the launchPermission attribute is being modified. Available user groups: <code>all</code>  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>ProductCode</code> - <code>string|array</code> - Optional - The list of product codes being added to or removed from the specified AMI. Only valid when the productCodes attribute is being modified.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>Value</code> - <code>string</code> - Optional - The value of the attribute being modified. Only valid when the description attribute is being modified. </li>
+	 * 	<li><code>LaunchPermission</code> - <code>array</code> - Optional -   <ul>
+	 * 		<li><code>Add</code> - <code>array</code> - Optional -  <ul>
+	 * 			<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
+	 * 				<li><code>UserId</code> - <code>string</code> - Optional - The AWS user ID of the user involved in this launch permission. </li>
+	 * 				<li><code>Group</code> - <code>string</code> - Optional - The AWS group of the user involved in this launch permission. Available groups: <code>all</code> </li>
+	 * 			</ul></li>
+	 * 		</ul></li>
+	 * 		<li><code>Remove</code> - <code>array</code> - Optional -  <ul>
+	 * 			<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
+	 * 				<li><code>UserId</code> - <code>string</code> - Optional - The AWS user ID of the user involved in this launch permission. </li>
+	 * 				<li><code>Group</code> - <code>string</code> - Optional - The AWS group of the user involved in this launch permission. Available groups: <code>all</code> </li>
+	 * 			</ul></li>
+	 * 		</ul></li></ul></li>
+	 * 	<li><code>Description</code> - <code>string</code> - Optional - String value </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function modify_image_attribute($image_id, $attribute, $opt = null)
+	public function modify_image_attribute($image_id, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['ImageId'] = $image_id;
-		$opt['Attribute'] = $attribute;
 
 		// Optional parameter
 		if (isset($opt['UserId']))
@@ -1866,6 +1881,15 @@ class AmazonEC2 extends CFRuntime
 				'ProductCode' => (is_array($opt['ProductCode']) ? $opt['ProductCode'] : array($opt['ProductCode']))
 			)));
 			unset($opt['ProductCode']);
+		}
+
+		// Optional parameter
+		if (isset($opt['LaunchPermission']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'LaunchPermission' => $opt['LaunchPermission']
+			)));
+			unset($opt['LaunchPermission']);
 		}
 
 		return $this->authenticate('ModifyImageAttribute', $opt, $this->hostname);
@@ -2454,8 +2478,8 @@ class AmazonEC2 extends CFRuntime
 	 * Modifies an attribute of an instance.
 	 *
 	 * @param string $instance_id (Required) The ID of the instance whose attribute is being modified.
-	 * @param string $attribute (Required) The name of the attribute being modified. Available attribute names: <code>instanceType</code>, <code>kernel</code>, <code>ramdisk</code>, <code>userData</code>, <code>disableApiTermination</code>, <code>instanceInitiatedShutdownBehavior</code>, <code>rootDevice</code>, <code>blockDeviceMapping</code>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Attribute</code> - <code>string</code> - Optional - The name of the attribute being modified. Available attribute names: <code>instanceType</code>, <code>kernel</code>, <code>ramdisk</code>, <code>userData</code>, <code>disableApiTermination</code>, <code>instanceInitiatedShutdownBehavior</code>, <code>rootDevice</code>, <code>blockDeviceMapping</code> </li>
 	 * 	<li><code>Value</code> - <code>string</code> - Optional - The new value of the instance attribute being modified. Only valid when <code>kernel</code>, <code>ramdisk</code>, <code>userData</code>, <code>disableApiTermination</code> or <code>instanceInitiateShutdownBehavior</code> is specified as the attribute being modified. </li>
 	 * 	<li><code>BlockDeviceMapping</code> - <code>array</code> - Optional - The new block device mappings for the instance whose attributes are being modified. Only valid when blockDeviceMapping is specified as the attribute being modified. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
@@ -2469,16 +2493,21 @@ class AmazonEC2 extends CFRuntime
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>SourceDestCheck</code> - <code>boolean</code> - Optional - Boolean value </li>
+	 * 	<li><code>DisableApiTermination</code> - <code>boolean</code> - Optional - Boolean value </li>
+	 * 	<li><code>InstanceType</code> - <code>string</code> - Optional - String value </li>
+	 * 	<li><code>Kernel</code> - <code>string</code> - Optional - String value </li>
+	 * 	<li><code>Ramdisk</code> - <code>string</code> - Optional - String value </li>
+	 * 	<li><code>UserData</code> - <code>string</code> - Optional - String value </li>
+	 * 	<li><code>InstanceInitiatedShutdownBehavior</code> - <code>string</code> - Optional - String value </li>
 	 * 	<li><code>GroupId</code> - <code>string|array</code> - Optional -   Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function modify_instance_attribute($instance_id, $attribute, $opt = null)
+	public function modify_instance_attribute($instance_id, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['InstanceId'] = $instance_id;
-		$opt['Attribute'] = $attribute;
 
 		// Optional parameter
 		if (isset($opt['BlockDeviceMapping']))
@@ -3573,7 +3602,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * @param string $public_ip (Required) The elastic IP address that you are disassociating from the instance.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>AssocationId</code> - <code>string</code> - Optional - Association ID corresponding to the VPC elastic IP address you want to disassociate. </li>
+	 * 	<li><code>AssociationId</code> - <code>string</code> - Optional - Association ID corresponding to the VPC elastic IP address you want to disassociate. </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.

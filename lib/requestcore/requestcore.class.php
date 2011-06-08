@@ -2,7 +2,7 @@
 /**
  * Handles all HTTP requests using cURL and manages the responses.
  *
- * @version 2011.03.01
+ * @version 2011.06.07
  * @copyright 2006-2011 Ryan Parman
  * @copyright 2006-2010 Foleeo Inc.
  * @copyright 2010-2011 Amazon.com, Inc. or its affiliates.
@@ -99,7 +99,7 @@ class RequestCore
 	/**
 	 * Default useragent string to use.
 	 */
-	public $useragent = 'RequestCore/1.4.2';
+	public $useragent = 'RequestCore/1.4.3';
 
 	/**
 	 * File to read from while streaming up.
@@ -135,6 +135,16 @@ class RequestCore
 	 * Stores the intended starting seek position.
 	 */
 	public $seek_position = null;
+
+	/**
+	 * The location of the cacert.pem file to use.
+	 */
+	public $cacert_location = false;
+
+	/**
+	 * The state of SSL certificate verification.
+	 */
+	public $ssl_verification = true;
 
 	/**
 	 * The user-defined callback function to call when a stream is read from.
@@ -608,10 +618,27 @@ class RequestCore
 		curl_setopt($curl_handle, CURLOPT_USERAGENT, $this->useragent);
 		curl_setopt($curl_handle, CURLOPT_READFUNCTION, array($this, 'streaming_read_callback'));
 
-		// Verify security of the connection
-		curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, true);
-		curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, true);
-		curl_setopt($curl_handle, CURLOPT_CAINFO, dirname(__FILE__) . '/cacert.pem'); // chmod the file as 0755
+		// Verification of the SSL cert
+		if ($this->ssl_verification)
+		{
+			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, true);
+			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, true);
+		}
+		else
+		{
+			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, false);
+		}
+
+		// chmod the file as 0755
+		if ($this->cacert_location === true)
+		{
+			curl_setopt($curl_handle, CURLOPT_CAINFO, dirname(__FILE__) . '/cacert.pem');
+		}
+		elseif (is_string($this->cacert_location))
+		{
+			curl_setopt($curl_handle, CURLOPT_CAINFO, $this->cacert_location);
+		}
 
 		// Debug mode
 		if ($this->debug_mode)

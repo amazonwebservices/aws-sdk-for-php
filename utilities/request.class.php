@@ -21,7 +21,7 @@
 /**
  * Wraps the underlying `RequestCore` class with some AWS-specific customizations.
  *
- * @version 2010.10.11
+ * @version 2011.06.02
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -57,6 +57,7 @@ class CFRequest extends RequestCore
 		// Standard settings for all requests
 		$this->add_header('Expect', '100-continue');
 		$this->set_useragent(CFRUNTIME_USERAGENT);
+		$this->cacert_location = (defined('AWS_CERTIFICATE_AUTHORITY') ? AWS_CERTIFICATE_AUTHORITY : false);
 
 		return $this;
 	}
