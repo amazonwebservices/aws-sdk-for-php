@@ -41,6 +41,8 @@ The source tree for includes the following files and directories:
   run on your server to determine whether or not your PHP environment meets the minimum requirements.
 * `_docs` -- Informational documents, the contents of which should be fairly self-explanatory.
 * `_samples` -- Code samples that you can run out of the box.
+* `extensions` -- Extra code that can be used to enhance usage of the SDK, but isn't a service class or a
+  third-party library.
 * `lib` -- Contains any third-party libraries that the SDK depends on. The licenses for these projects will
   always be Apache 2.0-compatible.
 * `services` -- Contains the service-specific classes that communicate with AWS. These classes are always
@@ -112,7 +114,10 @@ From the command-line, you can install the SDK with PEAR as follows:
     pear channel-discover pear.amazonwebservices.com
     pear install aws/sdk
 
-You may need to use `sudo` for the above commands.
+You may need to use `sudo` for the above commands. Once the SDK has been installed via PEAR, you can load it into
+your project with:
+
+	require_once 'AWSSDKforPHP/sdk.class.php';
 
 ### Configuration
 

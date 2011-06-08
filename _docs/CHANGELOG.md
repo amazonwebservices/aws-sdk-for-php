@@ -1,3 +1,34 @@
+# Changelog: "Nero"
+
+Launched Tuesday, June 7, 2011
+
+## Bug fixes and enhancements
+* [Bug in PHP SDK](https://forums.aws.amazon.com/thread.jspa?threadID=67502)
+* [cURL error: SSL certificate problem (60) with aws-sdk-for-php 1.3.3](https://forums.aws.amazon.com/thread.jspa?threadID=68349)
+
+
+## Service Classes
+### AmazonEC2
+* **New:** Support for Local Availability Zone Pricing has been added to the SDK.
+
+### AmazonELB
+* **New:** Elastic Load Balancing provides a special Amazon EC2 security group that you can use to ensure that a back-end Amazon EC2 instance receives traffic only from its load balancer.
+
+### AmazonRDS
+* **New:** Support for Oracle databases has been added to the SDK.
+
+
+## Utility Classes
+### CFArray
+* **New:** Added the init() method which simplifies the process of instantiating and chaining a class.
+* **New:** Added support for associative arrays to `each()`, `map()` and `filter()`.
+
+### CFRequest
+* **New:** Now supports the `AWS_CERTIFICATE_AUTHORITY` configuration option.
+
+
+----
+
 # Changelog: 1.3.3 "Moogle"
 
 Launched Tuesday, May 10, 2011

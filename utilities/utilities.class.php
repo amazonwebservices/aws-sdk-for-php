@@ -340,11 +340,11 @@ class CFUtilities
 	 * Determines whether the data is a JSON string or not.
 	 *
 	 * @param string $s (Required) The string to test.
-	 * @return boolean Whether the string is a JSON string or not.
+	 * @return boolean Whether the string is a valid JSON object or not.
 	 */
 	public function is_json($s)
 	{
-		return json_decode($s) ? true : false;
+		return !!(json_decode($s) instanceof stdClass);
 	}
 
 	/**

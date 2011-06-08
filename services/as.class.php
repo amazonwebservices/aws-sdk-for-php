@@ -34,19 +34,11 @@
  *
  * <b>Endpoints</b>
  *
- * Auto Scaling supports the following region-specific endpoints:
+ * For information about this product's regions and endpoints, go to <a
+ * href="http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html">Regions and Endpoints</a> in the Amazon Web Services
+ * General Reference.
  *
- * <ul> <li>autoscaling.us-east-1.amazonaws.com</li>
- *
- * <li>autoscaling.us-west-1.amazonaws.com</li>
- *
- * <li>autoscaling.eu-west-1.amazonaws.com</li>
- *
- * <li>autoscaling.ap-southeast-1.amazonaws.com</li>
- *
- * </ul>
- *
- * @version Tue May 10 18:23:42 PDT 2011
+ * @version Tue Jun 07 16:11:09 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/autoscaling/Amazon Auto-Scaling
@@ -526,10 +518,10 @@ class AmazonAS extends CFRuntime
 	 * @param integer $max_size (Required) The maximum size of the Auto Scaling group.
 	 * @param string|array $availability_zones (Required) A list of availability zones for the Auto Scaling group.  Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>DesiredCapacity</code> - <code>integer</code> - Optional - The number of EC2 instances that should be running in the group. </li>
+	 * 	<li><code>DesiredCapacity</code> - <code>integer</code> - Optional - The number of EC2 instances that should be running in the group. For more information, see SetDesiredCapacity. </li>
 	 * 	<li><code>DefaultCooldown</code> - <code>integer</code> - Optional - The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start. </li>
 	 * 	<li><code>LoadBalancerNames</code> - <code>string|array</code> - Optional - A list of LoadBalancers to use.  Pass a string for a single value, or an indexed array for multiple values. </li>
-	 * 	<li><code>HealthCheckType</code> - <code>string</code> - Optional - The service you want the health status from, Amazon EC2 or Elastic Load Balancer. </li>
+	 * 	<li><code>HealthCheckType</code> - <code>string</code> - Optional - The service you want the health status from, Amazon EC2 or Elastic Load Balancer. Valid values are "EC2" or "ELB." </li>
 	 * 	<li><code>HealthCheckGracePeriod</code> - <code>integer</code> - Optional - Length of time in seconds after a new EC2 instance comes into service that Auto Scaling starts checking its health. </li>
 	 * 	<li><code>PlacementGroup</code> - <code>string</code> - Optional - Physical location of your cluster placement group created in Amazon EC2. </li>
 	 * 	<li><code>VPCZoneIdentifier</code> - <code>string</code> - Optional - The subnet identifier of the Virtual Private Cloud. </li>
@@ -688,7 +680,7 @@ class AmazonAS extends CFRuntime
 	 * 	<li><code>AvailabilityZones</code> - <code>string|array</code> - Optional - Availability zones for the group.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>HealthCheckType</code> - <code>string</code> - Optional - The service of interest for the health status check, either "EC2" for Amazon EC2 or "ELB" for Elastic Load Balancing. </li>
 	 * 	<li><code>HealthCheckGracePeriod</code> - <code>integer</code> - Optional - The length of time that Auto Scaling waits before checking an instance's health status. The grace period begins when an instance comes into service. </li>
-	 * 	<li><code>PlacementGroup</code> - <code>string</code> - Optional - The name of the cluster placement group, if applicable. For more information, go to Using Cluster Instances in the Amazon EC2 User Guide. </li>
+	 * 	<li><code>PlacementGroup</code> - <code>string</code> - Optional - The name of the cluster placement group, if applicable. For more information, go to Using Cluster Instances in the <i>Amazon EC2 User Guide</i>. </li>
 	 * 	<li><code>VPCZoneIdentifier</code> - <code>string</code> - Optional - The identifier for the VPC connection, if applicable. </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -826,15 +818,15 @@ class AmazonAS extends CFRuntime
 	 * configurations must not yet have been met, or else the call will fail.
 	 *
 	 * @param string $launch_configuration_name (Required) The name of the launch configuration to create.
-	 * @param string $image_id (Required) Unique ID of the <i>Amazon Machine Image</i> (AMI) which was assigned during registration. For more information about Amazon EC2 images, please see Amazon EC2 product documentation
-	 * @param string $instance_type (Required) The instance type of the EC2 instance. For more information about Amazon EC2 instance types, please see Amazon EC2 product documentation
+	 * @param string $image_id (Required) Unique ID of the <i>Amazon Machine Image</i> (AMI) which was assigned during registration. For more information about Amazon EC2 images, please go to Using AMIs in the <i>Amazon EC2 User Guide</i>
+	 * @param string $instance_type (Required) The instance type of the EC2 instance. For more information about Amazon EC2 instance types, please go to Using Instances in the <i>Amazon EC2 User Guide</i>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>KeyName</code> - <code>string</code> - Optional - The name of the EC2 key pair. </li>
-	 * 	<li><code>SecurityGroups</code> - <code>string|array</code> - Optional - The names of the security groups with which to associate EC2 instances. For more information about Amazon EC2 security groups, go to the Amazon EC2 product documentation.  Pass a string for a single value, or an indexed array for multiple values. </li>
-	 * 	<li><code>UserData</code> - <code>string</code> - Optional - The user data available to the launched EC2 instances. For more information about Amazon EC2 user data, please see Amazon EC2 product documentation. </li>
+	 * 	<li><code>SecurityGroups</code> - <code>string|array</code> - Optional - The names of the security groups with which to associate EC2 instances. For more information about Amazon EC2 security groups, go to Using Security Groups in the <i>Amazon EC2 User Guide</i>.  Pass a string for a single value, or an indexed array for multiple values. </li>
+	 * 	<li><code>UserData</code> - <code>string</code> - Optional - The user data available to the launched EC2 instances. For more information about Amazon EC2 user data, please go to Using Instances in the <i>Amazon EC2 User Guide</i>. </li>
 	 * 	<li><code>KernelId</code> - <code>string</code> - Optional - The ID of the kernel associated with the EC2 AMI. </li>
 	 * 	<li><code>RamdiskId</code> - <code>string</code> - Optional - The ID of the RAM disk associated with the EC2 AMI. </li>
-	 * 	<li><code>BlockDeviceMappings</code> - <code>array</code> - Optional - A list of mappings that specify how block devices are exposed to the instance. Each mapping is made up of a <i>VirtualName</i>, a <i>DeviceName</i>, and an <i>ebs</i> data structure that contains information about the associated Elastic Block Storage volume. For more information about Amazon EC2 BlockDeviceMappings, please go to Block Device Mapping in the Amazon EC2 product documentation. <ul>
+	 * 	<li><code>BlockDeviceMappings</code> - <code>array</code> - Optional - A list of mappings that specify how block devices are exposed to the instance. Each mapping is made up of a <i>VirtualName</i>, a <i>DeviceName</i>, and an <i>ebs</i> data structure that contains information about the associated Elastic Block Storage volume. For more information about Amazon EC2 BlockDeviceMappings, please go to Block Device Mapping in the <i>Amazon EC2 User Guide</i>. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
 	 * 			<li><code>VirtualName</code> - <code>string</code> - Optional - The virtual name associated with the device. </li>
 	 * 			<li><code>DeviceName</code> - <code>string</code> - Required - The name of the device within Amazon EC2. </li>

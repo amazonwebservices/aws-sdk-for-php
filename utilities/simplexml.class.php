@@ -148,9 +148,9 @@ class CFSimpleXML extends SimpleXMLIterator
 	}
 
 	/**
-	 * Gets the current XML node as a true array.
+	 * Gets the current XML node as <CFArray>, a child class of PHP's <php:ArrayObject> class.
 	 *
-	 * @return array The current XML node as a true array.
+	 * @return CFArray The current XML node as a <CFArray> object.
 	 */
 	public function to_array()
 	{

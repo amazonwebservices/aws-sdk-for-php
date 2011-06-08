@@ -102,9 +102,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.3.3');
+define('CFRUNTIME_VERSION', '1.3.4');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20110510205648');
+define('CFRUNTIME_BUILD', '20110607180731');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . php_uname('s') . '/' . php_uname('r') . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -115,7 +115,7 @@ define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/'
  * Core functionality and default settings shared across all SDK classes. All methods and properties in this
  * class are inherited by the service-specific classes.
  *
- * @version 2011.05.10
+ * @version 2011.06.07
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -228,6 +228,11 @@ class CFRuntime
 	 * The state of SSL/HTTPS use.
 	 */
 	public $use_ssl = true;
+
+	/**
+	 * The state of SSL certificate verification.
+	 */
+	public $ssl_verification = true;
 
 	/**
 	 * The proxy to use for connecting.
@@ -520,11 +525,33 @@ class CFRuntime
 	 * Disables SSL/HTTPS connections for hosts that don't support them. Some services, however, still
 	 * require SSL support.
 	 *
+	 * This method will throw a user warning when invoked, which can be hidden by changing your
+	 * <php:error_reporting()> settings.
+	 *
 	 * @return $this A reference to the current instance.
 	 */
 	public function disable_ssl()
 	{
+		trigger_error('Disabling SSL connections is potentially unsafe and highly discouraged.', E_USER_WARNING);
 		$this->use_ssl = false;
+		return $this;
+	}
+
+	/**
+	 * Disables the verification of the SSL Certificate Authority. Doing so can enable an attacker to carry
+	 * out a man-in-the-middle attack.
+	 *
+	 * https://secure.wikimedia.org/wikipedia/en/wiki/Man-in-the-middle_attack
+	 *
+	 * This method will throw a user warning when invoked, which can be hidden by changing your
+	 * <php:error_reporting()> settings.
+	 *
+	 * @return $this A reference to the current instance.
+	 */
+	public function disable_ssl_verification($ssl_verification = false)
+	{
+		trigger_error('Disabling the verification of SSL certificates can lead to man-in-the-middle attacks. It is potentially unsafe and highly discouraged.', E_USER_WARNING);
+		$this->ssl_verification = $ssl_verification;
 		return $this;
 	}
 
@@ -1007,6 +1034,7 @@ class CFRuntime
 		// Update RequestCore settings
 		$request->request_class = $this->request_class;
 		$request->response_class = $this->response_class;
+		$request->ssl_verification = $this->ssl_verification;
 
 		$curlopts = array();
 

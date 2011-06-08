@@ -3,7 +3,7 @@
  * Stores your AWS account information. Add your account information, and then rename this file
  * to 'config.inc.php'.
  *
- * @version 2011.01.20
+ * @version 2011.06.02
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -40,6 +40,17 @@ define('AWS_CANONICAL_ID', '');
  * Security Credentials (i.e. "Welcome, AWS_CANONICAL_NAME").
  */
 define('AWS_CANONICAL_NAME', '');
+
+/**
+ * Determines which Cerificate Authority file to use.
+ *
+ * A value of boolean `false` will use the Certificate Authority file available on the system. A value of
+ * boolean `true` will use the Certificate Authority provided by the SDK. Passing a file system path to a
+ * Certificate Authority file (chmodded to `0755`) will use that.
+ *
+ * Leave this set to `false` if you're not sure.
+ */
+define('AWS_CERTIFICATE_AUTHORITY', false);
 
 /**
  * 12-digit serial number taken from the Gemalto device used for Multi-Factor Authentication. Ignore this
