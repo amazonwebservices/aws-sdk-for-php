@@ -1,4 +1,4 @@
-# Changelog: "Nero"
+# Changelog: 1.3.4 "Nero"
 
 Launched Tuesday, June 7, 2011
 
