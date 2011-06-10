@@ -545,11 +545,11 @@ class AmazonCloudFront extends CFRuntime
 			// origin access identity
 			if (isset($opt['OriginAccessIdentity']))
 			{
-				$update->addChild('OriginAccessIdentity', 'origin-access-identity/cloudfront/' . $opt['OriginAccessIdentity']);
+                $origin->addChild('OriginAccessIdentity', 'origin-access-identity/cloudfront/' . $opt['OriginAccessIdentity']);
 			}
 			elseif (isset($xml->OriginAccessIdentity))
 			{
-				$update->addChild('OriginAccessIdentity', $xml->OriginAccessIdentity);
+				$origin->addChild('OriginAccessIdentity', $xml->OriginAccessIdentity);
 			}
 		}
 		elseif (isset($xml->CustomOrigin))
