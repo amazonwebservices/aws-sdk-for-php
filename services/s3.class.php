@@ -3073,6 +3073,90 @@ class AmazonS3 extends CFRuntime
 	}
 
 	/**
+	 * Since Amazon S3's standard <copy_object()> operation only supports copying objects that are smaller than
+	 * 5 GB, the ability to copy large objects (greater than 5 GB) requires the use of "Multipart Copy".
+	 *
+	 * Copying large objects requires the developer to initiate a new multipart "upload", copy pieces of the
+	 * large object (specifying a range of bytes up to 5 GB from the large source file), then complete the
+	 * multipart "upload".
+	 *
+	 * NOTE: <strong>This is a synchronous operation</strong>, not an <em>asynchronous</em> operation, which means
+	 * that Amazon S3 will not return a response for this operation until the copy has completed across the Amazon
+	 * S3 server fleet. Copying objects within a single region will complete more quickly than copying objects
+	 * <em>across</em> regions. The synchronous nature of this operation is different from other services where
+	 * responses are typically returned immediately, even if the operation itself has not yet been completed on
+	 * the server-side.
+	 *
+	 * @param array $source (Required) The bucket and file name to copy from. The following keys must be set: <ul>
+	 * 	<li><code>bucket</code> - <code>string</code> - Required - Specifies the name of the bucket containing the source object.</li>
+	 * 	<li><code>filename</code> - <code>string</code> - Required - Specifies the file name of the source object to copy.</li></ul>
+	 * @param array $dest (Required) The bucket and file name to copy to. The following keys must be set: <ul>
+	 * 	<li><code>bucket</code> - <code>string</code> - Required - Specifies the name of the bucket to copy the object to.</li>
+	 * 	<li><code>filename</code> - <code>string</code> - Required - Specifies the file name to copy the object to.</li></ul>
+	 * @param string $upload_id (Required) The upload ID identifying the multipart upload whose parts are being listed. The upload ID is retrieved from a call to <initiate_multipart_upload()>.
+	 * @param integer $part_number (Required) A part number uniquely identifies a part and defines its position within the destination object. When you complete a multipart upload, a complete object is created by concatenating parts in ascending order based on part number. If you copy a new part using the same part number as a previously copied/uploaded part, the previously written part is overwritten.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>ifMatch</code> - <code>string</code> - Optional - The ETag header from a previous request. Copies the object if its entity tag (ETag) matches the specified tag; otherwise, the request returns a <code>412</code> HTTP status code error (precondition failed). Used in conjunction with <code>ifUnmodifiedSince</code>.</li>
+	 * 	<li><code>ifUnmodifiedSince</code> - <code>string</code> - Optional - The LastModified header from a previous request. Copies the object if it hasn't been modified since the specified time; otherwise, the request returns a <code>412</code> HTTP status code error (precondition failed). Used in conjunction with <code>ifMatch</code>.</li>
+	 * 	<li><code>ifNoneMatch</code> - <code>string</code> - Optional - The ETag header from a previous request. Copies the object if its entity tag (ETag) is different than the specified ETag; otherwise, the request returns a <code>412</code> HTTP status code error (failed condition). Used in conjunction with <code>ifModifiedSince</code>.</li>
+	 * 	<li><code>ifModifiedSince</code> - <code>string</code> - Optional - The LastModified header from a previous request. Copies the object if it has been modified since the specified time; otherwise, the request returns a <code>412</code> HTTP status code error (failed condition). Used in conjunction with <code>ifNoneMatch</code>.</li>
+	 * 	<li><code>range</code> - <code>string</code> - Optional - The range of bytes to copy from the object. Specify this parameter when copying partial bits. The specified range must be notated with a hyphen (e.g., 0-10485759). Defaults to the byte range of the complete Amazon S3 object.</li>
+	 * 	<li><code>versionId</code> - <code>string</code> - Optional - The version of the object to copy. Version IDs are returned in the <code>x-amz-version-id</code> header of any previous object-related request.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function copy_part($source, $dest, $upload_id, $part_number, $opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Add this to our request
+		$opt['verb'] = 'PUT';
+		$opt['resource'] = $dest['filename'];
+		$opt['uploadId'] = $upload_id;
+		$opt['partNumber'] = $part_number;
+
+		// Handle copy source
+		if (isset($source['bucket']) && isset($source['filename']))
+		{
+			$opt['headers']['x-amz-copy-source'] = '/' . $source['bucket'] . '/' . rawurlencode($source['filename'])
+				. (isset($opt['versionId']) ? ('?' . 'versionId=' . rawurlencode($opt['versionId'])) : ''); // Append the versionId to copy, if available
+			unset($opt['versionId']);
+		}
+
+		// Handle conditional-copy parameters
+		if (isset($opt['ifMatch']))
+		{
+			$opt['headers']['x-amz-copy-source-if-match'] = $opt['ifMatch'];
+			unset($opt['ifMatch']);
+		}
+		if (isset($opt['ifNoneMatch']))
+		{
+			$opt['headers']['x-amz-copy-source-if-none-match'] = $opt['ifNoneMatch'];
+			unset($opt['ifNoneMatch']);
+		}
+		if (isset($opt['ifUnmodifiedSince']))
+		{
+			$opt['headers']['x-amz-copy-source-if-unmodified-since'] = $opt['ifUnmodifiedSince'];
+			unset($opt['ifUnmodifiedSince']);
+		}
+		if (isset($opt['ifModifiedSince']))
+		{
+			$opt['headers']['x-amz-copy-source-if-modified-since'] = $opt['ifModifiedSince'];
+			unset($opt['ifModifiedSince']);
+		}
+
+		// Partial content range
+		if (isset($opt['range']))
+		{
+			$opt['headers']['x-amz-copy-source-range'] = 'bytes=' . $opt['range'];
+		}
+
+		// Authenticate to S3
+		return $this->authenticate($dest['bucket'], $opt);
+	}
+
+	/**
 	 * Creates an Amazon S3 object using the multipart upload APIs. It is analogous to <create_object()>.
 	 *
 	 * While each individual part of a multipart upload can hold up to 5 GB of data, this method limits the
