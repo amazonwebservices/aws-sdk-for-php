@@ -593,9 +593,14 @@ class AmazonRoute53 extends CFRuntime
 		{
 			if (is_array($value))
 			{
-				$child_xml = $xml->addChild(((string) $key));
-				$this->traverse_xml_add($child_xml, $value);
-				unset($child_xml);
+				if (is_numeric($key)) {
+					// ignore numeric keys
+					$this->traverse_xml_add($xml, $value);
+				} else {
+					$child_xml = $xml->addChild(((string) $key));
+					$this->traverse_xml_add($child_xml, $value);
+					unset($child_xml);
+				}
 			} else {
 				$xml->addChild(((string) $key), $value);
 			}
@@ -603,7 +608,7 @@ class AmazonRoute53 extends CFRuntime
 		
 		return;
 	}
-
+	
 	/**
 	 * Try fetching AWS system time/date to be used as a string to sign for authentication. If failed, generate one, locally. 
 	 *
