@@ -24,8 +24,8 @@
  * Amazon Web Services cloud resources.
  *
  * For more information about this product, go to the <a href="http://aws.amazon.com/elasticbeanstalk/">AWS Elastic Beanstalk</a> details page.
- * For specific information about setting up signatures and authorization through the API, go to the <a
- * href="http://docs.amazonwebservices.com/elasticbeanstalk/latest/ug/available-apis.html">AWS Elastic Beanstalk User Guide</a>.
+ * The location of the lastest AWS Elastic Beanstalk WSDL is <a
+ * amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl">http://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl</a>.
  *
  * <b>Endpoints</b>
  *
@@ -35,7 +35,7 @@
  *
  * </ul>
  *
- * @version Tue May 10 18:25:29 PDT 2011
+ * @version Tue Jul 12 16:08:17 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticbeanstalk/AWS Elastic Beanstalk
@@ -448,6 +448,26 @@ class AmazonElasticBeanstalk extends CFRuntime
 
 	/**
 	 *
+	 * Swaps the CNAMEs of two environments.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>SourceEnvironmentId</code> - <code>string</code> - Optional - The ID of the source environment. Condition: You must specify at least the <code>SourceEnvironmentID</code> or the <code>SourceEnvironmentName</code>. You may also specify both. If you specify the <code>SourceEnvironmentId</code>, you must specify the <code>DestinationEnvironmentId</code>. </li>
+	 * 	<li><code>SourceEnvironmentName</code> - <code>string</code> - Optional - The name of the source environment. Condition: You must specify at least the <code>SourceEnvironmentID</code> or the <code>SourceEnvironmentName</code>. You may also specify both. If you specify the <code>SourceEnvironmentName</code>, you must specify the <code>DestinationEnvironmentName</code>. </li>
+	 * 	<li><code>DestinationEnvironmentId</code> - <code>string</code> - Optional - The ID of the destination environment. Condition: You must specify at least the <code>DestinationEnvironmentID</code> or the <code>DestinationEnvironmentName</code>. You may also specify both. You must specify the <code>SourceEnvironmentId</code> with the <code>DestinationEnvironmentId</code>. </li>
+	 * 	<li><code>DestinationEnvironmentName</code> - <code>string</code> - Optional - The name of the destination environment. Condition: You must specify at least the <code>DestinationEnvironmentID</code> or the <code>DestinationEnvironmentName</code>. You may also specify both. You must specify the <code>SourceEnvironmentName</code> with the <code>DestinationEnvironmentName</code>. </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function swap_environment_cnames($opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		return $this->authenticate('SwapEnvironmentCNAMEs', $opt, $this->hostname);
+	}
+
+	/**
+	 *
 	 * Updates the specified configuration template to have the specified properties or configuration option values.
 	 *
 	 * If a property (for example, <code>ApplicationName</code>) is not provided, its value remains unchanged. To clear such properties, specify
@@ -816,6 +836,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 * 	<li><code>SourceConfiguration</code> - <code>array</code> - Optional -  If specified, AWS Elastic Beanstalk uses the configuration values from the specified configuration template to create a new configuration. Values specified in the <code>OptionSettings</code> parameter of this call overrides any values obtained from the <code>SourceConfiguration</code>. If no configuration template is found, returns an <code>InvalidParameterValue</code> error. Constraint: If both the solution stack name parameter and the source configuration parameters are specified, the solution stack of the source configuration template must match the specified solution stack name or else AWS Elastic Beanstalk returns an <code>InvalidParameterCombination</code> error. <ul>
 	 * 		<li><code>ApplicationName</code> - <code>string</code> - Optional - The name of the application associated with the configuration. </li>
 	 * 		<li><code>TemplateName</code> - <code>string</code> - Optional - The name of the configuration template. </li></ul></li>
+	 * 	<li><code>EnvironmentId</code> - <code>string</code> - Optional - The ID of the environment used with this configuration template. </li>
 	 * 	<li><code>Description</code> - <code>string</code> - Optional - Describes this configuration. </li>
 	 * 	<li><code>OptionSettings</code> - <code>array</code> - Optional - If specified, AWS Elastic Beanstalk sets the specified configuration option to the requested value. The new value overrides the value obtained from the solution stack or the source configuration template. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
@@ -933,7 +954,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 
 	/**
 	 *
-	 * Returns list of event descriptions matching criteria.
+	 * Returns list of event descriptions matching criteria up to the last 6 weeks.
 	 *
 	 * This action returns the most recent 1,000 events from the specified <code>NextToken</code>.
 	 *

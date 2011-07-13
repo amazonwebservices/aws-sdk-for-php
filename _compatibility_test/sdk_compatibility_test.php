@@ -42,6 +42,7 @@ $pdo_sqlite_ok = extension_loaded('pdo_sqlite');
 $sqlite2_ok = extension_loaded('sqlite');
 $sqlite3_ok = extension_loaded('sqlite3');
 $sqlite_ok = ($pdo_ok && $pdo_sqlite_ok && ($sqlite2_ok || $sqlite3_ok));
+$int64_ok = (PHP_INT_MAX === 9223372036854775807);
 
 header('Content-type: text/html; charset=UTF-8');
 
@@ -321,10 +322,28 @@ div.important h3 {
 				</tbody>
 			</table>
 
+			<h3>Other</h3>
+			<table cellpadding="0" cellspacing="0" border="0" width="100%" id="chart">
+				<thead>
+					<tr>
+						<th>Test</th>
+						<th>Would Like To Be</th>
+						<th>What You Have</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="<?php echo ($int64_ok) ? 'enabled' : 'disabled'; ?>">
+						<td><a href="https://aws.amazon.com/amis/4158">Architecture</a></td>
+						<td>64-bit</td>
+						<td><?php echo ($int64_ok) ? '64-bit' : '32-bit'; ?></td>
+					</tr>
+				</tbody>
+			</table>
+
 			<br>
 		</div>
 
-		<?php if ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok && $openssl_ok && $zlib_ok && ($apc_ok || $xcache_ok || $mc_ok || $sqlite_ok)): ?>
+		<?php if ($php_ok && $int64_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok && $openssl_ok && $zlib_ok && ($apc_ok || $xcache_ok || $mc_ok || $sqlite_ok)): ?>
 		<div class="chunk important ok">
 			<h3>Bottom Line: Yes, you can!</h3>
 			<p>Your PHP environment is ready to go, and can take advantage of all possible features!</p>
@@ -368,6 +387,10 @@ div.important h3 {
 
 				<?php if ($zlib_ok): ?>
 				<li>The <a href="http://php.net/zlib">Zlib</a> extension is installed. The SDK will automatically leverage the compression capabilities of Zlib.</li>
+				<?php endif; ?>
+
+				<?php if (!$int64_ok): ?>
+				<li>You're running on a <strong>32-bit</strong> system. This means that PHP does not correctly handle files larger than 2GB (this is a <a href="http://www.google.com/search?q=php+2gb+32-bit">well-known PHP issue</a>). For more information, please see: <a href="http://docs.php.net/manual/en/function.filesize.php#refsect1-function.filesize-returnvalues">PHP filesize: Return values</a>.</li>
 				<?php endif; ?>
 
 				<?php
