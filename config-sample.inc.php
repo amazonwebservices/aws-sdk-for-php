@@ -53,6 +53,26 @@ define('AWS_CANONICAL_NAME', '');
 define('AWS_CERTIFICATE_AUTHORITY', false);
 
 /**
+ * This option allows you to configure a preferred storage type to use for caching by default. This can
+ * be changed later using the set_cache_config() method.
+ *
+ * Valid values are: `apc`, `xcache`, a DSN-style string such as `pdo.sqlite:/sqlite/cache.db`, a file
+ * system path such as `./cache` or `/tmp/cache/`, or a serialized array for memcached configuration.
+ *
+ * serialize(array(
+ * 	array(
+ * 		'host' => '127.0.0.1',
+ * 		'port' => '11211'
+ * 	),
+ * 	array(
+ * 		'host' => '127.0.0.2',
+ * 		'port' => '11211'
+ * 	)
+ * ));
+ */
+define('AWS_DEFAULT_CACHE_CONFIG', '');
+
+/**
  * 12-digit serial number taken from the Gemalto device used for Multi-Factor Authentication. Ignore this
  * if you're not using MFA.
  */

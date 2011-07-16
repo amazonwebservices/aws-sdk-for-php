@@ -102,9 +102,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.3.5');
+define('CFRUNTIME_VERSION', '1.3.6');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20110621180731');
+define('CFRUNTIME_BUILD', '20110713055831');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . php_uname('s') . '/' . php_uname('r') . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -115,7 +115,7 @@ define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/'
  * Core functionality and default settings shared across all SDK classes. All methods and properties in this
  * class are inherited by the service-specific classes.
  *
- * @version 2011.06.07
+ * @version 2011.07.12
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -829,7 +829,12 @@ class CFRuntime
 		{
 			$query['Action'] = $action;
 		}
-		$query['Version'] = $this->api_version;
+
+		// Only add it if it exists.
+		if ($this->api_version)
+		{
+			$query['Version'] = $this->api_version;
+		}
 
 		// Only Signature v2
 		if ($signature_version === 2)
@@ -838,6 +843,15 @@ class CFRuntime
 			$query['SignatureMethod'] = 'HmacSHA256';
 			$query['SignatureVersion'] = 2;
 			$query['Timestamp'] = $timestamp;
+		}
+
+		$curlopts = array();
+
+		// Set custom CURLOPT settings
+		if (is_array($opt) && isset($opt['curlopts']))
+		{
+			$curlopts = $opt['curlopts'];
+			unset($opt['curlopts']);
 		}
 
 		// Merge in any options that were passed in
@@ -1035,15 +1049,6 @@ class CFRuntime
 		$request->request_class = $this->request_class;
 		$request->response_class = $this->response_class;
 		$request->ssl_verification = $this->ssl_verification;
-
-		$curlopts = array();
-
-		// Set custom CURLOPT settings
-		if (is_array($opt) && isset($opt['curlopts']))
-		{
-			$curlopts = $opt['curlopts'];
-			unset($opt['curlopts']);
-		}
 
 		// Debug mode
 		if ($this->debug_mode)

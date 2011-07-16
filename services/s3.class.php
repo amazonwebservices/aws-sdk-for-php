@@ -49,7 +49,7 @@ class S3_Exception extends Exception {}
  *
  * Visit <http://aws.amazon.com/s3/> for more information.
  *
- * @version 2011.04.22
+ * @version 2011.05.18
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/s3/ Amazon Simple Storage Service
@@ -3168,6 +3168,11 @@ class AmazonS3 extends CFRuntime
 	 * requests) allow for faster failures and better upload reliability. Larger part sizes (and fewer
 	 * requests) costs slightly less but has lower upload reliability.
 	 *
+	 * In certain cases with large objects, it's possible for this method to attempt to open more file system
+	 * connections than allowed by the OS. In this case, either
+	 * <a href="https://forums.aws.amazon.com/thread.jspa?threadID=70216">increase the number of connections
+	 * allowed</a> or increase the value of the <code>partSize</code> parameter to use a larger part size.
+	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param string $filename (Required) The file name for the object.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -3244,7 +3249,7 @@ class AmazonS3 extends CFRuntime
 
 		if ($upload_position === false || !isset($upload_filesize) || $upload_filesize === false || $upload_filesize < 0)
 		{
-		throw new S3_Exception('The size of `fileUpload` cannot be determined in ' . __FUNCTION__ . '().');
+			throw new S3_Exception('The size of `fileUpload` cannot be determined in ' . __FUNCTION__ . '().');
 		}
 
 		// Handle part size

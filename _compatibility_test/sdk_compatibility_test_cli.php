@@ -17,6 +17,7 @@ $file_ok = (function_exists('file_get_contents') && function_exists('file_put_co
 // Optional, but recommended
 $openssl_ok = (extension_loaded('openssl') && function_exists('openssl_sign'));
 $zlib_ok = extension_loaded('zlib');
+$int64_ok = (PHP_INT_MAX === 9223372036854775807);
 
 // Optional
 $apc_ok = extension_loaded('apc');
@@ -50,6 +51,7 @@ echo '----------------------------------------' . PHP_EOL;
 echo PHP_EOL;
 
 echo 'PHP 5.2 or newer...       ' . ($php_ok ? (success() . ' ' . phpversion()) : failure()) . PHP_EOL;
+echo 'Architecture...           ' . ($int64_ok ? success('64-bit') : failure('32-bit')) . PHP_EOL;
 echo 'cURL with SSL...          ' . ($curl_ok ? (success() . ' ' . $curl_version['version'] . ' (' . $curl_version['ssl_version'] . ')') : failure($curl_version['version'] . (in_array('https', $curl_version['protocols'], true) ? ' (with ' . $curl_version['ssl_version'] . ')' : ' (without SSL)'))) . PHP_EOL;
 echo 'Standard PHP Library...   ' . ($spl_ok ? success() : failure()) . PHP_EOL;
 echo 'SimpleXML...              ' . ($simplexml_ok ? success() : failure()) . PHP_EOL;
@@ -77,6 +79,7 @@ if ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $
 	echo 'Your environment meets the minimum requirements for using the AWS SDK for PHP!' . PHP_EOL . PHP_EOL;
 	if ($openssl_ok) { echo '* The OpenSSL extension is installed. This will allow you to use CloudFront Private URLs and decrypt Windows instance passwords.' . PHP_EOL . PHP_EOL; }
 	if ($zlib_ok) { echo '* The Zlib extension is installed. The SDK will automatically leverage the compression capabilities of Zlib.' . PHP_EOL . PHP_EOL; }
+	if (!$int64_ok) { echo '* You\'re running on a 32-bit system. This means that PHP does not correctly handle files larger than 2GB (this is a well-known PHP issue).' . PHP_EOL . PHP_EOL; }
 
 	$storage_types = array();
 	if ($file_ok) { $storage_types[] = 'The file system'; }
@@ -105,7 +108,7 @@ else
 echo '----------------------------------------' . PHP_EOL;
 echo PHP_EOL;
 
-if ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok && $openssl_ok && $zlib_ok && ($apc_ok || $xcache_ok || $mc_ok || $sqlite_ok))
+if ($php_ok && $int64_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok && $openssl_ok && $zlib_ok && ($apc_ok || $xcache_ok || $mc_ok || $sqlite_ok))
 {
 	echo 'Bottom Line: Yes, you can!' . PHP_EOL;
 	echo 'Your PHP environment is ready to go, and can take advantage of all possible features!' . PHP_EOL;
