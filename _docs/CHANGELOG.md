@@ -1,3 +1,19 @@
+# Changelog: 1.3.7 "Quistis"
+<http://finalfantasy.wikia.com/wiki/Quistis_Trepe>
+
+Launched Wednesday, July 25, 2011
+
+## Bug fixes and enhancements
+* Addressed minor bug fixes reported via the feedback form in the API Reference.
+
+## Service Classes
+### AmazonAS
+* **New:**
+* **Changed:** Introduced backwards-incompatible changes to the <code>put_scheduled_update_group_action()</code> method.
+
+
+----
+
 # Changelog: 1.3.6 "Penelo"
 <http://finalfantasy.wikia.com/wiki/Penelo>
 
