@@ -38,7 +38,7 @@
  * href="http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html">Regions and Endpoints</a> in the Amazon Web Services
  * General Reference.
  *
- * @version Tue Jun 07 16:11:09 PDT 2011
+ * @version Wed Jul 20 13:14:36 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/autoscaling/Amazon Auto-Scaling
@@ -140,8 +140,10 @@ class AmazonAS extends CFRuntime
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name or ARN of the Auto Scaling Group.
 	 * @param string $scheduled_action_name (Required) The name of this scaling action.
-	 * @param string $time (Required) The time for this action to start. Accepts any value that <php:strtotime()> understands.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Time</code> - <code>string</code> - Optional - The time for this action to start. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
+	 * 	<li><code>EndTime</code> - <code>string</code> - Optional -  May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
+	 * 	<li><code>Recurrence</code> - <code>string</code> - Optional -  </li>
 	 * 	<li><code>MinSize</code> - <code>integer</code> - Optional - The minimum size for the new Auto Scaling group. </li>
 	 * 	<li><code>MaxSize</code> - <code>integer</code> - Optional - The maximum size for the Auto Scaling group. </li>
 	 * 	<li><code>DesiredCapacity</code> - <code>integer</code> - Optional - The number of EC2 instances that should be running in the group. </li>
@@ -149,12 +151,23 @@ class AmazonAS extends CFRuntime
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function put_scheduled_update_group_action($auto_scaling_group_name, $scheduled_action_name, $time, $opt = null)
+	public function put_scheduled_update_group_action($auto_scaling_group_name, $scheduled_action_name, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['AutoScalingGroupName'] = $auto_scaling_group_name;
 		$opt['ScheduledActionName'] = $scheduled_action_name;
-		$opt['Time'] = $this->util->convert_date_to_iso8601($time);
+
+		// Optional parameter
+		if (isset($opt['Time']))
+		{
+			$opt['Time'] = $this->util->convert_date_to_iso8601($opt['Time']);
+		}
+
+		// Optional parameter
+		if (isset($opt['EndTime']))
+		{
+			$opt['EndTime'] = $this->util->convert_date_to_iso8601($opt['EndTime']);
+		}
 
 		return $this->authenticate('PutScheduledUpdateGroupAction', $opt, $this->hostname);
 	}

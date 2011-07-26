@@ -31,7 +31,7 @@
  *
  * Visit <a href="http://aws.amazon.com/simpledb/">http://aws.amazon.com/simpledb/</a> for more information.
  *
- * @version Tue Jul 12 16:12:15 PDT 2011
+ * @version Wed Jul 20 13:20:46 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/simpledb/Amazon SimpleDB
@@ -276,7 +276,7 @@ class AmazonSDB extends CFRuntime
 	 * The PutAttributes operation creates or replaces attributes in an item.
 	 *
 	 * A single item can have the attributes <code>{ "first_name", "first_value" }</code> and
-	 * <code>{ "first_name", second_value" }</code>. However, it cannot have two attribute instances where
+	 * <code>{ "first_name", "second_value" }</code>. However, it cannot have two attribute instances where
 	 * both the attribute name and attribute value are the same. Optionally, the requestor can supply the
 	 * <code>Replace</code> parameter for each individual attribute. Setting this value to true causes the
 	 * new attribute value to replace the existing attribute value(s).
@@ -366,12 +366,13 @@ class AmazonSDB extends CFRuntime
 	 * @param array $item_keypairs (Required) Associative array of parameters which are treated as item-key-value and item-key-multivalue pairs (i.e. a key can have one or more values; think tags). <ul>
 	 * 	<li><code>[item]</code> - <code>array</code> - Set the custom item name as the key for this value.<ul>
 	 * 		<li><code>[key]</code> - <code>array</code> - Set the custom key name as the key for this value. For the value, pass a string for a single value, or an indexed array for multiple values.</li>
-	 * 	</ul></li></ul>
+	 * 	</ul></li>
+	 * </ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Item</code> - <code>array</code> - Optional - A list of items on which to perform the operation. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
-	 * 			<li><code>ItemName</code> - <code>string</code> - Optional - This is the parameter format supported by the web service API. This is the item name to use.<ul>
-	 * 			<li><code>Attribute</code> - <code>array</code> - Optional -  This is the parameter format supported by the web service API. This is the attribute node.<ul>
+	 * 			<li><code>ItemName</code> - <code>string</code> - Optional - This is the parameter format supported by the web service API. This is the item name to use.</li>
+	 * 			<li><code>Attribute</code> - <code>array</code> - Optional -  This is the parameter format supported by the web service API. This is the attribute node. <ul>
 	 * 				<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
 	 * 					<li><code>Name</code> - <code>string</code> - Required - The name of the attribute. </li>
 	 * 					<li><code>AlternateNameEncoding</code> - <code>string</code> - Optional - This is the parameter format supported by the web service API. This is the alternate name encoding to use.</li>
@@ -598,15 +599,16 @@ class AmazonSDB extends CFRuntime
 	 *
 	 * @param string $domain_name (Required) The name of the domain in which the attributes are being deleted.
 	 * @param array $item_keypairs (Required) Associative array of parameters which are treated as item-key-value and item-key-multivalue pairs (i.e. a key can have one or more values; think tags). <ul>
-	 * 	<li><code>[item]</code> - <code>array</code> - Set the custom item name as the key for this value.<ul>
+	 * 	<li><code>[item]</code> - <code>array</code> - Set the custom item name as the key for this value. <ul>
 	 * 		<li><code>[key]</code> - <code>array</code> - Set the custom key name as the key for this value. For the value, pass a string for a single value, or an indexed array for multiple values.</li>
-	 * 	</ul></li></ul>
+	 * 	</ul></li>
+	 * </ul>
 	 * @param boolean|array $replace (Optional) Whether to replace a key-value pair if a matching key already exists. Supports either a boolean (which affects ALL key-value pairs) or an indexed array of key names (which affects only the keys specified). Defaults to boolean <code>false</code>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Item</code> - <code>array</code> - Optional - A list of items on which to perform the operation. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
-	 * 			<li><code>ItemName</code> - <code>string</code> - Optional - This is the parameter format supported by the web service API. This is the item name to use.<ul>
-	 * 			<li><code>Attribute</code> - <code>array</code> - Optional -  This is the parameter format supported by the web service API. This is the attribute node.<ul>
+	 * 			<li><code>ItemName</code> - <code>string</code> - Optional - This is the parameter format supported by the web service API. This is the item name to use.</li>
+	 * 			<li><code>Attribute</code> - <code>array</code> - Optional -  This is the parameter format supported by the web service API. This is the attribute node. <ul>
 	 * 				<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
 	 * 					<li><code>Name</code> - <code>string</code> - Required - The name of the attribute. </li>
 	 * 					<li><code>AlternateNameEncoding</code> - <code>string</code> - Optional - This is the parameter format supported by the web service API. This is the alternate name encoding to use.</li>

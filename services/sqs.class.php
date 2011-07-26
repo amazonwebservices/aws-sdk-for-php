@@ -28,7 +28,7 @@
  *
  * Visit <a href="http://aws.amazon.com/sqs/">http://aws.amazon.com/sqs/</a> for more information.
  *
- * @version Tue Jul 12 16:13:05 PDT 2011
+ * @version Wed Jul 20 13:21:47 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sqs/Amazon Simple Queue Service
@@ -389,6 +389,8 @@ class AmazonSQS extends CFRuntime
 	 *
 	 * This action unconditionally deletes the queue specified by the queue URL. Use this operation WITH CARE! The queue is deleted even if it is
 	 * NOT empty.
+	 *
+	 * Once a queue has been deleted, the queue name is unavailable for use with new queues for 60 seconds.
 	 *
 	 * @param string $queue_url (Required) The URL of the SQS queue to take action on.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
