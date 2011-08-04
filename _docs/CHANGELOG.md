@@ -1,14 +1,49 @@
+# Changelog: 1.4 "Rikku"
+<http://finalfantasy.wikia.com/wiki/Rikku>
+
+Launched Wednesday, August 3, 2011
+
+## Bug fixes and enhancements
+
+## Service Classes
+### AmazonEC2
+* **New:** Support for Session-Based Authentication (SBA) leveraging Amazon Secure Token Service (STS) has been added to the SDK.
+
+### AmazonS3
+* **New:** Support for Session-Based Authentication (SBA) leveraging Amazon Secure Token Service (STS) has been added to the SDK.
+
+### AmazonSNS
+* **New:** Support for Session-Based Authentication (SBA) leveraging Amazon Secure Token Service (STS) has been added to the SDK.
+
+### AmazonSQS
+* **New:** Support for Session-Based Authentication (SBA) leveraging Amazon Secure Token Service (STS) has been added to the SDK.
+
+### AmazonSTS
+* **New:** Support for the Amazon Secure Token Service (STS) has been added to the SDK.
+
+## Utility Classes
+### CFRuntime
+* **New:** The following anonymous datapoints are now collected in aggregate so that we can make more informed decisions about future SDK features: `memory_limit`, `date.timezone`, `open_basedir`, `safe_mode`, `zend.enable_gc`.
+
+## Compatibility Test
+* **New:** Support for verifying the installed SSL certificate has been added to the compatibility test.
+* **New:** Support for verifying the status of `open_basedir` and `safe_mode` has been added to the compatibility test.
+* **New:** Support for verifying the status of the PHP 5.3 garbage collector has been added to the compatibility test.
+* **New:** The compatibility test now recommends optimal values for the `AWS_CERTIFICATE_AUTHORITY` and `AWS_DEFAULT_CACHE_CONFIG` configuration options based on the system's configuration.
+
+
+----
+
 # Changelog: 1.3.7 "Quistis"
 <http://finalfantasy.wikia.com/wiki/Quistis_Trepe>
 
-Launched Wednesday, July 25, 2011
+Launched Monday, July 25, 2011
 
 ## Bug fixes and enhancements
 * Addressed minor bug fixes reported via the feedback form in the API Reference.
 
 ## Service Classes
 ### AmazonAS
-* **New:**
 * **Changed:** Introduced backwards-incompatible changes to the <code>put_scheduled_update_group_action()</code> method.
 
 
