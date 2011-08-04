@@ -27,7 +27,7 @@
  *
  * Visit <a href="http://aws.amazon.com/ec2/">http://aws.amazon.com/ec2/</a> for more information.
  *
- * @version Tue Jul 12 16:08:47 PDT 2011
+ * @version Wed Aug 03 10:10:05 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ec2/Amazon Elastic Compute Cloud
@@ -120,13 +120,16 @@ class AmazonEC2 extends CFRuntime
 	// CONSTRUCTOR
 
 	/**
-	 * Constructs a new instance of <AmazonEC2>.
+	 * Constructs a new instance of <AmazonEC2>. If the <code>AWS_DEFAULT_CACHE_CONFIG</code> configuration
+	 * option is set, requests will be authenticated using a session token. Otherwise, requests will use
+	 * the older authentication method.
 	 *
-	 * @param string $key (Optional) Your Amazon API Key. If blank, it will look for the <code>AWS_KEY</code> constant.
-	 * @param string $secret_key (Optional) Your Amazon API Secret Key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
-	 * @return boolean false if no valid values are set, otherwise true.
+	 * @param string $key (Optional) Your AWS key, or a session key. If blank, it will look for the <code>AWS_KEY</code> constant.
+	 * @param string $secret_key (Optional) Your AWS secret key, or a session secret key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
+	 * @param string $token (optional) An AWS session token. If blank, a request will be made to the AWS Secure Token Service to fetch a set of session credentials.
+	 * @return boolean A value of <code>false</code> if no valid values are set, otherwise <code>true</code>.
 	 */
-	public function __construct($key = null, $secret_key = null)
+	public function __construct($key = null, $secret_key = null, $token = null)
 	{
 		$this->api_version = '2011-02-28';
 		$this->hostname = self::DEFAULT_URL;
@@ -143,6 +146,11 @@ class AmazonEC2 extends CFRuntime
 			// @codeCoverageIgnoreStart
 			throw new EC2_Exception('No account secret was passed into the constructor, nor was it set in the AWS_SECRET_KEY constant.');
 			// @codeCoverageIgnoreEnd
+		}
+
+		if (defined('AWS_DEFAULT_CACHE_CONFIG') && AWS_DEFAULT_CACHE_CONFIG)
+		{
+			return parent::session_based_auth($key, $secret_key, $token);
 		}
 
 		return parent::__construct($key, $secret_key);
@@ -3032,21 +3040,32 @@ class AmazonEC2 extends CFRuntime
 	 * Adds or remove permission settings for the specified snapshot.
 	 *
 	 * @param string $snapshot_id (Required) The ID of the EBS snapshot whose attributes are being modified.
-	 * @param string $attribute (Required) The name of the attribute being modified. Available attribute names: <code>createVolumePermission</code>
-	 * @param string $operation_type (Required) The operation to perform on the attribute. Available operation names: <code>add</code>, <code>remove</code>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Attribute</code> - <code>string</code> - Optional - The name of the attribute being modified. Available attribute names: <code>createVolumePermission</code> </li>
+	 * 	<li><code>OperationType</code> - <code>string</code> - Optional - The operation to perform on the attribute. Available operation names: <code>add</code>, <code>remove</code> </li>
 	 * 	<li><code>UserId</code> - <code>string|array</code> - Optional - The AWS user IDs to add to or remove from the list of users that have permission to create EBS volumes from the specified snapshot. Currently supports "all". Only valid when the <code>createVolumePermission</code> attribute is being modified.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>UserGroup</code> - <code>string|array</code> - Optional - The AWS group names to add to or remove from the list of groups that have permission to create EBS volumes from the specified snapshot. Currently supports "all". Only valid when the <code>createVolumePermission</code> attribute is being modified.  Pass a string for a single value, or an indexed array for multiple values. </li>
+	 * 	<li><code>CreateVolumePermission</code> - <code>array</code> - Optional -   <ul>
+	 * 		<li><code>Add</code> - <code>array</code> - Optional -  <ul>
+	 * 			<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
+	 * 				<li><code>UserId</code> - <code>string</code> - Optional - The user ID of the user that can create volumes from the snapshot. </li>
+	 * 				<li><code>Group</code> - <code>string</code> - Optional - The group that is allowed to create volumes from the snapshot (currently supports "all"). </li>
+	 * 			</ul></li>
+	 * 		</ul></li>
+	 * 		<li><code>Remove</code> - <code>array</code> - Optional -  <ul>
+	 * 			<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
+	 * 				<li><code>UserId</code> - <code>string</code> - Optional - The user ID of the user that can create volumes from the snapshot. </li>
+	 * 				<li><code>Group</code> - <code>string</code> - Optional - The group that is allowed to create volumes from the snapshot (currently supports "all"). </li>
+	 * 			</ul></li>
+	 * 		</ul></li></ul></li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function modify_snapshot_attribute($snapshot_id, $attribute, $operation_type, $opt = null)
+	public function modify_snapshot_attribute($snapshot_id, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['SnapshotId'] = $snapshot_id;
-		$opt['Attribute'] = $attribute;
-		$opt['OperationType'] = $operation_type;
 
 		// Optional parameter
 		if (isset($opt['UserId']))
@@ -3064,6 +3083,15 @@ class AmazonEC2 extends CFRuntime
 				'UserGroup' => (is_array($opt['UserGroup']) ? $opt['UserGroup'] : array($opt['UserGroup']))
 			)));
 			unset($opt['UserGroup']);
+		}
+
+		// Optional parameter
+		if (isset($opt['CreateVolumePermission']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'CreateVolumePermission' => $opt['CreateVolumePermission']
+			)));
+			unset($opt['CreateVolumePermission']);
 		}
 
 		return $this->authenticate('ModifySnapshotAttribute', $opt, $this->hostname);

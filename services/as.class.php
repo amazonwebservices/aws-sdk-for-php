@@ -38,7 +38,7 @@
  * href="http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html">Regions and Endpoints</a> in the Amazon Web Services
  * General Reference.
  *
- * @version Wed Jul 20 13:14:36 PDT 2011
+ * @version Wed Aug 03 10:07:42 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/autoscaling/Amazon Auto-Scaling

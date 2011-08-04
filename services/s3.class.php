@@ -245,13 +245,16 @@ class AmazonS3 extends CFRuntime
 	// CONSTRUCTOR
 
 	/**
-	 * Constructs a new instance of this class.
+	 * Constructs a new instance of <AmazonS3>. If the <code>AWS_DEFAULT_CACHE_CONFIG</code> configuration
+	 * option is set, requests will be authenticated using a session token. Otherwise, requests will use
+	 * the older authentication method.
 	 *
-	 * @param string $key (Optional) Amazon API Key. If blank, the `AWS_KEY` constant is used.
-	 * @param string $secret_key (Optional) Amazon API Secret Key. If blank, the `AWS_SECRET_KEY` constant is used.
+	 * @param string $key (Optional) Your AWS key, or a session key. If blank, it will look for the <code>AWS_KEY</code> constant.
+	 * @param string $secret_key (Optional) Your AWS secret key, or a session secret key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
+	 * @param string $token (optional) An AWS session token. If blank, a request will be made to the AWS Secure Token Service to fetch a set of session credentials.
 	 * @return boolean A value of <code>false</code> if no valid values are set, otherwise <code>true</code>.
 	 */
-	public function __construct($key = null, $secret_key = null)
+	public function __construct($key = null, $secret_key = null, $token = null)
 	{
 		$this->vhost = null;
 		$this->api_version = '2006-03-01';
@@ -277,6 +280,11 @@ class AmazonS3 extends CFRuntime
 			// @codeCoverageIgnoreStart
 			throw new S3_Exception('No account secret was passed into the constructor, nor was it set in the AWS_SECRET_KEY constant.');
 			// @codeCoverageIgnoreEnd
+		}
+
+		if (defined('AWS_DEFAULT_CACHE_CONFIG') && AWS_DEFAULT_CACHE_CONFIG)
+		{
+			return parent::session_based_auth($key, $secret_key, $token);
 		}
 
 		return parent::__construct($key, $secret_key);
@@ -416,6 +424,12 @@ class AmazonS3 extends CFRuntime
 		);
 
 		/*%******************************************************************************************%*/
+
+		// Do we have an authentication token?
+		if ($this->auth_token)
+		{
+			$headers['X-Amz-Security-Token'] = $this->auth_token;
+		}
 
 		// Handle specific resources
 		if (isset($opt['resource']))
