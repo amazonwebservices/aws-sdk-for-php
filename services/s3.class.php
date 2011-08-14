@@ -245,13 +245,16 @@ class AmazonS3 extends CFRuntime
 	// CONSTRUCTOR
 
 	/**
-	 * Constructs a new instance of this class.
+	 * Constructs a new instance of <AmazonS3>. If the <code>AWS_DEFAULT_CACHE_CONFIG</code> configuration
+	 * option is set, requests will be authenticated using a session token. Otherwise, requests will use
+	 * the older authentication method.
 	 *
-	 * @param string $key (Optional) Amazon API Key. If blank, the `AWS_KEY` constant is used.
-	 * @param string $secret_key (Optional) Amazon API Secret Key. If blank, the `AWS_SECRET_KEY` constant is used.
+	 * @param string $key (Optional) Your AWS key, or a session key. If blank, it will look for the <code>AWS_KEY</code> constant.
+	 * @param string $secret_key (Optional) Your AWS secret key, or a session secret key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
+	 * @param string $token (optional) An AWS session token. If blank, a request will be made to the AWS Secure Token Service to fetch a set of session credentials.
 	 * @return boolean A value of <code>false</code> if no valid values are set, otherwise <code>true</code>.
 	 */
-	public function __construct($key = null, $secret_key = null)
+	public function __construct($key = null, $secret_key = null, $token = null)
 	{
 		$this->vhost = null;
 		$this->api_version = '2006-03-01';
@@ -277,6 +280,11 @@ class AmazonS3 extends CFRuntime
 			// @codeCoverageIgnoreStart
 			throw new S3_Exception('No account secret was passed into the constructor, nor was it set in the AWS_SECRET_KEY constant.');
 			// @codeCoverageIgnoreEnd
+		}
+
+		if (defined('AWS_DEFAULT_CACHE_CONFIG') && AWS_DEFAULT_CACHE_CONFIG)
+		{
+			return parent::session_based_auth($key, $secret_key, $token);
 		}
 
 		return parent::__construct($key, $secret_key);
@@ -416,6 +424,12 @@ class AmazonS3 extends CFRuntime
 		);
 
 		/*%******************************************************************************************%*/
+
+		// Do we have an authentication token?
+		if ($this->auth_token)
+		{
+			$headers['X-Amz-Security-Token'] = $this->auth_token;
+		}
 
 		// Handle specific resources
 		if (isset($opt['resource']))
@@ -2370,6 +2384,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>method</code> - <code>string</code> - Optional - The HTTP method to use for the request. Defaults to a value of <code>GET</code>.</li>
 	 * 	<li><code>response</code> - <code>array</code> - Optional - Allows adjustments to specific response headers. Pass an associative array where each key is one of the following: <code>cache-control</code>, <code>content-disposition</code>, <code>content-encoding</code>, <code>content-language</code>, <code>content-type</code>, <code>expires</code>. The <code>expires</code> value should use <php:gmdate()> and be formatted with the <code>DATE_RFC2822</code> constant.</li>
 	 * 	<li><code>torrent</code> - <code>boolean</code> - Optional - A value of <code>true</code> will return a URL to a torrent of the Amazon S3 object. A value of <code>false</code> will return a non-torrent URL. Defaults to <code>false</code>.</li>
+	 * 	<li><code>versionId</code> - <code>string</code> - Optional - The version of the object. Version IDs are returned in the <code>x-amz-version-id</code> header of any previous object-related request.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return string The file URL, with authentication and/or torrent parameters if requested.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/S3_QSAuth.html Using Query String Authentication

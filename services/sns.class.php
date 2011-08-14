@@ -17,7 +17,7 @@
 /**
 
  *
- * @version Tue Jul 12 16:12:40 PDT 2011
+ * @version Wed Aug 03 10:14:08 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sns/Amazon Simple Notification Service
@@ -109,13 +109,16 @@ class AmazonSNS extends CFRuntime
 	// CONSTRUCTOR
 
 	/**
-	 * Constructs a new instance of <AmazonSNS>.
+	 * Constructs a new instance of <AmazonSNS>. If the <code>AWS_DEFAULT_CACHE_CONFIG</code> configuration
+	 * option is set, requests will be authenticated using a session token. Otherwise, requests will use
+	 * the older authentication method.
 	 *
-	 * @param string $key (Optional) Your Amazon API Key. If blank, it will look for the `AWS_KEY` constant.
-	 * @param string $secret_key (Optional) Your Amazon API Secret Key. If blank, it will look for the `AWS_SECRET_KEY` constant.
-	 * @return boolean <code>false</code> if no valid values are set, otherwise <code>true</code>.
+	 * @param string $key (Optional) Your AWS key, or a session key. If blank, it will look for the <code>AWS_KEY</code> constant.
+	 * @param string $secret_key (Optional) Your AWS secret key, or a session secret key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
+	 * @param string $token (optional) An AWS session token. If blank, a request will be made to the AWS Secure Token Service to fetch a set of session credentials.
+	 * @return boolean A value of <code>false</code> if no valid values are set, otherwise <code>true</code>.
 	 */
-	public function __construct($key = null, $secret_key = null)
+	public function __construct($key = null, $secret_key = null, $token = null)
 	{
 		$this->api_version = '2010-03-31';
 		$this->hostname = self::DEFAULT_URL;
@@ -132,6 +135,11 @@ class AmazonSNS extends CFRuntime
 			// @codeCoverageIgnoreStart
 			throw new SNS_Exception('No account secret was passed into the constructor, nor was it set in the AWS_SECRET_KEY constant.');
 			// @codeCoverageIgnoreEnd
+		}
+
+		if (defined('AWS_DEFAULT_CACHE_CONFIG') && AWS_DEFAULT_CACHE_CONFIG)
+		{
+			return parent::session_based_auth($key, $secret_key, $token);
 		}
 
 		return parent::__construct($key, $secret_key);
