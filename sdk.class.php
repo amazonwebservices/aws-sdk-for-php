@@ -19,14 +19,14 @@
 // CORE DEPENDENCIES
 
 // Look for include file in the same directory (e.g. `./config.inc.php`).
-if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.inc.php'))
+if (file_exists(dirname(__FILE__) . '/config.inc.php'))
 {
-	include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.inc.php';
+	include_once dirname(__FILE__) . '/config.inc.php';
 }
 // Fallback to `~/.aws/sdk/config.inc.php`
-elseif (getenv('HOME') && file_exists(getenv('HOME') . DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php'))
+elseif (getenv('HOME') && file_exists(getenv('HOME') . '/.aws/sdk/config.inc.php'))
 {
-	include_once getenv('HOME') . DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php';
+	include_once getenv('HOME') . '/.aws/sdk/config.inc.php';
 }
 
 
@@ -1526,47 +1526,47 @@ class CFLoader
 	 */
 	public static function autoloader($class)
 	{
-		$path = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+		$path = dirname(__FILE__) . '/';
 
 		// Amazon SDK classes
 		if (strstr($class, 'Amazon'))
 		{
-			$path .= 'services' . DIRECTORY_SEPARATOR . str_ireplace('Amazon', '', strtolower($class)) . '.class.php';
+			$path .= 'services/' . str_ireplace('Amazon', '', strtolower($class)) . '.class.php';
 		}
 
 		// Utility classes
 		elseif (strstr($class, 'CF'))
 		{
-			$path .= 'utilities' . DIRECTORY_SEPARATOR . str_ireplace('CF', '', strtolower($class)) . '.class.php';
+			$path .= 'utilities/' . str_ireplace('CF', '', strtolower($class)) . '.class.php';
 		}
 
 		// Load CacheCore
 		elseif (strstr($class, 'Cache'))
 		{
-			if (file_exists($ipath = 'lib' . DIRECTORY_SEPARATOR . 'cachecore' . DIRECTORY_SEPARATOR . 'icachecore.interface.php'))
+			if (file_exists($ipath = 'lib/cachecore/icachecore.interface.php'))
 			{
 				require_once($ipath);
 			}
 
-			$path .= 'lib' . DIRECTORY_SEPARATOR . 'cachecore' . DIRECTORY_SEPARATOR . strtolower($class) . '.class.php';
+			$path .= 'lib/cachecore/' . strtolower($class) . '.class.php';
 		}
 
 		// Load RequestCore
 		elseif (strstr($class, 'RequestCore') || strstr($class, 'ResponseCore'))
 		{
-			$path .= 'lib' . DIRECTORY_SEPARATOR . 'requestcore' . DIRECTORY_SEPARATOR . 'requestcore.class.php';
+			$path .= 'lib/requestcore/requestcore.class.php';
 		}
 
 		// Load Symfony YAML classes
 		elseif (strstr($class, 'sfYaml'))
 		{
-			$path .= 'lib' . DIRECTORY_SEPARATOR . 'yaml' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'sfYaml.php';
+			$path .= 'lib/yaml/lib/sfYaml.php';
 		}
 
 		// Fall back to the 'extensions' directory.
 		elseif (defined('AWS_ENABLE_EXTENSIONS') && AWS_ENABLE_EXTENSIONS)
 		{
-			$path .= 'extensions' . DIRECTORY_SEPARATOR . strtolower($class) . '.class.php';
+			$path .= 'extensions/' . strtolower($class) . '.class.php';
 		}
 
 		if (file_exists($path) && !is_dir($path))
