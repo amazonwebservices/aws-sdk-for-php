@@ -16,10 +16,14 @@
 
 /**
  *
- * This is the Amazon Elastic MapReduce API Reference Guide. This guide is for programmers who need detailed information about the Amazon
- * Elastic MapReduce APIs.
+ * This is the <i>Amazon Elastic MapReduce API Reference</i>. This guide provides descriptions and samples of the Amazon Elastic MapReduce
+ * APIs.
  *
- * @version Tue Apr 05 15:19:55 PDT 2011
+ * Amazon Elastic MapReduce is a web service that makes it easy to process large amounts of data efficiently. Elastic MapReduce uses Hadoop
+ * processing combined with several AWS products to do tasks such as web indexing, data mining, log file analysis, machine learning, scientific
+ * simulation, and data warehousing.
+ *
+ * @version Tue Aug 23 12:49:06 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticmapreduce/Amazon Elastic MapReduce
@@ -95,12 +99,16 @@ class AmazonEMR extends CFRuntime
 
 		if (!$key && !defined('AWS_KEY'))
 		{
+			// @codeCoverageIgnoreStart
 			throw new EMR_Exception('No account key was passed into the constructor, nor was it set in the AWS_KEY constant.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		if (!$secret_key && !defined('AWS_SECRET_KEY'))
 		{
+			// @codeCoverageIgnoreStart
 			throw new EMR_Exception('No account secret was passed into the constructor, nor was it set in the AWS_SECRET_KEY constant.');
+			// @codeCoverageIgnoreEnd
 		}
 
 		return parent::__construct($key, $secret_key);
@@ -111,29 +119,34 @@ class AmazonEMR extends CFRuntime
 	// SERVICE METHODS
 
 	/**
+	 *
 	 * AddInstanceGroups adds an instance group to a running cluster.
 	 *
+	 * @param array $instance_groups (Required) Instance Groups to add. <ul>
+	 * 	<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
+	 * 		<li><code>Name</code> - <code>string</code> - Optional - Friendly name given to the instance group. </li>
+	 * 		<li><code>Market</code> - <code>string</code> - Optional - Market type of the Amazon EC2 instances used to create a cluster node. [Allowed values: <code>ON_DEMAND</code>, <code>SPOT</code>]</li>
+	 * 		<li><code>InstanceRole</code> - <code>string</code> - Required - The role of the instance group in the cluster. [Allowed values: <code>MASTER</code>, <code>CORE</code>, <code>TASK</code>]</li>
+	 * 		<li><code>BidPrice</code> - <code>string</code> - Optional - Bid price for each Amazon EC2 instance in the instance group when launching nodes as Spot Instances, expressed in USD. </li>
+	 * 		<li><code>InstanceType</code> - <code>string</code> - Required - The Amazon EC2 instance type for all instances in the instance group. </li>
+	 * 		<li><code>InstanceCount</code> - <code>integer</code> - Required - Target number of instances for the instance group. </li>
+	 * 	</ul></li>
+	 * </ul>
 	 * @param string $job_flow_id (Required) Job flow in which to add the instance groups.
-	 * @param array $instance_groups (Required) Instance Groups to add. Takes an indexed array of associative arrays of parameters. Each associative array can have the following keys: <ul>
-	 * 	<li><code>Name</code> - <code>string</code> - Optional - Friendly name given to the instance group.</li>
-	 *	<li><code>Market</code> - <code>string</code> - Required - Market type of the Amazon EC2 instances used to create a cluster node. [Allowed values: <code>ON_DEMAND</code>]</li>
-	 *	<li><code>InstanceRole</code> - <code>string</code> - Required - The role of the instance group in the cluster. [Allowed values: <code>MASTER</code>, <code>CORE</code>, <code>TASK</code>]</li>
-	 *	<li><code>InstanceType</code> - <code>string</code> - Required - The Amazon EC2 instance type for all instances in the instance group.</li>
-	 *	<li><code>InstanceCount</code> - <code>integer</code> - Required - Target number of instances for the instance group.</li></ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
-	 *  <li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This is useful for manually-managed batch requests.</li></ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function add_instance_groups($job_flow_id, $instance_groups, $opt = null)
+	public function add_instance_groups($instance_groups, $job_flow_id, $opt = null)
 	{
 		if (!$opt) $opt = array();
-		$opt['JobFlowId'] = $job_flow_id;
 
 		// Required parameter
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'InstanceGroups' => (is_array($instance_groups) ? $instance_groups : array($instance_groups))
 		), 'member'));
+		$opt['JobFlowId'] = $job_flow_id;
 
 		return $this->authenticate('AddInstanceGroups', $opt, $this->hostname);
 	}
@@ -142,6 +155,12 @@ class AmazonEMR extends CFRuntime
 	 *
 	 * AddJobFlowSteps adds new steps to a running job flow. A maximum of 256 steps are allowed in each job flow.
 	 *
+	 * If your job flow is long-running (such as a Hive data warehouse) or complex, you may require more than 256 steps to process your data. You
+	 * can bypass the 256-step limitation in various ways, including using the SSH shell to connect to the master node and submitting queries
+	 * directly to the software running on the master node, such as Hive and Hadoop. For more information on how to do this, go to <a
+	 * href="http://docs.amazonwebservices.com/ElasticMapReduce/latest/DeveloperGuide/AddMoreThan256Steps.html">Add More than 256 Steps to a Job
+	 * Flow</a> in the <i>Amazon Elastic MapReduce Developer's Guide</i>.
+	 *
 	 * A step specifies the location of a JAR file stored either on the master node of the job flow or in Amazon S3. Each step is performed by the
 	 * main function of the main class of the JAR file. The main class can be specified either in the manifest of the JAR or by using the
 	 * MainFunction parameter of the step.
@@ -149,9 +168,9 @@ class AmazonEMR extends CFRuntime
 	 * Elastic MapReduce executes each step in the order listed. For a step to be considered complete, the main function must exit with a zero
 	 * exit code and all Hadoop jobs started while the step was running must have completed and run successfully.
 	 *
-	 * You can only add steps to a job flow that is in one of the following states: STARTING, BOOTSTAPPING, RUNNING, or WAITING.
+	 * You can only add steps to a job flow that is in one of the following states: STARTING, BOOTSTRAPPING, RUNNING, or WAITING.
 	 *
-	 * @param string $job_flow_id (Required) A string that uniquely identifies the job flow. This identifier is returned by RunJobFlow and can also be obtained from DescribeJobFlows .
+	 * @param string $job_flow_id (Required) A string that uniquely identifies the job flow. This identifier is returned by RunJobFlow and can also be obtained from DescribeJobFlows.
 	 * @param array $steps (Required) A list of StepConfig to be executed by the job flow. <ul>
 	 * 	<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
 	 * 		<li><code>Name</code> - <code>string</code> - Required - The name of the job flow step. </li>
@@ -170,7 +189,7 @@ class AmazonEMR extends CFRuntime
 	 * 	</ul></li>
 	 * </ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -195,7 +214,7 @@ class AmazonEMR extends CFRuntime
 	 *
 	 * @param string|array $job_flow_ids (Required) A list of job flows to be shutdown.  Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -222,8 +241,8 @@ class AmazonEMR extends CFRuntime
 	 *
 	 * <ul> <li>Job flows created and completed in the last two weeks</li>
 	 *
-	 * <li> Job flows created within the last two months that are in one of the following states: <code>RUNNING</code> , <code>WAITING</code> ,
-	 * <code>SHUTTING_DOWN</code> , <code>STARTING</code> </li>
+	 * <li> Job flows created within the last two months that are in one of the following states: <code>RUNNING</code>, <code>WAITING</code>,
+	 * <code>SHUTTING_DOWN</code>, <code>STARTING</code> </li>
 	 *
 	 * </ul>
 	 *
@@ -234,7 +253,7 @@ class AmazonEMR extends CFRuntime
 	 * 	<li><code>CreatedBefore</code> - <code>string</code> - Optional - Return only job flows created before this date and time. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
 	 * 	<li><code>JobFlowIds</code> - <code>string|array</code> - Optional - Return only job flows whose job flow ID is contained in this list.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 	<li><code>JobFlowStates</code> - <code>string|array</code> - Optional - Return only job flows whose state is contained in this list.  Pass a string for a single value, or an indexed array for multiple values. </li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -277,14 +296,60 @@ class AmazonEMR extends CFRuntime
 
 	/**
 	 *
+	 * SetTerminationProtection locks a job flow so the Amazon EC2 instances in the cluster cannot be terminated by user intervention, an API
+	 * call, or in the event of a job-flow error. The cluster still terminates upon successful completion of the job flow. Calling
+	 * SetTerminationProtection on a job flow is analogous to calling the Amazon EC2 DisableAPITermination API on all of the EC2 instances in a
+	 * cluster.
+	 *
+	 * SetTerminationProtection is used to prevent accidental termination of a job flow and to ensure that in the event of an error, the instances
+	 * will persist so you can recover any data stored in their ephemeral instance storage.
+	 *
+	 * To terminate a job flow that has been locked by setting SetTerminationProtection to <code>true</code>, you must first unlock the job flow
+	 * by a subsequent call to SetTerminationProtection in which you set the value to <code>false</code>.
+	 *
+	 * For more information, go to <a
+	 * href="http://docs.amazonwebservices.com/ElasticMapReduce/latest/DeveloperGuide/UsingEMR_TerminationProtection.html">Protecting a Job Flow
+	 * from Termination</a> in the <i>Amazon Elastic MapReduce Developer's Guide.</i>
+	 *
+	 * @param string|array $job_flow_ids (Required) A list of strings that uniquely identify the job flows to protect. This identifier is returned by RunJobFlow and can also be obtained from DescribeJobFlows .  Pass a string for a single value, or an indexed array for multiple values.
+	 * @param boolean $termination_protected (Required) A Boolean that indicates whether to protect the job flow and prevent the Amazon EC2 instances in the cluster from shutting down due to API calls, user intervention, or job-flow error.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function set_termination_protection($job_flow_ids, $termination_protected, $opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		// Required parameter
+		$opt = array_merge($opt, CFComplexType::map(array(
+			'JobFlowIds' => (is_array($job_flow_ids) ? $job_flow_ids : array($job_flow_ids))
+		), 'member'));
+		$opt['TerminationProtected'] = $termination_protected;
+
+		return $this->authenticate('SetTerminationProtection', $opt, $this->hostname);
+	}
+
+	/**
+	 *
 	 * RunJobFlow creates and starts running a new job flow. The job flow will run the steps specified. Once the job flow completes, the cluster
 	 * is stopped and the HDFS partition is lost. To prevent loss of data, configure the last step of the job flow to store results in Amazon S3.
-	 * If the JobFlowInstancesDetail : KeepJobFlowAliveWhenNoSteps parameter is set to <code>TRUE</code>, the job flow will transition to the
-	 * WAITING state rather than shutting down once the steps have completed.
+	 * If the JobFlowInstancesDetail <code>KeepJobFlowAliveWhenNoSteps</code> parameter is set to <code>TRUE</code>, the job flow will transition
+	 * to the WAITING state rather than shutting down once the steps have completed.
+	 *
+	 * For additional protection, you can set the JobFlowInstancesDetail <code>TerminationProtected</code> parameter to <code>TRUE</code> to lock
+	 * the job flow and prevent it from being terminated by API call, user intervention, or in the event of a job flow error.
 	 *
 	 * A maximum of 256 steps are allowed in each job flow.
 	 *
-	 * For long running job flows, we recommended that you periodically store your results.
+	 * If your job flow is long-running (such as a Hive data warehouse) or complex, you may require more than 256 steps to process your data. You
+	 * can bypass the 256-step limitation in various ways, including using the SSH shell to connect to the master node and submitting queries
+	 * directly to the software running on the master node, such as Hive and Hadoop. For more information on how to do this, go to <a
+	 * href="http://docs.amazonwebservices.com/ElasticMapReduce/latest/DeveloperGuide/AddMoreThan256Steps.html">Add More than 256 Steps to a Job
+	 * Flow</a> in the <i>Amazon Elastic MapReduce Developer's Guide</i>.
+	 *
+	 * For long running job flows, we recommend that you periodically store your results.
 	 *
 	 * @param string $name (Required) The name of the job flow.
 	 * @param array $instances (Required) A specification of the number and type of Amazon EC2 instances on which to run the job flow. <ul>
@@ -294,8 +359,9 @@ class AmazonEMR extends CFRuntime
 	 * 	<li><code>InstanceGroups</code> - <code>array</code> - Optional - Configuration for the job flow's instance groups. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
 	 * 			<li><code>Name</code> - <code>string</code> - Optional - Friendly name given to the instance group. </li>
-	 * 			<li><code>Market</code> - <code>string</code> - Required - Market type of the Amazon EC2 instances used to create a cluster node. [Allowed values: <code>ON_DEMAND</code>]</li>
+	 * 			<li><code>Market</code> - <code>string</code> - Optional - Market type of the Amazon EC2 instances used to create a cluster node. [Allowed values: <code>ON_DEMAND</code>, <code>SPOT</code>]</li>
 	 * 			<li><code>InstanceRole</code> - <code>string</code> - Required - The role of the instance group in the cluster. [Allowed values: <code>MASTER</code>, <code>CORE</code>, <code>TASK</code>]</li>
+	 * 			<li><code>BidPrice</code> - <code>string</code> - Optional - Bid price for each Amazon EC2 instance in the instance group when launching nodes as Spot Instances, expressed in USD. </li>
 	 * 			<li><code>InstanceType</code> - <code>string</code> - Required - The Amazon EC2 instance type for all instances in the instance group. </li>
 	 * 			<li><code>InstanceCount</code> - <code>integer</code> - Required - Target number of instances for the instance group. </li>
 	 * 		</ul></li>
@@ -305,6 +371,7 @@ class AmazonEMR extends CFRuntime
 	 * 		<li><code>AvailabilityZone</code> - <code>string</code> - Required - The Amazon EC2 Availability Zone for the job flow. </li>
 	 * 	</ul></li>
 	 * 	<li><code>KeepJobFlowAliveWhenNoSteps</code> - <code>boolean</code> - Optional - Specifies whether the job flow should terminate after completing all steps. </li>
+	 * 	<li><code>TerminationProtected</code> - <code>boolean</code> - Optional - Specifies whether to lock the job flow to prevent the Amazon EC2 instances from being terminated by API call, user intervention, or in the event of a job flow error. </li>
 	 * 	<li><code>HadoopVersion</code> - <code>string</code> - Optional - Specifies the Hadoop version for the job flow. Valid inputs are "0.18" or "0.20". </li>
 	 * </ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -331,12 +398,12 @@ class AmazonEMR extends CFRuntime
 	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
 	 * 			<li><code>Name</code> - <code>string</code> - Required - The name of the bootstrap action. </li>
 	 * 			<li><code>ScriptBootstrapAction</code> - <code>array</code> - Required - The script run by the bootstrap action. Takes an associative array of parameters that can have the following keys: <ul>
-	 * 				<li><code>Path</code> - <code>string</code> - Optional - Location of the script to run during a bootstrap action. Can be either a location in Amazon S3 or on a local file system. </li>
+	 * 				<li><code>Path</code> - <code>string</code> - Required - Location of the script to run during a bootstrap action. Can be either a location in Amazon S3 or on a local file system. </li>
 	 * 				<li><code>Args</code> - <code>string|array</code> - Optional - A list of command line arguments to pass to the bootstrap action script.  Pass a string for a single value, or an indexed array for multiple values. </li>
 	 * 			</ul></li>
 	 * 		</ul></li>
 	 * 	</ul></li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
@@ -391,7 +458,7 @@ class AmazonEMR extends CFRuntime
 	 * 			<li><code>InstanceCount</code> - <code>integer</code> - Required - Target size for the instance group. </li>
 	 * 		</ul></li>
 	 * 	</ul></li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <php:curl_setopt()>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */

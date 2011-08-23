@@ -27,7 +27,7 @@
  *
  * Visit <a href="http://aws.amazon.com/ec2/">http://aws.amazon.com/ec2/</a> for more information.
  *
- * @version Wed Aug 03 10:10:05 PDT 2011
+ * @version Tue Aug 23 12:47:35 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ec2/Amazon Elastic Compute Cloud
