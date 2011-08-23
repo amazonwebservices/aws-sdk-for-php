@@ -125,9 +125,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.4');
+define('CFRUNTIME_VERSION', '1.4.1');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20110803172558');
+define('CFRUNTIME_BUILD', '20110823204245');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . str_replace(' ', '_', php_uname('s')) . '/' . str_replace(' ', '_', php_uname('r')) . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -415,7 +415,8 @@ class CFRuntime
 		// Use 'em if we've got 'em
 		if ($key && $secret_key && $token)
 		{
-			$this->__construct($key, $secret_key);
+			$this->key = $key;
+			$this->secret_key = $secret_key;
 			$this->auth_token = $token;
 			return true;
 		}
@@ -458,20 +459,12 @@ class CFRuntime
 			$this->auth_token = $session_credentials['SessionToken'];
 
 			// If both a key and secret key are passed in, use those.
-			if ($session_credentials['AccessKeyId'] && $session_credentials['SecretAccessKey'])
+			if (isset($session_credentials['AccessKeyId']) && isset($session_credentials['SecretAccessKey']))
 			{
 				$this->key = $session_credentials['AccessKeyId'];
 				$this->secret_key = $session_credentials['SecretAccessKey'];
 				return true;
 			}
-			// If neither are passed in, look for the constants instead.
-			elseif (defined('AWS_KEY') && defined('AWS_SECRET_KEY'))
-			{
-				$this->key = AWS_KEY;
-				$this->secret_key = AWS_SECRET_KEY;
-				return true;
-			}
-
 			// Otherwise set the values to blank and return false.
 			else
 			{
@@ -480,6 +473,13 @@ class CFRuntime
 		}
 	}
 
+	/**
+	 * The callback function that is executed  while caching the session credentials.
+	 *
+	 * @param string $key (Optional) Your AWS key, or a session key. If blank, it will look for the <code>AWS_KEY</code> constant.
+	 * @param string $secret_key (Optional) Your AWS secret key, or a session secret key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
+	 * @return mixed The data to be cached or null.
+	 */
 	public function cache_token($key, $secret_key)
 	{
 		$token = new AmazonSTS($key, $secret_key);
@@ -1365,7 +1365,7 @@ class CFRuntime
 				case 'deflate':
 					if (strpos($headers['_info']['url'], 'monitoring.') !== false)
 					{
-						// CloudWatch incorrectly does nothing when they say deflate.
+						// CloudWatchWatch incorrectly does nothing when they say deflate.
 						continue;
 					}
 					else

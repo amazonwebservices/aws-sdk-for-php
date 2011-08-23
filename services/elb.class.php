@@ -21,7 +21,7 @@
  * application. It makes it easy for you to distribute application loads between two or more EC2 instances. Elastic Load Balancing enables
  * availability through redundancy and supports traffic growth of your application.
  *
- * @version Wed Aug 03 10:10:44 PDT 2011
+ * @version Tue Aug 23 12:48:10 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticloadbalancing/Amazon Elastic Load Balancing
