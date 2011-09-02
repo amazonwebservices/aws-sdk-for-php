@@ -26,7 +26,7 @@
  * In addition, through integration with Amazon CloudWatch, customers get enhanced visibility into the key performance statistics associated
  * with their cache and can receive alarms if a part of their cache runs hot.
  *
- * @version Tue Aug 23 12:46:37 PDT 2011
+ * @version Thu Sep 01 21:18:49 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticache/AWS ElastiCache
