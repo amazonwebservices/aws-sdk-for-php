@@ -17,7 +17,7 @@
 /**
 
  *
- * @version Tue Aug 23 12:51:26 PDT 2011
+ * @version Thu Sep 01 21:23:56 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sns/Amazon Simple Notification Service

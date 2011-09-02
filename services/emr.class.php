@@ -23,7 +23,7 @@
  * processing combined with several AWS products to do tasks such as web indexing, data mining, log file analysis, machine learning, scientific
  * simulation, and data warehousing.
  *
- * @version Tue Aug 23 12:49:06 PDT 2011
+ * @version Thu Sep 01 21:21:27 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticmapreduce/Amazon Elastic MapReduce

@@ -131,7 +131,7 @@ class AmazonEC2 extends CFRuntime
 	 */
 	public function __construct($key = null, $secret_key = null, $token = null)
 	{
-		$this->api_version = '2011-02-28';
+		$this->api_version = '2011-07-15';
 		$this->hostname = self::DEFAULT_URL;
 
 		if (!$key && !defined('AWS_KEY'))
