@@ -1,3 +1,15 @@
+# Changelog: 1.4.2.1 "Tiamat, Part II"
+<http://finalfantasy.wikia.com/wiki/Tiamat>
+
+Launched Wednesday, September 7, 2011
+
+## Utility Classes
+### RequestCore
+* **Fixed:** RequestCore has updated the `cacert.pem` file from Mozilla. This update revokes trust from the DigiNotar and Staat der Nederlanden root certificates.
+
+
+----
+
 # Changelog: 1.4.2 "Tiamat"
 <http://finalfantasy.wikia.com/wiki/Tiamat>
 
