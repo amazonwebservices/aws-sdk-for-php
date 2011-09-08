@@ -1,3 +1,60 @@
+# Changelog: 1.4.2.1 "Tiamat, Part II"
+<http://finalfantasy.wikia.com/wiki/Tiamat>
+
+Launched Wednesday, September 7, 2011
+
+## Utility Classes
+### RequestCore
+* **Fixed:** RequestCore has updated the `cacert.pem` file from Mozilla. This update revokes trust from the DigiNotar and Staat der Nederlanden root certificates.
+
+
+----
+
+# Changelog: 1.4.2 "Tiamat"
+<http://finalfantasy.wikia.com/wiki/Tiamat>
+
+Launched Thursday, September 1, 2011
+
+## Service Classes
+### AmazonEC2
+* **Fixed:** Requests made to Amazon EC2 now use the correct API version (2011-07-15).
+
+### AmazonELB
+* **New:** A pre-defined set of ciphers may now be used for SSL termination at the Elastic Load Balancer.
+* **New:** Application servers can now accept secure communication from the corresponding Elastic Load Balancer.
+* **New:** In cases where HTTPS is required for all traffic entering the back-end server, Elastic Load Balancing can now perform health checks using HTTPS.
+* **New:** White list of public keys can now be associated with back-end servers. Elastic Load Balancing authenticates back-end servers with the public keys in the white list and communicates only with back-end servers that pass this authentication check.
+
+## Utility Classes
+### RequestCore
+* **Fixed:** RequestCore has updated the `cacert.pem` file from Mozilla. This update revokes trust from the DigiNotar root certificate.
+
+
+----
+
+# Changelog: 1.4.1 "Sephiroth"
+<http://finalfantasy.wikia.com/wiki/Sephiroth>
+
+Launched Tuesday, August 23, 2011
+
+## Service Classes
+### AmazonElastiCache
+* **New:** Support for Amazon ElastiCache has been added to the SDK.
+
+### AmazonEMR
+* **New:** Support for Hadoop Bootstrap Actions has been added to the SDK.
+* **New:** Support for Amazon Elastic MapReduce on Spot Instances has been added to the SDK.
+* **New:** Support for Termination Protection has been added to the SDK.
+* **Changed:** For the <code>add_instance_groups()</code> method, the <code>$instance_groups</code> and <code>$job_flow_id</code> parameters have been reversed.
+
+## Utility Classes
+### CFHadoopBootstrap
+* **New:** The `CFHadoopBootstrap` class has been added to the SDK. Simplifies the process of working with Hadoop system and daemon configurations in Amazon EMR.
+* **New:** This class extends from the `CFHadoopBase` class.
+
+
+----
+
 # Changelog: 1.4 "Rikku"
 <http://finalfantasy.wikia.com/wiki/Rikku>
 

@@ -47,7 +47,7 @@
  *
  * </ul>
  *
- * @version Wed Aug 03 10:09:00 PDT 2011
+ * @version Thu Sep 01 21:18:18 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudwatch/Amazon CloudWatch

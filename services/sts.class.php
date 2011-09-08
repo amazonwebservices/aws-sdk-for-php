@@ -35,7 +35,7 @@
  * We will refer to Amazon AWS Security Token Service using the abbreviated form STS, and to Amazon Identity and Access Management using the
  * abbreviated form IAM. All copyrights and legal protections still apply.
  *
- * @version Wed Aug 03 10:14:57 PDT 2011
+ * @version Thu Sep 01 21:24:44 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sts/AWS Secure Token Service
