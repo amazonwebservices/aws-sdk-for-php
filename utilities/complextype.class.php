@@ -107,6 +107,7 @@ class CFComplexType
 				}
 				else
 				{
+					$key .= '.InstanceId';
 					$out[$key] = $v;
 				}
 
