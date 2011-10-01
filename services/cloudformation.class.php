@@ -48,7 +48,7 @@
  * Amazon CloudFormation makes use of other AWS products. If you need additional technical information about a specific AWS product, you can
  * find the product's technical documentation at <a href="http://aws.amazon.com/documentation/">http://aws.amazon.com/documentation/</a>.
  *
- * @version Thu Sep 01 21:17:41 PDT 2011
+ * @version Fri Sep 30 16:15:37 PDT 2011
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudformation/Amazon CloudFormation
@@ -183,7 +183,7 @@ class AmazonCloudFormation extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>TemplateBody</code> - <code>string</code> - Optional - Structure containing the template body. (For more information, go to the AWS CloudFormation User Guide.) Condition: You must pass <code>TemplateBody</code> or <code>TemplateURL</code>. If both are passed, only <code>TemplateBody</code> is used. </li>
 	 * 	<li><code>TemplateURL</code> - <code>string</code> - Optional - Location of file containing the template body. The URL must point to a template located in an S3 bucket in the same region as the stack. For more information, go to the AWS CloudFormation User Guide. Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used. </li>
-	 * 	<li><code>Parameters</code> - <code>array</code> - Optional - A list of <code>Parameter</code> structures. <ul>
+	 * 	<li><code>Parameters</code> - <code>array</code> - Optional - A list of <code>Parameter</code> structures that specify input parameters for the stack. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - This represents a simple array index. <ul>
 	 * 			<li><code>ParameterKey</code> - <code>string</code> - Optional - The key associated with the parameter. </li>
 	 * 			<li><code>ParameterValue</code> - <code>string</code> - Optional - The value associated with the parameter. </li>
@@ -192,6 +192,7 @@ class AmazonCloudFormation extends CFRuntime
 	 * 	<li><code>DisableRollback</code> - <code>boolean</code> - Optional - Boolean to enable or disable rollback on stack creation failures.<br></br> Default: <code>false</code> </li>
 	 * 	<li><code>TimeoutInMinutes</code> - <code>integer</code> - Optional - The amount of time that can pass before the stack status becomes CREATE_FAILED; if <code>DisableRollback</code> is not set or is set to <code>false</code>, the stack will be rolled back. </li>
 	 * 	<li><code>NotificationARNs</code> - <code>string|array</code> - Optional - The Simple Notification Service (SNS) topic ARNs to publish stack related events. You can find your SNS topic ARNs using the SNS console or your Command Line Interface (CLI).  Pass a string for a single value, or an indexed array for multiple values. </li>
+	 * 	<li><code>Capabilities</code> - <code>array</code>- Optional - The list of capabilities that you want to allow in the stack. If your template contains IAM resources, you must specify the CAPABILITY_IAM value for this parameter; otherwise, this action returns an InsufficientCapabilities error. IAM resources are the following: AWS::IAM::AccessKey, AWS::IAM::Group, AWS::IAM::Policy, AWS::IAM::User, and AWS::IAM::UserToGroupAddition.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -217,6 +218,15 @@ class AmazonCloudFormation extends CFRuntime
 				'NotificationARNs' => (is_array($opt['NotificationARNs']) ? $opt['NotificationARNs'] : array($opt['NotificationARNs']))
 			), 'member'));
 			unset($opt['NotificationARNs']);
+		}
+
+		// Optional parameter
+		if (isset($opt['Capabilities']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Capabilities' => $opt['Capabilities']
+			), 'member'));
+			unset($opt['Capabilities']);
 		}
 
 		return $this->authenticate('CreateStack', $opt, $this->hostname);
@@ -393,6 +403,51 @@ class AmazonCloudFormation extends CFRuntime
 		if (!$opt) $opt = array();
 
 		return $this->authenticate('DescribeStackResources', $opt, $this->hostname);
+	}
+
+	/**
+	 * Updates a stack as specified in the template. After the call completes successfully, the stack update starts. You can check the status of
+	 * the stack via the DescribeStacks action.
+	 *
+	 * To get a copy of the template for an existing stack, you can use the GetTemplate action.
+	 *
+	 * For more information about creating an update template, updating a stack, and monitoring the progress of the update, see <a
+	 * href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks.html">Updating a Stack</a>.
+	 *
+	 * @param string $stack_name (Required) The name or stack ID of the stack to update. Must contain only alphanumeric characters (case sensitive) and start with an alpha character. Maximum length of the name is 255 characters.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>TemplateBody</code> - <code>string</code> - Optional - Structure containing the template body. (For more information, go to the AWS CloudFormation User Guide.) Condition: You must pass <code>TemplateBody</code> or <code>TemplateURL</code>. If both are passed, only <code>TemplateBody</code> is used. </li>
+	 * 	<li><code>TemplateURL</code> - <code>string</code> - Optional - Location of file containing the template body. The URL must point to a template located in an S3 bucket in the same region as the stack. For more information, go to the AWS CloudFormation User Guide. Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used. </li>
+	 * 	<li><code>Parameters</code> - <code>array</code> - Optional - A list of <code>Parameter</code> structures that specify input parameters for the stack.</li>
+	 * 	<li><code>Capabilities</code> - <code>array</code>- Optional - The list of capabilities that you want to allow in the stack. If your stack contains IAM resources, you must specify the CAPABILITY_IAM value for this parameter; otherwise, this action returns an InsufficientCapabilities error. IAM resources are the following: AWS::IAM::AccessKey, AWS::IAM::Group, AWS::IAM::Policy, AWS::IAM::User, and AWS::IAM::UserToGroupAddition.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function update_stack($stack_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['StackName'] = $stack_name;
+
+		// Optional parameter
+		if (isset($opt['Parameters']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Parameters' => $opt['Parameters']
+			), 'member'));
+			unset($opt['Parameters']);
+		}
+
+		// Optional parameter
+		if (isset($opt['Capabilities']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Capabilities' => $opt['Capabilities']
+			), 'member'));
+			unset($opt['Capabilities']);
+		}
+
+		return $this->authenticate('UpdateStack', $opt, $this->hostname);
 	}
 }
 

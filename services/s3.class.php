@@ -287,7 +287,7 @@ class AmazonS3 extends CFRuntime
 			return parent::session_based_auth($key, $secret_key, $token);
 		}
 
-		return parent::__construct($key, $secret_key);
+		return parent::__construct($key, $secret_key, $token);
 	}
 
 
