@@ -1,3 +1,18 @@
+# Changelog: 1.4.3 "Ultros"
+<http://finalfantasy.wikia.com/wiki/Ultros>
+
+Launched Friday, September 30, 2011
+
+## Service Classes
+### AmazonCloudFormation
+* **New:** Support for new features in CloudFormation have been added to the SDK.
+
+### AmazonS3
+* **Fixed:** Setting the default cache configuration no longer causes authentication errors in `AmazonS3`.
+
+
+----
+
 # Changelog: 1.4.2.1 "Tiamat, Part II"
 <http://finalfantasy.wikia.com/wiki/Tiamat>
 
