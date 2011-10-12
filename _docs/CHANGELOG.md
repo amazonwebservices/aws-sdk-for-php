@@ -1,3 +1,18 @@
+# Changelog: 1.4.4 "Vaan"
+<http://finalfantasy.wikia.com/wiki/Vaan>
+
+Launched Tuesday, October 12, 2011
+
+## Runtime
+* **Fixed:** Resolved an issue where a segmentation fault is triggererd when there are multiple autoloaders in the stack and one of them doesn't return a value.
+
+## Service Classes
+### AmazonS3
+* **New:** Support for server-side encryption has been added to the SDK.
+
+
+----
+
 # Changelog: 1.4.3 "Ultros"
 <http://finalfantasy.wikia.com/wiki/Ultros>
 
