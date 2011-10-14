@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
@@ -132,7 +132,8 @@ class S3BrowserUpload extends AmazonS3
 	/**
 	 * Returns the protocol of the web page that this script is currently running on. This method only works
 	 * correctly when run from a publicly-accessible web page.
-	 */
+     * @return string
+     */
 	public static function protocol()
 	{
 		return (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') ? 'https://' : 'http://';
@@ -141,7 +142,8 @@ class S3BrowserUpload extends AmazonS3
 	/**
 	 * Returns the domain (and port) of the web page that this script is currently running on. This method
 	 * only works correctly when run from a publicly-accessible web page.
-	 */
+     * @return null|string
+     */
 	public static function domain()
 	{
 		if (isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_PORT']))
@@ -155,7 +157,8 @@ class S3BrowserUpload extends AmazonS3
 	/**
 	 * Returns the URI of the web page that this script is currently running on. This method only works
 	 * correctly when run from a publicly-accessible web page.
-	 */
+     * @return null|string
+     */
 	public static function current_uri()
 	{
 		if (isset($_SERVER['REQUEST_URI']))

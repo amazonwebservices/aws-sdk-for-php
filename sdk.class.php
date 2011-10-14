@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
@@ -802,8 +802,8 @@ class CFRuntime
 	 * The replacement class must extend from <CFRequest>.
 	 *
 	 * @param string $class (Optional) The name of the new class to use for this functionality.
-	 * @param $this A reference to the current instance.
-	 */
+     * @return CFRuntime
+     */
 	public function set_request_class($class = 'CFRequest')
 	{
 		$this->request_class = $class;
@@ -908,7 +908,6 @@ class CFRuntime
 			return $data;
 		}
 
-		$return_curl_handle = false;
 		$x_amz_target = null;
 
 		// Do we have a custom resource prefix?

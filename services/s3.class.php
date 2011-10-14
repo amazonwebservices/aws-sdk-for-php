@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
@@ -413,7 +413,6 @@ class AmazonS3 extends CFRuntime
 
 		// Storage for request parameters.
 		$resource = '';
-		$sub_resource = '';
 		$querystringparams = array();
 		$signable_querystringparams = array();
 		$string_to_sign = '';
@@ -2360,7 +2359,6 @@ class AmazonS3 extends CFRuntime
 
 		// Add ACL info
 		$grants = $response[0]->body->query('descendant-or-self::Grant');
-		$max = count($grants);
 
 		// Add raw header info
 		$data['Headers'] = $response[1]->header;
@@ -3409,7 +3407,6 @@ class AmazonS3 extends CFRuntime
 		{
 			if (strtotime((string) $node) < $when)
 			{
-				$q = new CFBatchRequest();
 				$parent = $node->parent();
 
 				$upload_id = $parent
