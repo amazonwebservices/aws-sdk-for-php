@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
@@ -1337,7 +1337,6 @@ class AmazonCloudFront extends CFRuntime
 
 		if (!$opt) $opt = array();
 
-		$resource = '';
 		$expiration_key = 'Expires';
 		if (is_string($expires))
 		{
