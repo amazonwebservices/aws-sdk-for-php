@@ -1,3 +1,15 @@
+# Changelog: 1.4.5 "Weiss"
+<http://finalfantasy.wikia.com/wiki/Weiss>
+
+Launched Friday, October 21, 2011
+
+## Service Classes
+### AmazonSQS
+* **New:** Support for delayed queues and batch operations has been added to the SDK.
+
+
+----
+
 # Changelog: 1.4.4 "Vaan"
 <http://finalfantasy.wikia.com/wiki/Vaan>
 
