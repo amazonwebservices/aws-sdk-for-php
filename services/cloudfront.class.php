@@ -542,7 +542,7 @@ class AmazonCloudFront extends CFRuntime
 			$origin = $update->addChild('S3Origin');
 			$origin->addChild('DNSName', $xml->S3Origin->DNSName);
 
-      			// origin access identity
+			// origin access identity
 			if (isset($opt['OriginAccessIdentity']))
 			{
 				$origin->addChild('OriginAccessIdentity', 'origin-access-identity/cloudfront/' . $opt['OriginAccessIdentity']);
