@@ -1,3 +1,15 @@
+# Changelog: 1.4.6 "Xezat"
+<http://finalfantasy.wikia.com/wiki/Xezat>
+
+Launched Thursday, November 3, 2011
+
+## Service Classes
+### AmazonIAM
+* **New:** Support for a virtual MFA device. A virtual MFA device uses a software application that can generate six-digit authentication codes that are Open AuTHentication Time-based One-Time Password (OATHTOTP)-compatible. The software application can run on any mobile hardware device, including a smartphone.
+
+
+----
+
 # Changelog: 1.4.5 "Weiss"
 <http://finalfantasy.wikia.com/wiki/Weiss>
 
