@@ -15,18 +15,17 @@
  */
 
 /**
- * This is the AWS Identity and Access Management (IAM) API Reference. This guide provides
- * descriptions of the IAM API as well as links to related content in the guide, <a href=
- * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/" target="_blank">Using IAM</a>.
+ * This is the Amazon Web Services (AWS) Identity and Access Management (IAM) API Reference. This
+ * guide provides descriptions of the IAM API as well as links to related content in the guide,
+ * 	<a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/" target="_blank">Using
+ * IAM</a>.
  *
- * AWS Identity and Access Management (IAM) is a web service that enables Amazon Web Services
- * (AWS) customers to manage users and user permissions under their AWS account.
- *
- * For more information about this product go to <a href="http://aws.amazon.com/iam/" target=
- * "_blank">AWS Identity and Access Management (IAM)</a>. For specific information about setting
- * up signatures and authorization through the API, go to <a href=
- * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
- * "_blank">Making Query Requests</a> in the Using IAM guide.
+ * IAM is a web service that enables AWS customers to manage users and user permissions under
+ * their AWS account. For more information about this product go to <a href=
+ * "http://aws.amazon.com/iam/" target="_blank">AWS Identity and Access Management (IAM)</a>. For
+ * specific information about setting up signatures and authorization through the API, go to
+ * 	<a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
+ * "_blank">Making Query Requests</a> in <em>Using AWS Identity and Access Management</em>.
  *
  * If you're new to AWS and need additional technical information about a specific AWS product,
  * you can find the product'stechnical documentation at <a href=
@@ -36,7 +35,7 @@
  * We will refer to Amazon AWS Identity and Access Management using the abbreviated form IAM. All
  * copyrights and legal protections still apply.
  *
- * @version 2011.11.01
+ * @version 2011.11.03
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/iam/ AWS Identity and Access Management
@@ -169,7 +168,7 @@ class AmazonIAM extends CFRuntime
 	 * target="_blank">Using an Alias for Your AWS Account ID</a> in <em>Using AWS Identity and Access
 	 * Management</em>.
 	 *
-	 * @param string $account_alias (Required) Name of the account alias to create [Constraints: The value must be between 3 and 63 characters, and must match the following regular expression pattern: <code>^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$</code>]
+	 * @param string $account_alias (Required) Name of the account alias to create. [Constraints: The value must be between 3 and 63 characters, and must match the following regular expression pattern: <code>^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -268,24 +267,23 @@ class AmazonIAM extends CFRuntime
 	 * Management</em>.
 	 *
 	 * <p class="important">
-	 * The seed information contained in the QR code or the Base32 string should be treated like any
-	 * other secret, such as your AWS access keys or your passwords. After you provision your virtual
-	 * device, you should securely destroy this information.
+	 * The seed information contained in the QR code and the Base32 string should be treated like any
+	 * other secret access information, such as your AWS access keys or your passwords. After you
+	 * provision your virtual device, you should ensure that the information is destroyed following
+	 * secure procedures.
 	 * </p>
 	 *
 	 * @param string $virtual_mfa_device_name (Required) The name of the virtual MFA device. Use with path to uniquely identify a virtual MFA device. [Constraints: The value must be more than 1 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
-	 * @param string $bootstrap_method (Required) The method to bootstrap an OAUTH TOTP-compatible virtual MFA device. Supported formats are Base32String and QRCodePNG. The TOTP time step is 30 seconds. Base32String is defined as specified in <a href="http://www.ietf.org/rfc/rfc3548.txt" target="_blank">RFC3548</a>. QRCodePNG is a QR code PNG image that encodes <em>otpauth://totp/$virtualMFADeviceName@$AccountName? secret=$Base32String</em> where $virtualMFADeviceName is one of the create call arguments, AccountName is the accountAlias if set (accountId otherwise), and Base32String is the seed in Base32 format. [Allowed values: <code>Base32String</code>, <code>QRCodePNG</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Path</code> - <code>string</code> - Optional - The path for the virtual MFA device. For more information about paths, see <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_Identifiers.html" target="_blank">Identifiers for IAM Entities</a> in <em>Using AWS Identity and Access Management</em>. This parameter is optional. If it is not included, it defaults to a slash (/). [Constraints: The value must be between 1 and 512 characters, and must match the following regular expression pattern: <code>(\u002F)|(\u002F[\u0021-\u007F]+\u002F)</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function create_virtual_mfa_device($virtual_mfa_device_name, $bootstrap_method, $opt = null)
+	public function create_virtual_mfa_device($virtual_mfa_device_name, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['VirtualMFADeviceName'] = $virtual_mfa_device_name;
-		$opt['BootstrapMethod'] = $bootstrap_method;
 
 		return $this->authenticate('CreateVirtualMFADevice', $opt, $this->hostname);
 	}
@@ -505,7 +503,7 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Deletes an existing virtual MFA device under the AWS account.
+	 * Deletes a virtual MFA device.
 	 *
 	 * <p class="note">
 	 * You must deactivate a user's virtual MFA device before you can delete it. For information about
@@ -513,7 +511,7 @@ class AmazonIAM extends CFRuntime
 	 * "http://docs.amazonwebservices.com/IAM/latest/APIReference/API_DeactivateMFADevice.html">DeactivateMFADevice</a>.
 	 * </p>
 	 *
-	 * @param string $serial_number (Required)  [Constraints: The value must be between 9 and 256 characters, and must match the following regular expression pattern: <code>[\w+=/:,.@-]*</code>]
+	 * @param string $serial_number (Required) The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the same as the ARN. [Constraints: The value must be between 9 and 256 characters, and must match the following regular expression pattern: <code>[\w+=/:,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -811,8 +809,8 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 * Lists the MFA devices. If the request includes the user name, then this action lists all the
-	 * MFA devices associated with the specified user name. If user name is omitted, IAM returns all
-	 * the virtual MFA devices under the account that are not currently associated with a user.
+	 * MFA devices associated with the specified user name. If you do not specify a user name, IAM
+	 * determines the user name implicitly based on the AWS Access Key ID signing the request.
 	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
@@ -861,7 +859,7 @@ class AmazonIAM extends CFRuntime
 	 * Although each user is limited to a small number of signing certificates, you can still paginate
 	 * the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
 	 *
-	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly
+	 * If the <code>UserName</code> field is not specified, the user name is determined implicitly
 	 * based on the AWS Access Key ID used to sign the request. Because this action works for access
 	 * keys under the AWS account, this API can be used to manage root credentials even if the AWS
 	 * account has no associated users.
@@ -924,6 +922,29 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 
 		return $this->authenticate('ListUsers', $opt, $this->hostname);
+	}
+
+	/**
+	 * Lists the virtual MFA devices under the AWS account by assignment status. If you do not specify
+	 * an assignment status, the action returns a list of all virtual MFA devices. Assignment status
+	 * can be <code>Assigned</code>, <code>Unassigned</code>, or <code>Any</code>.
+	 *
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
+	 * parameters.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>AssignmentStatus</code> - <code>string</code> - Optional - The status (unassigned or assigned) of the devices to list. If you do not specify an <code>AssignmentStatus</code>, the action defaults to <code>Any</code> which lists both assigned and unassigned virtual MFA devices. [Allowed values: <code>Assigned</code>, <code>Unassigned</code>, <code>Any</code>]</li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this parameter only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. [Constraints: The value must be between 1 and 320 characters, and must match the following regular expression pattern: <code>[\u0020-\u00FF]*</code>]</li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this parameter only when paginating results to indicate the maximum number of user names you want in the response. If there are additional user names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function list_virtual_mfa_devices($opt = null)
+	{
+		if (!$opt) $opt = array();
+
+		return $this->authenticate('ListVirtualMFADevices', $opt, $this->hostname);
 	}
 
 	/**
@@ -1044,7 +1065,7 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 * Changes the status of the specified access key from Active to Inactive, or vice versa. This
-	 * action can be used to disable a user's key as part of a key rotation workflow.
+	 * action can be used to disable a user's key as part of a key rotation work flow.
 	 *
 	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly
 	 * based on the AWS Access Key ID used to sign the request. Because this action works for access
@@ -1162,7 +1183,7 @@ class AmazonIAM extends CFRuntime
 	/**
 	 * Changes the status of the specified signing certificate from active to disabled, or vice versa.
 	 * This action can be used to disable a user's signing certificate as part of a certificate
-	 * rotation workflow.
+	 * rotation work flow.
 	 *
 	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly
 	 * based on the AWS Access Key ID used to sign the request. Because this action works for access
