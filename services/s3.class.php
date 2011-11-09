@@ -49,7 +49,7 @@ class S3_Exception extends Exception {}
  *
  * Visit <http://aws.amazon.com/s3/> for more information.
  *
- * @version 2011.05.18
+ * @version 2011.11.09
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/s3/ Amazon Simple Storage Service
@@ -74,6 +74,11 @@ class AmazonS3 extends CFRuntime
 	 * Specify the queue URL for the US-West (Northern California) Region.
 	 */
 	const REGION_US_W1 = 'us-west-1';
+
+	/**
+	 * Specify the queue URL for the US-West (Oregon) Region.
+	 */
+	const REGION_US_W2 = 'us-west-2';
 
 	/**
 	 * Specify the queue URL for the EU (Ireland) Region.
@@ -1450,11 +1455,7 @@ class AmazonS3 extends CFRuntime
 		}
 
 		// Handle metadata directive
-		$opt['headers']['x-amz-metadata-directive'] = 'COPY';
-		if ($source['bucket'] === $dest['bucket'] && $source['filename'] === $dest['filename'])
-		{
-			$opt['headers']['x-amz-metadata-directive'] = 'REPLACE';
-		}
+		$opt['headers']['x-amz-metadata-directive'] = 'REPLACE';
 		if (isset($opt['metadataDirective']))
 		{
 			$opt['headers']['x-amz-metadata-directive'] = $opt['metadataDirective'];
@@ -1936,7 +1937,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param boolean $friendly_format (Optional) A value of <code>true</code> will format the return value to 2 decimal points using the largest possible unit (i.e., 3.42 GB). A value of <code>false</code> will format the return value as the raw number of bytes.
-	 * @return integer|string The number of bytes as an integer, or the friendly format as a string.
+	 * @return integer|string The number of bytes as an integer, or the friendly format as a string. If the bucket does not exist, the filesize will be 0.
 	 */
 	public function get_bucket_filesize($bucket, $friendly_format = false)
 	{
@@ -1980,7 +1981,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param string $filename (Required) The file name for the object.
 	 * @param boolean $friendly_format (Optional) A value of <code>true</code> will format the return value to 2 decimal points using the largest possible unit (i.e., 3.42 GB). A value of <code>false</code> will format the return value as the raw number of bytes.
-	 * @return integer|string The number of bytes as an integer, or the friendly format as a string.
+	 * @return integer|string The number of bytes as an integer, or the friendly format as a string. If the object does not exist, the filesize will be 0.
 	 */
 	public function get_object_filesize($bucket, $filename, $friendly_format = false)
 	{
@@ -1989,8 +1990,13 @@ class AmazonS3 extends CFRuntime
 			throw new S3_Exception(__FUNCTION__ . '() cannot be batch requested');
 		}
 
+		$filesize = 0;
 		$object = $this->get_object_headers($bucket, $filename);
-		$filesize = (integer) $object->header['content-length'];
+
+		if (isset($object->header['content-length']))
+		{
+			$filesize = (integer) $object->header['content-length'];
+		}
 
 		if ($friendly_format)
 		{
@@ -2352,7 +2358,7 @@ class AmazonS3 extends CFRuntime
 		);
 
 		// Add the content type
-		$data['ContentType'] = (string) $response[1]->header['content-type'];
+		$data['ContentType'] = isset($response[1]->header['content-type']) ? (string) $response[1]->header['content-type'] : '';
 
 		// Add the other metadata (including storage type)
 		$contents = json_decode(json_encode($response[2]->body->query('descendant-or-self::Contents')->first()), true);

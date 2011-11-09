@@ -52,6 +52,11 @@ class AmazonIAM extends CFRuntime
 	const REGION_US_E1 = 'iam.amazonaws.com';
 
 	/**
+	 * Specify the queue URL for the United States GovCloud Region.
+	 */
+	const REGION_US_GOV1 = 'iam.us-gov.amazonaws.com';
+
+	/**
 	 * Default service endpoint.
 	 */
 	const DEFAULT_URL = self::REGION_US_E1;

@@ -34,34 +34,39 @@ class AmazonELB extends CFRuntime
 	// CLASS CONSTANTS
 
 	/**
-	 * Specify the default queue URL.
+	 * Specify the queue URL for the United States East (Northern Virginia) Region.
 	 */
-	const DEFAULT_URL = 'elasticloadbalancing.us-east-1.amazonaws.com';
+	const REGION_US_E1 = 'elasticloadbalancing.us-east-1.amazonaws.com';
 
 	/**
-	 * Specify the queue URL for the US-East (Northern Virginia) Region.
-	 */
-	const REGION_US_E1 = self::DEFAULT_URL;
-
-	/**
-	 * Specify the queue URL for the US-West (Northern California) Region.
+	 * Specify the queue URL for the United States West (Northern California) Region.
 	 */
 	const REGION_US_W1 = 'elasticloadbalancing.us-west-1.amazonaws.com';
 
 	/**
-	 * Specify the queue URL for the EU (Ireland) Region.
+	 * Specify the queue URL for the United States West (Oregon) Region.
+	 */
+	const REGION_US_W2 = 'elasticloadbalancing.us-west-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Europe West (Ireland) Region.
 	 */
 	const REGION_EU_W1 = 'elasticloadbalancing.eu-west-1.amazonaws.com';
 
 	/**
-	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
 	 */
 	const REGION_APAC_SE1 = 'elasticloadbalancing.ap-southeast-1.amazonaws.com';
 
 	/**
-	 * Specify the queue URL for the Asia Pacific (Japan) Region.
+	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
 	 */
 	const REGION_APAC_NE1 = 'elasticloadbalancing.ap-northeast-1.amazonaws.com';
+
+	/**
+	 * Default service endpoint.
+	 */
+	const DEFAULT_URL = self::REGION_US_E1;
 
 
 	/*%******************************************************************************************%*/
