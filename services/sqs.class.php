@@ -52,6 +52,11 @@ class AmazonSQS extends CFRuntime
 	const REGION_US_W1 = 'sqs.us-west-1.amazonaws.com';
 
 	/**
+	 * Specify the queue URL for the United States West (Oregon) Region.
+	 */
+	const REGION_US_W2 = 'sqs.us-west-2.amazonaws.com';
+
+	/**
 	 * Specify the queue URL for the Europe West (Ireland) Region.
 	 */
 	const REGION_EU_W1 = 'sqs.eu-west-1.amazonaws.com';

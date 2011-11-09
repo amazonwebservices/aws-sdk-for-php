@@ -1,3 +1,53 @@
+# Changelog: 1.4.7 "Yuna"
+<http://finalfantasy.wikia.com/wiki/Yuna>
+
+Launched Wednesday, November 9, 2011
+
+## Service Classes
+### AmazonAS
+* **New:** Support for the US-West 2 (Oregon) region has been added to the SDK.
+
+### AmazonCloudFormation
+* **New:** Support for the US-West 2 (Oregon) region has been added to the SDK.
+
+### AmazonCloudWatch
+* **New:** Support for the US-West 2 (Oregon) region has been added to the SDK.
+* **New:** Support for the US GovCloud region has been added to the SDK.
+
+### AmazonEC2
+* **New:** Support for the US-West 2 (Oregon) region has been added to the SDK.
+* **New:** Support for the US GovCloud region has been added to the SDK.
+
+### AmazonELB
+* **New:** Support for the US-West 2 (Oregon) region has been added to the SDK.
+
+### AmazonEMR
+* **New:** Support for the US-West 2 (Oregon) region has been added to the SDK.
+
+### AmazonIAM
+* **New:** Support for the US GovCloud region has been added to the SDK.
+
+### AmazonRDS
+* **New:** Support for the US-West 2 (Oregon) region has been added to the SDK.
+
+### AmazonS3
+* **New:** Support for the US-West 2 (Oregon) region has been added to the SDK.
+* **Fixed:** Resolved an issue where certain bits of metadata were not maintained during a copy operation. <https://forums.aws.amazon.com/thread.jspa?threadID=77630>
+* **Fixed:** Resolved an issue where an unsuccessful lookup of an existing content-type would throw a warning. <https://forums.aws.amazon.com/thread.jspa?threadID=78121>
+* **Fixed:** Resolved an issue where an exception would be thrown when a filesize lookup was attempted on an object that didn't exist. <https://forums.aws.amazon.com/thread.jspa?threadID=78197>
+
+### AmazonSDB
+* **New:** Support for the US-West 2 (Oregon) region has been added to the SDK.
+
+### AmazonSNS
+* **New:** Support for the US-West 2 (Oregon) region has been added to the SDK.
+
+### AmazonSQS
+* **New:** Support for the US-West 2 (Oregon) region has been added to the SDK.
+
+
+----
+
 # Changelog: 1.4.6 "Xezat"
 <http://finalfantasy.wikia.com/wiki/Xezat>
 
