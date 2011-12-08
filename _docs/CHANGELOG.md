@@ -1,3 +1,22 @@
+# Changelog: 1.4.8 "Zanarkand"
+<http://finalfantasy.wikia.com/wiki/Zanarkand>
+
+Launched Wednesday, December 7, 2011
+
+## Services
+### AmazonCloudFront
+* **Fixed:** Merged in a pull request contributed by Ben Lumley: <https://github.com/amazonwebservices/aws-sdk-for-php/pull/11>
+
+### AmazonEC2
+* **Fixed:** Resolved an issue where `set_region()` was not setting the correct endpoint for the region.
+
+### AmazonS3
+* **New:** Support for S3-side multi-object delete has been added to the SDK as the `delete_objects()` method. The implementations of `delete_all_objects()` and `delete_all_object_versions()` have been updated to use this new functionality.
+* **Changed:** XML and JSON responses from `get_object()` are no longer parsed. The raw XML and JSON string content is now returned.
+
+
+----
+
 # Changelog: 1.4.7 "Yuna"
 <http://finalfantasy.wikia.com/wiki/Yuna>
 

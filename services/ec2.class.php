@@ -27,7 +27,7 @@
  *
  * Visit <a href="http://aws.amazon.com/ec2/">http://aws.amazon.com/ec2/</a> for more information.
  *
- * @version Tue Aug 23 12:47:35 PDT 2011
+ * @version 2011.12.06
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ec2/Amazon Elastic Compute Cloud
@@ -121,7 +121,7 @@ class AmazonEC2 extends CFRuntime
 	 */
 	public function set_region($region)
 	{
-		$this->set_hostname('http://ec2.'. $region .'.amazonaws.com');
+		$this->set_hostname($region);
 		return $this;
 	}
 

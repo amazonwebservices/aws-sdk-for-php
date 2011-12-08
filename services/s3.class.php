@@ -49,7 +49,7 @@ class S3_Exception extends Exception {}
  *
  * Visit <http://aws.amazon.com/s3/> for more information.
  *
- * @version 2011.11.09
+ * @version 2011.12.02
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/s3/ Amazon Simple Storage Service
@@ -245,6 +245,11 @@ class AmazonS3 extends CFRuntime
 	 */
 	public $temporary_prefix = false;
 
+	/**
+	 * The state of whether the response should be parsed or not.
+	 */
+	public $parse_the_response = true;
+
 
 	/*%******************************************************************************************%*/
 	// CONSTRUCTOR
@@ -378,8 +383,11 @@ class AmazonS3 extends CFRuntime
 			// Invoke the cache callback function to determine whether to pull data from the cache or make a fresh request.
 			$data = $this->cache_object->response_manager(array($this, 'cache_callback'), $method_arguments);
 
-			// Parse the XML body
-			$data = $this->parse_callback($data);
+			if ($this->parse_the_response)
+			{
+				// Parse the XML body
+				$data = $this->parse_callback($data);
+			}
 
 			// End!
 			return $data;
@@ -1265,6 +1273,7 @@ class AmazonS3 extends CFRuntime
 	public function get_object($bucket, $filename, $opt = null)
 	{
 		if (!$opt) $opt = array();
+		$this->parse_the_response = false;
 
 		// Add this to our request
 		$opt['verb'] = 'GET';
@@ -1358,6 +1367,83 @@ class AmazonS3 extends CFRuntime
 			);
 		}
 		// @codeCoverageIgnoreEnd
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+	/**
+	 * Deletes two or more specified Amazon S3 objects from the specified bucket.
+	 *
+	 * @param string $bucket (Required) The name of the bucket to use.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>objects</code> - <code>array</code> - Required - The object references to delete from the bucket. <ul>
+	 * 		<li><code>key</code> - <code>string</code> - Required - The name of the object (e.g., the "key") to delete. This should include the entire file path including all "subdirectories".</li>
+	 * 		<li><code>version_id</code> - <code>string</code> - Optional - If the object is versioned, include the version ID to delete.</li>
+	 * 	</ul></li>
+	 * 	<li><code>quiet</code> - <code>boolean</code> - Optional - Whether or not Amazon S3 should use "Quiet" mode for this operation. A value of <code>true</code> will enable Quiet mode. A value of <code>false</code> will use Verbose mode. The default value is <code>false</code>.</li>
+	 * 	<li><code>MFASerial</code> - <code>string</code> - Optional - The serial number on the back of the Gemalto device. <code>MFASerial</code> and <code>MFAToken</code> must both be set for MFA to work.</li>
+	 * 	<li><code>MFAToken</code> - <code>string</code> - Optional - The current token displayed on the Gemalto device. <code>MFASerial</code> and <code>MFAToken</code> must both be set for MFA to work.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 * @link http://aws.amazon.com/mfa/ Multi-Factor Authentication
+	 */
+	public function delete_objects($bucket, $opt = null)
+	{
+		// Add this to our request
+		if (!$opt) $opt = array();
+		$opt['verb'] = 'POST';
+		$opt['sub_resource'] = 'delete';
+		$opt['body'] = '';
+
+		// Bail out
+		if (!isset($opt['objects']) || !is_array($opt['objects']))
+		{
+			throw new S3_Exception('The ' . __FUNCTION__ . ' method requires the "objects" option to be set as an array.');
+		}
+
+		$xml = new SimpleXMLElement($this->multi_object_delete_xml);
+
+		// Add the objects
+		foreach ($opt['objects'] as $object)
+		{
+			$xobject = $xml->addChild('Object');
+			$xobject->addChild('Key', $object['key']);
+
+			if (isset($object['version_id']))
+			{
+				$xobject->addChild('VersionId', $object['version_id']);
+			}
+		}
+
+		// Quiet mode?
+		if (isset($opt['quiet']))
+		{
+			$quiet = 'false';
+			if (is_bool($opt['quiet'])) // Boolean
+			{
+				$quiet = $opt['quiet'] ? 'true' : 'false';
+			}
+			elseif (is_string($opt['quiet'])) // String
+			{
+				$quiet = ($opt['quiet'] === 'true') ? 'true' : 'false';
+			}
+
+			$xml->addChild('Quiet', $quiet);
+		}
+
+		// Enable MFA delete?
+		// @codeCoverageIgnoreStart
+		if (isset($opt['MFASerial']) && isset($opt['MFAToken']))
+		{
+			$opt['headers'] = array(
+				'x-amz-mfa' => ($opt['MFASerial'] . ' ' . $opt['MFAToken'])
+			);
+		}
+		// @codeCoverageIgnoreEnd
+
+		$opt['body'] = $xml->asXML();
 
 		// Authenticate to S3
 		return $this->authenticate($bucket, $opt);
@@ -2207,27 +2293,24 @@ class AmazonS3 extends CFRuntime
 	 */
 	public function delete_all_objects($bucket, $pcre = self::PCRE_ALL)
 	{
-		if ($this->use_batch_flow)
-		{
-			throw new S3_Exception(__FUNCTION__ . '() cannot be batch requested');
-		}
-
 		// Collect all matches
 		$list = $this->get_object_list($bucket, array('pcre' => $pcre));
 
 		// As long as we have at least one match...
 		if (count($list) > 0)
 		{
-			// Create new batch request object
-			$q = new $this->batch_class();
+			$objects = array();
 
-			// Go through all of the items and delete them.
-			foreach ($list as $item)
+			foreach ($list as $object)
 			{
-				$this->batch($q)->delete_object($bucket, $item);
+				$objects[] = array('key' => $object);
 			}
 
-			return $this->batch($q)->send()->areOK();
+			$response = $this->delete_objects($bucket, array(
+				'objects' => $objects
+			));
+
+			return ($response->isOK() && !isset($response->body->Error));
 		}
 
 		// If there are no matches, return true
@@ -2244,55 +2327,49 @@ class AmazonS3 extends CFRuntime
 	 */
 	public function delete_all_object_versions($bucket, $pcre = null)
 	{
-		if ($this->use_batch_flow)
-		{
-			// @codeCoverageIgnoreStart
-			throw new S3_Exception(__FUNCTION__ . '() cannot be batch requested');
-			// @codeCoverageIgnoreEnd
-		}
-
 		// Instantiate
-		$q = new CFBatchRequest(200);
-		$response = $this->list_bucket_object_versions($bucket);
+		$versions = $this->list_bucket_object_versions($bucket);
 
 		// Gather all nodes together into a single array
-		if ($response->body->DeleteMarker() && $response->body->Version())
+		if ($versions->body->DeleteMarker() && $versions->body->Version())
 		{
-			$markers = array_merge($response->body->DeleteMarker()->getArrayCopy(), $response->body->Version()->getArrayCopy());
+			$markers = array_merge($versions->body->DeleteMarker()->getArrayCopy(), $versions->body->Version()->getArrayCopy());
 		}
-		elseif ($response->body->DeleteMarker())
+		elseif ($versions->body->DeleteMarker())
 		{
-			$markers = $response->body->DeleteMarker()->getArrayCopy();
+			$markers = $versions->body->DeleteMarker()->getArrayCopy();
 		}
-		elseif ($response->body->Version())
+		elseif ($versions->body->Version())
 		{
-			$markers = $response->body->Version()->getArrayCopy();
+			$markers = $versions->body->Version()->getArrayCopy();
 		}
 		else
 		{
 			$markers = array();
 		}
 
-		while ((string) $response->body->IsTruncated === 'true')
+		while ((string) $versions->body->IsTruncated === 'true')
 		{
-			$response = $this->list_bucket_object_versions($bucket, array(
-				'key-marker' => (string) $response->body->NextKeyMarker
+			$versions = $this->list_bucket_object_versions($bucket, array(
+				'key-marker' => (string) $versions->body->NextKeyMarker
 			));
 
 			// Gather all nodes together into a single array
-			if ($response->body->DeleteMarker() && $response->body->Version())
+			if ($versions->body->DeleteMarker() && $versions->body->Version())
 			{
-				$markers = array_merge($markers, $response->body->DeleteMarker()->getArrayCopy(), $response->body->Version()->getArrayCopy());
+				$markers = array_merge($markers, $versions->body->DeleteMarker()->getArrayCopy(), $versions->body->Version()->getArrayCopy());
 			}
-			elseif ($response->body->DeleteMarker())
+			elseif ($versions->body->DeleteMarker())
 			{
-				$markers = array_merge($markers, $response->body->DeleteMarker()->getArrayCopy());
+				$markers = array_merge($markers, $versions->body->DeleteMarker()->getArrayCopy());
 			}
-			elseif ($response->body->Version())
+			elseif ($versions->body->Version())
 			{
-				$markers = array_merge($markers, $response->body->Version()->getArrayCopy());
+				$markers = array_merge($markers, $versions->body->Version()->getArrayCopy());
 			}
 		}
+
+		$objects = array();
 
 		// Loop through markers
 		foreach ($markers as $marker)
@@ -2301,20 +2378,26 @@ class AmazonS3 extends CFRuntime
 			{
 				if (preg_match($pcre, (string) $marker->Key))
 				{
-					$this->batch($q)->delete_object($bucket, (string) $marker->Key, array(
-						'versionId' => (string) $marker->VersionId
-					));
+					$objects[] = array(
+						'key' => (string) $marker->Key,
+						'version_id' => (string) $marker->VersionId
+					);
 				}
 			}
 			else
 			{
-				$this->batch($q)->delete_object($bucket, (string) $marker->Key, array(
-					'versionId' => (string) $marker->VersionId
-				));
+				$objects[] = array(
+					'key' => (string) $marker->Key,
+					'version_id' => (string) $marker->VersionId
+				);
 			}
 		}
 
-		return $this->batch($q)->send();
+		$response = $this->delete_objects($bucket, array(
+			'objects' => $objects
+		));
+
+		return ($response->isOK() && !isset($response->body->Error));
 	}
 
 	/**

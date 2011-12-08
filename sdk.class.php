@@ -125,9 +125,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.4.7');
+define('CFRUNTIME_VERSION', '1.4.8');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20111109191027');
+define('CFRUNTIME_BUILD', '20111207191027');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . str_replace(' ', '_', php_uname('s')) . '/' . str_replace(' ', '_', php_uname('r')) . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 

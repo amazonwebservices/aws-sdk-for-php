@@ -36,7 +36,7 @@ class CloudFront_Exception extends Exception {}
  * seamlessly with the Amazon Simple Storage Service, which durably stores the original, definitive versions
  * of your files.
  *
- * @version 2011.03.11
+ * @version 2011.11.16
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/cloudfront/ Amazon CloudFront
@@ -545,11 +545,11 @@ class AmazonCloudFront extends CFRuntime
 			// origin access identity
 			if (isset($opt['OriginAccessIdentity']))
 			{
-				$update->addChild('OriginAccessIdentity', 'origin-access-identity/cloudfront/' . $opt['OriginAccessIdentity']);
+				$origin->addChild('OriginAccessIdentity', 'origin-access-identity/cloudfront/' . $opt['OriginAccessIdentity']);
 			}
-			elseif (isset($xml->OriginAccessIdentity))
+			elseif (isset($xml->S3Origin->OriginAccessIdentity))
 			{
-				$update->addChild('OriginAccessIdentity', $xml->OriginAccessIdentity);
+				$origin->addChild('OriginAccessIdentity', $xml->OriginAccessIdentity);
 			}
 		}
 		elseif (isset($xml->CustomOrigin))
