@@ -11,6 +11,19 @@ to it at `www.example.com/sdk_compatibility_test.php`
 
 ## Via the command line
 
+### Windows
+
+1. Upload `sdk_compatibility_test_cli.php` to your server via SFTP.
+
+2. SSH/RDP into the machine, and find the directory where you uploaded the test.
+
+3. Run the test, and review the results:
+
+	php .\sdk_compatibility_test_cli.php
+
+
+### Non-Windows (Mac or *nix)
+
 1. Upload `sdk_compatibility_test_cli.php` to your server via SFTP.
 
 2. SSH into the machine, and find the directory where you uploaded the test.

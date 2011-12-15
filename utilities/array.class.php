@@ -23,7 +23,7 @@
  * rapidly manipulating array data. Specifically, the `CFArray` object is intended for working with
  * <CFResponse> and <CFSimpleXML> objects that are returned by AWS services.
  *
- * @version 2011.06.03
+ * @version 2011.12.02
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
