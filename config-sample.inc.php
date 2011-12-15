@@ -43,6 +43,20 @@
 
 ###################################################################################################*/
 
+/*
+key
+secret_key
+account_id
+canonical_id
+canonical_name
+certificate_authority
+default_cache_config
+mfa_serial
+cloudfront_keypair_id
+cloudfront_private_key_pem
+enable_extensions
+*/
+
 
 /**
  * Create a list of credential sets that can be used with the SDK.
