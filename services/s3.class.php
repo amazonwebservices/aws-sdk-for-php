@@ -894,7 +894,7 @@ class AmazonS3 extends CFRuntime
 			$headers['x-aws-requestbody'] = $opt['body'];
 		}
 
-		$data = new $this->response_class($headers, $this->parse_callback($request->get_response_body()), $request->get_response_code());
+		$data = new $this->response_class($headers, ($this->parse_the_response === true) ? $this->parse_callback($request->get_response_body()) : $request->get_response_body(), $request->get_response_code());
 
 		// Did Amazon tell us to redirect? Typically happens for multiple rapid requests EU datacenters.
 		// @see: http://docs.amazonwebservices.com/AmazonS3/latest/dev/Redirects.html
