@@ -16,21 +16,6 @@
 
 
 /*%******************************************************************************************%*/
-// CORE DEPENDENCIES
-
-// Look for include file in the same directory (e.g. `./config.inc.php`).
-if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.inc.php'))
-{
-	include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.inc.php';
-}
-// Fallback to `~/.aws/sdk/config.inc.php`
-elseif (getenv('HOME') && file_exists(getenv('HOME') . DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php'))
-{
-	include_once getenv('HOME') . DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php';
-}
-
-
-/*%******************************************************************************************%*/
 // EXCEPTIONS
 
 /**
@@ -125,9 +110,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.4.8');
+define('CFRUNTIME_VERSION', '1.5');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20111207191027');
+define('CFRUNTIME_BUILD', '20111215014733');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . str_replace(' ', '_', php_uname('s')) . '/' . str_replace(' ', '_', php_uname('r')) . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -138,7 +123,7 @@ define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/'
  * Core functionality and default settings shared across all SDK classes. All methods and properties in this
  * class are inherited by the service-specific classes.
  *
- * @version 2011.07.28
+ * @version 2011.11.18
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -186,16 +171,6 @@ class CFRuntime
 	 * The Amazon Authentication Token.
 	 */
 	public $auth_token;
-
-	/**
-	 * The Amazon Account ID, without hyphens.
-	 */
-	public $account_id;
-
-	/**
-	 * The Amazon Associates ID.
-	 */
-	public $assoc_id;
 
 	/**
 	 * Handle for the utility functions.
@@ -352,20 +327,54 @@ class CFRuntime
 	 */
 	public $registered_streaming_write_callback = null;
 
+	/**
+	 * The credentials to use for authentication.
+	 */
+	public $credentials = array();
+
+	/**
+	 * The authentication class to use.
+	 */
+	public $auth_class = null;
+
+	/**
+	 * The operation to execute.
+	 */
+	public $operation = null;
+
+	/**
+	 * The payload to send.
+	 */
+	public $payload = array();
+
+	/**
+	 * The string prefix to prepend to the operation name.
+	 */
+	public $operation_prefix = '';
+
+	/**
+	 * The number of times a request has been retried.
+	 */
+	public $redirects = 0;
+
 
 	/*%******************************************************************************************%*/
 	// CONSTRUCTOR
 
 	/**
-	 * The constructor. You would not normally instantiate this class directly. Rather, you would instantiate
-	 * a service-specific class.
+	 * The constructor. This class should not be instantiated directly. Rather, a service-specific class
+	 * should be instantiated.
 	 *
-	 * @param string $key (Optional) Your AWS key, or a session key. If blank, it will look for the <code>AWS_KEY</code> constant.
-	 * @param string $secret_key (Optional) Your AWS secret key, or a session secret key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
-	 * @param string $token (optional) An AWS session token. If blank, a request will be made to the AWS Secure Token Service to fetch a set of session credentials.
-	 * @return boolean A value of `false` if no valid values are set, otherwise `true`.
+	 * @param array $options (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>certificate_authority</code> - <code>boolean</code> - Optional - Determines which Cerificate Authority file to use. A value of boolean <code>false</code> will use the Certificate Authority file available on the system. A value of boolean <code>true</code> will use the Certificate Authority provided by the SDK. Passing a file system path to a Certificate Authority file (chmodded to <code>0755</code>) will use that. Leave this set to <code>false</code> if you're not sure.</li>
+	 * 	<li><code>credentials</code> - <code>string</code> - Optional - The name of the credential set to use for authentication.</li>
+	 * 	<li><code>default_cache_config</code> - <code>string</code> - Optional - This option allows a preferred storage type to be configured for long-term caching. This can be changed later using the <set_cache_config()> method. Valid values are: <code>apc</code>, <code>xcache</code>, or a file system path such as <code>./cache</code> or <code>/tmp/cache/</code>.</li>
+	 * 	<li><code>key</code> - <code>string</code> - Optional - Your AWS key, or a session key. If blank, the default credential set will be used.</li>
+	 * 	<li><code>secret</code> - <code>string</code> - Optional - Your AWS secret key, or a session secret key. If blank, the default credential set will be used.</li>
+	 * 	<li><code>token</code> - <code>string</code> - Optional - An AWS session token.</li></ul>
+	 * @return void
 	 */
-	public function __construct($key = null, $secret_key = null, $token = null)
+	public function __construct(array $options = array())
 	{
 		// Instantiate the utilities class.
 		$this->util = new $this->utilities_class();
@@ -373,153 +382,54 @@ class CFRuntime
 		// Determine the current service.
 		$this->service = get_class($this);
 
-		// Set default values
-		$this->key = null;
-		$this->secret_key = null;
-		$this->auth_token = $token;
+		// Store the requested credentials
+		$this->credentials = CFCredentials::get(
+			(isset($options['credentials']) ? $options['credentials'] : CFCredentials::DEFAULT_KEY)
+		);
+		$this->credentials = new CFCredential(array_merge($this->credentials->to_array(), $options));
 
-		// If both a key and secret key are passed in, use those.
-		if ($key && $secret_key)
-		{
-			$this->key = $key;
-			$this->secret_key = $secret_key;
-			return true;
-		}
-		// If neither are passed in, look for the constants instead.
-		elseif (defined('AWS_KEY') && defined('AWS_SECRET_KEY'))
-		{
-			$this->key = AWS_KEY;
-			$this->secret_key = AWS_SECRET_KEY;
-			return true;
-		}
+		// Automatically enable whichever caching mechanism is set to default.
+		$this->set_cache_config($this->credentials->default_cache_config);
 
-		// Otherwise set the values to blank and return false.
-		else
+		if (isset($options['key']) && isset($options['secret']))
 		{
-			throw new CFRuntime_Exception('No valid credentials were used to authenticate with AWS.');
-		}
-	}
+			$this->key = $options['key'];
+			$this->secret_key = $options['secret'];
+			$this->auth_token = isset($options['token']) ? $options['token'] : null;
 
-	/**
-	 * Handle session-based authentication for services that support it.
-	 *
-	 * @param string $key (Optional) Your AWS key, or a session key. If blank, it will look for the <code>AWS_KEY</code> constant.
-	 * @param string $secret_key (Optional) Your AWS secret key, or a session secret key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
-	 * @param string $token (optional) An AWS session token. If blank, a request will be made to the AWS Secure Token Service to fetch a set of session credentials.
-	 * @return boolean A value of `false` if no valid values are set, otherwise `true`.
-	 */
-	public function session_based_auth($key = null, $secret_key = null, $token = null)
-	{
-		// Instantiate the utilities class.
-		$this->util = new $this->utilities_class();
-
-		// Use 'em if we've got 'em
-		if ($key && $secret_key && $token)
-		{
-			$this->key = $key;
-			$this->secret_key = $secret_key;
-			$this->auth_token = $token;
-			return true;
+			return;
 		}
 		else
 		{
-			if (!$key && !defined('AWS_KEY'))
-			{
-				// @codeCoverageIgnoreStart
-				throw new CFRuntime_Exception('No account key was passed into the constructor, nor was it set in the AWS_KEY constant.');
-				// @codeCoverageIgnoreEnd
-			}
+			$this->key = $this->credentials->key;
+			$this->secret_key = $this->credentials->secret;
+			$this->auth_token = $this->credentials->token;
 
-			if (!$secret_key && !defined('AWS_SECRET_KEY'))
-			{
-				// @codeCoverageIgnoreStart
-				throw new CFRuntime_Exception('No account secret was passed into the constructor, nor was it set in the AWS_SECRET_KEY constant.');
-				// @codeCoverageIgnoreEnd
-			}
-
-			// If both a key and secret key are passed in, use those.
-			if ($key && $secret_key)
-			{
-				$this->key = $key;
-				$this->secret_key = $secret_key;
-			}
-			// If neither are passed in, look for the constants instead.
-			elseif (defined('AWS_KEY') && defined('AWS_SECRET_KEY'))
-			{
-				$this->key = AWS_KEY;
-				$this->secret_key = AWS_SECRET_KEY;
-			}
-
-			// Determine storage type.
-			$this->set_cache_config(AWS_DEFAULT_CACHE_CONFIG);
-			$cache_class = $this->cache_class;
-			$cache_object = new $cache_class('aws_active_session_credentials_' . get_class($this) . '_' . $this->key, AWS_DEFAULT_CACHE_CONFIG, 3600); // AWS_DEFAULT_CACHE_CONFIG only matters if it's a file system path.
-
-			// Fetch session credentials
-			$session_credentials = $cache_object->response_manager(array($this, 'cache_token'), array($this->key, $this->secret_key));
-			$this->auth_token = $session_credentials['SessionToken'];
-
-			// If both a key and secret key are passed in, use those.
-			if (isset($session_credentials['AccessKeyId']) && isset($session_credentials['SecretAccessKey']))
-			{
-				$this->key = $session_credentials['AccessKeyId'];
-				$this->secret_key = $session_credentials['SecretAccessKey'];
-				return true;
-			}
-			// Otherwise set the values to blank and return false.
-			else
-			{
-				throw new CFRuntime_Exception('No valid credentials were used to authenticate with AWS.');
-			}
+			return;
 		}
-	}
-
-	/**
-	 * The callback function that is executed  while caching the session credentials.
-	 *
-	 * @param string $key (Optional) Your AWS key, or a session key. If blank, it will look for the <code>AWS_KEY</code> constant.
-	 * @param string $secret_key (Optional) Your AWS secret key, or a session secret key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
-	 * @return mixed The data to be cached or null.
-	 */
-	public function cache_token($key, $secret_key)
-	{
-		$token = new AmazonSTS($key, $secret_key);
-		$response = $token->get_session_token();
-
-		if ($response->isOK())
-		{
-			/*
-			Array
-			(
-			    [AccessKeyId] => ******
-			    [Expiration] => ******
-			    [SecretAccessKey] => ******
-				[SessionToken] => ******
-			)
-			*/
-			return $response->body->GetSessionTokenResult->Credentials->to_array()->getArrayCopy();
-		}
-
-		return null;
 	}
 
 	/**
 	 * Alternate approach to constructing a new instance. Supports chaining.
 	 *
-	 * @param string $key (Optional) Your AWS key, or a session key. If blank, it will look for the <code>AWS_KEY</code> constant.
-	 * @param string $secret_key (Optional) Your AWS secret key, or a session secret key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
-	 * @param string $token (optional) An AWS session token. If blank, a request will be made to the AWS Secure Token Service to fetch a set of session credentials.
-	 * @return boolean A value of `false` if no valid values are set, otherwise `true`.
+	 * @param array $options (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>certificate_authority</code> - <code>boolean</code> - Optional - Determines which Cerificate Authority file to use. A value of boolean <code>false</code> will use the Certificate Authority file available on the system. A value of boolean <code>true</code> will use the Certificate Authority provided by the SDK. Passing a file system path to a Certificate Authority file (chmodded to <code>0755</code>) will use that. Leave this set to <code>false</code> if you're not sure.</li>
+	 * 	<li><code>credentials</code> - <code>string</code> - Optional - The name of the credential set to use for authentication.</li>
+	 * 	<li><code>default_cache_config</code> - <code>string</code> - Optional - This option allows a preferred storage type to be configured for long-term caching. This can be changed later using the <set_cache_config()> method. Valid values are: <code>apc</code>, <code>xcache</code>, or a file system path such as <code>./cache</code> or <code>/tmp/cache/</code>.</li>
+	 * 	<li><code>key</code> - <code>string</code> - Optional - Your AWS key, or a session key. If blank, the default credential set will be used.</li>
+	 * 	<li><code>secret</code> - <code>string</code> - Optional - Your AWS secret key, or a session secret key. If blank, the default credential set will be used.</li>
+	 * 	<li><code>token</code> - <code>string</code> - Optional - An AWS session token.</li></ul>
+	 * @return void
 	 */
-	public static function init($key = null, $secret_key = null, $token = null)
+	public static function factory(array $options = array())
 	{
 		if (version_compare(PHP_VERSION, '5.3.0', '<'))
 		{
-			throw new Exception('PHP 5.3 or newer is required to instantiate a new class with CLASS::init().');
+			throw new Exception('PHP 5.3 or newer is required to instantiate a new class with CLASS::factory().');
 		}
 
 		$self = get_called_class();
-		return new $self($key, $secret_key, $token);
+		return new $self($options);
 	}
 
 
@@ -549,19 +459,6 @@ class CFRuntime
 
 	/*%******************************************************************************************%*/
 	// SET CUSTOM SETTINGS
-
-	/**
-	 * Adjusts the current time. Use this method for occasions when a server is out of sync with Amazon
-	 * servers.
-	 *
-	 * @param integer $seconds (Required) The number of seconds to adjust the sent timestamp by.
-	 * @return $this A reference to the current instance.
-	 */
-	public function adjust_offset($seconds)
-	{
-		$this->adjust_offset = $seconds;
-		return $this;
-	}
 
 	/**
 	 * Set the proxy settings to use.
@@ -860,33 +757,26 @@ class CFRuntime
 	// AUTHENTICATION
 
 	/**
-	 * Default, shared method for authenticating a connection to AWS. Overridden on a class-by-class basis
-	 * as necessary.
+	 * Default, shared method for authenticating a connection to AWS.
 	 *
-	 * @param string $action (Required) Indicates the action to perform.
-	 * @param array $opt (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
-	 * @param string $domain (Optional) The URL of the queue to perform the action on.
-	 * @param integer $signature_version (Optional) The signature version to use. Defaults to 2.
-	 * @param integer $redirects (Do Not Use) Used internally by this function on occasions when Amazon S3 returns a redirect code and it needs to call itself recursively.
 	 * @return CFResponse Object containing a parsed HTTP response.
 	 */
-	public function authenticate($action, $opt = null, $domain = null, $signature_version = 2, $redirects = 0)
+	public function authenticate($operation, $payload)
 	{
-		// Handle nulls
-		if (is_null($signature_version))
+		if (substr($operation, 0, strlen($this->operation_prefix)) !== $this->operation_prefix)
 		{
-			$signature_version = 2;
+			$operation = $this->operation_prefix . $operation;
 		}
 
+		$return_curl_handle = false;
 		$method_arguments = func_get_args();
-		$headers = array();
-		$signed_headers = array();
+		$curlopts = array();
 
 		// Use the caching flow to determine if we need to do a round-trip to the server.
 		if ($this->use_cache_flow)
 		{
 			// Generate an identifier specific to this particular set of arguments.
-			$cache_id = $this->key . '_' . get_class($this) . '_' . $action . '_' . sha1(serialize($method_arguments));
+			$cache_id = $this->key . '_' . get_class($this) . '_' . $operation . '_' . sha1(serialize($method_arguments));
 
 			// Instantiate the appropriate caching object.
 			$this->cache_object = new $this->cache_class($cache_id, $this->cache_location, $this->cache_expires, $this->cache_compress);
@@ -908,251 +798,40 @@ class CFRuntime
 			return $data;
 		}
 
-		$return_curl_handle = false;
-		$x_amz_target = null;
+		/*%******************************************************************************************%*/
 
-		// Do we have a custom resource prefix?
-		if ($this->resource_prefix)
-		{
-			$domain .= $this->resource_prefix;
-		}
-
-		// Determine signing values
-		$current_time = time() + $this->adjust_offset;
-		$date = gmdate(CFUtilities::DATE_FORMAT_RFC2616, $current_time);
-		$timestamp = gmdate(CFUtilities::DATE_FORMAT_ISO8601, $current_time);
-		$nonce = $this->util->generate_guid();
-
-		// Do we have an authentication token?
-		if ($this->auth_token)
-		{
-			$headers['X-Amz-Security-Token'] = $this->auth_token;
-			$query['SecurityToken'] = $this->auth_token;
-		}
-
-		// Manage the key-value pairs that are used in the query.
-		if (stripos($action, 'x-amz-target') !== false)
-		{
-			$x_amz_target = trim(str_ireplace('x-amz-target:', '', $action));
-		}
-		else
-		{
-			$query['Action'] = $action;
-		}
-
-		// Only add it if it exists.
-		if ($this->api_version)
-		{
-			$query['Version'] = $this->api_version;
-		}
-
-		// Only Signature v2
-		if ($signature_version === 2)
-		{
-			$query['AWSAccessKeyId'] = $this->key;
-			$query['SignatureMethod'] = 'HmacSHA256';
-			$query['SignatureVersion'] = 2;
-			$query['Timestamp'] = $timestamp;
-		}
-
-		$curlopts = array();
-
-		// Set custom CURLOPT settings
-		if (is_array($opt) && isset($opt['curlopts']))
-		{
-			$curlopts = $opt['curlopts'];
-			unset($opt['curlopts']);
-		}
-
-		// Merge in any options that were passed in
-		if (is_array($opt))
-		{
-			$query = array_merge($query, $opt);
-		}
-
-		$return_curl_handle = isset($query['returnCurlHandle']) ? $query['returnCurlHandle'] : false;
-		unset($query['returnCurlHandle']);
-
-		// Do a case-sensitive, natural order sort on the array keys.
-		uksort($query, 'strcmp');
-
-		// Normalize JSON input
-		if (isset($query['body']) && $query['body'] === '[]')
-		{
-			$query['body'] = '{}';
-		}
-
-		if ($this->use_aws_query)
-		{
-			// Create the string that needs to be hashed.
-			$canonical_query_string = $this->util->to_signable_string($query);
-		}
-		else
-		{
-			// Create the string that needs to be hashed.
-			$canonical_query_string = $this->util->encode_signature2($query['body']);
-		}
-
-		// Remove the default scheme from the domain.
-		$domain = str_replace(array('http://', 'https://'), '', $domain);
-
-		// Parse our request.
-		$parsed_url = parse_url('http://' . $domain);
-
-		// Set the proper host header.
-		if (isset($parsed_url['port']) && (integer) $parsed_url['port'] !== 80 && (integer) $parsed_url['port'] !== 443)
-		{
-			$host_header = strtolower($parsed_url['host']) . ':' . $parsed_url['port'];
-		}
-		else
-		{
-			$host_header = strtolower($parsed_url['host']);
-		}
-
-		// Set the proper request URI.
-		$request_uri = isset($parsed_url['path']) ? $parsed_url['path'] : '/';
-
-		if ($signature_version === 2)
-		{
-			// Prepare the string to sign
-			$string_to_sign = "POST\n$host_header\n$request_uri\n$canonical_query_string";
-
-			// Hash the AWS secret key and generate a signature for the request.
-			$query['Signature'] = base64_encode(hash_hmac('sha256', $string_to_sign, $this->secret_key, true));
-		}
-
-		// Generate the querystring from $query
-		$querystring = $this->util->to_query_string($query);
-
-		// Gather information to pass along to other classes.
-		$helpers = array(
-			'utilities' => $this->utilities_class,
-			'request' => $this->request_class,
-			'response' => $this->response_class,
-		);
-
-		// Compose the request.
-		$request_url = ($this->use_ssl ? 'https://' : 'http://') . $domain;
-		$request_url .= !isset($parsed_url['path']) ? '/' : '';
-
-		// Instantiate the request class
-		$request = new $this->request_class($request_url, $this->proxy, $helpers);
-		$request->set_method('POST');
-		$request->set_body($querystring);
-		$headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
-
-		// Signing using X-Amz-Target is handled differently.
-		if ($signature_version === 3 && $x_amz_target)
-		{
-			$headers['X-Amz-Target'] = $x_amz_target;
-			$headers['Content-Type'] = 'application/json; amzn-1.0';
-			$headers['Content-Encoding'] = 'amz-1.0';
-
-			$request->set_body($query['body']);
-			$querystring = $query['body'];
-		}
-
-		// Pass along registered stream callbacks
-		if ($this->registered_streaming_read_callback)
-		{
-			$request->register_streaming_read_callback($this->registered_streaming_read_callback);
-		}
-
-		if ($this->registered_streaming_write_callback)
-		{
-			$request->register_streaming_write_callback($this->registered_streaming_write_callback);
-		}
-
-		// Add authentication headers
-		if ($signature_version === 3)
-		{
-			$headers['X-Amz-Nonce'] = $nonce;
-			$headers['Date'] = $date;
-			$headers['Content-Length'] = strlen($querystring);
-			$headers['Content-MD5'] = $this->util->hex_to_base64(md5($querystring));
-			$headers['Host'] = $host_header;
-		}
-
-		// Sort headers
-		uksort($headers, 'strnatcasecmp');
-
-		if ($signature_version === 3 && $this->use_ssl)
-		{
-			// Prepare the string to sign (HTTPS)
-			$string_to_sign = $date . $nonce;
-		}
-		elseif ($signature_version === 3 && !$this->use_ssl)
-		{
-			// Prepare the string to sign (HTTP)
-			$string_to_sign = "POST\n$request_uri\n\n";
-		}
-
-		// Add headers to request and compute the string to sign
-		foreach ($headers as $header_key => $header_value)
-		{
-			// Strip linebreaks from header values as they're illegal and can allow for security issues
-			$header_value = str_replace(array("\r", "\n"), '', $header_value);
-
-			// Add the header if it has a value
-			if ($header_value !== '')
-			{
-				$request->add_header($header_key, $header_value);
-			}
-
-			// Signature v3 over HTTP
-			if ($signature_version === 3 && !$this->use_ssl)
-			{
-				// Generate the string to sign
-				if (
-					substr(strtolower($header_key), 0, 8) === 'content-' ||
-					strtolower($header_key) === 'date' ||
-					strtolower($header_key) === 'expires' ||
-					strtolower($header_key) === 'host' ||
-					substr(strtolower($header_key), 0, 6) === 'x-amz-'
-				)
-				{
-					$string_to_sign .= strtolower($header_key) . ':' . $header_value . "\n";
-					$signed_headers[] = $header_key;
-				}
-			}
-		}
-
-		if ($signature_version === 3)
-		{
-			if (!$this->use_ssl)
-			{
-				$string_to_sign .= "\n";
-
-				if (isset($query['body']) && $query['body'] !== '')
-				{
-					$string_to_sign .= $query['body'];
-				}
-
-				// Convert from string-to-sign to bytes-to-sign
-				$bytes_to_sign = hash('sha256', $string_to_sign, true);
-
-				// Hash the AWS secret key and generate a signature for the request.
-				$signature = base64_encode(hash_hmac('sha256', $bytes_to_sign, $this->secret_key, true));
-			}
-			else
-			{
-				// Hash the AWS secret key and generate a signature for the request.
-				$signature = base64_encode(hash_hmac('sha256', $string_to_sign, $this->secret_key, true));
-			}
-
-			$headers['X-Amzn-Authorization'] = 'AWS3' . ($this->use_ssl ? '-HTTPS' : '')
-				. ' AWSAccessKeyId=' . $this->key
-				. ',Algorithm=HmacSHA256'
-				. ',SignedHeaders=' . implode(';', $signed_headers)
-				. ',Signature=' . $signature;
-
-			$request->add_header('X-Amzn-Authorization', $headers['X-Amzn-Authorization']);
-		}
+		// Signer
+		$signer = new $this->auth_class($this->hostname, $operation, $payload, $this->credentials);
+		$signer->key = $this->key;
+		$signer->secret_key = $this->secret_key;
+		$signer->auth_token = $this->auth_token;
+		$signer->api_version = $this->api_version;
+		$signer->utilities_class = $this->utilities_class;
+		$signer->request_class = $this->request_class;
+		$signer->response_class = $this->response_class;
+		$signer->use_ssl = $this->use_ssl;
+		$signer->proxy = $this->proxy;
+		$signer->util = $this->util;
+		$signer->registered_streaming_read_callback = $this->registered_streaming_read_callback;
+		$signer->registered_streaming_write_callback = $this->registered_streaming_write_callback;
+		$request = $signer->authenticate();
 
 		// Update RequestCore settings
 		$request->request_class = $this->request_class;
 		$request->response_class = $this->response_class;
 		$request->ssl_verification = $this->ssl_verification;
+
+		/*%******************************************************************************************%*/
+
+		$return_curl_handle = isset($this->payload['returnCurlHandle']) ? $this->payload['returnCurlHandle'] : false;
+		unset($this->payload['returnCurlHandle']);
+
+		// Set custom CURLOPT settings
+		if (is_array($this->payload) && isset($this->payload['curlopts']))
+		{
+			$curlopts = $this->payload['curlopts'];
+			unset($this->payload['curlopts']);
+		}
 
 		// Debug mode
 		if ($this->debug_mode)
@@ -1182,28 +861,31 @@ class CFRuntime
 		// Send!
 		$request->send_request();
 
-		$request_headers = $headers;
-
 		// Prepare the response.
 		$headers = $request->get_response_header();
-		$headers['x-aws-stringtosign'] = $string_to_sign;
-		$headers['x-aws-request-headers'] = $request_headers;
-		$headers['x-aws-body'] = $querystring;
+		$headers['x-aws-stringtosign'] = $signer->string_to_sign;
+		$headers['x-aws-request-headers'] = $request->request_headers;
+		$headers['x-aws-body'] = $signer->querystring;
 
 		$data = new $this->response_class($headers, $this->parse_callback($request->get_response_body(), $headers), $request->get_response_code());
 
 		// Was it Amazon's fault the request failed? Retry the request until we reach $max_retries.
-		if ((integer) $request->get_response_code() === 500 || (integer) $request->get_response_code() === 503)
+		if (
+			((integer) $request->get_response_code() === 400 && (string) $request->get_response_body() === '{"__type": "com.amazon.coral.availability#ThrottlingException"}') || // Bad Request (throttled)
+		    (integer) $request->get_response_code() === 500 || // Internal Error (presumably transient)
+		    (integer) $request->get_response_code() === 503)   // Service Unavilable (presumably transient)
 		{
-			if ($redirects <= $this->max_retries)
+			if ($this->redirects <= $this->max_retries)
 			{
 				// Exponential backoff
-				$delay = (integer) (pow(4, $redirects) * 100000);
+				$delay = (integer) (pow(4, $this->redirects) * 100000);
 				usleep($delay);
-				$data = $this->authenticate($action, $opt, $domain, $signature_version, ++$redirects);
+				$this->redirects++;
+				$data = $this->authenticate($operation, $payload);
 			}
 		}
 
+		$this->redirects = 0;
 		return $data;
 	}
 
@@ -1366,7 +1048,7 @@ class CFRuntime
 				case 'deflate':
 					if (strpos($headers['_info']['url'], 'monitoring.') !== false)
 					{
-						// CloudWatchWatch incorrectly does nothing when they say deflate.
+						// CloudWatch incorrectly does nothing when they say deflate.
 						continue;
 					}
 					else
@@ -1399,7 +1081,7 @@ class CFRuntime
 		}
 		// Look for JSON cues
 		elseif (
-			(isset($headers['content-type']) && $headers['content-type'] === 'application/json') || // We know it's JSON
+			(isset($headers['content-type']) && ($headers['content-type'] === 'application/json') || $headers['content-type'] === 'application/x-amz-json-1.0') || // We know it's JSON
 			(!isset($headers['content-type']) && $this->util->is_json($body)) // Sniff for JSON
 		)
 		{
@@ -1532,47 +1214,48 @@ class CFLoader
 		// Amazon SDK classes
 		if (strstr($class, 'Amazon'))
 		{
-			$path .= 'services' . DIRECTORY_SEPARATOR . str_ireplace('Amazon', '', strtolower($class)) . '.class.php';
+			require_once $path . 'services' . DIRECTORY_SEPARATOR . str_ireplace('Amazon', '', strtolower($class)) . '.class.php';
 		}
 
 		// Utility classes
 		elseif (strstr($class, 'CF'))
 		{
-			$path .= 'utilities' . DIRECTORY_SEPARATOR . str_ireplace('CF', '', strtolower($class)) . '.class.php';
+			require_once $path . 'utilities' . DIRECTORY_SEPARATOR . str_ireplace('CF', '', strtolower($class)) . '.class.php';
 		}
 
 		// Load CacheCore
 		elseif (strstr($class, 'Cache'))
 		{
-			if (file_exists($ipath = 'lib' . DIRECTORY_SEPARATOR . 'cachecore' . DIRECTORY_SEPARATOR . 'icachecore.interface.php'))
-			{
-				require_once($ipath);
-			}
-
-			$path .= 'lib' . DIRECTORY_SEPARATOR . 'cachecore' . DIRECTORY_SEPARATOR . strtolower($class) . '.class.php';
+			require_once $path . 'lib' . DIRECTORY_SEPARATOR . 'cachecore' . DIRECTORY_SEPARATOR . strtolower($class) . '.class.php';
 		}
 
 		// Load RequestCore
 		elseif (strstr($class, 'RequestCore') || strstr($class, 'ResponseCore'))
 		{
-			$path .= 'lib' . DIRECTORY_SEPARATOR . 'requestcore' . DIRECTORY_SEPARATOR . 'requestcore.class.php';
+			require_once $path . 'lib' . DIRECTORY_SEPARATOR . 'requestcore' . DIRECTORY_SEPARATOR . 'requestcore.class.php';
+		}
+
+		// Load Authentication Signers
+		elseif (strstr($class, 'Auth'))
+		{
+			require_once $path . 'authentication' . DIRECTORY_SEPARATOR . str_replace('auth', 'signature_', strtolower($class)) . '.class.php';
+		}
+
+		// Load Signer interface
+		elseif ($class === 'Signer')
+		{
+			if (!interface_exists('Signable', false))
+			{
+				require_once $path . 'authentication' . DIRECTORY_SEPARATOR . 'signable.interface.php';
+			}
+
+			require_once $path . 'authentication' . DIRECTORY_SEPARATOR . 'signer.abstract.php';
 		}
 
 		// Load Symfony YAML classes
 		elseif (strstr($class, 'sfYaml'))
 		{
-			$path .= 'lib' . DIRECTORY_SEPARATOR . 'yaml' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'sfYaml.php';
-		}
-
-		// Fall back to the 'extensions' directory.
-		elseif (defined('AWS_ENABLE_EXTENSIONS') && AWS_ENABLE_EXTENSIONS)
-		{
-			$path .= 'extensions' . DIRECTORY_SEPARATOR . strtolower($class) . '.class.php';
-		}
-
-		if (file_exists($path) && !is_dir($path))
-		{
-			require_once($path);
+			require_once $path . 'lib' . DIRECTORY_SEPARATOR . 'yaml' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'sfYaml.php';
 		}
 
 		return true;
@@ -1581,3 +1264,49 @@ class CFLoader
 
 // Register the autoloader.
 spl_autoload_register(array('CFLoader', 'autoloader'));
+
+
+/*%******************************************************************************************%*/
+// CONFIGURATION
+
+// Look for include file in the same directory (e.g. `./config.inc.php`).
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.inc.php'))
+{
+	include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.inc.php';
+}
+// Fallback to `~/.aws/sdk/config.inc.php`
+else
+{
+	if (!isset($_ENV['HOME']) && isset($_SERVER['HOME']))
+	{
+		$_ENV['HOME'] = $_SERVER['HOME'];
+	}
+	elseif (!isset($_ENV['HOME']) && !isset($_SERVER['HOME']))
+	{
+		$_ENV['HOME'] = `cd ~ && pwd`;
+		if (!$_ENV['HOME'])
+		{
+			switch (strtolower(PHP_OS))
+			{
+				case 'darwin':
+					$_ENV['HOME'] = '/Users/' . get_current_user();
+					break;
+
+				case 'windows':
+				case 'winnt':
+				case 'win32':
+					$_ENV['HOME'] = 'c:\Documents and Settings' . DIRECTORY_SEPARATOR . get_current_user();
+					break;
+
+				default:
+					$_ENV['HOME'] = '/home/' . get_current_user();
+					break;
+			}
+		}
+	}
+
+	if (getenv('HOME') && file_exists(getenv('HOME') . DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php'))
+	{
+		include_once getenv('HOME') . DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php';
+	}
+}

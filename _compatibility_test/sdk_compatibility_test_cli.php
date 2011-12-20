@@ -51,20 +51,25 @@ function get_cfg_ini($config)
 	}
 }
 
+function is_windows()
+{
+	return strtolower(substr(PHP_OS, 0, 3)) === 'win';
+}
+
 // CLI display
 function success($s = 'Yes')
 {
-	return "\033[1;37m\033[42m " . $s . " \033[0m";
+	return is_windows() ? $s : "\033[1;37m\033[42m " . $s . " \033[0m";
 }
 
 function info($s = 'Info')
 {
-	return "\033[1;37m\033[44m " . $s . " \033[0m";
+	return is_windows() ? $s : "\033[1;37m\033[44m " . $s . " \033[0m";
 }
 
 function failure($s = 'No ')
 {
-	return "\033[1;37m\033[41m " . $s . " \033[0m";
+	return is_windows() ? $s : "\033[1;37m\033[41m " . $s . " \033[0m";
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -76,47 +81,55 @@ echo 'PHP Environment Compatibility Test (CLI)' . PHP_EOL;
 echo '----------------------------------------' . PHP_EOL;
 echo PHP_EOL;
 
-echo 'PHP 5.2 or newer...          ' . ($php_ok ? (success() . ' ' . phpversion()) : failure()) . PHP_EOL;
-echo '64-bit architecture...       ' . ($int64_ok ? success() : failure()) . PHP_EOL;
-echo 'cURL with SSL...             ' . ($curl_ok ? (success() . ' ' . $curl_version['version'] . ' (' . $curl_version['ssl_version'] . ')') : failure($curl_version['version'] . (in_array('https', $curl_version['protocols'], true) ? ' (with ' . $curl_version['ssl_version'] . ')' : ' (without SSL)'))) . PHP_EOL;
-echo 'Standard PHP Library...      ' . ($spl_ok ? success() : failure()) . PHP_EOL;
-echo 'SimpleXML...                 ' . ($simplexml_ok ? success() : failure()) . PHP_EOL;
-echo 'JSON...                      ' . ($json_ok ? success() : failure()) . PHP_EOL;
-echo 'PCRE...                      ' . ($pcre_ok ? success() : failure()) . PHP_EOL;
-echo 'File system read/write...    ' . ($file_ok ? success() : failure()) . PHP_EOL;
-echo 'OpenSSL extension...         ' . ($openssl_ok ? success() : failure()) . PHP_EOL;
-echo 'Zlib...                      ' . ($zlib_ok ? success() : failure()) . PHP_EOL;
-echo 'APC...                       ' . ($apc_ok ? success() : failure()) . PHP_EOL;
-echo 'XCache...                    ' . ($xcache_ok ? success() : failure()) . PHP_EOL;
-echo 'Memcache...                  ' . ($memcache_ok ? success() : failure()) . PHP_EOL;
-echo 'Memcached...                 ' . ($memcached_ok ? success() : failure()) . PHP_EOL;
-echo 'PDO...                       ' . ($pdo_ok ? success() : failure()) . PHP_EOL;
-echo 'SQLite 2...                  ' . ($sqlite2_ok ? success() : failure()) . PHP_EOL;
-echo 'SQLite 3...                  ' . ($sqlite3_ok ? success() : failure()) . PHP_EOL;
-echo 'PDO-SQLite driver...         ' . ($pdo_sqlite_ok ? success() : failure()) . PHP_EOL;
-echo 'open_basedir disabled...     ' . (!$ini_open_basedir ? success() : failure()) . PHP_EOL;
-echo 'safe_mode disabled...        ' . (!$ini_safe_mode ? success() : failure()) . PHP_EOL;
+echo 'PHP 5.2 or newer............ ' . ($php_ok ? (success() . ' ' . phpversion()) : failure()) . PHP_EOL;
+echo '64-bit architecture......... ' . ($int64_ok ? success() : failure()) . (is_windows() ? ' (see note below)' : '') . PHP_EOL;
+echo 'cURL with SSL............... ' . ($curl_ok ? (success() . ' ' . $curl_version['version'] . ' (' . $curl_version['ssl_version'] . ')') : failure($curl_version['version'] . (in_array('https', $curl_version['protocols'], true) ? ' (with ' . $curl_version['ssl_version'] . ')' : ' (without SSL)'))) . PHP_EOL;
+echo 'Standard PHP Library........ ' . ($spl_ok ? success() : failure()) . PHP_EOL;
+echo 'SimpleXML................... ' . ($simplexml_ok ? success() : failure()) . PHP_EOL;
+echo 'JSON........................ ' . ($json_ok ? success() : failure()) . PHP_EOL;
+echo 'PCRE........................ ' . ($pcre_ok ? success() : failure()) . PHP_EOL;
+echo 'File system read/write...... ' . ($file_ok ? success() : failure()) . PHP_EOL;
+echo 'OpenSSL extension........... ' . ($openssl_ok ? success() : failure()) . PHP_EOL;
+echo 'Zlib........................ ' . ($zlib_ok ? success() : failure()) . PHP_EOL;
+echo 'APC......................... ' . ($apc_ok ? success() : failure()) . PHP_EOL;
+echo 'XCache...................... ' . ($xcache_ok ? success() : failure()) . PHP_EOL;
+echo 'Memcache.................... ' . ($memcache_ok ? success() : failure()) . PHP_EOL;
+echo 'Memcached................... ' . ($memcached_ok ? success() : failure()) . PHP_EOL;
+echo 'PDO......................... ' . ($pdo_ok ? success() : failure()) . PHP_EOL;
+echo 'SQLite 2.................... ' . ($sqlite2_ok ? success() : failure()) . PHP_EOL;
+echo 'SQLite 3.................... ' . ($sqlite3_ok ? success() : failure()) . PHP_EOL;
+echo 'PDO-SQLite driver........... ' . ($pdo_sqlite_ok ? success() : failure()) . PHP_EOL;
+echo 'open_basedir disabled....... ' . (!$ini_open_basedir ? success() : failure()) . PHP_EOL;
+echo 'safe_mode disabled.......... ' . (!$ini_safe_mode ? success() : failure()) . PHP_EOL;
 echo 'Garbage Collector enabled... ' . ($ini_zend_enable_gc ? success() : failure()) . PHP_EOL;
 
 // Test SSL cert
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'https://email.us-east-1.amazonaws.com');
-curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-curl_setopt($ch, CURLOPT_HEADER, false);
-curl_setopt($ch, CURLOPT_NOBODY, true);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
-curl_setopt($ch, CURLOPT_TIMEOUT, 5184000);
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 120);
-curl_setopt($ch, CURLOPT_NOSIGNAL, true);
-curl_setopt($ch, CURLOPT_USERAGENT, 'AWS SDK for PHP Compatibility Test');
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, true);
-curl_setopt($ch, CURLOPT_VERBOSE, false);
-curl_exec($ch);
-$ssl_result = (curl_getinfo($ch, CURLINFO_SSL_VERIFYRESULT) === 0) ? 'false' : 'true';
-curl_close($ch);
+if (!is_windows())
+{
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, 'https://email.us-east-1.amazonaws.com');
+	curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+	curl_setopt($ch, CURLOPT_HEADER, false);
+	curl_setopt($ch, CURLOPT_NOBODY, true);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 5184000);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 120);
+	curl_setopt($ch, CURLOPT_NOSIGNAL, true);
+	curl_setopt($ch, CURLOPT_USERAGENT, 'aws-sdk-php/compat-cli');
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, true);
+	curl_setopt($ch, CURLOPT_VERBOSE, false);
+	curl_exec($ch);
+	$ssl_result = !(curl_getinfo($ch, CURLINFO_SSL_VERIFYRESULT) === 0);
+	curl_close($ch);
 
-echo 'Valid SSL certificate...     ' . ($ssl_result ? success() : failure()) . PHP_EOL;
+	echo 'Valid SSL certificate....... ' . ($ssl_result ? failure() : success()) . PHP_EOL;
+}
+else
+{
+	$ssl_result = false;
+	echo 'Valid SSL certificate....... ' . failure() . ' (will use the bundled certificate instead)' . PHP_EOL;
+}
 
 echo PHP_EOL;
 
@@ -130,6 +143,7 @@ if ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $
 	if ($openssl_ok) { echo '* The OpenSSL extension is installed. This will allow you to use CloudFront' . PHP_EOL . '  Private URLs and decrypt Windows instance passwords.' . PHP_EOL . PHP_EOL; }
 	if ($zlib_ok) {    echo '* The Zlib extension is installed. The SDK will automatically leverage the' . PHP_EOL . '  compression capabilities of Zlib.' . PHP_EOL . PHP_EOL; }
 	if (!$int64_ok) {  echo '* You\'re running on a 32-bit system. This means that PHP does not correctly' . PHP_EOL . '  handle files larger than 2GB (this is a well-known PHP issue).' . PHP_EOL . PHP_EOL; }
+	if (!$int64_ok && is_windows()) {  echo '* Note that PHP on Microsoft(R) Windows(R) does not support 64-bit integers' . PHP_EOL . '  at all, even if both the hardware and PHP are 64-bit. http://j.mp/php64win' . PHP_EOL . PHP_EOL; }
 
 	if ($ini_open_basedir || $ini_safe_mode) { echo '* You have open_basedir or safe_mode enabled in your php.ini file. Sometimes' . PHP_EOL . '  PHP behaves strangely when these settings are enabled. Disable them if you can.' . PHP_EOL . PHP_EOL; }
 	if (!$ini_zend_enable_gc) { echo '* The PHP garbage collector (available in PHP 5.3+) is not enabled in your' . PHP_EOL . '  php.ini file. Enabling zend.enable_gc will provide better memory management' . PHP_EOL . '  in the PHP core.' . PHP_EOL . PHP_EOL; }
@@ -171,41 +185,46 @@ if ($php_ok && $int64_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && 
 	echo info('Recommended settings for config.inc.php') . PHP_EOL;
 	echo PHP_EOL;
 
-	echo 'define(\'AWS_DEFAULT_CACHE_CONFIG\', ';
-	if ($apc_ok) echo '\'apc\'';
-	elseif ($xcache_ok) echo '\'xcache\'';
-	elseif ($file_ok) echo '\'/path/to/cache/folder\'';
-	echo ');' . PHP_EOL;
-
-	echo 'define(\'AWS_CERTIFICATE_AUTHORITY\', ';
-	echo $ssl_result;
-	echo ');' . PHP_EOL;
+	echo "CFCredentials::set(array(" . PHP_EOL;
+	echo "    '@default' => array(" . PHP_EOL;
+	echo "        'key' => 'aws-key'," . PHP_EOL;
+	echo "        'secret' => 'aws-secret'," . PHP_EOL;
+	echo "        'default_cache_config' => ";
+	if ($apc_ok) echo success('\'apc\'');
+	elseif ($xcache_ok) echo success('\'xcache\'');
+	elseif ($file_ok) echo success('\'/path/to/cache/folder\'');
+	echo "," . PHP_EOL;
+	echo "        'certificate_authority' => " . success($ssl_result ? 'true' : 'false') . PHP_EOL;
+	echo "    )" . PHP_EOL;
+	echo "));" . PHP_EOL;
 }
-elseif ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok)
+elseif ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && ($apc_ok || $xcache_ok || $sqlite_ok))
 {
 	echo success('Bottom Line: Yes, you can!') . PHP_EOL;
 	echo PHP_EOL;
-	echo 'Your PHP environment is ready to go! There are a couple of minor features that you won\'t be able to take advantage of, but nothing that\'s a show-stopper.' . PHP_EOL;
+	echo 'Your PHP environment is ready to go! There are a couple of minor features that' . PHP_EOL . 'you won\'t be able to take advantage of, but nothing that\'s a show-stopper.' . PHP_EOL;
 
 	echo PHP_EOL;
 	echo info('Recommended settings for config.inc.php') . PHP_EOL;
 	echo PHP_EOL;
 
-	echo 'define(\'AWS_DEFAULT_CACHE_CONFIG\', ';
-	if ($apc_ok) echo '\'apc\'';
-	elseif ($xcache_ok) echo '\'xcache\'';
-	elseif ($file_ok) echo '\'/path/to/cache/folder\'';
-	echo ');' . PHP_EOL;
-
-	echo 'define(\'AWS_CERTIFICATE_AUTHORITY\', ';
-	echo $ssl_result;
-	echo ');' . PHP_EOL;
+	echo "CFCredentials::set(array(" . PHP_EOL;
+	echo "    '@default' => array(" . PHP_EOL;
+	echo "        'key' => 'aws-key'," . PHP_EOL;
+	echo "        'secret' => 'aws-secret'," . PHP_EOL;
+	echo "        'default_cache_config' => ";
+	if ($apc_ok) echo success('\'apc\'');
+	elseif ($xcache_ok) echo success('\'xcache\'');
+	elseif ($file_ok) echo success('\'/path/to/cache/folder\'');
+	echo "," . PHP_EOL;
+	echo "        'certificate_authority' => " . ($ssl_result ? 'false' : 'true') . PHP_EOL;
+	echo "    )" . PHP_EOL;
+	echo "));" . PHP_EOL;
 }
 else
 {
 	echo failure('Bottom Line: We\'re sorry...') . PHP_EOL;
-	echo 'Your PHP environment does not support the minimum requirements for the AWS SDK for PHP.' . PHP_EOL;
+	echo 'Your PHP environment does not support the minimum requirements for the ' . PHP_EOL . 'AWS SDK for PHP.' . PHP_EOL;
 }
 
 echo PHP_EOL;
-?>

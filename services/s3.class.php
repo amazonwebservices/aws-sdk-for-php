@@ -49,7 +49,7 @@ class S3_Exception extends Exception {}
  *
  * Visit <http://aws.amazon.com/s3/> for more information.
  *
- * @version 2011.12.02
+ * @version 2011.12.08
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/s3/ Amazon Simple Storage Service
@@ -58,42 +58,175 @@ class S3_Exception extends Exception {}
 class AmazonS3 extends CFRuntime
 {
 	/*%******************************************************************************************%*/
-	// CLASS CONSTANTS
+	// REGIONAL ENDPOINTS
 
 	/**
-	 * The default endpoint.
+	 * Specify the queue URL for the US-Standard (Northern Virginia & Washington State) Region.
 	 */
-	const DEFAULT_URL = 's3.amazonaws.com';
+	const REGION_US_E1 = 's3.amazonaws.com';
 
 	/**
-	 * Specify the queue URL for the US-East (Northern Virginia) Region.
+	 * Specify the queue URL for the US-Standard (Northern Virginia & Washington State) Region.
 	 */
-	const REGION_US_E1 = '';
+	const REGION_VIRGINIA = self::REGION_US_W1;
 
 	/**
-	 * Specify the queue URL for the US-West (Northern California) Region.
+	 * Specify the queue URL for the US-West 1 (Northern California) Region.
 	 */
-	const REGION_US_W1 = 'us-west-1';
+	const REGION_US_W1 = 's3-us-west-1.amazonaws.com';
 
 	/**
-	 * Specify the queue URL for the US-West (Oregon) Region.
+	 * Specify the queue URL for the US-West 1 (Northern California) Region.
 	 */
-	const REGION_US_W2 = 'us-west-2';
+	const REGION_CALIFORNIA = self::REGION_US_W1;
+
+	/**
+	 * Specify the queue URL for the US-West 2 (Oregon) Region.
+	 */
+	const REGION_US_W2 = 's3-us-west-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the US-West 2 (Oregon) Region.
+	 */
+	const REGION_OREGON = self::REGION_US_W2;
 
 	/**
 	 * Specify the queue URL for the EU (Ireland) Region.
 	 */
-	const REGION_EU_W1 = 'EU';
+	const REGION_EU_W1 = 's3-eu-west-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the EU (Ireland) Region.
+	 */
+	const REGION_IRELAND = self::REGION_EU_W1;
 
 	/**
 	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
-	const REGION_APAC_SE1 = 'ap-southeast-1';
+	const REGION_APAC_SE1 = 's3-ap-southeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
+	 */
+	const REGION_SINGAPORE = self::REGION_APAC_SE1;
 
 	/**
 	 * Specify the queue URL for the Asia Pacific (Japan) Region.
 	 */
-	const REGION_APAC_NE1 = 'ap-northeast-1';
+	const REGION_APAC_NE1 = 's3-ap-northeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Region.
+	 */
+	const REGION_TOKYO = self::REGION_APAC_NE1;
+
+	/**
+	 * Specify the queue URL for the South America (Sao Paulo) Region.
+	 */
+	const REGION_SA_E1 = 's3-sa-east-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the South America (Sao Paulo) Region.
+	 */
+	const REGION_SAO_PAULO = self::REGION_SA_E1;
+
+	/**
+	 * Specify the queue URL for the United States GovCloud Region.
+	 */
+	const REGION_US_GOV1 = 's3-us-gov-west-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the United States GovCloud FIPS 140-2 Region.
+	 */
+	const REGION_US_GOV1_FIPS = 's3-fips-us-gov-west-1.amazonaws.com';
+
+	/**
+	 * The default endpoint.
+	 */
+	const DEFAULT_URL = self::REGION_US_E1;
+
+
+	/*%******************************************************************************************%*/
+	// REGIONAL WEBSITE ENDPOINTS
+
+	/**
+	 * Specify the queue URL for the US-Standard (Northern Virginia & Washington State) Website Region.
+	 */
+	const REGION_US_E1_WEBSITE = 's3-website-us-east-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the US-Standard (Northern Virginia & Washington State) Website Region.
+	 */
+	const REGION_VIRGINIA_WEBSITE = self::REGION_US_W1_WEBSITE;
+
+	/**
+	 * Specify the queue URL for the US-West 1 (Northern California) Website Region.
+	 */
+	const REGION_US_W1_WEBSITE = 's3-website-us-west-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the US-West 1 (Northern California) Website Region.
+	 */
+	const REGION_CALIFORNIA_WEBSITE = self::REGION_US_W1_WEBSITE;
+
+	/**
+	 * Specify the queue URL for the US-West 2 (Oregon) Website Region.
+	 */
+	const REGION_US_W2_WEBSITE = 's3-website-us-west-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the US-West 2 (Oregon) Website Region.
+	 */
+	const REGION_OREGON_WEBSITE = self::REGION_US_W2_WEBSITE;
+
+	/**
+	 * Specify the queue URL for the EU (Ireland) Website Region.
+	 */
+	const REGION_EU_W1_WEBSITE = 's3-website-eu-west-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the EU (Ireland) Website Region.
+	 */
+	const REGION_IRELAND_WEBSITE = self::REGION_EU_W1_WEBSITE;
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Singapore) Website Region.
+	 */
+	const REGION_APAC_SE1_WEBSITE = 's3-website-ap-southeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Singapore) Website Region.
+	 */
+	const REGION_SINGAPORE_WEBSITE = self::REGION_APAC_SE1_WEBSITE;
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Website Region.
+	 */
+	const REGION_APAC_NE1_WEBSITE = 's3-website-ap-northeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Japan) Website Region.
+	 */
+	const REGION_TOKYO_WEBSITE = self::REGION_APAC_NE1_WEBSITE;
+
+	/**
+	 * Specify the queue URL for the South America (Sao Paulo) Website Region.
+	 */
+	const REGION_SA_E1_WEBSITE = 's3-website-sa-east-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the South America (Sao Paulo) Website Region.
+	 */
+	const REGION_SAO_PAULO_WEBSITE = self::REGION_SA_E1_WEBSITE;
+
+	/**
+	 * Specify the queue URL for the United States GovCloud Website Region.
+	 */
+	const REGION_US_GOV1_WEBSITE = 's3-website-us-gov-west-1.amazonaws.com';
+
+
+	/*%******************************************************************************************%*/
+	// ACL
 
 	/**
 	 * ACL: Owner-only read/write.
@@ -124,6 +257,10 @@ class AmazonS3 extends CFRuntime
 	 * ACL: Bucket owner full control.
 	 */
 	const ACL_OWNER_FULL_CONTROL = 'bucket-owner-full-control';
+
+
+	/*%******************************************************************************************%*/
+	// GRANTS
 
 	/**
 	 * When applied to a bucket, grants permission to list the bucket. When applied to an object, this
@@ -156,6 +293,10 @@ class AmazonS3 extends CFRuntime
 	 */
 	const GRANT_FULL_CONTROL = 'FULL_CONTROL';
 
+
+	/*%******************************************************************************************%*/
+	// USERS
+
 	/**
 	 * The "AuthenticatedUsers" group for access control policies.
 	 */
@@ -171,10 +312,18 @@ class AmazonS3 extends CFRuntime
 	 */
 	const USERS_LOGGING = 'http://acs.amazonaws.com/groups/s3/LogDelivery';
 
+
+	/*%******************************************************************************************%*/
+	// PATTERNS
+
 	/**
 	 * PCRE: Match all items
 	 */
 	const PCRE_ALL = '/.*/i';
+
+
+	/*%******************************************************************************************%*/
+	// STORAGE
 
 	/**
 	 * Standard storage redundancy.
@@ -236,6 +385,11 @@ class AmazonS3 extends CFRuntime
 	public $website_config_xml;
 
 	/**
+	 * The base XML elements to use for multi-object delete support.
+	 */
+	public $multi_object_delete_xml;
+
+	/**
 	 * The DNS vs. Path-style setting.
 	 */
 	public $path_style = false;
@@ -255,20 +409,23 @@ class AmazonS3 extends CFRuntime
 	// CONSTRUCTOR
 
 	/**
-	 * Constructs a new instance of <AmazonS3>. If the <code>AWS_DEFAULT_CACHE_CONFIG</code> configuration
-	 * option is set, requests will be authenticated using a session token. Otherwise, requests will use
-	 * the older authentication method.
+	 * Constructs a new instance of <AmazonS3>.
 	 *
-	 * @param string $key (Optional) Your AWS key, or a session key. If blank, it will look for the <code>AWS_KEY</code> constant.
-	 * @param string $secret_key (Optional) Your AWS secret key, or a session secret key. If blank, it will look for the <code>AWS_SECRET_KEY</code> constant.
-	 * @param string $token (optional) An AWS session token. If blank, a request will be made to the AWS Secure Token Service to fetch a set of session credentials.
-	 * @return boolean A value of <code>false</code> if no valid values are set, otherwise <code>true</code>.
+	 * @param array $options (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>certificate_authority</code> - <code>boolean</code> - Optional - Determines which Cerificate Authority file to use. A value of boolean <code>false</code> will use the Certificate Authority file available on the system. A value of boolean <code>true</code> will use the Certificate Authority provided by the SDK. Passing a file system path to a Certificate Authority file (chmodded to <code>0755</code>) will use that. Leave this set to <code>false</code> if you're not sure.</li>
+	 * 	<li><code>credentials</code> - <code>string</code> - Optional - The name of the credential set to use for authentication.</li>
+	 * 	<li><code>default_cache_config</code> - <code>string</code> - Optional - This option allows a preferred storage type to be configured for long-term caching. This can be changed later using the <set_cache_config()> method. Valid values are: <code>apc</code>, <code>xcache</code>, or a file system path such as <code>./cache</code> or <code>/tmp/cache/</code>.</li>
+	 * 	<li><code>key</code> - <code>string</code> - Optional - Your AWS key, or a session key. If blank, the default credential set will be used.</li>
+	 * 	<li><code>secret</code> - <code>string</code> - Optional - Your AWS secret key, or a session secret key. If blank, the default credential set will be used.</li>
+	 * 	<li><code>token</code> - <code>string</code> - Optional - An AWS session token.</li></ul>
+	 * @return void
 	 */
-	public function __construct($key = null, $secret_key = null, $token = null)
+	public function __construct(array $options = array())
 	{
 		$this->vhost = null;
 		$this->api_version = '2006-03-01';
 		$this->hostname = self::DEFAULT_URL;
+		$this->auth_class = 'AuthS3';
 
 		$this->base_acp_xml             = '<?xml version="1.0" encoding="UTF-8"?><AccessControlPolicy xmlns="http://s3.amazonaws.com/doc/latest/"></AccessControlPolicy>';
 		$this->base_location_constraint = '<?xml version="1.0" encoding="UTF-8"?><CreateBucketConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"><LocationConstraint></LocationConstraint></CreateBucketConfiguration>';
@@ -279,26 +436,7 @@ class AmazonS3 extends CFRuntime
 		$this->website_config_xml       = '<?xml version="1.0" encoding="utf-8"?><WebsiteConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"><IndexDocument><Suffix>index.html</Suffix></IndexDocument><ErrorDocument><Key>error.html</Key></ErrorDocument></WebsiteConfiguration>';
 		$this->multi_object_delete_xml  = '<?xml version="1.0" encoding="utf-8"?><Delete></Delete>';
 
-		if (!$key && !defined('AWS_KEY'))
-		{
-			// @codeCoverageIgnoreStart
-			throw new S3_Exception('No account key was passed into the constructor, nor was it set in the AWS_KEY constant.');
-			// @codeCoverageIgnoreEnd
-		}
-
-		if (!$secret_key && !defined('AWS_SECRET_KEY'))
-		{
-			// @codeCoverageIgnoreStart
-			throw new S3_Exception('No account secret was passed into the constructor, nor was it set in the AWS_SECRET_KEY constant.');
-			// @codeCoverageIgnoreEnd
-		}
-
-		if (defined('AWS_DEFAULT_CACHE_CONFIG') && AWS_DEFAULT_CACHE_CONFIG)
-		{
-			return parent::session_based_auth($key, $secret_key, $token);
-		}
-
-		return parent::__construct($key, $secret_key, $token);
+		return parent::__construct($options);
 	}
 
 
@@ -507,8 +645,15 @@ class AmazonS3 extends CFRuntime
 		}
 		$this->request_url = $scheme . $hostname . $signable_resource . $signable_query_string . $non_signable_resource;
 
+		// Gather information to pass along to other classes.
+		$helpers = array(
+			'utilities' => $this->utilities_class,
+			'request' => $this->request_class,
+			'response' => $this->response_class,
+		);
+
 		// Instantiate the request class
-		$request = new $this->request_class($this->request_url, $this->proxy);
+		$request = new $this->request_class($this->request_url, $this->proxy, $helpers, $this->credentials);
 
 		// Update RequestCore settings
 		$request->request_class = $this->request_class;
@@ -862,32 +1007,28 @@ class AmazonS3 extends CFRuntime
 	 * Sets the region to use for subsequent Amazon S3 operations. This will also reset any prior use of
 	 * <enable_path_style()>.
 	 *
-	 * @param string $region (Required) The region to use for subsequent Amazon S3 operations. [Allowed values: `AmazonS3::REGION_US_E1 `, `AmazonS3::REGION_US_W1`, `AmazonS3::REGION_EU_W1`, `AmazonS3::REGION_APAC_SE1`, `AmazonS3::REGION_APAC_NE1`]
+	 * @param string $region (Required) The region to use for subsequent Amazon S3 operations. For a complete list of REGION constants, see the <code>AmazonS3</code> Constants page in the API reference.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
 	{
+		// @codeCoverageIgnoreStart
+		$this->set_hostname($region);
+
 		switch ($region)
 		{
 			case self::REGION_US_E1: // Northern Virginia
-				$this->set_hostname(self::DEFAULT_URL);
 				$this->enable_path_style(false);
 				break;
 
 			case self::REGION_EU_W1: // Ireland
-				$this->set_hostname('s3-eu-west-1.amazonaws.com');
 				$this->enable_path_style(); // Always use path-style access for EU endpoint.
 				break;
 
-			case self::REGION_US_W1: // Northern California
-			case self::REGION_APAC_SE1: // Singapore
-			case self::REGION_APAC_NE1: // Japan
 			default:
-				$this->set_hostname('s3-' . $region . '.amazonaws.com');
 				$this->enable_path_style(false);
 				break;
 
-		// @codeCoverageIgnoreStart
 		}
 		// @codeCoverageIgnoreEnd
 
@@ -978,15 +1119,13 @@ class AmazonS3 extends CFRuntime
 
 			case self::REGION_EU_W1:    // Ireland
 				$this->enable_path_style(); // DNS-style doesn't seem to work for creation, only in EU. Switch over to path-style.
-				$xml->LocationConstraint = $region;
+				$xml->LocationConstraint = 'EU';
 				$opt['body'] = $xml->asXML();
 				break;
 
-			case self::REGION_US_W1:    // Northern California
-			case self::REGION_APAC_SE1: // Singapore
-			case self::REGION_APAC_NE1: // Japan
 			default:
-				$xml->LocationConstraint = $region;
+				$this->enable_path_style(false);
+				$xml->LocationConstraint = str_replace(array('s3-', '.amazonaws.com'), '', $region);
 				$opt['body'] = $xml->asXML();
 				break;
 
@@ -1142,18 +1281,18 @@ class AmazonS3 extends CFRuntime
 
 		// Make sure these are defined.
 		// @codeCoverageIgnoreStart
-		if (!defined('AWS_CANONICAL_ID') || !defined('AWS_CANONICAL_NAME'))
+		if (!$this->credentials->canonical_id || !$this->credentials->canonical_name)
 		{
 			// Fetch the data live.
 			$canonical = $this->get_canonical_user_id();
-			define('AWS_CANONICAL_ID', $canonical['id']);
-			define('AWS_CANONICAL_NAME', $canonical['display_name']);
+			$this->credentials->canonical_id = $canonical['id'];
+			$this->credentials->canonical_name = $canonical['display_name'];
 		}
 		// @codeCoverageIgnoreEnd
 
 		if (is_array($acl))
 		{
-			$opt['body'] = $this->generate_access_policy(AWS_CANONICAL_ID, AWS_CANONICAL_NAME, $acl);
+			$opt['body'] = $this->generate_access_policy($this->credentials->canonical_id, $this->credentials->canonical_name, $acl);
 		}
 		else
 		{
@@ -1185,7 +1324,6 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>contentType</code> - <code>string</code> - Optional - The type of content that is being sent in the body. If a file is being uploaded via <code>fileUpload</code> as a file system path, it will attempt to determine the correct mime-type based on the file extension. The default value is <code>application/octet-stream</code>.</li>
 	 * 	<li><code>contentType</code> - <code>string</code> - Optional - The type of content that is being sent in the body. If a file is being uploaded via <code>fileUpload</code> as a file system path, it will attempt to determine the correct mime-type based on the file extension. The default value is <code>application/octet-stream</code>.</li>
 	 * 	<li><code>encryption</code> - <code>string</code> - Optional - The algorithm to use for encrypting the object. [Allowed values: <code>AES256</code>]</li>
-	 * 	<li><code>headers</code> - <code>array</code> - Optional - The standard HTTP headers to send along in the request.</li>
 	 * 	<li><code>length</code> - <code>integer</code> - Optional - The size of the object in bytes. For more information, see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.13">RFC 2616, section 14.13</a>. The value can also be passed to the <code>header</code> option as <code>Content-Length</code>.</li>
 	 * 	<li><code>meta</code> - <code>array</code> - Optional - An associative array of key-value pairs. Represented by <code>x-amz-meta-:</code>. Any header starting with this prefix is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.</li>
 	 * 	<li><code>seekTo</code> - <code>integer</code> - Optional - The starting position in bytes within the file/stream to upload from.</li>
@@ -1542,7 +1680,11 @@ class AmazonS3 extends CFRuntime
 		}
 
 		// Handle metadata directive
-		$opt['headers']['x-amz-metadata-directive'] = 'REPLACE';
+		$opt['headers']['x-amz-metadata-directive'] = 'COPY';
+		if ($source['bucket'] === $dest['bucket'] && $source['filename'] === $dest['filename'])
+		{
+			$opt['headers']['x-amz-metadata-directive'] = 'REPLACE';
+		}
 		if (isset($opt['metadataDirective']))
 		{
 			$opt['headers']['x-amz-metadata-directive'] = $opt['metadataDirective'];
@@ -1710,18 +1852,18 @@ class AmazonS3 extends CFRuntime
 
 		// Make sure these are defined.
 		// @codeCoverageIgnoreStart
-		if (!defined('AWS_CANONICAL_ID') || !defined('AWS_CANONICAL_NAME'))
+		if (!$this->credentials->canonical_id || !$this->credentials->canonical_name)
 		{
 			// Fetch the data live.
 			$canonical = $this->get_canonical_user_id();
-			define('AWS_CANONICAL_ID', $canonical['id']);
-			define('AWS_CANONICAL_NAME', $canonical['display_name']);
+			$this->credentials->canonical_id = $canonical['id'];
+			$this->credentials->canonical_name = $canonical['display_name'];
 		}
 		// @codeCoverageIgnoreEnd
 
 		if (is_array($acl))
 		{
-			$opt['body'] = $this->generate_access_policy(AWS_CANONICAL_ID, AWS_CANONICAL_NAME, $acl);
+			$opt['body'] = $this->generate_access_policy($this->credentials->canonical_id, $this->credentials->canonical_name, $acl);
 		}
 		else
 		{
@@ -1736,8 +1878,8 @@ class AmazonS3 extends CFRuntime
 	/**
 	 * Generates the XML to be used for the Access Control Policy.
 	 *
-	 * @param string $canonical_id (Required) The canonical ID for the bucket owner. Use the `AWS_CANONICAL_ID` constant or the `id` return value from <get_canonical_user_id()>.
-	 * @param string $canonical_name (Required) The canonical display name for the bucket owner. Use the `AWS_CANONICAL_NAME` constant or the `display_name` value from <get_canonical_user_id()>.
+	 * @param string $canonical_id (Required) The canonical ID for the bucket owner. This is provided as the `id` return value from <get_canonical_user_id()>.
+	 * @param string $canonical_name (Required) The canonical display name for the bucket owner. This is provided as the `display_name` value from <get_canonical_user_id()>.
 	 * @param array $users (Optional) An array of associative arrays. Each associative array contains an `id` value and a `permission` value.
 	 * @return string Access Control Policy XML.
 	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/S3_ACLs.html Access Control Lists
@@ -2024,7 +2166,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param boolean $friendly_format (Optional) A value of <code>true</code> will format the return value to 2 decimal points using the largest possible unit (i.e., 3.42 GB). A value of <code>false</code> will format the return value as the raw number of bytes.
-	 * @return integer|string The number of bytes as an integer, or the friendly format as a string. If the bucket does not exist, the filesize will be 0.
+	 * @return integer|string The number of bytes as an integer, or the friendly format as a string.
 	 */
 	public function get_bucket_filesize($bucket, $friendly_format = false)
 	{
@@ -2068,7 +2210,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param string $filename (Required) The file name for the object.
 	 * @param boolean $friendly_format (Optional) A value of <code>true</code> will format the return value to 2 decimal points using the largest possible unit (i.e., 3.42 GB). A value of <code>false</code> will format the return value as the raw number of bytes.
-	 * @return integer|string The number of bytes as an integer, or the friendly format as a string. If the object does not exist, the filesize will be 0.
+	 * @return integer|string The number of bytes as an integer, or the friendly format as a string.
 	 */
 	public function get_object_filesize($bucket, $filename, $friendly_format = false)
 	{
@@ -2077,13 +2219,8 @@ class AmazonS3 extends CFRuntime
 			throw new S3_Exception(__FUNCTION__ . '() cannot be batch requested');
 		}
 
-		$filesize = 0;
 		$object = $this->get_object_headers($bucket, $filename);
-
-		if (isset($object->header['content-length']))
-		{
-			$filesize = (integer) $object->header['content-length'];
-		}
+		$filesize = (integer) $object->header['content-length'];
 
 		if ($friendly_format)
 		{
@@ -2442,7 +2579,7 @@ class AmazonS3 extends CFRuntime
 		);
 
 		// Add the content type
-		$data['ContentType'] = isset($response[1]->header['content-type']) ? (string) $response[1]->header['content-type'] : '';
+		$data['ContentType'] = (string) $response[1]->header['content-type'];
 
 		// Add the other metadata (including storage type)
 		$contents = json_decode(json_encode($response[2]->body->query('descendant-or-self::Contents')->first()), true);
@@ -3495,33 +3632,41 @@ class AmazonS3 extends CFRuntime
 
 		$list = $data->query('descendant-or-self::Upload/Initiated');
 
-		foreach ($list as $node)
+		if (count($list) > 0)
 		{
-			if (strtotime((string) $node) < $when)
+			foreach ($list as $node)
 			{
-				$q = new CFBatchRequest();
-				$parent = $node->parent();
+				if (strtotime((string) $node) < $when)
+				{
+					$q = new CFBatchRequest();
+					$parent = $node->parent();
 
-				$upload_id = $parent
-					->query('descendant-or-self::UploadId')
-					->first()
-					->to_string();
+					$upload_id = $parent
+						->query('descendant-or-self::UploadId')
+						->first()
+						->to_string();
 
-				$filename = $parent
-					->query('descendant-or-self::Key')
-					->first()
-					->to_string();
+					$filename = $parent
+						->query('descendant-or-self::Key')
+						->first()
+						->to_string();
 
-				$handles[] = $this->abort_multipart_upload($bucket, $filename, $upload_id, array(
-					'returnCurlHandle' => true
-				));
+					$handles[] = $this->abort_multipart_upload($bucket, $filename, $upload_id, array(
+						'returnCurlHandle' => true
+					));
+				}
+			}
+
+			$http = new CFRequest();
+			$responses = $http->send_multi_request($handles);
+
+			if (is_array($responses) && count($responses) > 0)
+			{
+				return new CFArray($responses);
 			}
 		}
 
-		$http = new CFRequest();
-		$responses = $http->send_multi_request($handles);
-
-		return new CFArray($responses);
+		return new CFArray();
 	}
 
 

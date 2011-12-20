@@ -95,7 +95,7 @@ class CFComplexType
 					}
 				}
 
-				$key .= (($key === '') ? $k : '.' . $k);
+				$key .= ($key === '' ? $k : '.' . $k);
 
 				if (is_array($v))
 				{
