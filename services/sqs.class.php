@@ -262,12 +262,12 @@ class AmazonSQS extends CFRuntime
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'AWSAccountId' => (is_array($aws_account_id) ? $aws_account_id : array($aws_account_id))
-		), 'member'));
+		)));
 		
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'ActionName' => (is_array($action_name) ? $action_name : array($action_name))
-		), 'member'));
+		)));
 
 		return $this->authenticate('AddPermission', $opt);
 	}
@@ -344,7 +344,7 @@ class AmazonSQS extends CFRuntime
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'ChangeMessageVisibilityBatchRequestEntry' => (is_array($change_message_visibility_batch_request_entry) ? $change_message_visibility_batch_request_entry : array($change_message_visibility_batch_request_entry))
-		), 'member'));
+		)));
 
 		return $this->authenticate('ChangeMessageVisibilityBatch', $opt);
 	}
@@ -384,7 +384,7 @@ class AmazonSQS extends CFRuntime
 		{
 			$opt = array_merge($opt, CFComplexType::map(array(
 				'Attribute' => $opt['Attribute']
-			), 'member'));
+			)));
 			unset($opt['Attribute']);
 		}
 
@@ -437,7 +437,7 @@ class AmazonSQS extends CFRuntime
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'DeleteMessageBatchRequestEntry' => (is_array($delete_message_batch_request_entry) ? $delete_message_batch_request_entry : array($delete_message_batch_request_entry))
-		), 'member'));
+		)));
 
 		return $this->authenticate('DeleteMessageBatch', $opt);
 	}
@@ -509,7 +509,7 @@ class AmazonSQS extends CFRuntime
 		{
 			$opt = array_merge($opt, CFComplexType::map(array(
 				'AttributeName' => (is_array($opt['AttributeName']) ? $opt['AttributeName'] : array($opt['AttributeName']))
-			), 'member'));
+			)));
 			unset($opt['AttributeName']);
 		}
 
@@ -577,7 +577,7 @@ class AmazonSQS extends CFRuntime
 		{
 			$opt = array_merge($opt, CFComplexType::map(array(
 				'AttributeName' => (is_array($opt['AttributeName']) ? $opt['AttributeName'] : array($opt['AttributeName']))
-			), 'member'));
+			)));
 			unset($opt['AttributeName']);
 		}
 
@@ -651,7 +651,7 @@ class AmazonSQS extends CFRuntime
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'SendMessageBatchRequestEntry' => (is_array($send_message_batch_request_entry) ? $send_message_batch_request_entry : array($send_message_batch_request_entry))
-		), 'member'));
+		)));
 
 		return $this->authenticate('SendMessageBatch', $opt);
 	}
@@ -680,10 +680,39 @@ class AmazonSQS extends CFRuntime
 		// Required map (non-list)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Attribute' => (is_array($attribute) ? $attribute : array($attribute))
-		), 'member'));
+		)));
 
 		return $this->authenticate('SetQueueAttributes', $opt);
 	}
+
+	/**
+	 * This overwrites the default authenticate method in sdk.class.php to address SQS queue URLs.
+	 *
+	 * @return CFResponse Object containing a parsed HTTP response.
+	 */
+	public function authenticate($operation, $payload)
+	{
+		// Save the current hostname
+		$hostname = $this->hostname;
+
+		if (isset($payload['QueueUrl']))
+		{
+			// Change the hostname to the queue URL
+			$this->hostname = $payload['QueueUrl'];
+
+			// Remove "QueueURL" from the payload
+			unset($payload['QueueUrl']);
+		}
+
+		// Perform the request
+		$response = parent::authenticate($operation, $payload);
+
+		// Restore the hostname
+		$this->hostname = $hostname;
+
+		return $response;
+	}
+
 }
 
 
