@@ -1,3 +1,95 @@
+# Changelog: 1.5 "Allegro"
+Code name for Mac OS 8.5. <http://en.wikipedia.org/wiki/Mac_OS_8#Mac_OS_8.5>
+
+## Credentials
+!! BACKWARDS-INCOMPATIBLE CHANGE !! - The function signature of all service constructors has changed. Instead of passing a key and secret as the first and second parameters, the constructor now accepts a hash (associative array) containing `key` and `secret` keys. Please see the API reference documentation
+
+## Runtime
+!! BACKWARDS-INCOMPATIBLE CHANGE !! - The function signature of all service constructors has changed. Instead of passing a key and secret as the first and second parameters, the constructor now accepts a hash (associative array) containing `key` and `secret` keys. If you are explicitly passing a key and secret to the constructor, you will need to change your code. If you are simply inheriting your default credentials from a config file, you don't need to make any changes beyond upgrading your config file to the new 1.5 format. Please see the API reference documentation for more information.
+!! BACKWARDS-INCOMPATIBLE CHANGE !! - The method by which the `config.inc.php` file maintains its list of credentials has been re-factored and updated to support managing multiple sets of credentials in a single location (e.g., development, staging, production).
+!! BACKWARDS-INCOMPATIBLE CHANGE !! - The `init()` method has been renamed to `factory()` to better reflect what it actually does.
+!! BACKWARDS-INCOMPATIBLE CHANGE !! - The `adjust_offset()` method has been removed. Instead, please ensure that the machine's time is set correctly using an [NTP server](https://secure.wikimedia.org/wikipedia/en/wiki/Network_Time_Protocol).
+!! BACKWARDS-INCOMPATIBLE CHANGE !! - In version 1.4 we enabled a mode where -- for services that supported it -- a set of temporary credentials were fetched and cached before the first request. This functionality has been reverted. The use of short-term credentials must be explicitly enabled by instantiating the `AmazonSTS` class and passing those credentials into the service constructor.
+* **New:** Improved the user directory lookup for the config file.
+* **Changed:** Made `set_region()` an alias of `set_hostname()`.
+
+## Services
+### AmazonAS
+* **New:** Support for the South American (São Paulo) region has been added to the SDK.
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`, `REGION_CALIFORNIA`, `REGION_OREGON`, `REGION_IRELAND`, `REGION_SINGAPORE`, `REGION_TOKYO`, `REGION_SAO_PAULO`
+
+### AmazonCloudFormation
+* **New:** Support for the South American (São Paulo) region has been added to the SDK.
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`, `REGION_CALIFORNIA`, `REGION_OREGON`, `REGION_IRELAND`, `REGION_SINGAPORE`, `REGION_TOKYO`, `REGION_SAO_PAULO`
+* **New:** Support for cost estimation of CloudFormation templates has been added to the SDK.
+
+### AmazonCloudWatch
+* **New:** Support for the South American (São Paulo) region has been added to the SDK.
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`, `REGION_CALIFORNIA`, `REGION_OREGON`, `REGION_IRELAND`, `REGION_SINGAPORE`, `REGION_TOKYO`, `REGION_SAO_PAULO`
+
+### AmazonEC2
+* **New:** Support for the South American (São Paulo) region has been added to the SDK.
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`, `REGION_CALIFORNIA`, `REGION_OREGON`, `REGION_IRELAND`, `REGION_SINGAPORE`, `REGION_TOKYO`, `REGION_SAO_PAULO`
+* **New:** Support for 24x7 Reserved Instances has been added to the SDK. For more information, please see [New Amazon EC2 Reserved Instance Options Now Available](https://aws.amazon.com/about-aws/whats-new/2011/12/01/New-Amazon-EC2-Reserved-Instances-Options-Now-Available/).
+* **New:** Support for VPC Spot Instances has been added to the SDK. For more information, please see [Announcing Amazon EC2 Spot Integration with Amazon VPC](https://aws.amazon.com/about-aws/whats-new/2011/10/11/announcing-amazon-ec2-spot-integration-with-amazon-vpc/).
+* **New:** Support for VPC Everywhere has been added to the SDK. For more information, please see [Amazon VPC Generally Available in Multiple AZs in All Regions](https://aws.amazon.com/about-aws/whats-new/2011/08/03/Announcing-VPC-GA/).
+* **New:** Instance Type-related constants have been added to the SDK: `INSTANCE_MICRO`, `INSTANCE_SMALL`, `INSTANCE_LARGE`, `INSTANCE_XLARGE`, `INSTANCE_HIGH_MEM_XLARGE`, `INSTANCE_HIGH_MEM_2XLARGE`, `INSTANCE_HIGH_MEM_4XLARGE`, `INSTANCE_HIGH_CPU_MEDIUM`, `INSTANCE_HIGH_CPU_XLARGE`, `INSTANCE_CLUSTER_4XLARGE`, `INSTANCE_CLUSTER_8XLARGE`, `INSTANCE_CLUSTER_GPU_XLARGE`.
+
+### AmazonElastiCache
+* **New:** Support for US-West 1 (California), EU-West (Ireland), Asia Pacific Southeast (Singapore), and Asia Pacific Northeast (Tokyo) regions has been added to the SDK. For more information, please see [Amazon ElastiCache is now available in four additional AWS Regions and as a CloudFormation template](https://aws.amazon.com/about-aws/whats-new/2011/12/05/amazon-elasticache-new-regions/).
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`, `REGION_CALIFORNIA`, `REGION_IRELAND`, `REGION_SINGAPORE`, `REGION_TOKYO`
+
+### AmazonElasticBeanstalk
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`
+
+### AmazonELB
+* **New:** Support for the South American (São Paulo) region has been added to the SDK.
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`, `REGION_CALIFORNIA`, `REGION_OREGON`, `REGION_IRELAND`, `REGION_SINGAPORE`, `REGION_TOKYO`, `REGION_SAO_PAULO`
+* **New:** Support for ELBs running in VPC has been added to the SDK. For more information, please see [Announcing Elastic Load Balancing in Amazon VPC](https://aws.amazon.com/about-aws/whats-new/2011/11/21/announcing-elastic-load-balancing-in-amazon-vpc/).
+
+### AmazonEMR
+* **New:** Support for the South American (São Paulo) region has been added to the SDK.
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`, `REGION_CALIFORNIA`, `REGION_OREGON`, `REGION_IRELAND`, `REGION_SINGAPORE`, `REGION_TOKYO`, `REGION_SAO_PAULO`
+* **New:** Support for EMR AMI Versioning, new Hadoop and Pig versions, and EMR running in VPC has been added to the SDK. For more information, please see [Amazon Elastic MapReduce Announces Support for New Hadoop and Pig Versions, AMI Versioning, and Amazon VPC](https://aws.amazon.com/about-aws/whats-new/2011/12/11/amazon-elastic-mapreduce-ami-versioning-vpc/).
+
+### AmazonIAM
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`
+
+### AmazonImportExport
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`
+
+### AmazonRDS
+* **New:** Support for the South American (São Paulo) region has been added to the SDK.
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`, `REGION_CALIFORNIA`, `REGION_OREGON`, `REGION_IRELAND`, `REGION_SINGAPORE`, `REGION_TOKYO`, `REGION_SAO_PAULO`
+
+### AmazonS3
+* **New:** Support for the South American (São Paulo) region has been added to the SDK.
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`, `REGION_CALIFORNIA`, `REGION_OREGON`, `REGION_IRELAND`, `REGION_SINGAPORE`, `REGION_TOKYO`, `REGION_SAO_PAULO`
+* **New:** Support for an S3 Stream Wrapper has been added to the SDK. This enables users to read/write to Amazon S3 as though it were the local file system.
+**Fixed:** The `get_object()` method no longer attempts to parse XML/JSON content.
+**Fixed:** Simplified S3 region logic. Now uses fully-qualified domain names across the board.
+
+### AmazonSES
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`
+
+### AmazonSDB
+* **New:** Support for the South American (São Paulo) region has been added to the SDK.
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`, `REGION_CALIFORNIA`, `REGION_OREGON`, `REGION_IRELAND`, `REGION_SINGAPORE`, `REGION_TOKYO`, `REGION_SAO_PAULO`
+
+### AmazonSNS
+* **New:** Support for the South American (São Paulo) region has been added to the SDK.
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`, `REGION_CALIFORNIA`, `REGION_OREGON`, `REGION_IRELAND`, `REGION_SINGAPORE`, `REGION_TOKYO`, `REGION_SAO_PAULO`
+
+### AmazonSQS
+* **New:** Support for the South American (São Paulo) region has been added to the SDK.
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`, `REGION_CALIFORNIA`, `REGION_OREGON`, `REGION_IRELAND`, `REGION_SINGAPORE`, `REGION_TOKYO`, `REGION_SAO_PAULO`
+
+### AmazonSTS
+* **New:** Plain english aliases have been added to the SDK: `REGION_VIRGINA`
+
+
+----
+
 # Changelog: 1.4.8 "Zanarkand"
 <http://finalfantasy.wikia.com/wiki/Zanarkand>
 

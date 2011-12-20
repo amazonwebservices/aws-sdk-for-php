@@ -246,7 +246,7 @@ elseif (isset($_GET['ssl_check']))
 	curl_setopt($ch, CURLOPT_TIMEOUT, 5184000);
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 120);
 	curl_setopt($ch, CURLOPT_NOSIGNAL, true);
-	curl_setopt($ch, CURLOPT_USERAGENT, 'AWS SDK for PHP Compatibility Test');
+	curl_setopt($ch, CURLOPT_USERAGENT, 'aws-sdk-php/compat-www');
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, true);
 	curl_setopt($ch, CURLOPT_VERBOSE, true);
@@ -308,6 +308,11 @@ function get_cfg_ini($config)
 	}
 }
 
+function is_windows()
+{
+	return strtolower(substr(PHP_OS, 0, 3)) === 'win';
+}
+
 header('Content-type: text/html; charset=UTF-8');
 
 ?><!DOCTYPE html>
@@ -328,7 +333,7 @@ header('Content-type: text/html; charset=UTF-8');
 
 <style type="text/css">
 body {
-	font:14px/1.4em "Helvetica Neue", Helvetica, "Lucida Grande", "Droid Sans", Ubuntu, Verdana, Arial, Clean, Sans, sans-serif;
+	font:14px/1.4em "Helvetica Neue", Helvetica, "Lucida Grande", Roboto, "Droid Sans", Ubuntu, Verdana, Arial, Clean, Sans, sans-serif;
 	letter-spacing:0px;
 	color:#333;
 	margin:0;
@@ -639,7 +644,9 @@ div.important h3 {
 					<tr class="<?php echo ($int64_ok) ? 'enabled' : 'disabled'; ?>">
 						<td><a href="https://aws.amazon.com/amis/4158">Architecture</a></td>
 						<td>64-bit</td>
-						<td><?php echo ($int64_ok) ? '64-bit' : '32-bit'; ?></td>
+						<td><?php echo ($int64_ok) ? '64-bit' : '32-bit'; ?><?php if (is_windows()): ?>
+						(<a href="#win64">why?</a>)
+						<?php endif; ?></td>
 					</tr>
 				</tbody>
 			</table>
@@ -693,7 +700,7 @@ div.important h3 {
 				</thead>
 				<tbody>
 					<tr>
-						<td><code>AWS_DEFAULT_CACHE_CONFIG</code></td>
+						<td><code>default_cache_config</code></td>
 						<?php if ($apc_ok): ?>
 						<td><code>apc</code></td>
 						<?php elseif ($xcache_ok): ?>
@@ -703,8 +710,12 @@ div.important h3 {
 						<?php endif; ?>
 					</tr>
 					<tr>
-						<td><code>AWS_CERTIFICATE_AUTHORITY</code></td>
+						<td><code>certificate_authority</code></td>
+						<?php if (is_windows()): ?>
+						<td id="ssl_check"><code>true</code></td>
+						<?php else: ?>
 						<td id="ssl_check"><img src="<?php echo pathinfo(__FILE__, PATHINFO_BASENAME); ?>?loader" alt="Loading..."></td>
+						<?php endif; ?>
 					</tr>
 				</tbody>
 			</table>
@@ -732,6 +743,9 @@ div.important h3 {
 
 				<?php if (!$int64_ok): ?>
 				<li>You're running on a <strong>32-bit</strong> system. This means that PHP does not correctly handle files larger than 2GB (this is a <a href="http://www.google.com/search?q=php+2gb+32-bit">well-known PHP issue</a>). For more information, please see: <a href="http://docs.php.net/manual/en/function.filesize.php#refsect1-function.filesize-returnvalues">PHP filesize: Return values</a>.</li>
+				<?php if (is_windows()): ?>
+				<li id="win64"><em>Note that PHP on Microsoft® Windows® <a href="http://j.mp/php64win">does not support 64-bit integers at all</a>, even if both the hardware and PHP are 64-bit.</em></li>
+				<?php endif; ?>
 				<?php endif; ?>
 
 				<?php if ($ini_open_basedir || $ini_safe_mode): ?>
@@ -803,6 +817,7 @@ div.important h3 {
 
 </div>
 
+<?php if (!is_windows()): ?>
 <script type="text/javascript" charset="utf-8">
 reqwest('<?php echo pathinfo(__FILE__, PATHINFO_BASENAME); ?>?ssl_check', function(resp) {
 	$sslCheck = document.getElementById('ssl_check');
@@ -810,6 +825,7 @@ reqwest('<?php echo pathinfo(__FILE__, PATHINFO_BASENAME); ?>?ssl_check', functi
 	$sslCheck.innerHTML = '<code>' + resp + '</code>';
 });
 </script>
+<?php endif; ?>
 
 </body>
 </html>
