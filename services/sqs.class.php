@@ -684,6 +684,35 @@ class AmazonSQS extends CFRuntime
 
 		return $this->authenticate('SetQueueAttributes', $opt);
 	}
+
+	/**
+	 * This overwrites the default authenticate method in sdk.class.php to address SQS queue URLs.
+	 *
+	 * @return CFResponse Object containing a parsed HTTP response.
+	 */
+	public function authenticate($operation, $payload)
+	{
+		// Save the current hostname
+		$hostname = $this->hostname;
+
+		if (isset($payload['QueueUrl']))
+		{
+			// Change the hostname to the queue URL
+			$this->hostname = $payload['QueueUrl'];
+
+			// Remove "QueueURL" from the payload
+			unset($payload['QueueUrl']);
+		}
+
+		// Perform the request
+		$response = parent::authenticate($operation, $payload);
+
+		// Restore the hostname
+		$this->hostname = $hostname;
+
+		return $response;
+	}
+
 }
 
 
