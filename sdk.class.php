@@ -110,9 +110,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.5');
+define('CFRUNTIME_VERSION', '1.5.0.1');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20111215014733');
+define('CFRUNTIME_BUILD', '20111221014733');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . str_replace(' ', '_', php_uname('s')) . '/' . str_replace(' ', '_', php_uname('r')) . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -768,9 +768,19 @@ class CFRuntime
 			$operation = $this->operation_prefix . $operation;
 		}
 
-		$return_curl_handle = false;
 		$method_arguments = func_get_args();
 		$curlopts = array();
+
+		// Extract the custom CURLOPT settings from the payload
+		if (is_array($payload) && isset($payload['curlopts']))
+		{
+			$curlopts = $payload['curlopts'];
+			unset($payload['curlopts']);
+		}
+
+		// Determine whether the response or curl handle should be returned
+		$return_curl_handle = isset($payload['returnCurlHandle']) ? $payload['returnCurlHandle'] : false;
+		unset($payload['returnCurlHandle']);
 
 		// Use the caching flow to determine if we need to do a round-trip to the server.
 		if ($this->use_cache_flow)
@@ -823,22 +833,13 @@ class CFRuntime
 
 		/*%******************************************************************************************%*/
 
-		$return_curl_handle = isset($this->payload['returnCurlHandle']) ? $this->payload['returnCurlHandle'] : false;
-		unset($this->payload['returnCurlHandle']);
-
-		// Set custom CURLOPT settings
-		if (is_array($this->payload) && isset($this->payload['curlopts']))
-		{
-			$curlopts = $this->payload['curlopts'];
-			unset($this->payload['curlopts']);
-		}
-
 		// Debug mode
 		if ($this->debug_mode)
 		{
 			$request->debug_mode = $this->debug_mode;
 		}
 
+		// Set custom CURLOPT settings
 		if (count($curlopts))
 		{
 			$request->set_curlopts($curlopts);
@@ -873,7 +874,7 @@ class CFRuntime
 		if (
 			((integer) $request->get_response_code() === 400 && (string) $request->get_response_body() === '{"__type": "com.amazon.coral.availability#ThrottlingException"}') || // Bad Request (throttled)
 		    (integer) $request->get_response_code() === 500 || // Internal Error (presumably transient)
-		    (integer) $request->get_response_code() === 503)   // Service Unavilable (presumably transient)
+		    (integer) $request->get_response_code() === 503)   // Service Unavailable (presumably transient)
 		{
 			if ($this->redirects <= $this->max_retries)
 			{
