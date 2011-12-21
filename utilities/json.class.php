@@ -47,29 +47,40 @@ class CFJSON
 		// If we haven't parsed the JSON, do it
 		if (!is_array($json))
 		{
-			$json = json_decode($json, true);
-
-			if (function_exists('json_last_error'))
+			// handle the case of json_encoded null value
+			if ($json === 'null')
 			{
-				// Did we encounter an error?
-				switch (json_last_error())
+				$json = NULL;
+			} 
+			else 
+			{
+				$json = json_decode($json, true);
+
+				// php > 5.3.0 required
+				if (function_exists('json_last_error'))
 				{
-					case JSON_ERROR_DEPTH:
-						throw new JSON_Exception('Maximum stack depth exceeded.');
+					// Did we encounter an error?
+					switch (json_last_error())
+					{
+						case JSON_ERROR_DEPTH:
+							throw new JSON_Exception('Maximum stack depth exceeded.');
 
-					case JSON_ERROR_CTRL_CHAR:
-						throw new JSON_Exception('Unexpected control character found.');
-
-					case JSON_ERROR_SYNTAX:
-						throw new JSON_Exception('Syntax error; Malformed JSON.');
-
-					case JSON_ERROR_STATE_MISMATCH:
-						throw new JSON_Exception('Invalid or malformed JSON.');
+						case JSON_ERROR_CTRL_CHAR:
+							throw new JSON_Exception('Unexpected control character found.');
+	
+						case JSON_ERROR_SYNTAX:
+							throw new JSON_Exception('Syntax error; Malformed JSON.');
+	
+						case JSON_ERROR_STATE_MISMATCH:
+							throw new JSON_Exception('Invalid or malformed JSON.');
+					}
 				}
-			}
-			else
-			{
-				throw new JSON_Exception('Unknown JSON error. Be sure to validate your JSON and read the notes on http://php.net/json_decode.');
+				// in php < 5.3.0
+				// json_decode returns null on error (legit null handled above)
+				else if ($json === NULL) 
+				{
+					throw new JSON_Exception('Unknown JSON error. Be sure to validate your JSON and read the notes on http://php.net/json_decode.');
+				}
 			}
 		}
 
