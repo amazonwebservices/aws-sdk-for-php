@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -28,8 +28,15 @@
  * flexible: you can scale your database instance's compute resources and storage capacity to meet
  * your application's demand. As with all Amazon Web Services, there are no up-front investments,
  * and you pay only for the resources you use.
+ *  
+ * This is the <em>Amazon RDS API Reference</em>. It contains a comprehensive description of all
+ * Amazon RDS Query APIs and data types. To get started with Amazon RDS, go to the <a href=
+ * "http://docs.amazonwebservices.com/AmazonRDS/latest/GettingStartedGuide/">Amazon RDS Getting
+ * Started Guide</a>. For more information on Amazon RDS concepts and usage scenarios, go to the
+ * 	<a href="http://docs.amazonwebservices.com/AmazonRDS/latest/UserGuide/">Amazon RDS User
+ * Guide</a>.
  *
- * @version 2011.12.13
+ * @version 2012.01.16
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/rds/ Amazon Relational Database Service
@@ -176,11 +183,11 @@ class AmazonRDS extends CFRuntime
 	 * For an overview of CIDR ranges, go to the <a href=
 	 * "http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Wikipedia Tutorial</a>.
 	 *
-	 * @param string $db_security_group_name (Required) The name of the DB Security Group to authorize.
+	 * @param string $db_security_group_name (Required) The name of the DB Security Group to add authorization to.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>CIDRIP</code> - <code>string</code> - Optional - The IP range to authorize.</li>
 	 * 	<li><code>EC2SecurityGroupName</code> - <code>string</code> - Optional - Name of the EC2 Security Group to authorize.</li>
-	 * 	<li><code>EC2SecurityGroupOwnerId</code> - <code>string</code> - Optional - AWS Account Number of the owner of the security group specified in the EC2SecurityGroupName parameter. The AWS Access Key ID is not an acceptable value.</li>
+	 * 	<li><code>EC2SecurityGroupOwnerId</code> - <code>string</code> - Optional - AWS Account Number of the owner of the EC2 Security Group specified in the EC2SecurityGroupName parameter. The AWS Access Key ID is not an acceptable value.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -207,7 +214,7 @@ class AmazonRDS extends CFRuntime
 	 * 	<li><code>DBSecurityGroups</code> - <code>string|array</code> - Optional - A list of DB Security Groups to associate with this DB Instance. Default: The default DB Security Group for the database engine. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The EC2 Availability Zone that the database instance will be created in. Default: A random, system-chosen Availability Zone in the endpoint's region. Example: <code>us-east-1d</code> Constraint: The AvailabilityZone parameter cannot be specified if the MultiAZ parameter is set to <code>true</code>. The specified Availability Zone must be in the same region as the current endpoint.</li>
 	 * 	<li><code>PreferredMaintenanceWindow</code> - <code>string</code> - Optional - The weekly time range (in UTC) during which system maintenance can occur. Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> Default: A 30-minute window selected at random from an 8-hour block of time per region, occurring on a random day of the week. The following list shows the time blocks for each region from which the default maintenance windows are assigned.<ul><li> <strong>US-East (Northern Virginia) Region:</strong> 03:00-11:00 UTC</li><li> <strong>US-West (Northern California) Region:</strong> 06:00-14:00 UTC</li><li> <strong>EU (Ireland) Region:</strong> 22:00-06:00 UTC</li><li> <strong>Asia Pacific (Singapore) Region:</strong> 14:00-22:00 UTC</li><li> <strong>Asia Pacific (Tokyo) Region:</strong> 17:00-03:00 UTC</li></ul>Valid Days: Mon, Tue, Wed, Thu, Fri, Sat, Sun Constraints: Minimum 30-minute window.</li>
-	 * 	<li><code>DBParameterGroupName</code> - <code>string</code> - Optional - The name of the database parameter group to associate with this DB instance. If this argument is omitted, the default DBParameterGroup for the specified engine will be used. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul></li>
+	 * 	<li><code>DBParameterGroupName</code> - <code>string</code> - Optional - The name of the DB Parameter Group to associate with this DB instance. If this argument is omitted, the default DBParameterGroup for the specified engine will be used. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul></li>
 	 * 	<li><code>BackupRetentionPeriod</code> - <code>integer</code> - Optional - The number of days for which automated backups are retained. Setting this parameter to a positive number enables backups. Setting this parameter to 0 disables automated backups. Default: 1 Constraints:<ul><li>Must be a value from 0 to 8</li><li>Cannot be set to 0 if the DB Instance is a master instance with read replicas</li></ul></li>
 	 * 	<li><code>PreferredBackupWindow</code> - <code>string</code> - Optional - The daily time range during which automated backups are created if automated backups are enabled, using the <code>BackupRetentionPeriod</code> parameter. Default: A 30-minute window selected at random from an 8-hour block of time per region. The following list shows the time blocks for each region from which the default backup windows are assigned.<ul><li> <strong>US-East (Northern Virginia) Region:</strong> 03:00-11:00 UTC</li><li> <strong>US-West (Northern California) Region:</strong> 06:00-14:00 UTC</li><li> <strong>EU (Ireland) Region:</strong> 22:00-06:00 UTC</li><li> <strong>Asia Pacific (Singapore) Region:</strong> 14:00-22:00 UTC</li><li> <strong>Asia Pacific (Tokyo) Region:</strong> 17:00-03:00 UTC</li></ul>Constraints: Must be in the format <code>hh24:mi-hh24:mi</code>. Times should be Universal Time Coordinated (UTC). Must not conflict with the preferred maintenance window. Must be at least 30 minutes.</li>
 	 * 	<li><code>Port</code> - <code>integer</code> - Optional - The port number on which the database accepts connections. <strong>MySQL</strong> Default: <code>3306</code> Valid Values: <code>1150-65535</code> Type: Integer <strong>Oracle</strong> Default: <code>1521</code> Valid Values: <code>1150-65535</code></li>
@@ -272,10 +279,18 @@ class AmazonRDS extends CFRuntime
 	}
 
 	/**
-	 * Creates a new database parameter group.
+	 * Creates a new DB Parameter Group.
+	 *  
+	 * A DB Parameter Group is initially created with the default parameters for the database engine
+	 * used by the DB Instance. To provide custom values for any of the parameters, you must modify
+	 * the group after creating it using <em>ModifyDBParameterGroup</em>. Once you've created a DB
+	 * Parameter Group, you need to associate it with your DB Instance using
+	 * <em>ModifyDBInstance</em>. When you associate a new DB Parameter Group with a running DB
+	 * Instance, you need to reboot the DB Instance for the new DB Parameter Group and associated
+	 * settings to take effect.
 	 *
 	 * @param string $db_parameter_group_name (Required) The name of the DB Parameter Group. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul> <p class="note">This value is stored as a lower-case string.</p>
-	 * @param string $db_parameter_group_family (Required) The DB parameter group family name. A DB parameter group can be associated with one and only one DB parameter group family, and can be applied only to a DB instance running a database engine compatible with that DB parameter group family and version.
+	 * @param string $db_parameter_group_family (Required) The DB Parameter Group Family name. A DB Parameter Group can be associated with one and only one DB Parameter Group Family, and can be applied only to a DB Instance running a database engine and engine version compatible with that DB Parameter Group Family.
 	 * @param string $description (Required) The description for the DB Parameter Group.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -293,8 +308,7 @@ class AmazonRDS extends CFRuntime
 	}
 
 	/**
-	 * Creates a new database security group. Database Security groups control access to a database
-	 * instance.
+	 * Creates a new DB Security Group. DB Security Groups control access to a DB Instance.
 	 *
 	 * @param string $db_security_group_name (Required) The name for the DB Security Group. This value is stored as a lowercase string. Constraints: Must contain no more than 255 alphanumeric characters or hyphens. Must not be "Default". Example: <code>mysecuritygroup</code>
 	 * @param string $db_security_group_description (Required) The description for the DB Security Group.
@@ -355,14 +369,13 @@ class AmazonRDS extends CFRuntime
 	}
 
 	/**
-	 * Deletes a specified DBParameterGroup. The DBParameterGroup cannot be associated with any RDS
-	 * instances to be deleted.
+	 * Deletes a specified DBParameterGroup.
 	 * 
 	 * <p class="note">
-	 * The specified database parameter group cannot be associated with any DB Instances.
+	 * The specified DB Parameter Group cannot be associated with any DB Instances.
 	 * </p>
 	 *
-	 * @param string $db_parameter_group_name (Required) The name of the DB Parameter Group. Constraints:<ul><li>Must be the name of an existing DB Parameter Group</li><li>You cannot delete a default DB Parameter Group</li></ul>
+	 * @param string $db_parameter_group_name (Required) The name of the DB Parameter Group. Constraints:<ul><li>Must be the name of an existing DB Parameter Group</li><li>You cannot delete a default DB Parameter Group</li><li>Cannot be associated with any DB Instances</li></ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -377,13 +390,13 @@ class AmazonRDS extends CFRuntime
 	}
 
 	/**
-	 * Deletes a database security group.
+	 * Deletes a DB Security Group.
 	 * 
 	 * <p class="note">
-	 * The specified database security group must not be associated with any DB instances.
+	 * The specified DB Security Group must not be associated with any DB Instances.
 	 * </p>
 	 *
-	 * @param string $db_security_group_name (Required) The name of the database security group to delete. <p class="note">You cannot delete the default security group.</p> Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>
+	 * @param string $db_security_group_name (Required) The name of the DB Security Group to delete. <p class="note">You cannot delete the default DB Security Group.</p> Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -398,13 +411,13 @@ class AmazonRDS extends CFRuntime
 	}
 
 	/**
-	 * Deletes a DBSnapshot.
+	 * Deletes a DB Snapshot.
 	 * 
 	 * <p class="note">
 	 * The DBSnapshot must be in the <code>available</code> state to be deleted.
 	 * </p>
 	 *
-	 * @param string $db_snapshot_identifier (Required) The DBSnapshot identifier. Constraints: Must be the name of an existing DB Snapshot in the <code>available</code> state.
+	 * @param string $db_snapshot_identifier (Required) The name of the DB Snapshot to delete. Constraints: Must be the name of an existing DB Snapshot in the <code>available</code> state.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -424,7 +437,7 @@ class AmazonRDS extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Engine</code> - <code>string</code> - Optional - The database engine to return.</li>
 	 * 	<li><code>EngineVersion</code> - <code>string</code> - Optional - The database engine version to return. Example: <code>5.1.49</code></li>
-	 * 	<li><code>DBParameterGroupFamily</code> - <code>string</code> - Optional - The name of a specific database parameter group family to return details for. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul></li>
+	 * 	<li><code>DBParameterGroupFamily</code> - <code>string</code> - Optional - The name of a specific DB Parameter Group family to return details for. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul></li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of records to include in the response. If more than the <code>MaxRecords</code> value is available, a marker is included in the response so that the following results can be retrieved. Default: 100 Constraints: minimum 20, maximum 100</li>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - The marker provided in the previous request. If this parameter is specified, the response includes records beyond the marker only, up to <code>MaxRecords</code>.</li>
 	 * 	<li><code>DefaultOnly</code> - <code>boolean</code> - Optional - Indicates that only the default version of the specified engine or engine and major version combination is returned.</li>
@@ -459,12 +472,12 @@ class AmazonRDS extends CFRuntime
 
 	/**
 	 * Returns a list of DBParameterGroup descriptions. If a DBParameterGroupName is specified, the
-	 * list will contain only the descriptions of the specified DBParameterGroup.
+	 * list will contain only the description of the specified DBParameterGroup.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>DBParameterGroupName</code> - <code>string</code> - Optional - The name of a specific database parameter group to return details for. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul></li>
+	 * 	<li><code>DBParameterGroupName</code> - <code>string</code> - Optional - The name of a specific DB Parameter Group to return details for. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul></li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results may be retrieved. Default: 100 Constraints: minimum 20, maximum 100</li>
-	 * 	<li><code>Marker</code> - <code>string</code> - Optional - An optional marker provided in the previous DescribeDBInstances request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - An optional marker provided in the previous DescribeDBParameterGroups request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -479,7 +492,7 @@ class AmazonRDS extends CFRuntime
 	/**
 	 * Returns the detailed parameter list for a particular DBParameterGroup.
 	 *
-	 * @param string $db_parameter_group_name (Required) The name of a specific database parameter group to return details for. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>
+	 * @param string $db_parameter_group_name (Required) The name of a specific DB Parameter Group to return details for. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Source</code> - <code>string</code> - Optional - The parameter types to return. Default: All parameter types returned Valid Values: <code>user | system | engine-default</code></li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results may be retrieved. Default: 100 Constraints: minimum 20, maximum 100</li>
@@ -522,10 +535,10 @@ class AmazonRDS extends CFRuntime
 	 * Returns information about DBSnapshots. This API supports pagination.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>DBInstanceIdentifier</code> - <code>string</code> - Optional - The unique identifier for the Amazon RDS DB snapshot. This value is stored as a lowercase string. Constraints:<ul><li>Must contain from 1 to 63 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul></li>
-	 * 	<li><code>DBSnapshotIdentifier</code> - <code>string</code> - Optional - The DB Instance identifier. This parameter isn't case sensitive. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul></li>
+	 * 	<li><code>DBInstanceIdentifier</code> - <code>string</code> - Optional - A DB Instance Identifier to retrieve the list of DB Snapshots for. Cannot be used in conjunction with DBSnapshotIdentifier. Constraints:<ul><li>Must contain from 1 to 63 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul></li>
+	 * 	<li><code>DBSnapshotIdentifier</code> - <code>string</code> - Optional - A specific DB Snapshot Identifier to describe. Cannot be used in conjunction with DBInstanceIdentifier. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul></li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results may be retrieved. Default: 100 Constraints: minimum 20, maximum 100</li>
-	 * 	<li><code>Marker</code> - <code>string</code> - Optional - An optional marker provided in the previous DescribeDBInstances request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - An optional marker provided in the previous DescribeDBSnapshots request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -538,12 +551,13 @@ class AmazonRDS extends CFRuntime
 	}
 
 	/**
-	 * Returns the default engine and system parameter information for the specified database engine.
+	 * Returns the default engine and system parameter information for the specified DB Parameter
+	 * Group Family.
 	 *
 	 * @param string $db_parameter_group_family (Required) The name of the DB Parameter Group Family.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results may be retrieved. Default: 100 Constraints: minimum 20, maximum 100</li>
-	 * 	<li><code>Marker</code> - <code>string</code> - Optional - An optional marker provided in the previous DescribeDBInstances request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - An optional marker provided in the previous DescribeEngineDefaultParameters request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -558,9 +572,9 @@ class AmazonRDS extends CFRuntime
 
 	/**
 	 * Returns events related to DB Instances, DB Security Groups, DB Snapshots and DB Parameter
-	 * Groups for the past 14 days. Events specific to a particular DB Instance, database security
-	 * group, database snapshot or database parameter group can be obtained by providing the name as a
-	 * parameter. By default, the past hour of events are returned.
+	 * Groups for the past 14 days. Events specific to a particular DB Instance, DB Security Group, DB
+	 * Snapshot, or DB Parameter Group can be obtained by providing the name as a parameter. By
+	 * default, the past hour of events are returned.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>SourceIdentifier</code> - <code>string</code> - Optional - The identifier of the event source for which events will be returned. If not specified, then all sources are included in the response. Constraints:<ul><li>If SourceIdentifier is supplied, SourceType must also be provided.</li><li>If the source type is DBInstance, then a DBInstanceIdentifier must be supplied.</li><li>If the source type is DBSecurityGroup, a DBSecurityGroupName must be supplied.</li><li>If the source type is DBParameterGroup, a DBParameterGroupName must be supplied.</li><li>If the source type is DBSnapshot, a DBSnapshotIdentifier must be supplied.</li><li>Cannot end with a hyphen or contain two consecutive hyphens.</li></ul></li>
@@ -569,7 +583,7 @@ class AmazonRDS extends CFRuntime
 	 * 	<li><code>EndTime</code> - <code>string</code> - Optional - The end of the time interval for which to retrieve events, specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> Example: 2009-07-08T18:00Z May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
 	 * 	<li><code>Duration</code> - <code>integer</code> - Optional - The number of minutes to retrieve events for. Default: 60</li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results may be retrieved. Default: 100 Constraints: minimum 20, maximum 100</li>
-	 * 	<li><code>Marker</code> - <code>string</code> - Optional - An optional marker provided in the previous DescribeDBInstances request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - An optional marker provided in the previous DescribeEvents request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -667,7 +681,7 @@ class AmazonRDS extends CFRuntime
 	 *
 	 * @param string $db_instance_identifier (Required) The DB Instance identifier. This value is stored as a lowercase string. Constraints:<ul><li>Must be the identifier for an existing DB Instance</li><li>Must contain from 1 to 63 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>Example:<copy>mydbinstance</copy>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>AllocatedStorage</code> - <code>integer</code> - Optional - The new storage capacity of the RDS instance. This change does not result in an outage and is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is specified as <code>true</code> for this request. <strong>MySQL</strong> Default: Uses existing setting Valid Values: 5-1024 Constraints: Value supplied must be at least 10% greater than the current value. Values that are not at least 10% greater than the existing value are rounded up so that they are 10% greater than the current value. Type: Integer <strong>MySQL</strong> Default: Uses existing setting Valid Values: 10-1024 Constraints: Value supplied must be at least 10% greater than the current value. Values that are not at least 10% greater than the existing value are rounded up so that they are 10% greater than the current value.</li>
+	 * 	<li><code>AllocatedStorage</code> - <code>integer</code> - Optional - The new storage capacity of the RDS instance. This change does not result in an outage and is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is specified as <code>true</code> for this request. <strong>MySQL</strong> Default: Uses existing setting Valid Values: 5-1024 Constraints: Value supplied must be at least 10% greater than the current value. Values that are not at least 10% greater than the existing value are rounded up so that they are 10% greater than the current value. Type: Integer <strong>Oracle</strong> Default: Uses existing setting Valid Values: 10-1024 Constraints: Value supplied must be at least 10% greater than the current value. Values that are not at least 10% greater than the existing value are rounded up so that they are 10% greater than the current value.</li>
 	 * 	<li><code>DBInstanceClass</code> - <code>string</code> - Optional - The new compute and memory capacity of the DB Instance. Passing a value for this parameter causes an outage during the change and is applied during the next maintenance window, unless the <code>ApplyImmediately</code> parameter is specified as <code>true</code> for this request. Default: Uses existing setting Valid Values: <code>db.m1.small | db.m1.large | db.m1.xlarge | db.m2.xlarge | db.m2.2xlarge | db.m2.4xlarge</code></li>
 	 * 	<li><code>DBSecurityGroups</code> - <code>string|array</code> - Optional - A list of DB Security Groups to authorize on this DB Instance. This change is asynchronously applied as soon as possible. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul> Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>ApplyImmediately</code> - <code>boolean</code> - Optional - Specifies whether or not the modifications in this request and any pending modifications are asynchronously applied as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the DB Instance. If this parameter is passed as <code>false</code>, changes to the DB Instance are applied on the next call to <code>RebootDBInstance</code>, the next maintenance reboot, or the next failure reboot, whichever occurs first. Default: <code>false</code></li>
@@ -705,8 +719,12 @@ class AmazonRDS extends CFRuntime
 	 * Modifies the parameters of a DBParameterGroup. To modify more than one parameter submit a list
 	 * of the following: ParameterName, ParameterValue, and ApplyMethod. A maximum of 20 parameters
 	 * can be modified in a single request.
+	 * 
+	 * <p class="note"></p> 
+	 * The <code>apply-immediate</code> method can only be used for dynamic parameters; the
+	 * <code>pending-reboot</code> method can be used for either dynamic or static parameters.
 	 *
-	 * @param string $db_parameter_group_name (Required) The name of the database parameter group. Constraints:<ul><li>Must be the name of an existing database parameter group</li><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>
+	 * @param string $db_parameter_group_name (Required) The name of the DB Parameter Group. Constraints:<ul><li>Must be the name of an existing DB Parameter Group</li><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>
 	 * @param array $parameters (Required) An array of parameter names, values, and the apply method for the parameter update. At least one parameter name, value, and apply method must be supplied; subsequent arguments are optional. A maximum of 20 parameters may be modified in a single request. Valid Values (for the application method): <code>immediate | pending-reboot</code>  <p class="note">You can use the immediate value with dynamic parameters only. You can use the pending-reboot value for both dynamic and static parameters, and changes are applied when DB Instance reboots.</p> <ul>
 	 * 	<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 		<li><code>ParameterName</code> - <code>string</code> - Optional - Specifies the name of the parameter.</li>
@@ -780,7 +798,7 @@ class AmazonRDS extends CFRuntime
 	}
 
 	/**
-	 * Modifies the parameters of a DBParameterGroup to the engine/system default value. To reset
+	 * Resets the parameters of a DBParameterGroup to the engine/system default value. To reset
 	 * specific parameters submit a list of the following: ParameterName and ApplyMethod. To reset the
 	 * entire DBParameterGroup specify the DBParameterGroup name and ResetAllParameters parameters.
 	 * When resetting the entire group, dynamic parameters are updated immediately and static
@@ -826,16 +844,15 @@ class AmazonRDS extends CFRuntime
 	}
 
 	/**
-	 * Restores a DB Instance to an arbitrary point-in-time. Users can restore to any point in time
-	 * before the latestRestorableTime for up to backupRetentionPeriod days. The target database is
-	 * created from the source database with the same configuration as the original database except
-	 * that the DB instance is created with the default DB security group.
+	 * Creates a new DB Instance from a DB snapshot. The new DB Instance will have the same
+	 * configuration as the original source database, except that the new DB instance is created with
+	 * the default security group.
 	 *
 	 * @param string $db_instance_identifier (Required) The identifier for the DB Snapshot to restore from. Constraints:<ul><li>Must contain from 1 to 63 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>
 	 * @param string $db_snapshot_identifier (Required) Name of the DB Instance to create from the DB Snapshot. This parameter isn't case sensitive. Constraints:<ul><li>Must contain from 1 to 255 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>Example: <code>my-snapshot-id</code>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>DBInstanceClass</code> - <code>string</code> - Optional - The compute and memory capacity of the Amazon RDS DB instance. Valid Values: <code>db.m1.small | db.m1.large | db.m1.xlarge | db.m2.2xlarge | db.m2.4xlarge</code></li>
-	 * 	<li><code>Port</code> - <code>integer</code> - Optional - The port number on which the database accepts connections. Default: The same port as the original DB Instance Constraints: Value must be <code>1115-65535</code></li>
+	 * 	<li><code>Port</code> - <code>integer</code> - Optional - The port number on which the database accepts connections. Default: The same port as the original DB Instance Constraints: Value must be <code>1150-65535</code></li>
 	 * 	<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The EC2 Availability Zone that the database instance will be created in. Default: A random, system-chosen Availability Zone. Constraint: You cannot specify the AvailabilityZone parameter if the MultiAZ parameter is set to <code>true</code>. Example: <code>us-east-1a</code></li>
 	 * 	<li><code>MultiAZ</code> - <code>boolean</code> - Optional - Specifies if the DB Instance is a Multi-AZ deployment. Constraint: You cannot specify the AvailabilityZone parameter if the MultiAZ parameter is set to <code>true</code>.</li>
 	 * 	<li><code>AutoMinorVersionUpgrade</code> - <code>boolean</code> - Optional - Indicates that minor version upgrades will be applied automatically to the DB Instance during the maintenance window.</li>
@@ -856,17 +873,18 @@ class AmazonRDS extends CFRuntime
 	}
 
 	/**
-	 * Creates a new DB Instance from a point-in-time system snapshot. The target database is created
-	 * from the source database restore point with the same configuration as the original source
-	 * database, except that the new RDS instance is created with the default security group.
+	 * Restores a DB Instance to an arbitrary point-in-time. Users can restore to any point in time
+	 * before the latestRestorableTime for up to backupRetentionPeriod days. The target database is
+	 * created from the source database with the same configuration as the source database except that
+	 * the new DB instance is created with the default DB security group.
 	 *
 	 * @param string $source_db_instance_identifier (Required) The identifier of the source DB Instance from which to restore. Constraints:<ul><li>Must be the identifier of an existing database instance</li><li>Must contain from 1 to 63 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>
 	 * @param string $target_db_instance_identifier (Required) The name of the new database instance to be created. Constraints:<ul><li>Must contain from 1 to 63 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>RestoreTime</code> - <code>string</code> - Optional - The date and time from to restore from. Valid Values: Value must be a UTC time Constraints:<ul><li>Must be after the latest restorable time for the DB Instance</li><li>Cannot be specified if UseLatestRestorableTime parameter is true</li></ul>Example: <code>2009-09-07T23:45:00Z</code> May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
+	 * 	<li><code>RestoreTime</code> - <code>string</code> - Optional - The date and time to restore from. Valid Values: Value must be a UTC time Constraints:<ul><li>Must be before the latest restorable time for the DB Instance</li><li>Cannot be specified if UseLatestRestorableTime parameter is true</li></ul>Example: <code>2009-09-07T23:45:00Z</code> May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
 	 * 	<li><code>UseLatestRestorableTime</code> - <code>boolean</code> - Optional - Specifies whether (<code>true</code>) or not (<code>false</code>) the DB Instance is restored from the latest backup time. Default: <code>false</code> Constraints: Cannot be specified if RestoreTime parameter is provided.</li>
 	 * 	<li><code>DBInstanceClass</code> - <code>string</code> - Optional - The compute and memory capacity of the Amazon RDS DB instance. Valid Values: <code>db.m1.small | db.m1.large | db.m1.xlarge | db.m2.2xlarge | db.m2.4xlarge</code> Default: The same DBInstanceClass as the original DB Instance.</li>
-	 * 	<li><code>Port</code> - <code>integer</code> - Optional - The port number on which the database accepts connections. Constraints: Value must be <code>1115-65535</code> Default: The same port as the original DB Instance.</li>
+	 * 	<li><code>Port</code> - <code>integer</code> - Optional - The port number on which the database accepts connections. Constraints: Value must be <code>1150-65535</code> Default: The same port as the original DB Instance.</li>
 	 * 	<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The EC2 Availability Zone that the database instance will be created in. Default: A random, system-chosen Availability Zone. Constraint: You cannot specify the AvailabilityZone parameter if the MultiAZ parameter is set to true. Example: <code>us-east-1a</code></li>
 	 * 	<li><code>MultiAZ</code> - <code>boolean</code> - Optional - Specifies if the DB Instance is a Multi-AZ deployment. Constraint: You cannot specify the AvailabilityZone parameter if the MultiAZ parameter is set to <code>true</code>.</li>
 	 * 	<li><code>AutoMinorVersionUpgrade</code> - <code>boolean</code> - Optional - Indicates that minor version upgrades will be applied automatically to the DB Instance during the maintenance window.</li>
@@ -901,7 +919,7 @@ class AmazonRDS extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>CIDRIP</code> - <code>string</code> - Optional - The IP range to revoke access from. Must be a valid CIDR range. If <code>CIDRIP</code> is specified, <code>EC2SecurityGroupName</code> and <code>EC2SecurityGroupOwnerId</code> cannot be provided.</li>
 	 * 	<li><code>EC2SecurityGroupName</code> - <code>string</code> - Optional - The name of the EC2 Security Group to revoke access from. If <code>EC2SecurityGroupName</code> is specified, <code>EC2SecurityGroupOwnerId</code> must also be provided and <code>CIDRIP</code> cannot be provided.</li>
-	 * 	<li><code>EC2SecurityGroupOwnerId</code> - <code>string</code> - Optional - The AWS Account Number of the owner of the security group specified in the <code>EC2SecurityGroupName</code> parameter. The AWS Access Key ID is not an acceptable value. If <code>EC2SecurityGroupOwnerId</code> is specified <code>EC2SecurityGroupName</code> must also be provided and <code>CIDRIP</code> cannot be provided.</li>
+	 * 	<li><code>EC2SecurityGroupOwnerId</code> - <code>string</code> - Optional - The AWS Account Number of the owner of the EC2 Security specified in the <code>EC2SecurityGroupName</code> parameter. The AWS Access Key ID is not an acceptable value. If <code>EC2SecurityGroupOwnerId</code> is specified <code>EC2SecurityGroupName</code> must also be provided and <code>CIDRIP</code> cannot be provided.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.

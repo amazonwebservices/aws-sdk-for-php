@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ class CloudFront_Exception extends Exception {}
  * seamlessly with the Amazon Simple Storage Service, which durably stores the original, definitive versions
  * of your files.
  *
- * @version 2011.11.16
+ * @version 2012.01.17
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/cloudfront/ Amazon CloudFront
@@ -103,19 +103,11 @@ class AmazonCloudFront extends CFRuntime
 
 		$this->base_xml = '<?xml version="1.0" encoding="UTF-8"?><%s xmlns="http://cloudfront.amazonaws.com/doc/' . $this->api_version . '/"></%1$s>';
 
-		// Set a default key pair ID and private key
-		if (isset($options['credentials']))
-		{
-			$this->key_pair_id = CFCredentials::get($options['credentials'])->cloudfront_keypair;
-			$this->private_key = CFCredentials::get($options['credentials'])->cloudfront_pem;
-		}
-		else
-		{
-			$this->key_pair_id = CFCredentials::get()->cloudfront_keypair;
-			$this->private_key = CFCredentials::get()->cloudfront_pem;
-		}
+		parent::__construct($options);
 
-		return parent::__construct($options);
+		// Set a default key pair ID and private key
+		$this->key_pair_id = $this->credentials->cloudfront_keypair;
+		$this->private_key = $this->credentials->cloudfront_pem;
 	}
 
 
@@ -126,19 +118,20 @@ class AmazonCloudFront extends CFRuntime
 	 * Authenticates a connection to Amazon CloudFront. This method should not be used directly unless
 	 * you're writing custom methods for this class.
 	 *
-	 * @param string $method (Required) The HTTP method to use to connect. Accepts <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, and <code>HEAD</code>.
-	 * @param string $path (Optional) The endpoint path to make requests to.
-	 * @param array $opt (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
-	 * @param string $xml (Optional) The XML body content to send along in the request.
-	 * @param string $etag (Optional) The ETag value to pass along with the If-Match HTTP header.
-	 * @param integer $redirects (Do Not Use) Used internally by this function on occasions when Amazon S3 returns a redirect code and it needs to call itself recursively.
+	 * @param string $operation (Required) The HTTP method to use to connect. Accepts <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, and <code>HEAD</code>.
+	 * @param array $payload (Required) An associative array of parameters for authenticating. See the individual methods for allowed keys.
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 * @link http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/RESTAuthentication.html Authentication
 	 */
-	public function authenticate($method = 'GET', $path = null, $opt = null, $xml = null, $etag = null, $redirects = 0)
+	public function authenticate($operation, $payload)
 	{
-		if (!$opt) $opt = array();
+		// Extract data from payload
 		$querystring = null;
+		$opt = ($payload) ? $payload : array();
+		$method = $operation;
+		$path = isset($opt['path']) ? $opt['path'] : null;
+		$xml = isset($opt['xml']) ? $opt['xml'] : null;
+		$etag = isset($opt['etag']) ? $opt['etag'] : null;
 
 		$method_arguments = func_get_args();
 
@@ -192,6 +185,7 @@ class AmazonCloudFront extends CFRuntime
 		// Update RequestCore settings
 		$request->request_class = $this->request_class;
 		$request->response_class = $this->response_class;
+		$request->ssl_verification = $this->ssl_verification;
 
 		// Pass along registered stream callbacks
 		if ($this->registered_streaming_read_callback)
@@ -231,7 +225,6 @@ class AmazonCloudFront extends CFRuntime
 		if (isset($opt['curlopts']))
 		{
 			$curlopts = $opt['curlopts'];
-			unset($opt['curlopts']);
 		}
 
 		// Debug mode
@@ -271,44 +264,18 @@ class AmazonCloudFront extends CFRuntime
 		// Was it Amazon's fault the request failed? Retry the request until we reach $max_retries.
 		if ((integer) $request->get_response_code() === 500 || (integer) $request->get_response_code() === 503)
 		{
-			if ($redirects <= $this->max_retries)
+			if ($this->redirects <= $this->max_retries)
 			{
 				// Exponential backoff
-				$delay = (integer) (pow(4, $redirects) * 100000);
+				$delay = (integer) (pow(4, $this->redirects) * 100000);
 				usleep($delay);
-				$data = $this->authenticate($method, $path, $opt, $xml, $etag, ++$redirects);
+				$this->redirects++;
+				$data = $this->authenticate($method, $opt);
 			}
 		}
 
+		$this->redirects = 0;
 		return $data;
-	}
-
-	/**
-	 * When caching is enabled, this method fires the request to the server, and the response is cached.
-	 * Accepts identical parameters as <authenticate()>. You should never call this method directly—it is
-	 * used internally by the caching system.
-	 *
-	 * @param string $method (Required) The HTTP method to use to connect. Accepts <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, and <code>HEAD</code>.
-	 * @param string $path (Optional) The endpoint path to make requests to.
-	 * @param array $opt (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
-	 * @param string $xml (Optional) The XML body content to send along in the request.
-	 * @param string $etag (Optional) The ETag value to pass along with the If-Match HTTP header.
-	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
-	 */
-	public function cache_callback($method = 'GET', $path = null, $opt = null, $xml = null, $etag = null)
-	{
-		// Disable the cache flow since it's already been handled.
-		$this->use_cache_flow = false;
-
-		// Make the request
-		$response = $this->authenticate($method, $path, $opt, $xml, $etag);
-
-		if (isset($response->body) && ($response->body instanceof SimpleXMLElement))
-		{
-			$response->body = $response->body->asXML();
-		}
-
-		return $response;
 	}
 
 
@@ -545,14 +512,25 @@ class AmazonCloudFront extends CFRuntime
 			}
 			elseif (isset($xml->S3Origin->OriginAccessIdentity))
 			{
-				$origin->addChild('OriginAccessIdentity', $xml->OriginAccessIdentity);
+				$origin->addChild('OriginAccessIdentity', $xml->S3Origin->OriginAccessIdentity);
 			}
 		}
 		elseif (isset($xml->CustomOrigin))
 		{
 			$origin = $update->addChild('CustomOrigin');
 			$origin->addChild('DNSName', $xml->CustomOrigin->DNSName);
+
+			// origin access identity
+			if (isset($opt['OriginAccessIdentity']))
+			{
+				$origin->addChild('OriginAccessIdentity', 'origin-access-identity/cloudfront/' . $opt['OriginAccessIdentity']);
+			}
+			elseif (isset($xml->CustomOrigin->OriginAccessIdentity))
+			{
+				$origin->addChild('OriginAccessIdentity', $xml->CustomOrigin->OriginAccessIdentity);
+			}
 		}
+
 		$update->addChild('CallerReference', $xml->CallerReference);
 
 		// Add existing CNAME values
@@ -858,7 +836,9 @@ class AmazonCloudFront extends CFRuntime
 		$xml = $this->generate_config_xml($origin, $caller_reference, $opt);
 		$path = '/' . ((isset($opt['Streaming']) && $opt['Streaming'] == (bool) true) ? 'streaming-distribution' : 'distribution');
 
-		return $this->authenticate('POST', $path, $opt, $xml, null);
+		$opt = array_merge($opt, array('path' => $path, 'xml' => $xml));
+
+		return $this->authenticate('POST', $opt);
 	}
 
 	/**
@@ -894,7 +874,9 @@ class AmazonCloudFront extends CFRuntime
 
 		$path = '/' . ((isset($opt['Streaming']) && $opt['Streaming'] == (bool) true) ? 'streaming-distribution' : 'distribution');
 
-		return $this->authenticate('GET', $path, $opt, null, null);
+		$opt = array_merge($opt, array('path' => $path));
+
+		return $this->authenticate('GET', $opt);
 	}
 
 	/**
@@ -919,7 +901,9 @@ class AmazonCloudFront extends CFRuntime
 		$path = '/' . ((isset($opt['Streaming']) && $opt['Streaming'] == (bool) true) ? 'streaming-distribution' : 'distribution');
 		$path .= '/' . $distribution_id;
 
-		return $this->authenticate('GET', $path, $opt, null, null);
+		$opt = array_merge($opt, array('path' => $path));
+
+		return $this->authenticate('GET', $opt);
 	}
 
 	/**
@@ -947,7 +931,9 @@ class AmazonCloudFront extends CFRuntime
 		$path = '/' . ((isset($opt['Streaming']) && $opt['Streaming'] == (bool) true) ? 'streaming-distribution' : 'distribution');
 		$path .= '/' . $distribution_id;
 
-		return $this->authenticate('DELETE', $path, $opt, null, $etag);
+		$opt = array_merge($opt, array('path' => $path, 'etag' => $etag));
+
+		return $this->authenticate('DELETE', $opt);
 	}
 
 	/**
@@ -972,7 +958,9 @@ class AmazonCloudFront extends CFRuntime
 		$path = '/' . ((isset($opt['Streaming']) && $opt['Streaming'] == (bool) true) ? 'streaming-distribution' : 'distribution');
 		$path .= '/' . $distribution_id . '/config';
 
-		return $this->authenticate('GET', $path, $opt, null, null);
+		$opt = array_merge($opt, array('path' => $path));
+
+		return $this->authenticate('GET', $opt);
 	}
 
 	/**
@@ -999,7 +987,9 @@ class AmazonCloudFront extends CFRuntime
 		$path = '/' . ((isset($opt['Streaming']) && $opt['Streaming'] == (bool) true) ? 'streaming-distribution' : 'distribution');
 		$path .= '/' . $distribution_id . '/config';
 
-		return $this->authenticate('PUT', $path, $opt, $xml, $etag);
+		$opt = array_merge($opt, array('path' => $path, 'xml' => $xml, 'etag' => $etag));
+
+		return $this->authenticate('PUT', $opt);
 	}
 
 
@@ -1025,7 +1015,9 @@ class AmazonCloudFront extends CFRuntime
 		$path = '/origin-access-identity/cloudfront';
 		$xml = $this->generate_oai_xml($caller_reference, $opt);
 
-		return $this->authenticate('POST', $path, $opt, $xml, null);
+		$opt = array_merge($opt, array('path' => $path, 'xml' => $xml));
+
+		return $this->authenticate('POST', $opt);
 	}
 
 	/**
@@ -1057,7 +1049,9 @@ class AmazonCloudFront extends CFRuntime
 
 		$path = '/origin-access-identity/cloudfront';
 
-		return $this->authenticate('GET', $path, $opt, null, null);
+		$opt = array_merge($opt, array('path' => $path));
+
+		return $this->authenticate('GET', $opt);
 	}
 
 	/**
@@ -1076,7 +1070,9 @@ class AmazonCloudFront extends CFRuntime
 
 		$path = '/origin-access-identity/cloudfront/' . $identity_id;
 
-		return $this->authenticate('GET', $path, $opt, null, null);
+		$opt = array_merge($opt, array('path' => $path));
+
+		return $this->authenticate('GET', $opt);
 	}
 
 	/**
@@ -1099,7 +1095,9 @@ class AmazonCloudFront extends CFRuntime
 
 		$path = '/origin-access-identity/cloudfront/' . $identity_id;
 
-		return $this->authenticate('DELETE', $path, $opt, null, $etag);
+		$opt = array_merge($opt, array('path' => $path, 'etag' => $etag));
+
+		return $this->authenticate('DELETE', $opt);
 	}
 
 	/**
@@ -1118,7 +1116,9 @@ class AmazonCloudFront extends CFRuntime
 
 		$path = '/origin-access-identity/cloudfront/' . $identity_id . '/config';
 
-		return $this->authenticate('GET', $path, $opt, null, null);
+		$opt = array_merge($opt, array('path' => $path));
+
+		return $this->authenticate('GET', $opt);
 	}
 
 	/**
@@ -1145,7 +1145,9 @@ class AmazonCloudFront extends CFRuntime
 
 		$path = '/origin-access-identity/cloudfront/' . $identity_id . '/config';
 
-		return $this->authenticate('PUT', $path, $opt, $xml, $etag);
+		$opt = array_merge($opt, array('path' => $path, 'xml' => $xml, 'etag' => $etag));
+
+		return $this->authenticate('PUT', $opt);
 	}
 
 
@@ -1172,7 +1174,9 @@ class AmazonCloudFront extends CFRuntime
 		$path = '/distribution/' . $distribution_id . '/invalidation';
 		$xml = $this->generate_invalidation_xml($caller_reference, $opt);
 
-		return $this->authenticate('POST', $path, $opt, $xml, null);
+		$opt = array_merge($opt, array('path' => $path, 'xml' => $xml));
+
+		return $this->authenticate('POST', $opt);
 	}
 
 	/**
@@ -1204,7 +1208,9 @@ class AmazonCloudFront extends CFRuntime
 
 		$path = '/distribution/' . $distribution_id . '/invalidation';
 
-		return $this->authenticate('GET', $path, $opt, null, null);
+		$opt = array_merge($opt, array('path' => $path));
+
+		return $this->authenticate('GET', $opt);
 	}
 
 	/**
@@ -1224,7 +1230,9 @@ class AmazonCloudFront extends CFRuntime
 
 		$path = '/distribution/' . $distribution_id . '/invalidation/' . $invalidation_id;
 
-		return $this->authenticate('GET', $path, $opt, null, null);
+		$opt = array_merge($opt, array('path' => $path));
+
+		return $this->authenticate('GET', $opt);
 	}
 
 

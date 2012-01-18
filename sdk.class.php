@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -22,6 +22,11 @@
  * Default CFRuntime Exception.
  */
 class CFRuntime_Exception extends Exception {}
+
+/**
+ * Parsing Exception.
+ */
+class Parser_Exception extends Exception {}
 
 
 /*%******************************************************************************************%*/
@@ -81,7 +86,7 @@ function __aws_sdk_ua_callback()
 
 	foreach (array('memory_limit', 'date.timezone', 'open_basedir', 'safe_mode', 'zend.enable_gc') as $cfg)
 	{
-		$cfg_value = get_cfg_var($cfg);
+		$cfg_value = ini_get($cfg);
 
 		if (in_array($cfg, array('memory_limit', 'date.timezone'), true))
 		{
@@ -110,9 +115,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.5.0.1');
+define('CFRUNTIME_VERSION', '1.5.1');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '20111221014733');
+define('CFRUNTIME_BUILD', '2012011811285200');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . str_replace(' ', '_', php_uname('s')) . '/' . str_replace(' ', '_', php_uname('r')) . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -123,7 +128,7 @@ define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/'
  * Core functionality and default settings shared across all SDK classes. All methods and properties in this
  * class are inherited by the service-specific classes.
  *
- * @version 2011.11.18
+ * @version 2012.01.17
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -216,11 +221,6 @@ class CFRuntime
 	 * The default class to use for handling batch requests (defaults to <CFBatchRequest>).
 	 */
 	public $batch_class = 'CFBatchRequest';
-
-	/**
-	 * The number of seconds to adjust the request timestamp by (defaults to 0).
-	 */
-	public $adjust_offset = 0;
 
 	/**
 	 * The state of SSL/HTTPS use.
@@ -357,6 +357,11 @@ class CFRuntime
 	 */
 	public $redirects = 0;
 
+	/**
+	 * The state of whether the response should be parsed or not.
+	 */
+	public $parse_the_response = true;
+
 
 	/*%******************************************************************************************%*/
 	// CONSTRUCTOR
@@ -382,31 +387,46 @@ class CFRuntime
 		// Determine the current service.
 		$this->service = get_class($this);
 
-		// Store the requested credentials
-		$this->credentials = CFCredentials::get(
-			(isset($options['credentials']) ? $options['credentials'] : CFCredentials::DEFAULT_KEY)
-		);
-		$this->credentials = new CFCredential(array_merge($this->credentials->to_array(), $options));
+		// Create credentials based on the options
+		$instance_credentials = new CFCredential($options);
 
-		// Automatically enable whichever caching mechanism is set to default.
-		$this->set_cache_config($this->credentials->default_cache_config);
-
-		if (isset($options['key']) && isset($options['secret']))
+		// Retreive a credential set from config.inc.php if it exists
+		if (isset($options['credentials']))
 		{
-			$this->key = $options['key'];
-			$this->secret_key = $options['secret'];
-			$this->auth_token = isset($options['token']) ? $options['token'] : null;
-
-			return;
+			// Use a specific credential set and merge with the instance credentials
+			$this->credentials = CFCredentials::get($options['credentials'])
+				->merge($instance_credentials);
 		}
 		else
 		{
-			$this->key = $this->credentials->key;
-			$this->secret_key = $this->credentials->secret;
-			$this->auth_token = $this->credentials->token;
-
-			return;
+			try
+			{
+				// Use the default credential set and merge with the instance credentials
+				$this->credentials = CFCredentials::get(CFCredentials::DEFAULT_KEY)
+					->merge($instance_credentials);
+			}
+			catch (CFCredentials_Exception $e)
+			{
+				if (isset($options['key']) && isset($options['secret']))
+				{
+					// Only the instance credentials were provided
+					$this->credentials = $instance_credentials;
+				}
+				else
+				{
+					// No credentials provided in the config file or constructor
+					throw new CFCredentials_Exception('No credentials were provided to ' . $this->service . '.');
+				}
+			}
 		}
+
+		// Set internal credentials after they are resolved
+		$this->key = $this->credentials->key;
+		$this->secret_key = $this->credentials->secret;
+		$this->auth_token = $this->credentials->token;
+
+		// Automatically enable whichever caching mechanism is set to default.
+		$this->set_cache_config($this->credentials->default_cache_config);
 	}
 
 	/**
@@ -759,17 +779,21 @@ class CFRuntime
 	/**
 	 * Default, shared method for authenticating a connection to AWS.
 	 *
+	 * @param string $operation (Required) Indicates the operation to perform.
+	 * @param array $payload (Required) An associative array of parameters for authenticating. See the individual methods for allowed keys.
 	 * @return CFResponse Object containing a parsed HTTP response.
 	 */
 	public function authenticate($operation, $payload)
 	{
+		$original_payload = $payload;
+		$method_arguments = func_get_args();
+		$curlopts = array();
+		$return_curl_handle = false;
+
 		if (substr($operation, 0, strlen($this->operation_prefix)) !== $this->operation_prefix)
 		{
 			$operation = $this->operation_prefix . $operation;
 		}
-
-		$method_arguments = func_get_args();
-		$curlopts = array();
 
 		// Extract the custom CURLOPT settings from the payload
 		if (is_array($payload) && isset($payload['curlopts']))
@@ -779,8 +803,11 @@ class CFRuntime
 		}
 
 		// Determine whether the response or curl handle should be returned
-		$return_curl_handle = isset($payload['returnCurlHandle']) ? $payload['returnCurlHandle'] : false;
-		unset($payload['returnCurlHandle']);
+		if (is_array($payload) && isset($payload['returnCurlHandle']))
+		{
+			$return_curl_handle = isset($payload['returnCurlHandle']) ? $payload['returnCurlHandle'] : false;
+			unset($payload['returnCurlHandle']);
+		}
 
 		// Use the caching flow to determine if we need to do a round-trip to the server.
 		if ($this->use_cache_flow)
@@ -865,14 +892,19 @@ class CFRuntime
 		// Prepare the response.
 		$headers = $request->get_response_header();
 		$headers['x-aws-stringtosign'] = $signer->string_to_sign;
+
+		if (isset($signer->canonical_request))
+		{
+			$headers['x-aws-canonicalrequest'] = $signer->canonical_request;
+		}
+
 		$headers['x-aws-request-headers'] = $request->request_headers;
 		$headers['x-aws-body'] = $signer->querystring;
 
-		$data = new $this->response_class($headers, $this->parse_callback($request->get_response_body(), $headers), $request->get_response_code());
+		$data = new $this->response_class($headers, ($this->parse_the_response === true) ? $this->parse_callback($request->get_response_body()) : $request->get_response_body(), $request->get_response_code());
 
 		// Was it Amazon's fault the request failed? Retry the request until we reach $max_retries.
 		if (
-			((integer) $request->get_response_code() === 400 && (string) $request->get_response_body() === '{"__type": "com.amazon.coral.availability#ThrottlingException"}') || // Bad Request (throttled)
 		    (integer) $request->get_response_code() === 500 || // Internal Error (presumably transient)
 		    (integer) $request->get_response_code() === 503)   // Service Unavailable (presumably transient)
 		{
@@ -882,7 +914,30 @@ class CFRuntime
 				$delay = (integer) (pow(4, $this->redirects) * 100000);
 				usleep($delay);
 				$this->redirects++;
-				$data = $this->authenticate($operation, $payload);
+				$data = $this->authenticate($operation, $original_payload);
+			}
+		}
+
+		// DynamoDB has custom logic
+		elseif (
+			(integer) $request->get_response_code() === 400 &&
+			 stripos((string) $request->get_response_body(), 'com.amazonaws.dynamodb.') !== false && (
+				stripos((string) $request->get_response_body(), 'ProvisionedThroughputExceededException') !== false
+			)
+		)
+		{
+			if ($this->redirects === 0)
+			{
+				$this->redirects++;
+				$data = $this->authenticate($operation, $original_payload);
+			}
+			elseif ($this->redirects <= max($this->max_retries, 10))
+			{
+				// Exponential backoff
+				$delay = (integer) (pow(2, ($this->redirects - 1)) * 50000);
+				usleep($delay);
+				$this->redirects++;
+				$data = $this->authenticate($operation, $original_payload);
 			}
 		}
 
@@ -1022,47 +1077,21 @@ class CFRuntime
 			{
 				case 'gzip':
 				case 'x-gzip':
-					if (strpos($headers['_info']['url'], 'monitoring.') !== false)
+					$decoder = new CFGzipDecode($body);
+					if ($decoder->parse())
 					{
-						// CloudWatch incorrectly uses the deflate algorithm when they say gzip.
-						if (($uncompressed = gzuncompress($body)) !== false)
-						{
-							$body = $uncompressed;
-						}
-						elseif (($uncompressed = gzinflate($body)) !== false)
-						{
-							$body = $uncompressed;
-						}
-						break;
+						$body = $decoder->data;
 					}
-					else
-					{
-						// Everyone else uses gzip correctly.
-						$decoder = new CFGzipDecode($body);
-						if ($decoder->parse())
-						{
-							$body = $decoder->data;
-						}
-						break;
-					}
+					break;
 
 				case 'deflate':
-					if (strpos($headers['_info']['url'], 'monitoring.') !== false)
+					if (($uncompressed = gzuncompress($body)) !== false)
 					{
-						// CloudWatch incorrectly does nothing when they say deflate.
-						continue;
+						$body = $uncompressed;
 					}
-					else
+					elseif (($uncompressed = gzinflate($body)) !== false)
 					{
-						// Everyone else uses deflate correctly.
-						if (($uncompressed = gzuncompress($body)) !== false)
-						{
-							$body = $uncompressed;
-						}
-						elseif (($uncompressed = gzinflate($body)) !== false)
-						{
-							$body = $uncompressed;
-						}
+						$body = $uncompressed;
 					}
 					break;
 			}
@@ -1077,8 +1106,14 @@ class CFRuntime
 			// Strip the default XML namespace to simplify XPath expressions
 			$body = str_replace("xmlns=", "ns=", $body);
 
-			// Parse the XML body
-			$body = new $this->parser_class($body);
+			try {
+				// Parse the XML body
+				$body = new $this->parser_class($body);
+			}
+			catch (Exception $e)
+			{
+				throw new Parser_Exception($e->getMessage());
+			}
 		}
 		// Look for JSON cues
 		elseif (
@@ -1143,19 +1178,17 @@ class CFRuntime
 	 * this method is cached. Accepts identical parameters as the <authenticate()> method. Never call this
 	 * method directly -- it is used internally by the caching system.
 	 *
-	 * @param string $action (Required) Indicates the action to perform.
-	 * @param array $opt (Optional) An associative array of parameters for authenticating. See the individual methods for allowed keys.
-	 * @param string $domain (Optional) The URL of the queue to perform the action on.
-	 * @param integer $signature_version (Optional) The signature version to use. Defaults to 2.
+	 * @param string $operation (Required) Indicates the operation to perform.
+	 * @param array $payload (Required) An associative array of parameters for authenticating. See the individual methods for allowed keys.
 	 * @return CFResponse A parsed HTTP response.
 	 */
-	public function cache_callback($action, $opt = null, $domain = null, $signature_version = 2)
+	public function cache_callback($operation, $payload)
 	{
 		// Disable the cache flow since it's already been handled.
 		$this->use_cache_flow = false;
 
 		// Make the request
-		$response = $this->authenticate($action, $opt, $domain, $signature_version);
+		$response = $this->authenticate($operation, $payload);
 
 		// If this is an XML document, convert it back to a string.
 		if (isset($response->body) && ($response->body instanceof SimpleXMLElement))
@@ -1216,30 +1249,35 @@ class CFLoader
 		if (strstr($class, 'Amazon'))
 		{
 			require_once $path . 'services' . DIRECTORY_SEPARATOR . str_ireplace('Amazon', '', strtolower($class)) . '.class.php';
+			return true;
 		}
 
 		// Utility classes
 		elseif (strstr($class, 'CF'))
 		{
 			require_once $path . 'utilities' . DIRECTORY_SEPARATOR . str_ireplace('CF', '', strtolower($class)) . '.class.php';
+			return true;
 		}
 
 		// Load CacheCore
 		elseif (strstr($class, 'Cache'))
 		{
 			require_once $path . 'lib' . DIRECTORY_SEPARATOR . 'cachecore' . DIRECTORY_SEPARATOR . strtolower($class) . '.class.php';
+			return true;
 		}
 
 		// Load RequestCore
 		elseif (strstr($class, 'RequestCore') || strstr($class, 'ResponseCore'))
 		{
 			require_once $path . 'lib' . DIRECTORY_SEPARATOR . 'requestcore' . DIRECTORY_SEPARATOR . 'requestcore.class.php';
+			return true;
 		}
 
 		// Load Authentication Signers
 		elseif (strstr($class, 'Auth'))
 		{
 			require_once $path . 'authentication' . DIRECTORY_SEPARATOR . str_replace('auth', 'signature_', strtolower($class)) . '.class.php';
+			return true;
 		}
 
 		// Load Signer interface
@@ -1251,15 +1289,17 @@ class CFLoader
 			}
 
 			require_once $path . 'authentication' . DIRECTORY_SEPARATOR . 'signer.abstract.php';
+			return true;
 		}
 
 		// Load Symfony YAML classes
 		elseif (strstr($class, 'sfYaml'))
 		{
 			require_once $path . 'lib' . DIRECTORY_SEPARATOR . 'yaml' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'sfYaml.php';
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 }
 
@@ -1296,7 +1336,7 @@ else
 				case 'windows':
 				case 'winnt':
 				case 'win32':
-					$_ENV['HOME'] = 'c:\Documents and Settings' . DIRECTORY_SEPARATOR . get_current_user();
+					$_ENV['HOME'] = 'c:' . DIRECTORY_SEPARATOR . 'Documents and Settings' . DIRECTORY_SEPARATOR . get_current_user();
 					break;
 
 				default:

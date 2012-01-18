@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -106,7 +106,7 @@ class CFCredentials
 	/**
 	 * Retrieves the requested credentials from the internal credential store.
 	 *
-	 * @param string $credential_set (Optional) The name of the credential set to retrieve. The default value is "_default".
+	 * @param string $credential_set (Optional) The name of the credential set to retrieve. The default value is set in DEFAULT_KEY.
 	 * @return stdClass A stdClass object where the properties represent the keys that were provided.
 	 */
 	public static function get($credential_name = self::DEFAULT_KEY)

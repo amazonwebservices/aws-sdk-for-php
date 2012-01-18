@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -21,8 +21,13 @@
  *  
  * For specific details on how to construct a service request, please consult the <a href=
  * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
+ * 
+ * <p class="note">
+ * The endpoint for AWS Email Service is located at:
+ * <em>https://email.us-east-1.amazonaws.com</em>
+ * </p>
  *
- * @version 2011.12.13
+ * @version 2012.01.16
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ses/ Amazon Simple Email Service
@@ -127,7 +132,7 @@ class AmazonSES extends CFRuntime
 	}
 
 	/**
-	 * Returns the user's current activity limits.
+	 * Returns the user's current sending limits.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -182,7 +187,19 @@ class AmazonSES extends CFRuntime
 	 * If you have not yet requested production access to Amazon SES, then you will only be able to
 	 * send email to and from verified email addresses. For more information, go to the <a href=
 	 * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
-	 * </p>
+	 * </p> 
+	 * The total size of the message cannot exceed 10 MB.
+	 *  
+	 * Amazon SES has a limit on the total number of recipients per message: The combined number of
+	 * To:, CC: and BCC: email addresses cannot exceed 50. If you need to send an email message to a
+	 * larger audience, you can divide your recipient list into groups of 50 or fewer, and then call
+	 * Amazon SES repeatedly to send the message to each group.
+	 *  
+	 * For every message that you send, the total number of recipients (To:, CC: and BCC:) is counted
+	 * against your <em>sending quota</em> - the maximum number of emails you can send in a 24-hour
+	 * period. For information about your sending quota, go to the "Managing Your Sending Activity"
+	 * section of the <a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES
+	 * Developer Guide</a>.
 	 *
 	 * @param string $source (Required) The sender's email address.
 	 * @param array $destination (Required) The destination for this email, composed of To:, CC:, and BCC: fields. <ul>
@@ -261,7 +278,20 @@ class AmazonSES extends CFRuntime
 	 * If you have not yet requested production access to Amazon SES, then you will only be able to
 	 * send email to and from verified email addresses. For more information, go to the <a href=
 	 * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
-	 * </p>
+	 * </p> 
+	 * The total size of the message cannot exceed 10 MB. This includes any attachments that are part
+	 * of the message.
+	 *  
+	 * Amazon SES has a limit on the total number of recipients per message: The combined number of
+	 * To:, CC: and BCC: email addresses cannot exceed 50. If you need to send an email message to a
+	 * larger audience, you can divide your recipient list into groups of 50 or fewer, and then call
+	 * Amazon SES repeatedly to send the message to each group.
+	 *  
+	 * For every message that you send, the total number of recipients (To:, CC: and BCC:) is counted
+	 * against your <em>sending quota</em> - the maximum number of emails you can send in a 24-hour
+	 * period. For information about your sending quota, go to the "Managing Your Sending Activity"
+	 * section of the <a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES
+	 * Developer Guide</a>.
 	 *
 	 * @param array $raw_message (Required) The raw text of the message. The client is responsible for ensuring the following: <ul><li>Message must contain a header and a body, separated by a blank line.</li><li>All required header fields must be present.</li><li>Each part of a multipart MIME message must be formatted properly.</li><li>MIME content types must be among those supported by Amazon SES. Refer to the <a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a> for more details.</li><li>Content must be base64-encoded, if MIME requires it.</li></ul> <ul>
 	 * 	<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
