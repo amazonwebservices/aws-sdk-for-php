@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
  * the key performance statistics associated with their cache and can receive alarms if a part of
  * their cache runs hot.
  *
- * @version 2011.12.13
+ * @version 2012.01.16
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticache/ AWS ElastiCache
@@ -182,7 +182,7 @@ class AmazonElastiCache extends CFRuntime
 	 * 	<li><code>PreferredAvailabilityZone</code> - <code>string</code> - Optional - The EC2 Availability Zone that the Cache Cluster will be created in. In normal use, all CacheNodes belonging to a CacheCluster are placed in the preferred availability zone. In rare circumstances, some of the CacheNodes might temporarily be in a different availability zone. Default: System chosen (random) availability zone.</li>
 	 * 	<li><code>PreferredMaintenanceWindow</code> - <code>string</code> - Optional - The weekly time range (in UTC) during which system maintenance can occur. Example: <code>sun:05:00-sun:09:00</code></li>
 	 * 	<li><code>Port</code> - <code>integer</code> - Optional - The port number on which each of the Cache Nodes will accept connections.</li>
-	 * 	<li><code>NotificationTopicArn</code> - <code>string</code> - Optional - The Amazon Resource Name (ARN) of the SNS topic to which notifications will be sent. <p class="note">The SNS topic owner must be same as the Cache Cluster owner.</p></li>
+	 * 	<li><code>NotificationTopicArn</code> - <code>string</code> - Optional - The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic to which notifications will be sent. <p class="note">The Amazon SNS topic owner must be the same as the Cache Cluster owner.</p></li>
 	 * 	<li><code>AutoMinorVersionUpgrade</code> - <code>boolean</code> - Optional - Indicates that minor engine upgrades will be applied automatically to the Cache Cluster during the maintenance window. Default: <code>true</code></li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -267,8 +267,8 @@ class AmazonElastiCache extends CFRuntime
 	}
 
 	/**
-	 * This API deletes a particular CacheParameterGroup. The CacheParameterGroup cannot be deleted if
-	 * it is associated with any cache clusters.
+	 * Deletes the specified CacheParameterGroup. The CacheParameterGroup cannot be deleted if it is
+	 * associated with any cache clusters.
 	 *
 	 * @param string $cache_parameter_group_name (Required) The name of the Cache Parameter Group to delete. <p class="note">The specified cache security group must not be associated with any Cache clusters.</p>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -313,10 +313,10 @@ class AmazonElastiCache extends CFRuntime
 	 * used to retrieve detailed information about the Cache Nodes associated with the Cache Cluster.
 	 * Details include the DNS address and port for the Cache Node endpoint.
 	 *  
-	 * If the cluster is in CREATING state, only cluster level information will be displayed until all
-	 * of the nodes are successfully provisioned.
+	 * If the cluster is in the CREATING state, only cluster level information will be displayed until
+	 * all of the nodes are successfully provisioned.
 	 *  
-	 * If the cluster is in DELETING state, only cluster level information will be displayed.
+	 * If the cluster is in the DELETING state, only cluster level information will be displayed.
 	 *  
 	 * While adding Cache Nodes, node endpoint information and creation time for the additional nodes
 	 * will not be displayed until they are completely provisioned. The cluster lifecycle tells the
@@ -344,8 +344,8 @@ class AmazonElastiCache extends CFRuntime
 	}
 
 	/**
-	 * This API returns a list of CacheParameterGroup descriptions. If a CacheParameterGroupName is
-	 * specified, the list will contain only the descriptions of the specified CacheParameterGroup.
+	 * Returns a list of CacheParameterGroup descriptions. If a CacheParameterGroupName is specified,
+	 * the list will contain only the descriptions of the specified CacheParameterGroup.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>CacheParameterGroupName</code> - <code>string</code> - Optional - The name of a specific cache parameter group to return details for.</li>
@@ -402,8 +402,7 @@ class AmazonElastiCache extends CFRuntime
 	}
 
 	/**
-	 * This API returns the default engine and system parameter information for the specified cache
-	 * engine.
+	 * Returns the default engine and system parameter information for the specified cache engine.
 	 *
 	 * @param string $cache_parameter_group_family (Required) The name of the Cache Parameter Group Family. <p class="note">Currently, <em>memcached1.4</em> is the only cache parameter group family supported by the service.</p>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -422,10 +421,10 @@ class AmazonElastiCache extends CFRuntime
 	}
 
 	/**
-	 * This API returns events related to Cache Clusters, Cache Security Groups, and Cache Parameter
-	 * Groups for the past 14 days. Events specific to a particular Cache Cluster, cache security
-	 * group, or cache parameter group can be obtained by providing the name as a parameter. By
-	 * default, the past hour of events are returned.
+	 * Returns events related to Cache Clusters, Cache Security Groups, and Cache Parameter Groups for
+	 * the past 14 days. Events specific to a particular Cache Cluster, Cache Security Group, or Cache
+	 * Parameter Group can be obtained by providing the name as a parameter. By default, the past hour
+	 * of events are returned.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>SourceIdentifier</code> - <code>string</code> - Optional - The identifier of the event source for which events will be returned. If not specified, then all sources are included in the response.</li>
@@ -459,7 +458,7 @@ class AmazonElastiCache extends CFRuntime
 	}
 
 	/**
-	 * Modifies Cache Cluster settings. You can change one or more Cache Cluster configuration
+	 * Modifies the Cache Cluster settings. You can change one or more Cache Cluster configuration
 	 * parameters by specifying the parameters and the new values in the request.
 	 *
 	 * @param string $cache_cluster_id (Required) The Cache Cluster identifier. This value is stored as a lowercase string.
@@ -468,10 +467,10 @@ class AmazonElastiCache extends CFRuntime
 	 * 	<li><code>CacheNodeIdsToRemove</code> - <code>string|array</code> - Optional - The list of Cache Node IDs to be removed. This parameter is only valid when NumCacheNodes is less than the existing number of Cache Nodes. The number of Cache Node Ids supplied in this parameter must match the difference between the existing number of Cache Nodes in the cluster and the new NumCacheNodes requested. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>CacheSecurityGroupNames</code> - <code>string|array</code> - Optional - A list of Cache Security Group Names to authorize on this Cache Cluster. This change is asynchronously applied as soon as possible. Constraints: Must contain no more than 255 alphanumeric characters. Must not be "Default". Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>PreferredMaintenanceWindow</code> - <code>string</code> - Optional - The weekly time range (in UTC) during which system maintenance can occur, which may result in an outage. This change is made immediately. If moving this window to the current time, there must be at least 120 minutes between the current time and end of the window to ensure pending changes are applied.</li>
-	 * 	<li><code>NotificationTopicArn</code> - <code>string</code> - Optional - The Amazon resource name(ARN) of the SNS topic to which notifications will be sent. <p class="note">The SNS topic owner must be same as the Cache Cluster owner.</p></li>
+	 * 	<li><code>NotificationTopicArn</code> - <code>string</code> - Optional - The Amazon Resource Name (ARN) of the SNS topic to which notifications will be sent. <p class="note">The SNS topic owner must be same as the Cache Cluster owner.</p></li>
 	 * 	<li><code>CacheParameterGroupName</code> - <code>string</code> - Optional - The name of the Cache Parameter Group to apply to this Cache Cluster. This change is asynchronously applied as soon as possible for parameters when the <em>ApplyImmediately</em> parameter is specified as <em>true</em> for this request.</li>
-	 * 	<li><code>NotificationTopicStatus</code> - <code>string</code> - Optional - The status of the SNS notification topic. The value can be <em>active</em> or <em>inactive</em>. Notifications are sent only if the status is <em>active</em>.</li>
-	 * 	<li><code>ApplyImmediately</code> - <code>boolean</code> - Optional - Specifies whether or not the modifications in this request and any pending modifications are asynchronously applied as soon as possible, regardless of the <em>PreferredMaintenanceWindow</em> setting for the Cache Cluster. If this parameter is passed as <em>false</em>, changes to the Cache Cluster are applied on the next maintenance reboot, or the next failure reboot, whichever occurs first. The default value for this parameter is <em>false</em>.</li>
+	 * 	<li><code>NotificationTopicStatus</code> - <code>string</code> - Optional - The status of the Amazon SNS notification topic. The value can be <em>active</em> or <em>inactive</em>. Notifications are sent only if the status is <em>active</em>.</li>
+	 * 	<li><code>ApplyImmediately</code> - <code>boolean</code> - Optional - Specifies whether or not the modifications in this request and any pending modifications are asynchronously applied as soon as possible, regardless of the <em>PreferredMaintenanceWindow</em> setting for the Cache Cluster. If this parameter is passed as <code>false</code>, changes to the Cache Cluster are applied on the next maintenance reboot, or the next failure reboot, whichever occurs first. Default: <code>false</code></li>
 	 * 	<li><code>EngineVersion</code> - <code>string</code> - Optional - The version of the cache engine to upgrade this cluster to.</li>
 	 * 	<li><code>AutoMinorVersionUpgrade</code> - <code>boolean</code> - Optional - Indicates that minor engine upgrades will be applied automatically to the Cache Cluster during the maintenance window. Default: <code>true</code></li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -505,9 +504,9 @@ class AmazonElastiCache extends CFRuntime
 	}
 
 	/**
-	 * This API modifies the parameters of a CacheParameterGroup. To modify more than one parameter
-	 * submit a list of the following: ParameterName and ParameterValue. A maximum of 20 parameters
-	 * can be modified in a single request.
+	 * Modifies the parameters of a CacheParameterGroup. To modify more than one parameter, submit a
+	 * list of ParameterName and ParameterValue parameters. A maximum of 20 parameters can be modified
+	 * in a single request.
 	 *
 	 * @param string $cache_parameter_group_name (Required) The name of the cache parameter group to modify.
 	 * @param array $parameter_name_values (Required) An array of parameter names and values for the parameter update. At least one parameter name and value must be supplied; subsequent arguments are optional. A maximum of 20 parameters may be modified in a single request. <ul>
@@ -535,16 +534,15 @@ class AmazonElastiCache extends CFRuntime
 	}
 
 	/**
-	 * The RebootCacheCluster API reboots some (or all) of the cache cluster nodes within a previously
-	 * provisioned ElastiCache cluster. This API results in the application of modified
-	 * CacheParameterGroup parameters to the cache cluster. This action is taken as soon as possible,
-	 * and results in a momentary outage to the cache cluster during which the cache cluster status is
-	 * set to rebooting. During that momentary outage the contents of the cache (for each cache
-	 * cluster node being rebooted) are lost. A CacheCluster event is created when the reboot is
-	 * completed.
+	 * Reboots some (or all) of the cache cluster nodes within a previously provisioned ElastiCache
+	 * cluster. This API results in the application of modified CacheParameterGroup parameters to the
+	 * cache cluster. This action is taken as soon as possible, and results in a momentary outage to
+	 * the cache cluster during which the cache cluster status is set to rebooting. During that
+	 * momentary outage, the contents of the cache (for each cache cluster node being rebooted) are
+	 * lost. A CacheCluster event is created when the reboot is completed.
 	 *
 	 * @param string $cache_cluster_id (Required) The Cache Cluster identifier. This parameter is stored as a lowercase string.
-	 * @param string|array $cache_node_ids_to_reboot (Required) A list of Cache Cluster Node ids to reboot. To reboot an entire cache cluster, specify all cache cluster node ids. Pass a string for a single value, or an indexed array for multiple values.
+	 * @param string|array $cache_node_ids_to_reboot (Required) A list of Cache Cluster Node Ids to reboot. To reboot an entire cache cluster, specify all cache cluster node Ids. Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -564,9 +562,9 @@ class AmazonElastiCache extends CFRuntime
 	}
 
 	/**
-	 * This API modifies the parameters of a CacheParameterGroup to the engine/system default value.
-	 * To reset specific parameters submit a list of the parameter names. To reset the entire
-	 * CacheParameterGroup specify the CacheParameterGroup name and ResetAllParameters parameters.
+	 * Modifies the parameters of a CacheParameterGroup to the engine or system default value. To
+	 * reset specific parameters submit a list of the parameter names. To reset the entire
+	 * CacheParameterGroup, specify the CacheParameterGroup name and ResetAllParameters parameters.
 	 *
 	 * @param string $cache_parameter_group_name (Required) The name of the Cache Parameter Group.
 	 * @param array $parameter_name_values (Required) An array of parameter names which should be reset. If not resetting the entire CacheParameterGroup, at least one parameter name must be supplied. <ul>

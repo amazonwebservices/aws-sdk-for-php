@@ -2,7 +2,7 @@
 /**
  * Handles all HTTP requests using cURL and manages the responses.
  *
- * @version 2011.06.07
+ * @version 2012.01.17
  * @copyright 2006-2011 Ryan Parman
  * @copyright 2006-2010 Foleeo Inc.
  * @copyright 2010-2011 Amazon.com, Inc. or its affiliates.
@@ -99,7 +99,7 @@ class RequestCore
 	/**
 	 * Default useragent string to use.
 	 */
-	public $useragent = 'RequestCore/1.4.3';
+	public $useragent = 'RequestCore/1.4.4';
 
 	/**
 	 * File to read from while streaming up.
@@ -821,7 +821,7 @@ class RequestCore
 
 		if ($this->response === false)
 		{
-			throw new RequestCore_Exception('cURL resource: ' . (string) $curl_handle . '; cURL error: ' . curl_error($curl_handle) . ' (' . curl_errno($curl_handle) . ')');
+			throw new cURL_Exception('cURL resource: ' . (string) $curl_handle . '; cURL error: ' . curl_error($curl_handle) . ' (cURL error code ' . curl_errno($curl_handle) . '). See http://curl.haxx.se/libcurl/c/libcurl-errors.html for an explanation of error codes.');
 		}
 
 		$parsed_response = $this->process_response($curl_handle, $this->response);
@@ -894,7 +894,7 @@ class RequestCore
 				// Since curl_errno() isn't reliable for handles that were in multirequests, we check the 'result' of the info read, which contains the curl error number, (listed here http://curl.haxx.se/libcurl/c/libcurl-errors.html )
 				if ($done['result'] > 0)
 				{
-					throw new RequestCore_Exception('cURL resource: ' . (string) $done['handle'] . '; cURL error: ' . curl_error($done['handle']) . ' (' . $done['result'] . ')');
+					throw new cURL_Multi_Exception('cURL resource: ' . (string) $done['handle'] . '; cURL error: ' . curl_error($done['handle']) . ' (cURL error code ' . $done['result'] . '). See http://curl.haxx.se/libcurl/c/libcurl-errors.html for an explanation of error codes.');
 				}
 
 				// Because curl_multi_info_read() might return more than one message about a request, we check to see if this request is already in our array of completed requests
@@ -1023,7 +1023,6 @@ class ResponseCore
 	}
 }
 
-/**
- * Default RequestCore Exception.
- */
+class cURL_Exception extends Exception {}
+class cURL_Multi_Exception extends cURL_Exception {}
 class RequestCore_Exception extends Exception {}

@@ -32,14 +32,14 @@ $sqlite_ok = ($pdo_ok && $pdo_sqlite_ok && ($sqlite2_ok || $sqlite3_ok));
 
 // Other
 $int64_ok = (PHP_INT_MAX === 9223372036854775807);
-$ini_memory_limit = get_cfg_var('memory_limit');
-$ini_open_basedir = get_cfg_ini('open_basedir');
-$ini_safe_mode = get_cfg_ini('safe_mode');
-$ini_zend_enable_gc = get_cfg_ini('zend.enable_gc');
+$ini_memory_limit = get_ini('memory_limit');
+$ini_open_basedir = get_ini('open_basedir');
+$ini_safe_mode = get_ini('safe_mode');
+$ini_zend_enable_gc = get_ini('zend.enable_gc');
 
-function get_cfg_ini($config)
+function get_ini($config)
 {
-	$cfg_value = get_cfg_var($config);
+	$cfg_value = ini_get($config);
 
 	if ($cfg_value === false || $cfg_value === '' || $cfg_value === 0)
 	{

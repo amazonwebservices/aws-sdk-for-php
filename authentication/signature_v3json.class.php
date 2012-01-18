@@ -19,17 +19,17 @@
 // CLASS
 
 /**
- * Implements support for Signature v3 (AWS Query).
+ * Implements support for Signature v3 (JSON).
  *
- * @version 2011.11.22
+ * @version 2011.12.08
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
  */
-class AuthV3Query extends Signer implements Signable
+class AuthV3JSON extends Signer implements Signable
 {
 	/**
-	 * Constructs a new instance of the <AuthV3Query> class.
+	 * Constructs a new instance of the <AuthV3JSON> class.
 	 *
 	 * @param string $endpoint (Required) The endpoint to direct the request to.
 	 * @param string $operation (Required) The operation to execute as a result of this request.
@@ -56,6 +56,9 @@ class AuthV3Query extends Signer implements Signable
 		$nonce = $this->util->generate_guid();
 		$curlopts = array();
 		$signed_headers = array();
+		$return_curl_handle = false;
+		$x_amz_target = null;
+		$query = array('body' => $this->payload);
 
 		// Do we have an authentication token?
 		if ($this->auth_token)
@@ -64,8 +67,23 @@ class AuthV3Query extends Signer implements Signable
 			$query['SecurityToken'] = $this->auth_token;
 		}
 
-		$query['Action'] = $this->operation;
-		$query['Version'] = $this->api_version;
+		// Manage the key-value pairs that are used in the query.
+		if (stripos($this->operation, 'x-amz-target') !== false)
+		{
+			$x_amz_target = trim(str_ireplace('x-amz-target:', '', $this->operation));
+		}
+		else
+		{
+			$query['Action'] = $this->operation;
+		}
+
+		// Only add it if it exists.
+		if ($this->api_version)
+		{
+			$query['Version'] = $this->api_version;
+		}
+
+		$curlopts = array();
 
 		// Set custom CURLOPT settings
 		if (is_array($this->payload) && isset($this->payload['curlopts']))
@@ -85,7 +103,15 @@ class AuthV3Query extends Signer implements Signable
 
 		// Do a case-sensitive, natural order sort on the array keys.
 		uksort($query, 'strcmp');
-		$canonical_query_string = $this->util->to_signable_string($query);
+
+		// Normalize JSON input
+		if (isset($query['body']) && $query['body'] === '[]')
+		{
+			$query['body'] = '{}';
+		}
+
+		// Create the string that needs to be hashed.
+		$canonical_query_string = $this->util->encode_signature2($query['body']);
 
 		// Remove the default scheme from the domain.
 		$domain = str_replace(array('http://', 'https://'), '', $this->endpoint);
@@ -126,6 +152,12 @@ class AuthV3Query extends Signer implements Signable
 		$request->set_body($this->querystring);
 		$headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
 
+		// Signing using X-Amz-Target is handled differently.
+		$headers['X-Amz-Target'] = $x_amz_target;
+		$headers['Content-Type'] = 'application/x-amz-json-1.0';
+		$request->set_body($query['body']);
+		$this->querystring = $query['body'];
+
 		// Pass along registered stream callbacks
 		if ($this->registered_streaming_read_callback)
 		{
@@ -138,7 +170,7 @@ class AuthV3Query extends Signer implements Signable
 		}
 
 		// Add authentication headers
-		$headers['X-Amz-Nonce'] = $nonce;
+		// $headers['X-Amz-Nonce'] = $nonce;
 		$headers['Date'] = $date;
 		$headers['Content-Length'] = strlen($this->querystring);
 		$headers['Content-MD5'] = $this->util->hex_to_base64(md5($this->querystring));
@@ -147,8 +179,8 @@ class AuthV3Query extends Signer implements Signable
 		// Sort headers
 		uksort($headers, 'strnatcasecmp');
 
-		// Prepare the string to sign (HTTPS)
-		$this->string_to_sign = $date . $nonce;
+		// Prepare the string to sign (HTTP)
+		$this->string_to_sign = "POST\n$request_uri\n\n";
 
 		// Add headers to request and compute the string to sign
 		foreach ($headers as $header_key => $header_value)
@@ -171,14 +203,25 @@ class AuthV3Query extends Signer implements Signable
 				substr(strtolower($header_key), 0, 6) === 'x-amz-'
 			)
 			{
+				$this->string_to_sign .= strtolower($header_key) . ':' . $header_value . "\n";
 				$signed_headers[] = $header_key;
 			}
 		}
 
-		// Hash the AWS secret key and generate a signature for the request.
-		$signature = base64_encode(hash_hmac('sha256', $this->string_to_sign, $this->secret_key, true));
+		$this->string_to_sign .= "\n";
 
-		$headers['X-Amzn-Authorization'] = 'AWS3-HTTPS'
+		if (isset($query['body']) && $query['body'] !== '')
+		{
+			$this->string_to_sign .= $query['body'];
+		}
+
+		// Convert from string-to-sign to bytes-to-sign
+		$bytes_to_sign = hash('sha256', $this->string_to_sign, true);
+
+		// Hash the AWS secret key and generate a signature for the request.
+		$signature = base64_encode(hash_hmac('sha256', $bytes_to_sign, $this->secret_key, true));
+
+		$headers['X-Amzn-Authorization'] = 'AWS3'
 			. ' AWSAccessKeyId=' . $this->key
 			. ',Algorithm=HmacSHA256'
 			. ',SignedHeaders=' . implode(';', $signed_headers)

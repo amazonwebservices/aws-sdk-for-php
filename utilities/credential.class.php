@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -129,6 +129,19 @@ class CFCredential implements ArrayAccess
 	public function offsetUnset($offset)
 	{
 		$this->collection->offsetUnset($offset);
+		return $this;
+	}
+
+	/**
+	 * Merge another instance of <CFCredential> onto this one.
+	 *
+	 * @param CFCredential $credential (Required) Another instance of <CFCredential>.
+	 * @return CFCredential A reference to the current collection.
+	 */
+	public function merge(CFCredential $credential)
+	{
+		$merged = array_merge($this->to_array(), $credential->to_array());
+		$this->collection->exchangeArray($merged);
 		return $this;
 	}
 

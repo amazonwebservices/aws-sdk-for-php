@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -46,6 +46,11 @@ class CFUtilities
 	 * Define the MySQL-compliant date format.
 	 */
 	const DATE_FORMAT_MYSQL = 'Y-m-d H:i:s';
+
+	/**
+	 * Define the Signature v4 date format.
+	 */
+	const DATE_FORMAT_SIGV4 = 'Ymd\THis\Z';
 
 
 	/*%******************************************************************************************%*/

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@
  * 	http://monitoring.amazonaws.com/doc/2010-08-01/CloudWatch.wsdl</li>
  * </ul>
  *
- * @version 2011.12.13
+ * @version 2012.01.16
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudwatch/ Amazon CloudWatch
@@ -386,18 +386,13 @@ class AmazonCloudWatch extends CFRuntime
 	 * 	<li>Statistics for up to 35 instances over a span of 24 hours</li>
 	 * 	<li>Statistics for up to 2 instances over a span of 2 weeks</li>
 	 * </ul>
-	 * 
-	 * For information about the namespace, metric names, and dimensions that other Amazon Web
-	 * Services products use to send metrics to Cloudwatch, go to <a href=
-	 * "http://docs.amazonwebservices.com/AmazonCloudWatch/latest/DeveloperGuide/CW_Support_For_AWS.html">
-	 * CloudWatch Support for AWS Products</a> in the <em>Amazon CloudWatch Developer Guide</em>.
 	 *
 	 * @param string $namespace (Required) The namespace of the metric. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[^:].*</code>]
 	 * @param string $metric_name (Required) The name of the metric.
 	 * @param string $start_time (Required) The time stamp to use for determining the first datapoint to return. The value specified is inclusive; results include datapoints with the time stamp specified. <p class="note">The specified start time is rounded down to the nearest value. Datapoints are returned for start times up to two weeks in the past. Specified start times that are more than two weeks in the past will not return datapoints for metrics that are older than two weeks.</p> May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.
 	 * @param string $end_time (Required) The time stamp to use for determining the last datapoint to return. The value specified is exclusive; results will include datapoints up to the time stamp specified. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.
 	 * @param integer $period (Required) The granularity, in seconds, of the returned datapoints. <code>Period</code> must be at least 60 seconds and must be a multiple of 60. The default value is 60.
-	 * @param string|array $statistics (Required) The metric statistics to return. For information about specific statistics returned by GetMetricStatistics, go to <a href="http://docs.amazonwebservices.com/AmazonCloudWatch/latest/DeveloperGuide/index.html?CHAP_TerminologyandKeyConcepts.html#Statistic">Statistics</a> in the <em>Amazon CloudWatch Developer Guide</em>. Valid Values: <code>Average | Sum | SampleCount | Maximum | Minimum</code> Pass a string for a single value, or an indexed array for multiple values.
+	 * @param string|array $statistics (Required) The metric statistics to return. Pass a string for a single value, or an indexed array for multiple values.
 	 * @param string $unit (Required) The unit for the metric. [Allowed values: <code>Seconds</code>, <code>Microseconds</code>, <code>Milliseconds</code>, <code>Bytes</code>, <code>Kilobytes</code>, <code>Megabytes</code>, <code>Gigabytes</code>, <code>Terabytes</code>, <code>Bits</code>, <code>Kilobits</code>, <code>Megabits</code>, <code>Gigabits</code>, <code>Terabits</code>, <code>Percent</code>, <code>Count</code>, <code>Bytes/Second</code>, <code>Kilobytes/Second</code>, <code>Megabytes/Second</code>, <code>Gigabytes/Second</code>, <code>Terabytes/Second</code>, <code>Bits/Second</code>, <code>Kilobits/Second</code>, <code>Megabits/Second</code>, <code>Gigabits/Second</code>, <code>Terabits/Second</code>, <code>Count/Second</code>, <code>None</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Dimensions</code> - <code>array</code> - Optional - A list of dimensions describing qualities of the metric. <ul>

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -15,31 +15,30 @@
  */
 
 /**
- * This is the AWS Security Token Service (STS) API Reference. STS is a web service that enables
- * you to request temporary, limited-privilege credentials for users that you authenticate
- * (federated users), or IAM users. This guide provides descriptions of the STS API as well as
- * links to related content in <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/"
- * target="_blank">Using AWS Identity and Access Management</a>.
+ * This is the <em>AWS Security Token Service API Reference</em>. The AWS Security Token Service
+ * is a web service that enables you to request temporary, limited-privilege credentials for AWS
+ * Identity and Access Management (IAM) users or for users that you authenticate (federated
+ * users). This guide provides descriptions of the AWS Security Token Service API as well as links
+ * to related content in <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/" target=
+ * "_blank">Using IAM</a>.
  *  
  * For more detailed information about using this service, go to <a href=
  * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/TokenBasedAuth.html" target=
- * "_blank">Granting Temporary Access to Your AWS Resources</a>, in <em>Using AWS Identity and
- * Access Management</em>.
+ * "_blank">Granting Temporary Access to Your AWS Resources</a> in <em>Using IAM</em>.
  *  
  * For specific information about setting up signatures and authorization through the API, go to
  * 	<a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
- * "_blank">Making Query Requests</a> in <em>Using AWS Identity and Access Management</em>.
+ * "_blank">Making Query Requests</a> in <em>Using IAM</em>.
  *  
  * If you're new to AWS and need additional technical information about a specific AWS product,
  * you can find the product'stechnical documentation at <a href=
  * "http://aws.amazon.com/documentation/" target=
  * "_blank">http://aws.amazon.com/documentation/</a>.
  *  
- * We will refer to Amazon AWS Security Token Service using the abbreviated form STS, and to
- * Amazon Identity and Access Management using the abbreviated form IAM. All copyrights and legal
- * protections still apply.
+ * We will refer to Amazon Identity and Access Management using the abbreviated form IAM. All
+ * copyrights and legal protections still apply.
  *
- * @version 2011.12.13
+ * @version 2012.01.16
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sts/ Amazon Secure Token Service
@@ -120,8 +119,8 @@ class AmazonSTS extends CFRuntime
 	 *  
 	 * The federated user who holds these credentials has any permissions allowed by the intersection
 	 * of the specified policy and any resource or user policies that apply to the caller of the
-	 * GetFederationToken API, and any resource policies that apply to the federated user's ARN. For
-	 * more information about how token permissions work, see <a href=
+	 * GetFederationToken API, and any resource policies that apply to the federated user's Amazon
+	 * Resource Name (ARN). For more information about how token permissions work, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/TokenPermissions.html" target=
 	 * "_blank">Controlling Permissions in Temporary Credentials</a> in <em>Using AWS Identity and
 	 * Access Management</em>. For information about using GetFederationToken to create temporary
@@ -148,7 +147,7 @@ class AmazonSTS extends CFRuntime
 
 	/**
 	 * The GetSessionToken action returns a set of temporary credentials for an AWS account or IAM
-	 * User. The credentials consist of an Access Key ID, a Secret Access Key, and a security token.
+	 * user. The credentials consist of an Access Key ID, a Secret Access Key, and a security token.
 	 * These credentials are valid for the specified duration only. The session duration for IAM users
 	 * can be between one and 36 hours, with a default of 12 hours. The session duration for AWS
 	 * account owners is restricted to one hour.
@@ -156,7 +155,7 @@ class AmazonSTS extends CFRuntime
 	 * For more information about using GetSessionToken to create temporary credentials, go to
 	 * 	<a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/CreatingSessionTokens.html"
 	 * target="_blank">Creating Temporary Credentials to Enable Access for IAM Users</a> in <em>Using
-	 * AWS Identity and Access Management</em>.
+	 * IAM</em>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>DurationSeconds</code> - <code>integer</code> - Optional - The duration, in seconds, that the credentials should remain valid. Acceptable durations for IAM user sessions range from 3600s (one hour) to 129600s (36 hours), with 43200s (12 hours) as the default. Sessions for AWS account owners are restricted to a maximum of 3600s (one hour).</li>

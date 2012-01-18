@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
  * rapidly manipulating array data. Specifically, the `CFArray` object is intended for working with
  * <CFResponse> and <CFSimpleXML> objects that are returned by AWS services.
  *
- * @version 2011.12.02
+ * @version 2012.01.17
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -41,7 +41,16 @@ class CFArray extends ArrayObject
 	 */
 	public function __construct($input = array(), $flags = self::STD_PROP_LIST, $iterator_class = 'ArrayIterator')
 	{
-		return parent::__construct($input, $flags, $iterator_class);
+		// Provide a default value
+		$input = $input ? $input : array();
+
+		try {
+			return parent::__construct($input, $flags, $iterator_class);
+		}
+		catch (InvalidArgumentException $e)
+		{
+			throw new CFArray_Exception($e->getMessage());
+		}
 	}
 
 	/**
@@ -299,3 +308,5 @@ class CFArray extends ArrayObject
 		return sfYaml::dump($this->getArrayCopy(), 5);
 	}
 }
+
+class CFArray_Exception extends Exception {}

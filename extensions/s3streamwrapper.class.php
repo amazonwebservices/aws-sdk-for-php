@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2011-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -161,8 +161,10 @@ class S3StreamWrapper extends AmazonS3
 	 * @param integer $options (Optional) Regions. [Allowed values: `S3StreamWrapper::REGION_US_E1`, `S3StreamWrapper::REGION_US_W1`, `S3StreamWrapper::REGION_EU_W1`, `S3StreamWrapper::REGION_APAC_NE1`, `S3StreamWrapper::REGION_APAC_SE1`]
 	 * @return boolean Whether the bucket was created successfully or not.
 	 */
-	public function mkdir($path, $mode = 0, $options = 1)
+	public function mkdir($path, $mode, $options)
 	{
+		$mode = 0;
+		$options = 1;
 		self::__construct();
 
 		$url = parse_url($path);
@@ -283,7 +285,7 @@ class S3StreamWrapper extends AmazonS3
 	 * @param boolean $force (Optional) Whether to force-delete the bucket or not. The default value is <code>false</code>.
 	 * @return boolean Whether the bucket was deleted successfully or not.
 	 */
-	public function rmdir($path, $force = false)
+	public function rmdir($path, $options)
 	{
 		self::__construct();
 
@@ -291,7 +293,7 @@ class S3StreamWrapper extends AmazonS3
 		$this->path = $path;
 		$bucket_name = $url['host'];
 
-		$response = $this->delete_bucket($bucket_name, $force);
+		$response = $this->delete_bucket($bucket_name);
 		return $response->isOK();
 	}
 

@@ -1,15 +1,74 @@
+# Changelog: 1.5.1 "Blue"
+Code name for Macintosh System 7. <http://en.wikipedia.org/wiki/System_7>
+
+Launched Wednesday, January 18, 2012.
+
+## Bug fixes and enhancements
+* [Documentation patch](https://github.com/amazonwebservices/aws-sdk-for-php/pull/13)
+* [Removed duplicate comment line.](https://github.com/amazonwebservices/aws-sdk-for-php/pull/17)
+* [CFRuntime credentials handling issue](https://forums.aws.amazon.com/thread.jspa?messageID=310388)
+* [PHP 5.2 bug in AWS SDK for PHP 1.5.x](https://forums.aws.amazon.com/thread.jspa?messageID=311543)
+* [[Bug] Custom Curl Opts Lost During Retry](https://forums.aws.amazon.com/thread.jspa?threadID=84835)
+* [json_last_error doesn't exist before php v 5.3.0](https://github.com/amazonwebservices/aws-sdk-for-php/pull/12)
+* [XML still being parsed when use_cache_flow is false](https://github.com/amazonwebservices/aws-sdk-for-php/pull/15)
+* [Bug ssl_verification option not respected for AmazonS3 ](https://forums.aws.amazon.com/thread.jspa?threadID=83710)
+* [[Bug] Compatibility test for Garbage Collector enabled should use ini_get](https://forums.aws.amazon.com/thread.jspa?threadID=84156)
+
+## Runtime
+* **Fixed:** Corrected an issue where calling `AmazonS3->get_object()` would continue to parse the content if caching was being leveraged. (Thanks [Eric Caron](http://www.ericcaron.com)!)
+* **Fixed:** The autoloader now returns `false` for any class it doesn't match, allowing subsequent autoloaders to catch the class name. (Thanks [Eric Caron](http://www.ericcaron.com)!)
+* **Fixed:** An issue that caused CloudWatch to fail to decompress gzipped data correctly has been resolved.
+* **Fixed:** Resolved an issue with passing explicit credentials without requiring a config file or a `CFCredentials` declaration.
+* **Fixed:** Resolved an issue which causes custom cURL options to be unset from the payload when retrying.
+
+## Services
+### AmazonAS
+* **New:** Support for Amazon SNS notifications and Tagging have been added to the SDK.
+
+### AmazonCloudFront
+* **Fixed:** Resolved an issue with disabling SSL verification.
+* **Fixed:** Resolved an issue where `AmazonCloudFront` were throwing warnings in `E_STRICT` mode.
+
+### AmazonCloudWatch
+* **Fixed:** Resolved an issue with decompressing gzipped data.
+
+### AmazonDynamoDB
+* **New:** Support for Amazon DynamoDB has been added to the SDK.
+* **New:** Amazon DynamoDB requires a default cache configuration to be set in the credential set, otherwise it will not function properly.
+
+### AmazonS3
+* **Fixed:** Resolved an issue with disabling SSL verification.
+* **Fixed:** Resolved multiple documentation issues. (Thanks [Aizat Faiz](http://aizatto.com) and [Jason Ardell](http://ardell.posterous.com/)!)
+* **Fixed:** Resolved an issue where `AmazonS3` were throwing warnings in `E_STRICT` mode.
+
+### AmazonSNS
+* **New:** Support for Short Messaging Service (SMS) endpoints has been added to the SDK.
+* **New:** Support for Subscription Attributes has been added to the SDK.
+
+## Utilities
+### CFJSON
+* **Fixed:** Support for the handling of JSON nulls in PHP 5.2 has been improved. (Thanks [David Chan](http://www.chandeeland.org)!)
+
+## Compatibility Test
+* **Fixed:** The SDK compatibility test now uses `ini_get()` instead of `get_cfg_var()` and `get_cfg_ini()` for more accurate test results.
+
+
+----
+
 # Changelog: 1.5 "Allegro"
 Code name for Mac OS 8.5. <http://en.wikipedia.org/wiki/Mac_OS_8#Mac_OS_8.5>
 
+Launched Wednesday, December 14, 2011
+
 ## Credentials
-!! BACKWARDS-INCOMPATIBLE CHANGE !! - The function signature of all service constructors has changed. Instead of passing a key and secret as the first and second parameters, the constructor now accepts a hash (associative array) containing `key` and `secret` keys. Please see the API reference documentation
+* !! BACKWARDS-INCOMPATIBLE CHANGE !! - The function signature of all service constructors has changed. Instead of passing a key and secret as the first and second parameters, the constructor now accepts a hash (associative array) containing `key` and `secret` keys. Please see the API reference documentation
 
 ## Runtime
-!! BACKWARDS-INCOMPATIBLE CHANGE !! - The function signature of all service constructors has changed. Instead of passing a key and secret as the first and second parameters, the constructor now accepts a hash (associative array) containing `key` and `secret` keys. If you are explicitly passing a key and secret to the constructor, you will need to change your code. If you are simply inheriting your default credentials from a config file, you don't need to make any changes beyond upgrading your config file to the new 1.5 format. Please see the API reference documentation for more information.
-!! BACKWARDS-INCOMPATIBLE CHANGE !! - The method by which the `config.inc.php` file maintains its list of credentials has been re-factored and updated to support managing multiple sets of credentials in a single location (e.g., development, staging, production).
-!! BACKWARDS-INCOMPATIBLE CHANGE !! - The `init()` method has been renamed to `factory()` to better reflect what it actually does.
-!! BACKWARDS-INCOMPATIBLE CHANGE !! - The `adjust_offset()` method has been removed. Instead, please ensure that the machine's time is set correctly using an [NTP server](https://secure.wikimedia.org/wikipedia/en/wiki/Network_Time_Protocol).
-!! BACKWARDS-INCOMPATIBLE CHANGE !! - In version 1.4 we enabled a mode where -- for services that supported it -- a set of temporary credentials were fetched and cached before the first request. This functionality has been reverted. The use of short-term credentials must be explicitly enabled by instantiating the `AmazonSTS` class and passing those credentials into the service constructor.
+* !! BACKWARDS-INCOMPATIBLE CHANGE !! - The function signature of all service constructors has changed. Instead of passing a key and secret as the first and second parameters, the constructor now accepts a hash (associative array) containing `key` and `secret` keys. If you are explicitly passing a key and secret to the constructor, you will need to change your code. If you are simply inheriting your default credentials from a config file, you don't need to make any changes beyond upgrading your config file to the new 1.5 format. Please see the API reference documentation for more information.
+* !! BACKWARDS-INCOMPATIBLE CHANGE !! - The method by which the `config.inc.php` file maintains its list of credentials has been re-factored and updated to support managing multiple sets of credentials in a single location (e.g., development, staging, production).
+* !! BACKWARDS-INCOMPATIBLE CHANGE !! - The `init()` method has been renamed to `factory()` to better reflect what it actually does.
+* !! BACKWARDS-INCOMPATIBLE CHANGE !! - The `adjust_offset()` method has been removed. Instead, please ensure that the machine's time is set correctly using an [NTP server](https://secure.wikimedia.org/wikipedia/en/wiki/Network_Time_Protocol).
+* !! BACKWARDS-INCOMPATIBLE CHANGE !! - In version 1.4 we enabled a mode where -- for services that supported it -- a set of temporary credentials were fetched and cached before the first request. This functionality has been reverted. The use of short-term credentials must be explicitly enabled by instantiating the `AmazonSTS` class and passing those credentials into the service constructor.
 * **New:** Improved the user directory lookup for the config file.
 * **Changed:** Made `set_region()` an alias of `set_hostname()`.
 

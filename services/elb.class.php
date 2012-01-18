@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
  * application loads between two or more EC2 instances. Elastic Load Balancing enables
  * availability through redundancy and supports traffic growth of your application.
  *
- * @version 2011.12.13
+ * @version 2012.01.16
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticloadbalancing/ Elastic Load Balancing
@@ -671,7 +671,7 @@ class AmazonELB extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>LoadBalancerNames</code> - <code>string|array</code> - Optional - A list of names associated with the LoadBalancers at creation time. Pass a string for a single value, or an indexed array for multiple values.</li>
-	 * 	<li><code>Marker</code> - <code>string</code> - Optional - An optional parameter reserved for future use.</li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -809,7 +809,7 @@ class AmazonELB extends CFRuntime
 	 * </p>
 	 *
 	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
-	 * @param array $instances (Required) A list of instance IDs that should be registered with the LoadBalancer. <p class="note">If you stop and then restart the instance, the instance ID changes. Elastic Load Balancing cannot recognize the new ID, which prevents it from routing traffic to your instance. We recommend you de-register and then register your the new instance ID with the load balancer after you restart your instance. To de-register your instances from load balancer, use <code>DeregisterInstancesFromLoadBalancer</code> action.</p> <ul>
+	 * @param array $instances (Required) A list of instances IDs that should be registered with the LoadBalancer. <ul>
 	 * 	<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 		<li><code>InstanceId</code> - <code>string</code> - Optional - Provides an EC2 instance ID.</li>
 	 * 	</ul></li>

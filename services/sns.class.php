@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -15,9 +15,38 @@
  */
 
 /**
+ * This is the <em>Amazon Simple Notification Service (Amazon SNS) API Reference</em>. This guide
+ * provides detailed information about Amazon SNS actions, data types, parameters, and errors. For
+ * detailed information about Amazon SNS features and their associated API calls, go to the
+ * 	<a href="http://docs.amazonwebservices.com/sns/latest/gsg/">Amazon SNS Getting Started
+ * Guide</a>.
+ *  
+ * Amazon Simple Notification Service is a web service that enables you to build distributed
+ * web-enabled applications. Applications can use Amazon SNS to easily push real-time notification
+ * messages to interested subscribers over multiple delivery protocols. For more information about
+ * this product go to <a href="http://aws.amazon.com/sns/">http://aws.amazon.com/sns</a>.
+ *  
+ * Use the following links to get started using the <em>Amazon Simple Notification Service API
+ * Reference</em>:
  * 
+ * <ul>
+ * 	<li><a href="http://docs.amazonwebservices.com/sns/latest/api/API_Operations.html">Actions</a>:
+ * 	An alphabetical list of all Amazon SNS actions.</li>
+ * 	<li><a href="http://docs.amazonwebservices.com/sns/latest/api/API_Types.html">Data Types</a>:
+ * 	An alphabetical list of all Amazon SNS data types.</li>
+ * 	<li><a href="http://docs.amazonwebservices.com/sns/latest/api/CommonParameters.html">Common
+ * 	Parameters</a>: Parameters that all Query actions can use.</li>
+ * 	<li><a href="http://docs.amazonwebservices.com/sns/latest/api/CommonErrors.html">Common
+ * 	Errors</a>: Client and server errors that all actions can return.</li>
+ * 	<li><a href="http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html">Regions
+ * 	and Endpoints</a>: Itemized regions and endpoints for all AWS products.</li>
+ * 	<li><a href=
+ * 	"http://sns.us-east-1.amazonaws.com/doc/2010-03-31/SimpleNotificationService.wsdl">WSDL
+ * 	Location</a>:
+ * 	http://sns.us-east-1.amazonaws.com/doc/2010-03-31/SimpleNotificationService.wsdl</li>
+ * </ul>
  *
- * @version 2011.12.13
+ * @version 2012.01.16
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sns/ Amazon Simple Notification Service
@@ -186,7 +215,7 @@ class AmazonSNS extends CFRuntime
 	 * @param string $topic_arn (Required) The ARN of the topic whose access control policy you wish to modify.
 	 * @param string $label (Required) A unique identifier for the new policy statement.
 	 * @param string|array $aws_account_id (Required) The AWS account IDs of the users (principals) who will be given access to the specified actions. The users must have AWS accounts, but do not need to be signed up for this service. Pass a string for a single value, or an indexed array for multiple values.
-	 * @param string|array $action_name (Required) The action you want to allow for the specified principal(s). Pass a string for a single value, or an indexed array for multiple values.
+	 * @param string|array $action_name (Required) The action you want to allow for the specified principal(s). Valid values: any Amazon SNS action name. Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -220,7 +249,7 @@ class AmazonSNS extends CFRuntime
 	 * @param string $topic_arn (Required) The ARN of the topic for which you wish to confirm a subscription.
 	 * @param string $token (Required) Short-lived token sent to an endpoint during the Subscribe action.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>AuthenticateOnUnsubscribe</code> - <code>string</code> - Optional - Indicates that you want to disable unauthenticated unsubsciption of the subscription. If parameter is present in the request, the request has an AWS signature, and the value of this parameter is true, only the topic owner and the subscription owner will be permitted to unsubscribe the endopint, and the Unsubscribe action will require AWS authentication.</li>
+	 * 	<li><code>AuthenticateOnUnsubscribe</code> - <code>string</code> - Optional - Disallows unauthenticated unsubscribes of the subscription. If the value of this parameter is <code>true</code> and the request has an AWS signature, then only the topic owner and the subscription owner can unsubscribe the endpoint. The unsubscribe action will require AWS authentication.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -273,6 +302,23 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
+	 * The GetSubscriptionAttribtues action returns all of the properties of a subscription.
+	 *
+	 * @param string $subscription_arn (Required) The ARN of the subscription whose properties you want to get.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function get_subscription_attributes($subscription_arn, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['SubscriptionArn'] = $subscription_arn;
+		
+		return $this->authenticate('GetSubscriptionAttributes', $opt);
+	}
+
+	/**
 	 * The GetTopicAttribtues action returns all of the properties of a topic customers have created.
 	 * Topic properties returned might differ based on the authorization of the user.
 	 *
@@ -292,8 +338,9 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 * The ListSubscriptions action returns a list of the requester's subscriptions. Each call returns
-	 * a limited list of subscriptions. If there are more subscriptions, a NextToken is also returned.
-	 * Use the NextToken parameter in a new ListSubscriptions call to get further results.
+	 * a limited list of subscriptions, up to 100. If there are more subscriptions, a NextToken is
+	 * also returned. Use the NextToken parameter in a new ListSubscriptions call to get further
+	 * results.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - Token returned by the previous ListSubscriptions request.</li>
@@ -310,9 +357,9 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 * The ListSubscriptionsByTopic action returns a list of the subscriptions to a specific topic.
-	 * Each call returns a limited list of subscriptions. If there are more subscriptions, a NextToken
-	 * is also returned. Use the NextToken parameter in a new ListSubscriptionsByTopic call to get
-	 * further results.
+	 * Each call returns a limited list of subscriptions, up to 100. If there are more subscriptions,
+	 * a NextToken is also returned. Use the NextToken parameter in a new ListSubscriptionsByTopic
+	 * call to get further results.
 	 *
 	 * @param string $topic_arn (Required) The ARN of the topic for which you wish to find subscriptions.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -331,8 +378,8 @@ class AmazonSNS extends CFRuntime
 
 	/**
 	 * The ListTopics action returns a list of the requester's topics. Each call returns a limited
-	 * list of topics. If there are more topics, a NextToken is also returned. Use the NextToken
-	 * parameter in a new ListTopics call to get further results.
+	 * list of topics, up to 100. If there are more topics, a NextToken is also returned. Use the
+	 * NextToken parameter in a new ListTopics call to get further results.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - Token returned by the previous ListTopics request.</li>
@@ -357,6 +404,7 @@ class AmazonSNS extends CFRuntime
 	 * @param string $message (Required) The message you want to send to the topic. Constraints: Messages must be UTF-8 encoded strings at most 8 KB in size (8192 bytes, not 8192 characters).
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Subject</code> - <code>string</code> - Optional - Optional parameter to be used as the "Subject" line of when the message is delivered to e-mail endpoints. This field will also be included, if present, in the standard JSON messages delivered to other endpoints. Constraints: Subjects must be ASCII text that begins with a letter, number or punctuation mark; must not include line breaks or control characters; and must be less than 100 characters long.</li>
+	 * 	<li><code>MessageStructure</code> - <code>string</code> - Optional - Optional parameter. It will have one valid value: "json". If this option, Message is present and set to "json", the value of Message must: be a syntactically valid JSON object. It must contain at least a top level JSON key of "default" with a value that is a string. For any other top level key that matches one of our transport protocols (e.g. "http"), then the corresponding value (if it is a string) will be used for the message published for that protocol Constraints: Keys in the JSON object that correspond to supported transport protocols must have simple JSON string values. The values will be parsed (unescaped) before they are used in outgoing messages. Typically, outbound notifications are JSON encoded (meaning, the characters will be reescaped for sending). JSON strings are UTF-8. Values have a minimum length of 0 (the empty string, "", is allowed). Values have a maximum length bounded by the overall message size (so, including multiple protocols may limit message sizes). Non-string values will cause the key to be ignored. Keys that do not correspond to supported transport protocols will be ignored. Duplicate keys are not allowed. Failure to parse or validate any key or value in the message will cause the Publish call to return an error (no partial delivery).</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -390,11 +438,33 @@ class AmazonSNS extends CFRuntime
 	}
 
 	/**
+	 * The SetSubscriptionAttributes action allows a subscription owner to set an attribute of the
+	 * topic to a new value.
+	 *
+	 * @param string $subscription_arn (Required) The ARN of the subscription to modify.
+	 * @param string $attribute_name (Required) The name of the attribute you want to set. Only a subset of the subscriptions attributes are mutable. Valid values: DeliveryPolicy
+	 * @param string $attribute_value (Required) The new value for the attribute.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function set_subscription_attributes($subscription_arn, $attribute_name, $attribute_value, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['SubscriptionArn'] = $subscription_arn;
+		$opt['AttributeName'] = $attribute_name;
+		$opt['AttributeValue'] = $attribute_value;
+		
+		return $this->authenticate('SetSubscriptionAttributes', $opt);
+	}
+
+	/**
 	 * The SetTopicAttributes action allows a topic owner to set an attribute of the topic to a new
 	 * value.
 	 *
 	 * @param string $topic_arn (Required) The ARN of the topic to modify.
-	 * @param string $attribute_name (Required) The name of the attribute you want to set. Only a subset of the topic's attributes are mutable.
+	 * @param string $attribute_name (Required) The name of the attribute you want to set. Only a subset of the topic's attributes are mutable. Valid values: Policy | DisplayName
 	 * @param string $attribute_value (Required) The new value for the attribute.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -415,11 +485,11 @@ class AmazonSNS extends CFRuntime
 	 * The Subscribe action prepares to subscribe an endpoint by sending the endpoint a confirmation
 	 * message. To actually create a subscription, the endpoint owner must call the
 	 * ConfirmSubscription action with the token from the confirmation message. Confirmation tokens
-	 * are valid for twenty-four hours.
+	 * are valid for three days.
 	 *
 	 * @param string $topic_arn (Required) The ARN of topic you want to subscribe to.
-	 * @param string $protocol (Required) The protocol you want to use. Supported protocols include:<ul><li>http -- delivery of JSON-encoded message via HTTP POST</li><li>https -- delivery of JSON-encoded message via HTTPS POST</li><li>email -- delivery of message via SMTP</li><li>email-json -- delivery of JSON-encoded message via SMTP</li><li>sqs -- delivery of JSON-encoded message to an Amazon SQS queue</li></ul>
-	 * @param string $endpoint (Required) The endpoint that you want to receive notifications. Endpoints vary by protocol:<ul><li>For the http protocol, the endpoint is an URL beginning with "http://"</li><li>For the https protocol, the endpoint is a URL beginning with "https://"</li><li>For the email protocol, the endpoint is an e-mail address</li><li>For the email-json protocol, the endpoint is an e-mail address</li><li>For the sqs protocol, the endpoint is the ARN of an Amazon SQS queue</li></ul>
+	 * @param string $protocol (Required) The protocol you want to use. Supported protocols include:<ul><li>http -- delivery of JSON-encoded message via HTTP POST</li><li>https -- delivery of JSON-encoded message via HTTPS POST</li><li>email -- delivery of message via SMTP</li><li>email-json -- delivery of JSON-encoded message via SMTP</li><li>sms -- delivery of message via SMS</li><li>sqs -- delivery of JSON-encoded message to an Amazon SQS queue</li></ul>
+	 * @param string $endpoint (Required) The endpoint that you want to receive notifications. Endpoints vary by protocol:<ul><li>For the http protocol, the endpoint is an URL beginning with "http://"</li><li>For the https protocol, the endpoint is a URL beginning with "https://"</li><li>For the email protocol, the endpoint is an e-mail address</li><li>For the email-json protocol, the endpoint is an e-mail address</li><li>For the sms protocol, the endpoint is a phone number of an SMS-enabled device</li><li>For the sqs protocol, the endpoint is the ARN of an Amazon SQS queue</li></ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
