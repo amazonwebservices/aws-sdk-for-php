@@ -520,6 +520,12 @@ class AmazonCloudFront extends CFRuntime
 			$origin = $update->addChild('CustomOrigin');
 			$origin->addChild('DNSName', $xml->CustomOrigin->DNSName);
 
+			// Copy OriginProtocolPolicy for update
+			if ( isset($xml->CustomOrigin->OriginProtocolPolicy) )
+			{
+				$origin->addChild('OriginProtocolPolicy', $xml->CustomOrigin->OriginProtocolPolicy);
+			}
+
 			// origin access identity
 			if (isset($opt['OriginAccessIdentity']))
 			{
