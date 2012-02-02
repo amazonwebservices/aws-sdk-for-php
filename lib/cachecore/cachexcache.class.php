@@ -3,9 +3,10 @@
  * Container for all XCache-based cache methods. Inherits additional methods from <CacheCore>. Adheres
  * to the ICacheCore interface.
  *
- * @version 2009.10.10
- * @copyright 2006-2010 Ryan Parman
+ * @version 2012.01.28
+ * @copyright 2006-2012 Ryan Parman
  * @copyright 2006-2010 Foleeo, Inc.
+ * @copyright 2012 Amazon.com, Inc. or its affiliates.
  * @copyright 2008-2010 Contributors
  * @license http://opensource.org/licenses/bsd-license.php Simplified BSD License
  * @link http://github.com/skyzyx/cachecore CacheCore
@@ -120,3 +121,9 @@ class CacheXCache extends CacheCore implements ICacheCore
 		return false;
 	}
 }
+
+
+/*%******************************************************************************************%*/
+// EXCEPTIONS
+
+class CacheXCache_Exception extends CacheCore_Exception {}

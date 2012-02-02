@@ -3,9 +3,10 @@
  * Container for all shared caching methods. This is not intended to be instantiated directly, but is
  * extended by the cache-specific classes.
  *
- * @version 2010.10.13
- * @copyright 2006-2010 Ryan Parman
+ * @version 2012.01.28
+ * @copyright 2006-2012 Ryan Parman
  * @copyright 2006-2010 Foleeo, Inc.
+ * @copyright 2012 Amazon.com, Inc. or its affiliates.
  * @copyright 2008-2010 Contributors
  * @license http://opensource.org/licenses/bsd-license.php Simplified BSD License
  * @link http://github.com/skyzyx/cachecore CacheCore
@@ -139,3 +140,9 @@ if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'icachecore.interface.
 {
 	include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'icachecore.interface.php';
 }
+
+
+/*%******************************************************************************************%*/
+// EXCEPTIONS
+
+class CacheCore_Exception extends Exception {}

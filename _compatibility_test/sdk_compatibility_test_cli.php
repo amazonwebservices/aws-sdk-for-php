@@ -4,6 +4,7 @@
 // Required
 $php_ok = (function_exists('version_compare') && version_compare(phpversion(), '5.2.0', '>='));
 $simplexml_ok = extension_loaded('simplexml');
+$dom_ok = extension_loaded('dom');
 $json_ok = (extension_loaded('json') && function_exists('json_encode') && function_exists('json_decode'));
 $spl_ok = extension_loaded('spl');
 $pcre_ok = extension_loaded('pcre');
@@ -86,6 +87,7 @@ echo '64-bit architecture......... ' . ($int64_ok ? success() : failure()) . (is
 echo 'cURL with SSL............... ' . ($curl_ok ? (success() . ' ' . $curl_version['version'] . ' (' . $curl_version['ssl_version'] . ')') : failure($curl_version['version'] . (in_array('https', $curl_version['protocols'], true) ? ' (with ' . $curl_version['ssl_version'] . ')' : ' (without SSL)'))) . PHP_EOL;
 echo 'Standard PHP Library........ ' . ($spl_ok ? success() : failure()) . PHP_EOL;
 echo 'SimpleXML................... ' . ($simplexml_ok ? success() : failure()) . PHP_EOL;
+echo 'DOM......................... ' . ($dom_ok ? success() : failure()) . PHP_EOL;
 echo 'JSON........................ ' . ($json_ok ? success() : failure()) . PHP_EOL;
 echo 'PCRE........................ ' . ($pcre_ok ? success() : failure()) . PHP_EOL;
 echo 'File system read/write...... ' . ($file_ok ? success() : failure()) . PHP_EOL;
@@ -136,12 +138,12 @@ echo PHP_EOL;
 echo '----------------------------------------' . PHP_EOL;
 echo PHP_EOL;
 
-if ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok)
+if ($php_ok && $curl_ok && $simplexml_ok && $dom_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok)
 {
 	echo success('Your environment meets the minimum requirements for using the AWS SDK for PHP!') . PHP_EOL . PHP_EOL;
 	if (version_compare(PHP_VERSION, '5.3.0') < 0) { echo '* You\'re still running PHP ' . PHP_VERSION . '. The PHP 5.2 family is no longer supported' . PHP_EOL . '  by the PHP team, and future versions of the AWS SDK for PHP will *require*' . PHP_EOL . '  PHP 5.3 or newer.' . PHP_EOL . PHP_EOL; }
 	if ($openssl_ok) { echo '* The OpenSSL extension is installed. This will allow you to use CloudFront' . PHP_EOL . '  Private URLs and decrypt Windows instance passwords.' . PHP_EOL . PHP_EOL; }
-	if ($zlib_ok) {    echo '* The Zlib extension is installed. The SDK will automatically leverage the' . PHP_EOL . '  compression capabilities of Zlib.' . PHP_EOL . PHP_EOL; }
+	if ($zlib_ok) {    echo '* The Zlib extension is installed. The SDK will request gzipped data' . PHP_EOL . '  whenever possible.' . PHP_EOL . PHP_EOL; }
 	if (!$int64_ok) {  echo '* You\'re running on a 32-bit system. This means that PHP does not correctly' . PHP_EOL . '  handle files larger than 2GB (this is a well-known PHP issue).' . PHP_EOL . PHP_EOL; }
 	if (!$int64_ok && is_windows()) {  echo '* Note that PHP on Microsoft(R) Windows(R) does not support 64-bit integers' . PHP_EOL . '  at all, even if both the hardware and PHP are 64-bit. http://j.mp/php64win' . PHP_EOL . PHP_EOL; }
 
@@ -159,23 +161,24 @@ if ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $
 	echo '* Storage types available for response caching:' . PHP_EOL . '  ' . implode(', ', $storage_types) . PHP_EOL . PHP_EOL;
 
 	if (!$openssl_ok) { echo '* You\'re missing the OpenSSL extension, which means that you won\'t be able' . PHP_EOL . '  to take advantage of CloudFront Private URLs or Windows password decryption.' . PHP_EOL . PHP_EOL; }
-	if (!$zlib_ok) {    echo '* You\'re missing the Zlib extension, which means that responses from Amazon\'s' . PHP_EOL . '  services will take a little longer to download and you won\'t be able to take' . PHP_EOL . '  advantage of compression with the response caching feature.' . PHP_EOL; }
+	if (!$zlib_ok) {    echo '* You\'re missing the Zlib extension, which means that the SDK will be unable' . PHP_EOL . '  to request gzipped data from Amazon and you won\'t be able to take advantage' . PHP_EOL . '  of compression with the response caching feature.' . PHP_EOL . PHP_EOL; }
 }
 else
 {
-	if (!$php_ok) {       echo '* ' . failure('PHP:') . ' You are running an unsupported version of PHP.' . PHP_EOL; }
-	if (!$curl_ok) {      echo '* ' . failure('cURL:') . ' The cURL extension is not available. Without cURL, the SDK cannot' . PHP_EOL . '  connect to -- or authenticate with -- Amazon\'s services.' . PHP_EOL; }
-	if (!$simplexml_ok) { echo '* ' . failure('SimpleXML:') . ': The SimpleXML extension is not available. Without SimpleXML,' . PHP_EOL . '  the SDK cannot parse the XML responses from Amazon\'s services.' . PHP_EOL; }
-	if (!$spl_ok) {       echo '* ' . failure('SPL:') . ' Standard PHP Library support is not available. Without SPL support,' . PHP_EOL . '  the SDK cannot autoload the required PHP classes.' . PHP_EOL; }
-	if (!$json_ok) {      echo '* ' . failure('JSON:') . ' JSON support is not available. AWS leverages JSON heavily in many' . PHP_EOL . '  of its services.' . PHP_EOL; }
-	if (!$pcre_ok) {      echo '* ' . failure('PCRE:') . ' Your PHP installation doesn\'t support Perl-Compatible Regular' . PHP_EOL . '  Expressions (PCRE). Without PCRE, the SDK cannot do any filtering via' . PHP_EOL . '  regular expressions.' . PHP_EOL; }
-	if (!$file_ok) {      echo '* ' . failure('File System Read/Write:') . ' The file_get_contents() and/or file_put_contents()' . PHP_EOL . '  functions have been disabled. Without them, the SDK cannot read from,' . PHP_EOL . '  or write to, the file system.' . PHP_EOL; }
+	if (!$php_ok) {       echo '* ' . failure('PHP:') . ' You are running an unsupported version of PHP.' . PHP_EOL . PHP_EOL; }
+	if (!$curl_ok) {      echo '* ' . failure('cURL:') . ' The cURL extension is not available. Without cURL, the SDK cannot' . PHP_EOL . '  connect to -- or authenticate with -- Amazon\'s services.' . PHP_EOL . PHP_EOL; }
+	if (!$simplexml_ok) { echo '* ' . failure('SimpleXML:') . ': The SimpleXML extension is not available. Without SimpleXML,' . PHP_EOL . '  the SDK cannot parse the XML responses from Amazon\'s services.' . PHP_EOL . PHP_EOL; }
+	if (!$dom_ok) {       echo '* ' . failure('DOM:') . ': The DOM extension is not available. Without DOM, the SDK' . PHP_EOL . '  Without DOM, the SDK cannot transliterate JSON responses from Amazon\'s' . PHP_EOL . '  services into the common SimpleXML-based pattern used throughout the SDK.' . PHP_EOL . PHP_EOL; }
+	if (!$spl_ok) {       echo '* ' . failure('SPL:') . ' Standard PHP Library support is not available. Without SPL support,' . PHP_EOL . '  the SDK cannot autoload the required PHP classes.' . PHP_EOL . PHP_EOL; }
+	if (!$json_ok) {      echo '* ' . failure('JSON:') . ' JSON support is not available. AWS leverages JSON heavily in many' . PHP_EOL . '  of its services.' . PHP_EOL . PHP_EOL; }
+	if (!$pcre_ok) {      echo '* ' . failure('PCRE:') . ' Your PHP installation doesn\'t support Perl-Compatible Regular' . PHP_EOL . '  Expressions (PCRE). Without PCRE, the SDK cannot do any filtering via' . PHP_EOL . '  regular expressions.' . PHP_EOL . PHP_EOL; }
+	if (!$file_ok) {      echo '* ' . failure('File System Read/Write:') . ' The file_get_contents() and/or file_put_contents()' . PHP_EOL . '  functions have been disabled. Without them, the SDK cannot read from,' . PHP_EOL . '  or write to, the file system.' . PHP_EOL . PHP_EOL; }
 }
 
 echo '----------------------------------------' . PHP_EOL;
 echo PHP_EOL;
 
-if ($php_ok && $int64_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok && $openssl_ok && $zlib_ok && ($apc_ok || $xcache_ok || $mc_ok || $sqlite_ok))
+if ($php_ok && $int64_ok && $curl_ok && $simplexml_ok && $dom_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok && $openssl_ok && $zlib_ok && ($apc_ok || $xcache_ok || $mc_ok || $sqlite_ok))
 {
 	echo success('Bottom Line: Yes, you can!') . PHP_EOL;
 	echo PHP_EOL;
@@ -198,7 +201,7 @@ if ($php_ok && $int64_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && 
 	echo "    )" . PHP_EOL;
 	echo "));" . PHP_EOL;
 }
-elseif ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && ($apc_ok || $xcache_ok || $sqlite_ok))
+elseif ($php_ok && $curl_ok && $simplexml_ok && $dom_ok && $spl_ok && $json_ok && $pcre_ok && ($apc_ok || $xcache_ok || $sqlite_ok))
 {
 	echo success('Bottom Line: Yes, you can!') . PHP_EOL;
 	echo PHP_EOL;

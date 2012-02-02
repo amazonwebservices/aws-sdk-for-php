@@ -16,59 +16,91 @@
 
 
 /**
- * Provides an interface for accessing Amazon S3 using PHP's native file management functions. This class is not
- * auto-loaded, and must be included manually.
+ * Provides an interface for accessing Amazon S3 using PHP's native file management functions.
  *
- * Amazon S3 file patterns take the following form: <code>s3://bucket/object</code>
+ * Amazon S3 file patterns take the following form: <code>s3://bucket/object</code>.
  */
-class S3StreamWrapper extends AmazonS3
+class S3StreamWrapper
 {
-	/*%******************************************************************************************%*/
-	// CONSTANTS
+	/**
+	 * @var array An array of AmazonS3 clients registered as stream wrappers.
+	 */
+	protected static $_clients = array();
 
-	const REGION_US_E1 = 1;
-	const REGION_US_W1 = 2;
-	const REGION_US_W2 = 3;
-	const REGION_EU_W1 = 4;
-	const REGION_APAC_NE1 = 5;
-	const REGION_APAC_SE1 = 6;
-	const REGION_SA_E1 = 7;
-	const REGION_US_GOV1 = 8;
-	const REGION_US_GOV1_FIPS = 9;
+	/**
+	 * Registers the S3StreamWrapper class as a stream wrapper.
+	 *
+	 * @param AmazonS3 $s3 (Optional) An instance of the AmazonS3 client.
+	 * @param string $protocol (Optional) The name of the protocol to register.
+	 * @return boolean Whether or not the registration succeeded.
+	 */
+	public static function register(AmazonS3 $s3 = null, $protocol = 's3')
+	{
+		S3StreamWrapper::$_clients[$protocol] = $s3 ? $s3 : new AmazonS3();
 
-	const REGION_US_STANDARD = self::REGION_US_W1;
-	const REGION_VIRGINIA = self::REGION_US_W1;
-	const REGION_CALIFORNIA = self::REGION_US_W1;
-	const REGION_OREGON = self::REGION_US_W2;
-	const REGION_IRELAND = self::REGION_EU_W1;
-	const REGION_SINGAPORE = self::REGION_APAC_SE1;
-	const REGION_TOKYO = self::REGION_APAC_NE1;
-	const REGION_SAO_PAULO = self::REGION_SA_E1;
+		return stream_wrapper_register($protocol, 'S3StreamWrapper');
+	}
 
+	/**
+	 * Makes the given token PCRE-compatible.
+	 *
+	 * @param string $token (Required) The token
+	 * @return string The PCRE-compatible version of the token
+	 */
+	public static function regex_token($token)
+	{
+		$token = str_replace('/', '\/', $token);
+		$token = quotemeta($token);
+		return str_replace('\\\\', '\\', $token);
+	}
 
-	/*%******************************************************************************************%*/
-	// PROPERTIES
-
-	public $context = null;
 	public $position = 0;
 	public $path = null;
 	public $file_list = null;
 	public $open_file = null;
 	public $seek_position = 0;
 	public $eof = false;
-
-
-	/*%******************************************************************************************%*/
-	// STREAM WRAPPER IMPLEMENTATION
+	public $buffer = null;
+	public $object_size = 0;
 
 	/**
-	 * Constructs a new instance of <S3StreamWrapper>.
+	 * Fetches the client for the protocol being used.
 	 *
-	 * @return void
+	 * @param string $protocol (Optional) The protocol associated with this stream wrapper.
+	 * @return AmazonS3 The S3 client associated with this stream wrapper.
 	 */
-	public function __construct()
+	public function client($protocol = null)
 	{
-		parent::__construct();
+		if ($protocol == null)
+		{
+			if ($parsed = parse_url($this->path))
+			{
+				$protocol = $parsed['scheme'];
+			}
+			else
+			{
+				trigger_error(__CLASS__ . ' could not determine the protocol of the stream wrapper in use.');
+			}
+		}
+
+		return self::$_clients[$protocol];
+	}
+
+	/**
+	 * Parses an S3 URL into the parts needed by the stream wrapper.
+	 *
+	 * @param string $path The path to parse.
+	 * @return array An array of 3 items: protocol, bucket, and object name ready for <code>list()</code>.
+	 */
+	public function parse_path($path)
+	{
+		$url = parse_url($path);
+
+		return array(
+			$url['scheme'],                                       // Protocol
+			$url['host'],                                         // Bucket
+			(isset($url['path']) ? substr($url['path'], 1) : ''), // Object
+		);
 	}
 
 	/**
@@ -80,13 +112,14 @@ class S3StreamWrapper extends AmazonS3
 	 */
 	public function dir_closedir()
 	{
-		$this->context = null;
 		$this->position = 0;
 		$this->path = null;
 		$this->file_list = null;
 		$this->open_file = null;
 		$this->seek_position = 0;
 		$this->eof = false;
+		$this->buffer = null;
+		$this->object_size = 0;
 
 		return true;
 	}
@@ -100,16 +133,12 @@ class S3StreamWrapper extends AmazonS3
 	 */
 	public function dir_opendir($path, $options)
 	{
-		self::__construct();
-
-		$url = parse_url($path);
 		$this->path = $path;
-		$bucket_name = $url['host'];
-		$path_name = (isset($url['path']) ? $url['path'] : '');
+		list($protocol, $bucket, $object_name) = $this->parse_path($path);
 
-		$pattern = '/^' . self::regex_token(substr($path_name, 1)) . '(.*)[^\/$]/';
+		$pattern = '/^' . self::regex_token($object_name) . '(.*)[^\/$]/';
 
-		$this->file_list = $this->get_object_list($bucket_name, array(
+		$this->file_list = $this->client($protocol)->get_object_list($bucket, array(
 			'pcre' => $pattern
 		));
 
@@ -123,8 +152,6 @@ class S3StreamWrapper extends AmazonS3
 	 */
 	public function dir_readdir()
 	{
-		self::__construct();
-
 		if (isset($this->file_list[$this->position]))
 		{
 			$out = $this->file_list[$this->position];
@@ -150,6 +177,7 @@ class S3StreamWrapper extends AmazonS3
 	public function dir_rewinddir()
 	{
 		$this->position = 0;
+
 		return true;
 	}
 
@@ -157,87 +185,36 @@ class S3StreamWrapper extends AmazonS3
 	 * Create a new bucket. This method is called in response to <php:mkdir()>.
 	 *
 	 * @param string $path (Required) The bucket name to create.
-	 * @param integer $mode (Optional) Permissions. 700-range permissions map to ACL_PUBLIC. 600-range permissions map to ACL_AUTH_READ. All other permissions map to ACL_PRIVATE.
-	 * @param integer $options (Optional) Regions. [Allowed values: `S3StreamWrapper::REGION_US_E1`, `S3StreamWrapper::REGION_US_W1`, `S3StreamWrapper::REGION_EU_W1`, `S3StreamWrapper::REGION_APAC_NE1`, `S3StreamWrapper::REGION_APAC_SE1`]
+	 * @param integer $mode (Optional) Permissions. 700-range permissions map to ACL_PUBLIC. 600-range permissions map to ACL_AUTH_READ. All other permissions map to ACL_PRIVATE. Expects octal form.
+	 * @param integer $options (Optional) Ignored.
 	 * @return boolean Whether the bucket was created successfully or not.
 	 */
 	public function mkdir($path, $mode, $options)
 	{
-		$mode = 0;
-		$options = 1;
-		self::__construct();
+		// Get the value that was *actually* passed in as mode, and default to 0
+		$trace_slice = array_slice(debug_backtrace(), -1);
+		$mode = isset($trace_slice[0]['args'][1]) ? decoct($trace_slice[0]['args'][1]) : 0;
 
-		$url = parse_url($path);
 		$this->path = $path;
-		$bucket_name = $url['host'];
+		list($protocol, $bucket, $object_name) = $this->parse_path($path);
 
-		switch ($mode)
+		if (in_array($mode, range(700, 799)))
 		{
-			// 700-range permissions
-			case in_array((integer) $mode, range(700, 799)):
-				$acl = AmazonS3::ACL_PUBLIC;
-				break;
-
-			// 600-range permissions
-			case in_array((integer) $mode, range(600, 699)):
-				$acl = AmazonS3::ACL_AUTH_READ;
-				break;
-
-			// All other permissions
-			default:
-				$acl = AmazonS3::ACL_PRIVATE;
-				break;
+			$acl = AmazonS3::ACL_PUBLIC;
+		}
+		elseif (in_array($mode, range(600, 699)))
+		{
+			$acl = AmazonS3::ACL_AUTH_READ;
+		}
+		else
+		{
+			$acl = AmazonS3::ACL_PRIVATE;
 		}
 
-		switch ($options)
-		{
-			case self::REGION_US_W1:
-			case self::REGION_CALIFORNIA:
-				$region = AmazonS3::REGION_CALIFORNIA;
-				break;
+		$client = $this->client($protocol);
+		$region = $client->hostname;
+		$response = $client->create_bucket($bucket, $region, $acl);
 
-			case self::REGION_US_W2:
-			case self::REGION_OREGON:
-				$region = AmazonS3::REGION_OREGON;
-				break;
-
-			case self::REGION_EU_W1:
-			case self::REGION_IRELAND:
-				$region = AmazonS3::REGION_IRELAND;
-				break;
-
-			case self::REGION_APAC_NE1:
-			case self::REGION_TOKYO:
-				$region = AmazonS3::REGION_TOKYO;
-				break;
-
-			case self::REGION_APAC_SE1:
-			case self::REGION_SINGAPORE:
-				$region = AmazonS3::REGION_SINGAPORE;
-				break;
-
-			case self::REGION_SA_E1:
-			case self::REGION_SAO_PAULO:
-				$region = AmazonS3::REGION_SAO_PAULO;
-				break;
-
-			case self::REGION_US_GOV1:
-				$region = AmazonS3::REGION_US_GOV1;
-				break;
-
-			case self::REGION_US_GOV1_FIPS:
-				$region = AmazonS3::REGION_US_GOV1_FIPS;
-				break;
-
-			case self::REGION_US_E1:
-			case self::REGION_US_STANDARD:
-			case self::REGION_VIRGINIA:
-			default:
-				$region = AmazonS3::REGION_US_STANDARD;
-				break;
-		}
-
-		$response = $this->create_bucket($bucket_name, $region, $acl);
 		return $response->isOK();
 	}
 
@@ -250,24 +227,17 @@ class S3StreamWrapper extends AmazonS3
 	 */
 	public function rename($path_from, $path_to)
 	{
-		self::__construct();
+		list($protocol, $from_bucket_name, $from_object_name) = $this->parse_path($path_from);
+		list($protocol, $to_bucket_name, $to_object_name) = $this->parse_path($path_to);
 
-		$from_url = parse_url($path_from);
-		$from_bucket_name = $from_url['host'];
-		$from_object_name = substr($from_url['path'], 1);
-
-		$to_url = parse_url($path_to);
-		$to_bucket_name = $to_url['host'];
-		$to_object_name = substr($to_url['path'], 1);
-
-		$copy_response = $this->copy_object(
+		$copy_response = $this->client($protocol)->copy_object(
 			array('bucket' => $from_bucket_name, 'filename' => $from_object_name),
 			array('bucket' => $to_bucket_name,   'filename' => $to_object_name  )
 		);
 
 		if ($copy_response->isOK())
 		{
-			$delete_response = $this->delete_object($from_bucket_name, $from_object_name);
+			$delete_response = $this->client($protocol)->delete_object($from_bucket_name, $from_object_name);
 
 			if ($delete_response->isOK())
 			{
@@ -281,19 +251,17 @@ class S3StreamWrapper extends AmazonS3
 	/**
 	 * This method is called in response to <php:rmdir()>.
 	 *
-	 * @param string $bucket (Required) The bucket name to create.
-	 * @param boolean $force (Optional) Whether to force-delete the bucket or not. The default value is <code>false</code>.
+	 * @param string $path (Required) The bucket name to create.
+	 * @param boolean $context (Optional) Ignored.
 	 * @return boolean Whether the bucket was deleted successfully or not.
 	 */
-	public function rmdir($path, $options)
+	public function rmdir($path, $context)
 	{
-		self::__construct();
-
-		$url = parse_url($path);
 		$this->path = $path;
-		$bucket_name = $url['host'];
+		list($protocol, $bucket, $object_name) = $this->parse_path($path);
 
-		$response = $this->delete_bucket($bucket_name);
+		$response = $this->client($protocol)->delete_bucket($bucket);
+
 		return $response->isOK();
 	}
 
@@ -314,13 +282,14 @@ class S3StreamWrapper extends AmazonS3
 	 */
 	public function stream_close()
 	{
-		$this->context = null;
 		$this->position = 0;
 		$this->path = null;
 		$this->file_list = null;
 		$this->open_file = null;
 		$this->seek_position = 0;
 		$this->eof = false;
+		$this->buffer = null;
+		$this->object_size = 0;
 	}
 
 	/**
@@ -339,11 +308,26 @@ class S3StreamWrapper extends AmazonS3
 	 *
 	 * Since this implementation doesn't buffer streams, simply return <code>true</code>.
 	 *
-	 * @return boolean <code>true</code>
+	 * @return boolean Whether or not flushing succeeded
 	 */
 	public function stream_flush()
 	{
-		return true;
+		if ($this->buffer === null)
+		{
+			return false;
+		}
+
+		list($protocol, $bucket, $object_name) = $this->parse_path($this->path);
+
+		$response = $this->client($protocol)->create_object($bucket, $object_name, array(
+			'body' => $this->buffer,
+		));
+
+		$this->seek_position = 0;
+		$this->buffer = null;
+		$this->eof = true;
+
+		return $response->isOK();
 	}
 
 	/**
@@ -369,12 +353,11 @@ class S3StreamWrapper extends AmazonS3
 	 */
 	public function stream_open($path, $mode, $options, &$opened_path)
 	{
-		$opened_path = $this->open_file = $path;
-		$url = parse_url($path);
+		$opened_path = $path;
+		$this->open_file = $path;
 		$this->path = $path;
-		$bucket_name = $url['host'];
-		$path_name = $url['path'];
 		$this->seek_position = 0;
+		$this->object_size = 0;
 
 		return true;
 	}
@@ -382,39 +365,60 @@ class S3StreamWrapper extends AmazonS3
 	/**
 	 * Read from stream. This method is called in response to <php:fread()> and <php:fgets()>.
 	 *
-	 * The documentation for <php:fread()> states: "depending on the previously buffered data, the size of
-	 * the returned data may be larger than the chunk size." In this implementation, the <code>$count</code>
-	 * parameter is ignored, as the entire stream will be returned at once.
 	 *
-	 * It is important to avoid reading files that are larger than the amount of memory allocated to PHP,
-	 * otherwise "out of memory" errors will occur.
 	 *
-	 * @param integer $count (Required) Ignored.
+	 * It is important to avoid reading files that are near to or larger than the amount of memory
+	 * allocated to PHP, otherwise "out of memory" errors will occur.
+	 *
+	 * @param integer $count (Required) Always equal to 8192. PHP is fun, isn't it?
 	 * @return string The contents of the Amazon S3 object.
 	 */
 	public function stream_read($count)
 	{
-		self::__construct();
-
-		$url = parse_url($this->path);
-		$bucket_name = $url['host'];
-		$path_name = $url['path'];
-
-		if ($this->seek_position !== 0)
+		if ($this->eof)
 		{
-			$response = $this->get_object($bucket_name, substr($path_name, 1), array(
-				'range' => $this->seek_position . '-'
+			return false;
+		}
+
+		list($protocol, $bucket, $object_name) = $this->parse_path($this->path);
+
+		if ($this->seek_position > 0 && $this->object_size)
+		{
+			if ($count + $this->seek_position > $this->object_size)
+			{
+				$count = $this->object_size - $this->seek_position;
+			}
+
+			$start = $this->seek_position;
+			$end = $this->seek_position + $count;
+
+			$response = $this->client($protocol)->get_object($bucket, $object_name, array(
+				'range' => $start . '-' . $end
 			));
 		}
 		else
 		{
-			$response = $this->get_object($bucket_name, substr($path_name, 1));
+			$response = $this->client($protocol)->get_object($bucket, $object_name);
+			$this->object_size = isset($response->header['content-length']) ? $response->header['content-length'] : 0;
 		}
 
-		$this->seek_position = isset($response->header['content-length']) ? $response->header['content-length'] : 0;
-		$this->eof = true;
+		if (!$response->isOK())
+		{
+			return false;
+		}
 
-		return $response->body;
+		$data = substr($response->body, 0, min($count, $this->object_size));
+		$this->seek_position += strlen($data);
+
+
+		if ($this->seek_position >= $this->object_size)
+		{
+			$this->eof = true;
+			$this->seek_position = 0;
+			$this->object_size = 0;
+		}
+
+		return $data;
 	}
 
 	/**
@@ -426,9 +430,10 @@ class S3StreamWrapper extends AmazonS3
 	 * @param integer $whence (Optional) Ignored. Always uses <code>SEEK_SET</code>.
 	 * @return boolean Whether or not the seek was successful.
 	 */
-	public function stream_seek($offset, $whence = SEEK_SET)
+	public function stream_seek($offset, $whence)
 	{
 		$this->seek_position = $offset;
+
 		return true;
 	}
 
@@ -471,25 +476,10 @@ class S3StreamWrapper extends AmazonS3
 	 */
 	public function stream_write($data)
 	{
-		self::__construct();
+		$size = strlen($data);
 
-		$url = parse_url($this->path);
-		$bucket_name = $url['host'];
-		$path_name = $url['path'];
-
-		if ($this->seek_position !== 0)
-		{
-			trigger_error(__CLASS__ . ' is unable to append to a file, so the seek position for this resource must be rewound to position 0.');
-		}
-		else
-		{
-			$response = $this->create_object($bucket_name, substr($path_name, 1), array(
-				'body' => $data
-			));
-		}
-
-		$this->seek_position = $response->header['x-aws-requestheaders']['Content-Length'];
-		$this->eof = true;
+		$this->seek_position = $size;
+		$this->buffer .= $data;
 
 		return $this->seek_position;
 	}
@@ -502,14 +492,10 @@ class S3StreamWrapper extends AmazonS3
 	 */
 	public function unlink($path)
 	{
-		self::__construct();
-
-		$url = parse_url($path);
 		$this->path = $path;
-		$bucket_name = $url['host'];
-		$path_name = $url['path'];
+		list($protocol, $bucket, $object_name) = $this->parse_path($path);
 
-		$response = $this->delete_object($bucket_name, substr($path_name, 1));
+		$response = $this->client($protocol)->delete_object($bucket, $object_name);
 
 		return $response->isOK();
 	}
@@ -523,26 +509,58 @@ class S3StreamWrapper extends AmazonS3
 	 */
 	public function url_stat($path, $flags)
 	{
-		self::__construct();
+		// Defaults
+		$out = array();
+		$out[0] = $out['dev'] = 0;
+		$out[1] = $out['ino'] = 0;
+		$out[2] = $out['mode'] = 0;
+		$out[3] = $out['nlink'] = 0;
+		$out[4] = $out['uid'] = 0;
+		$out[5] = $out['gid'] = 0;
+		$out[6] = $out['rdev'] = 0;
+		$out[7] = $out['size'] = 0;
+		$out[8] = $out['atime'] = 0;
+		$out[9] = $out['mtime'] = 0;
+		$out[10] = $out['ctime'] = 0;
+		$out[11] = $out['blksize'] = 0;
+		$out[12] = $out['blocks'] = 0;
 
-		$url = parse_url($path);
 		$this->path = $path;
-		$bucket_name = (isset($url['host']) ? $url['host'] : '');
-		$path_name = ((isset($url['path']) && $url['path'] !== '/') ? $url['path'] : null);
+		list($protocol, $bucket, $object_name) = $this->parse_path($this->path);
+
 		$file = null;
 		$mode = 0;
 
-		if ($path_name)
+		if ($object_name)
 		{
-			$list = $this->list_objects($bucket_name, array(
-				'prefix' => substr($path_name, 1)
-			))->body;
+			$response = $this->client($protocol)->list_objects($bucket, array(
+				'prefix' => $object_name
+			));
 
-			$file = $list->Contents[0];
+			if (!$response->isOK())
+			{
+				return $out;
+			}
+
+			// Ummm... yeah...
+			if (is_object($response->body))
+			{
+				$file = $response->body->Contents[0];
+			}
+			else
+			{
+				$body = simplexml_load_string($response->body);
+				$file = $body->Contents[0];
+			}
 		}
 		else
 		{
-			$list = $this->list_objects($bucket_name)->body;
+			$response = $this->client($protocol)->list_objects($bucket);
+
+			if (!$response->isOK())
+			{
+				return $out;
+			}
 		}
 
 		/*
@@ -562,54 +580,27 @@ class S3StreamWrapper extends AmazonS3
 
 		// File or directory?
 		// @todo: Add more detailed support for permissions. Currently only takes OWNER into account.
-		if (!$path_name) // Root of the bucket
+		if (!$object_name) // Root of the bucket
 		{
 			$mode = octdec('0040777');
 		}
 		elseif ($file)
 		{
-			$mode = (str_replace('//', '/', substr($path_name, 1) . '/') === (string) $file->Key) ? octdec('0040777') : octdec('0100777'); // Directory, Owner R/W : Regular File, Owner R/W
+			$mode = (str_replace('//', '/', $object_name . '/') === (string) $file->Key) ? octdec('0040777') : octdec('0100777'); // Directory, Owner R/W : Regular File, Owner R/W
 		}
 		else
 		{
 			$mode = octdec('0100777');
 		}
 
-		$out = array();
-		$out[0] = $out['dev'] = 0;
-		$out[1] = $out['ino'] = 0;
+		// Update stat output
 		$out[2] = $out['mode'] = $mode;
-		$out[3] = $out['nlink'] = 0;
 		$out[4] = $out['uid'] = (isset($file) ? (string) $file->Owner->ID : 0);
-		$out[5] = $out['gid'] = 0;
-		$out[6] = $out['rdev'] = 0;
 		$out[7] = $out['size'] = (isset($file) ? (string) $file->Size : 0);
 		$out[8] = $out['atime'] = (isset($file) ? date('U', strtotime((string) $file->LastModified)) : 0);
 		$out[9] = $out['mtime'] = (isset($file) ? date('U', strtotime((string) $file->LastModified)) : 0);
 		$out[10] = $out['ctime'] = (isset($file) ? date('U', strtotime((string) $file->LastModified)) : 0);
-		$out[11] = $out['blksize'] = 0;
-		$out[12] = $out['blocks'] = 0;
 
 		return $out;
 	}
-
-
-	/*%******************************************************************************************%*/
-	// HELPERS
-
-	/**
-	 * Makes the given token PCRE-compatible.
-	 */
-	public static function regex_token($token)
-	{
-		$token = str_replace('/', '\/', $token);
-		$token = quotemeta($token);
-		return str_replace('\\\\', '\\', $token);
-	}
 }
-
-
-/*%******************************************************************************************%*/
-// REGISTER STREAM WRAPPER
-
-stream_wrapper_register('s3', 'S3StreamWrapper');

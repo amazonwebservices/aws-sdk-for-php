@@ -130,9 +130,12 @@
 		<p>PHP provides an interface for solving this exact kind of problem, called the <a href="http://php.net/streamwrapper">Stream Wrapper</a> interface. By writing a class that implements this interface and <a href="http://php.net/manual/en/function.stream-wrapper-register.php">registering it as a handler</a> we can reduce both the amount of rewriting that needs to be done for existing applications, as well as substantially lower the learning curve for reading and writing from Amazon S3.</p>
 
 		<h2>How do I use it?</h2>
-		<p>After including the AWS SDK for PHP in your project, include the <code>s3streamwrapper.class.php</code> library to automatically register <code>s3://</code> as a <a href="http://php.net/manual/en/wrappers.php">supported stream wrapper</a> for Amazon S3. <em>It's that simple</em>. Amazon S3 file patterns take the following form: <code>s3://bucket/object</code>.</p>
+		<p>After including the AWS SDK for PHP in your project, use the <code>AmazonS3::register_stream_wrapper()</code> method to register <code>s3://</code> as a <a href="http://php.net/manual/en/wrappers.php">supported stream wrapper</a> for Amazon S3. <em>It's that simple</em>. Amazon S3 file patterns take the following form: <code>s3://bucket/object</code>.</p>
+
 		<pre><code>require_once 'AWSSDKforPHP/sdk.class.php';
-require_once 'S3StreamWrapper/s3streamwrapper.class.php';
+
+$s3 = new AmazonS3();
+$s3->register_stream_wrapper();
 
 $directory = 's3://my-new-bucket';
 $filename = $directory . '/put.txt';
@@ -152,6 +155,20 @@ if (mkdir($directory))
 
 echo $contents;</code></pre>
 
+		<p>You may also pass a different protocol name as a parameter to <code>AmazonS3::register_stream_wrapper()</code> if you want to use something besides <code>s3://</code>. Using this technique you can create more than one stream wrapper with different configurations (e.g. for different regions). To do that you just need to create separate instances of the <code>AmazonS3</code> class, configure them, and then register a stream wrapper for each of them with different protocol names.</p>
+
+		<pre><code>require_once 'AWSSDKforPHP/sdk.class.php';
+
+$s3east = new AmazonS3();
+$s3east->set_region(AmazonS3::REGION_US_E1);
+$s3east->register_stream_wrapper('s3east');
+mkdir('s3east://my-easterly-bucket');
+
+$s3west = new AmazonS3();
+$s3west->set_region(AmazonS3::REGION_US_W1);
+$s3west->register_stream_wrapper('s3west');
+mkdir('s3west://my-westerly-bucket');</code></pre>
+
 		<h2>Tests and usage examples</h2>
 		<p>We are also including tests written in the <a href="http://qa.php.net/phpt_details.php">PHPT</a> format. Not only do these tests show how the software can be used, but any tests submitted back to us should be in this format. These tests will likely fail for you unless you change the bucket names to be globally unique across S3. You can run the tests with <code>pear</code>.</p>
 		<pre><code>cd S3StreamWrapper/tests;
@@ -163,12 +180,11 @@ open ./_coverage_report/index.html;</code></pre>
 
 		<h2>Notes and Known Issues</h2>
 		<ul>
-			<li><p>Using this interface requires the use of <code>config.inc.php</code>. Ad-hoc credentials are not supported.</p></li>
-			<li><p><code>stream_lock()</code> and <code>stream_cast()</code> are not currently implemented.</p></li>
+			<li><p><code>stream_lock()</code> and <code>stream_cast()</code> are not currently implemented, and likely won't be.</p></li>
 			<li><p>Strangely <code>touch()</code> doesn&#8217;t seem to work. I think this is because of an issue with my implementation of <code>url_stat()</code>, but I can&#8217;t find any information on the magical combination of parameters that will make this work.</p></li>
 			<li><p>Using <code>fopen()</code> will always open in <code>rb+</code> mode. Amazon S3 as a service doesn&#8217;t support anything else.</p></li>
 			<li><p>Because of the way that PHP interacts with the <a href="http://php.net/manual/en/class.streamwrapper.php">StreamWrapper</a> interface, it&#8217;s difficult to optimize for batch requests under the hood. If you need to push or pull data from several objects, you may find that using <a href="http://docs.amazonwebservices.com/AWSSDKforPHP/latest/#m=CFRuntime/batch">batch requests</a> with the <a href="http://docs.amazonwebservices.com/AWSSDKforPHP/latest/#i=AmazonS3">standard interface</a> has better latency.</p></li>
-			<li><p><code>rmdir()</code> does a force-delete, so you don&#8217;t need to iterate over the files to delete them one-by-one.</p></li>
+			<li><p><code>rmdir()</code> does not do a force-delete, so you will need to iterate over the files to delete them one-by-one.</p></li>
 			<li><p><code>realpath()</code>, <code>glob()</code>, <code>chmod()</code>, <code>chown()</code>, <code>chgrp()</code>, <code>tempnam()</code> and a few other functions don&#8217;t support the StreamWrapper interface at the PHP-level because they're designed to work with the (no/low-latency) local file system.</p></li>
 			<li><p>Support for <code>ftruncate()</code> does not exist in any current release of PHP, but is implemented on the PHP trunk for a future release. <a href="http://bugs.php.net/53888">http://bugs.php.net/53888</a>.</p></li>
 			<li><p>Since <a href="http://docs.amazonwebservices.com/AmazonS3/latest/gsg/WorkingWithS3.html#WriteObject">Amazon S3 doesn&#8217;t support appending data</a>, it is best to avoid functions that expect or rely on that functionality (e.g. <a href="http://php.net/fputcsv">fputcsv()</a>).</p></li>
