@@ -2690,7 +2690,6 @@ class AmazonS3 extends CFRuntime
 
 		// Authenticate to S3
 		$current_ssl_setting = $this->use_ssl;
-		$this->use_ssl = false;
 		$response = $this->authenticate($bucket, $opt);
 		$this->use_ssl = $current_ssl_setting;
 
