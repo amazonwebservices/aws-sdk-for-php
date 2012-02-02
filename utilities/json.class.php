@@ -21,7 +21,7 @@
 /**
  * Handles the conversion of data from JSON to other formats.
  *
- * @version 2012.01.05
+ * @version 2012.01.27
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -32,18 +32,11 @@ class CFJSON
 	 * Converts a JSON string to a CFSimpleXML object.
 	 *
 	 * @param string|array $json (Required) Pass either a valid JSON-formatted string, or an associative array.
-	 * @param SimpleXMLElement $xml (Optional) An XML object to add nodes to. Must be an object that is an <code>instanceof</code> a <code>SimpleXMLElement</code> object. If an object is not passed, a new one will be generated using the classname defined for <code>$parser</code>.
 	 * @param string $parser (Optional) The name of the class to use to parse the XML. This class should extend <code>SimpleXMLElement</code>. Has a default value of <code>CFSimpleXML</code>.
 	 * @return CFSimpleXML An XML representation of the data.
 	 */
-	public static function to_xml($json, SimpleXMLElement $xml = null, $parser = 'CFSimpleXML')
+	public static function to_xml($json, $parser = 'CFSimpleXML')
 	{
-		// If there isn't an XML object, create one
-		if (!$xml)
-		{
-			$xml = simplexml_load_string('<?xml version="1.0" encoding="UTF-8"?><rootElement/>', $parser);
-		}
-
 		// If we haven't parsed the JSON, do it
 		if (!is_array($json))
 		{
@@ -83,33 +76,9 @@ class CFJSON
 		}
 
 		// Hand off for the recursive work
-		self::process_json($json, $xml, $parser);
+		$string = Array2DOM::arrayToXMLString($json, 'rootElement', true);
 
-		return $xml;
-	}
-
-	/**
-	 * Converts a JSON string to a CFSimpleXML object.
-	 *
-	 * @param string|array $json (Required) Pass either a valid JSON-formatted string, or an associative array.
-	 * @param SimpleXMLElement $xml (Optional) An XML object to add nodes to. Must be an object that is an <code>instanceof</code> a <code>SimpleXMLElement</code> object. If an object is not passed, a new one will be generated using the classname defined for <code>$parser</code>.
-	 * @param string $parser (Optional) The name of the class to use to parse the XML. This class should extend <code>SimpleXMLElement</code>. Has a default value of <code>CFSimpleXML</code>.
-	 * @return CFSimpleXML An XML representation of the data.
-	 */
-	protected static function process_json($json, SimpleXMLElement $xml = null, $parser = 'CFSimpleXML')
-	{
-		foreach ($json as $k => $v)
-		{
-			if (is_array($v))
-			{
-				$node = $xml->addChild($k);
-				self::process_json($v, $node, $parser);
-			}
-			else
-			{
-				$xml->addChild($k, $v);
-			}
-		}
+		return simplexml_load_string($string, $parser, LIBXML_NOCDATA);
 	}
 }
 

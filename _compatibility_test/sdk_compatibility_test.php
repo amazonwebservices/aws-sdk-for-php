@@ -261,6 +261,7 @@ elseif (isset($_GET['ssl_check']))
 // Required
 $php_ok = (function_exists('version_compare') && version_compare(phpversion(), '5.2.0', '>='));
 $simplexml_ok = extension_loaded('simplexml');
+$dom_ok = extension_loaded('dom');
 $json_ok = (extension_loaded('json') && function_exists('json_encode') && function_exists('json_decode'));
 $spl_ok = extension_loaded('spl');
 $pcre_ok = extension_loaded('pcre');
@@ -517,6 +518,11 @@ div.important h3 {
 						<td>Enabled</td>
 						<td><?php echo ($simplexml_ok) ? 'Enabled' : 'Disabled'; ?></td>
 					</tr>
+					<tr class="<?php echo ($dom_ok) ? 'enabled' : 'disabled'; ?>">
+						<td><a href="http://php.net/dom">DOM</a></td>
+						<td>Enabled</td>
+						<td><?php echo ($dom_ok) ? 'Enabled' : 'Disabled'; ?></td>
+					</tr>
 					<tr class="<?php echo ($spl_ok) ? 'enabled' : 'disabled'; ?>">
 						<td><a href="http://php.net/spl">SPL</a></td>
 						<td>Enabled</td>
@@ -654,7 +660,7 @@ div.important h3 {
 			<br>
 		</div>
 
-		<?php if ($php_ok && $int64_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok && $openssl_ok && $zlib_ok && ($apc_ok || $xcache_ok || $mc_ok || $sqlite_ok)): ?>
+		<?php if ($php_ok && $int64_ok && $curl_ok && $simplexml_ok && $dom_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok && $openssl_ok && $zlib_ok && ($apc_ok || $xcache_ok || $mc_ok || $sqlite_ok)): ?>
 		<div class="chunk important ok">
 			<h3>Bottom Line: Yes, you can!</h3>
 			<p>Your PHP environment is ready to go, and can take advantage of all possible features!</p>
@@ -664,7 +670,7 @@ div.important h3 {
 			<p>You can download the latest version of the <a href="http://aws.amazon.com/sdkforphp"><strong>AWS SDK for PHP</strong></a> and install it by <a href="http://aws.amazon.com/articles/4261">following the instructions</a>. Also, check out our library of <a href="http://aws.amazon.com/articles/4262">screencasts and tutorials</a>.</p>
 			<p>Take the time to read <a href="http://aws.amazon.com/articles/4261">"Getting Started"</a> to make sure you're prepared to use the AWS SDK for PHP. No seriously, read it.</p>
 		</div>
-		<?php elseif ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok): ?>
+		<?php elseif ($php_ok && $curl_ok && $simplexml_ok && $dom_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok): ?>
 		<div class="chunk important ok">
 			<h3>Bottom Line: Yes, you can!</h3>
 			<p>Your PHP environment is ready to go! <i>There are a couple of minor features that you won't be able to take advantage of, but nothing that's a show-stopper.</i></p>
@@ -725,7 +731,7 @@ div.important h3 {
 
 		<div class="chunk">
 			<h3>Give me the details!</h3>
-			<?php if ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok): ?>
+			<?php if ($php_ok && $curl_ok && $simplexml_ok && $dom_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok): ?>
 			<ol>
 				<li><em>Your environment meets the minimum requirements for using the <strong>AWS SDK for PHP</strong>!</em></li>
 
@@ -738,7 +744,7 @@ div.important h3 {
 				<?php endif; ?>
 
 				<?php if ($zlib_ok): ?>
-				<li>The <a href="http://php.net/zlib">Zlib</a> extension is installed. The SDK will automatically leverage the compression capabilities of Zlib.</li>
+				<li>The <a href="http://php.net/zlib">Zlib</a> extension is installed. The SDK will request gzipped data whenever possible.</li>
 				<?php endif; ?>
 
 				<?php if (!$int64_ok): ?>
@@ -770,9 +776,9 @@ div.important h3 {
 			</ol>
 
 				<?php if (!$openssl_ok && !$zlib_ok): ?>
-				<p class="footnote"><strong>NOTE:</strong> You're missing the <a href="http://php.net/openssl">OpenSSL</a> extension, which means that you won't be able to take advantage of <a href="http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html">CloudFront Private URLs</a> or decrypt Microsoft&reg; Windows&reg; instance passwords. You're also missing the <a href="http://php.net/zlib">Zlib</a> extension, which means that responses from Amazon's services will take a little longer to download and you won't be able to take advantage of compression with the <i>response caching</i> feature.</p>
+				<p class="footnote"><strong>NOTE:</strong> You're missing the <a href="http://php.net/openssl">OpenSSL</a> extension, which means that you won't be able to take advantage of <a href="http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html">CloudFront Private URLs</a> or decrypt Microsoft&reg; Windows&reg; instance passwords. You're also missing the <a href="http://php.net/zlib">Zlib</a> extension, which means that the SDK will be unable to request gzipped data from Amazon and you won't be able to take advantage of compression with the <i>response caching</i> feature.</p>
 				<?php elseif (!$zlib_ok): ?>
-				<p class="footnote"><strong>NOTE:</strong> You're missing the <a href="http://php.net/zlib">Zlib</a> extension, which means that responses from Amazon's services will take a little longer to download and you won't be able to take advantage of compression with the <i>response caching</i> feature.</p>
+				<p class="footnote"><strong>NOTE:</strong> You're missing the <a href="http://php.net/zlib">Zlib</a> extension, which means that the SDK will be unable to request gzipped data from Amazon and you won't be able to take advantage of compression with the <i>response caching</i> feature.</p>
 				<?php elseif (!$openssl_ok): ?>
 				<p class="footnote"><strong>NOTE:</strong> You're missing the <a href="http://php.net/openssl">OpenSSL</a> extension, which means that you won't be able to take advantage of <a href="http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html">CloudFront Private URLs</a> or decrypt Microsoft&reg; Windows&reg; instance passwords.</p>
 				<?php endif; ?>
@@ -789,6 +795,10 @@ div.important h3 {
 
 				<?php if (!$simplexml_ok): ?>
 					<li><strong>SimpleXML:</strong> The <a href="http://php.net/simplexml">SimpleXML</a> extension is not available. Without SimpleXML, the SDK cannot parse the XML responses from Amazon's services.</li>
+				<?php endif; ?>
+
+				<?php if (!$dom_ok): ?>
+					<li><strong>DOM:</strong> The <a href="http://php.net/dom">DOM</a> extension is not available. Without DOM, the SDK cannot transliterate JSON responses from Amazon's services into the common SimpleXML-based pattern used throughout the SDK.</li>
 				<?php endif; ?>
 
 				<?php if (!$spl_ok): ?>

@@ -115,9 +115,9 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.5.1');
+define('CFRUNTIME_VERSION', '1.5.2');
 // define('CFRUNTIME_BUILD', gmdate('YmdHis', filemtime(__FILE__))); // @todo: Hardcode for release.
-define('CFRUNTIME_BUILD', '2012011811285200');
+define('CFRUNTIME_BUILD', '20120202002749');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . str_replace(' ', '_', php_uname('s')) . '/' . str_replace(' ', '_', php_uname('r')) . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -128,7 +128,7 @@ define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/'
  * Core functionality and default settings shared across all SDK classes. All methods and properties in this
  * class are inherited by the service-specific classes.
  *
- * @version 2012.01.17
+ * @version 2012.02.01
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -1049,6 +1049,9 @@ class CFRuntime
 	 */
 	public function parse_callback($response, $headers = null)
 	{
+		// Bail out
+		if (!$this->parse_the_response) return $response;
+
 		// Shorten this so we have a (mostly) single code path
 		if (isset($response->body))
 		{
@@ -1122,7 +1125,7 @@ class CFRuntime
 		)
 		{
 			// Normalize JSON to a CFSimpleXML object
-			$body = CFJSON::to_xml($body);
+			$body = CFJSON::to_xml($body, $this->parser_class);
 		}
 
 		// Put the parsed data back where it goes
@@ -1231,7 +1234,6 @@ class CFRuntime
  */
 class CFLoader
 {
-
 	/*%******************************************************************************************%*/
 	// AUTO-LOADER
 
@@ -1239,7 +1241,7 @@ class CFLoader
 	 * Automatically load classes that aren't included.
 	 *
 	 * @param string $class (Required) The classname to load.
-	 * @return void
+	 * @return boolean Whether or not the file was successfully loaded.
 	 */
 	public static function autoloader($class)
 	{
@@ -1248,55 +1250,103 @@ class CFLoader
 		// Amazon SDK classes
 		if (strstr($class, 'Amazon'))
 		{
-			require_once $path . 'services' . DIRECTORY_SEPARATOR . str_ireplace('Amazon', '', strtolower($class)) . '.class.php';
-			return true;
+			if (file_exists($require_this = $path . 'services' . DIRECTORY_SEPARATOR . str_ireplace('Amazon', '', strtolower($class)) . '.class.php'))
+			{
+				require_once $require_this;
+				return true;
+			}
+
+			return false;
 		}
 
 		// Utility classes
 		elseif (strstr($class, 'CF'))
 		{
-			require_once $path . 'utilities' . DIRECTORY_SEPARATOR . str_ireplace('CF', '', strtolower($class)) . '.class.php';
-			return true;
+			if (file_exists($require_this = $path . 'utilities' . DIRECTORY_SEPARATOR . str_ireplace('CF', '', strtolower($class)) . '.class.php'))
+			{
+				require_once $require_this;
+				return true;
+			}
+
+			return false;
 		}
 
 		// Load CacheCore
 		elseif (strstr($class, 'Cache'))
 		{
-			require_once $path . 'lib' . DIRECTORY_SEPARATOR . 'cachecore' . DIRECTORY_SEPARATOR . strtolower($class) . '.class.php';
-			return true;
+			if (file_exists($require_this = $path . 'lib' . DIRECTORY_SEPARATOR . 'cachecore' . DIRECTORY_SEPARATOR . strtolower($class) . '.class.php'))
+			{
+				require_once $require_this;
+				return true;
+			}
+
+			return false;
 		}
 
 		// Load RequestCore
 		elseif (strstr($class, 'RequestCore') || strstr($class, 'ResponseCore'))
 		{
-			require_once $path . 'lib' . DIRECTORY_SEPARATOR . 'requestcore' . DIRECTORY_SEPARATOR . 'requestcore.class.php';
-			return true;
+			if (file_exists($require_this = $path . 'lib' . DIRECTORY_SEPARATOR . 'requestcore' . DIRECTORY_SEPARATOR . 'requestcore.class.php'))
+			{
+				require_once $require_this;
+				return true;
+			}
+
+			return false;
+		}
+
+		// Load array-to-domdocument
+		elseif (strstr($class, 'Array2DOM'))
+		{
+			if (file_exists($require_this = $path . 'lib' . DIRECTORY_SEPARATOR . 'dom' . DIRECTORY_SEPARATOR . 'ArrayToDOMDocument.php'))
+			{
+				require_once $require_this;
+				return true;
+			}
+
+			return false;
 		}
 
 		// Load Authentication Signers
 		elseif (strstr($class, 'Auth'))
 		{
-			require_once $path . 'authentication' . DIRECTORY_SEPARATOR . str_replace('auth', 'signature_', strtolower($class)) . '.class.php';
-			return true;
+			if (file_exists($require_this = $path . 'authentication' . DIRECTORY_SEPARATOR . str_replace('auth', 'signature_', strtolower($class)) . '.class.php'))
+			{
+				require_once $require_this;
+				return true;
+			}
+
+			return false;
 		}
 
 		// Load Signer interface
 		elseif ($class === 'Signer')
 		{
-			if (!interface_exists('Signable', false))
+			if (!interface_exists('Signable', false) &&
+			    file_exists($require_this = $path . 'authentication' . DIRECTORY_SEPARATOR . 'signable.interface.php'))
 			{
-				require_once $path . 'authentication' . DIRECTORY_SEPARATOR . 'signable.interface.php';
+				require_once $require_this;
 			}
 
-			require_once $path . 'authentication' . DIRECTORY_SEPARATOR . 'signer.abstract.php';
-			return true;
+			if (file_exists($require_this = $path . 'authentication' . DIRECTORY_SEPARATOR . 'signer.abstract.php'))
+			{
+				require_once $require_this;
+				return true;
+			}
+
+			return false;
 		}
 
 		// Load Symfony YAML classes
 		elseif (strstr($class, 'sfYaml'))
 		{
-			require_once $path . 'lib' . DIRECTORY_SEPARATOR . 'yaml' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'sfYaml.php';
-			return true;
+			if (file_exists($require_this = $path . 'lib' . DIRECTORY_SEPARATOR . 'yaml' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'sfYaml.php'))
+			{
+				require_once $require_this;
+				return true;
+			}
+
+			return false;
 		}
 
 		return false;

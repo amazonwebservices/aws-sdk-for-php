@@ -15,6 +15,7 @@ The following people have provided ideas, support and bug fixes:
 * [Jeremy Archuleta](http://code.google.com/u/jeremy.archuleta/) (bug fixes)
 * [Paul Voegler](mailto:voegler@gmx.de) (bug fixes, bug reports, patches)
 * [Peter Bowen](http://github.com/pzb) (feedback, bug reports)
+* [zoxa](https://github.com/zoxa) (bug fixes)
 
 
 ## CloudFusion/CacheCore/RequestCore Contributors

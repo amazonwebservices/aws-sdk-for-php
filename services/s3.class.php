@@ -400,6 +400,11 @@ class AmazonS3 extends CFRuntime
 	public $multi_object_delete_xml;
 
 	/**
+	 * The base XML elements to use for object expiration support.
+	 */
+	public $object_expiration_xml;
+
+	/**
 	 * The DNS vs. Path-style setting.
 	 */
 	public $path_style = false;
@@ -439,6 +444,7 @@ class AmazonS3 extends CFRuntime
 		$this->complete_mpu_xml         = '<?xml version="1.0" encoding="utf-8"?><CompleteMultipartUpload></CompleteMultipartUpload>';
 		$this->website_config_xml       = '<?xml version="1.0" encoding="utf-8"?><WebsiteConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"><IndexDocument><Suffix>index.html</Suffix></IndexDocument><ErrorDocument><Key>error.html</Key></ErrorDocument></WebsiteConfiguration>';
 		$this->multi_object_delete_xml  = '<?xml version="1.0" encoding="utf-8"?><Delete></Delete>';
+		$this->object_expiration_xml    = '<?xml version="1.0" encoding="utf-8"?><LifecycleConfiguration></LifecycleConfiguration>';
 
 		parent::__construct($options);
 	}
@@ -2429,11 +2435,28 @@ class AmazonS3 extends CFRuntime
 				$objects[] = array('key' => $object);
 			}
 
-			$response = $this->delete_objects($bucket, array(
-				'objects' => $objects
-			));
+			$batch = new CFBatchRequest();
+			$batch->use_credentials($this->credentials);
 
-			return ($response->isOK() && !isset($response->body->Error));
+			foreach (array_chunk($objects, 1000) as $object_set)
+			{
+				$this->batch($batch)->delete_objects($bucket, array(
+					'objects' => $object_set
+				));
+			}
+
+			$responses = $this->batch($batch)->send();
+			$is_ok = true;
+
+			foreach ($responses as $response)
+			{
+				if (!$response->isOK() || isset($response->body->Error))
+				{
+					$is_ok = false;
+				}
+			}
+
+			return $is_ok;
 		}
 
 		// If there are no matches, return true
@@ -2522,11 +2545,28 @@ class AmazonS3 extends CFRuntime
 			}
 		}
 
-		$response = $this->delete_objects($bucket, array(
-			'objects' => $objects
-		));
+		$batch = new CFBatchRequest();
+		$batch->use_credentials($this->credentials);
 
-		return ($response->isOK() && !isset($response->body->Error));
+		foreach (array_chunk($objects, 1000) as $object_set)
+		{
+			$this->batch($batch)->delete_objects($bucket, array(
+				'objects' => $object_set
+			));
+		}
+
+		$responses = $this->batch($batch)->send();
+		$is_ok = true;
+
+		foreach ($responses as $response)
+		{
+			if (!$response->isOK() || isset($response->body->Error))
+			{
+				$is_ok = false;
+			}
+		}
+
+		return $is_ok;
 	}
 
 	/**
@@ -3751,6 +3791,120 @@ class AmazonS3 extends CFRuntime
 
 
 	/*%******************************************************************************************%*/
+	// OBJECT EXPIRATION
+
+	/**
+	 * Enables the ability to specify an expiry period for objects when an object should be deleted,
+	 * measured as number of days from creation time. Amazon S3 guarantees that the object will be
+	 * deleted when the expiration time is passed.
+	 *
+	 * @param string $bucket (Required) The name of the bucket to use.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>rules</code> - <code>string</code> - Required - The object expiration rule-sets to apply to the bucket. <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Required - This represents a simple array index. <ul>
+	 * 			<li><code>prefix</code> - <code>string</code> - Required - The Amazon S3 object prefix which targets the file(s) for expiration.</li>
+	 * 			<li><code>expiration</code> - <code>array</code> - Required - The container for the unit of measurement by which the expiration time is calculated. <ul>
+	 * 				<li><code>days</code> - <code>integer</code> - Required - The number of days until the targetted objects expire from the bucket.</li>
+	 * 			</ul></li>
+	 * 			<li><code>enabled</code> - <code>boolean</code> - Optional - Whether or not to enable this rule-set. A value of <code>true</code> enables the rule-set. A value of <code>false</code> disables the rule-set. The default value is <code>true</code>.</li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_object_expiration_config($bucket, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['verb'] = 'PUT';
+		$opt['sub_resource'] = 'lifecycle';
+		$opt['headers'] = array(
+			'Content-Type' => 'application/xml'
+		);
+
+		$xml = simplexml_load_string($this->object_expiration_xml);
+
+		if (isset($opt['rules']) && is_array($opt['rules']) && count($opt['rules']))
+		{
+			foreach ($opt['rules'] as $rule)
+			{
+				$xrule = $xml->addChild('Rule');
+
+				// Prefix
+				if (isset($rule['prefix']))
+				{
+					$xrule->addChild('Prefix', $rule['prefix']);
+				}
+				else
+				{
+					throw new S3_Exception('The each rule requires a "prefix" in the ' . __FUNCTION__ . ' method.');
+				}
+
+				// Status
+				$enabled = 'Enabled';
+				if (isset($rule['enabled']))
+				{
+					if (is_bool($rule['enabled'])) // Boolean
+					{
+						$enabled = $rule['enabled'] ? 'Enabled' : 'Disabled';
+					}
+					elseif (is_string($rule['enabled'])) // String
+					{
+						$enabled = (strtolower($rule['enabled']) === 'true') ? 'Enabled' : 'Disabled';
+					}
+
+					$xrule->addChild('Status', $enabled);
+				}
+				else
+				{
+					$xrule->addChild('Status', 'Enabled');
+				}
+
+				// Expiration
+				if (isset($rule['expiration']))
+				{
+					$xexpiration = $xrule->addChild('Expiration');
+
+					if (isset($rule['expiration']['days']))
+					{
+						$xexpiration->addChild('Days', $rule['expiration']['days']);
+					}
+				}
+				else
+				{
+					throw new S3_Exception('The each rule requires a "expiration" in the ' . __FUNCTION__ . ' method.');
+				}
+			}
+		}
+
+		$opt['body'] = $xml->asXML();
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+	public function get_object_expiration_config($bucket, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['verb'] = 'GET';
+		$opt['sub_resource'] = 'lifecycle';
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+	public function delete_object_expiration_config($bucket, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['verb'] = 'DELETE';
+		$opt['sub_resource'] = 'lifecycle';
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+
+	/*%******************************************************************************************%*/
 	// MISCELLANEOUS
 
 	/**
@@ -3771,5 +3925,19 @@ class AmazonS3 extends CFRuntime
 			'id' => (string) $id->body->Owner->ID,
 			'display_name' => (string) $id->body->Owner->DisplayName
 		);
+	}
+
+	/**
+	 * Loads and registers the S3StreamWrapper class as a stream wrapper.
+	 *
+	 * @param string $protocol (Optional) The name of the protocol to register.
+	 * @return boolean Whether or not the registration succeeded.
+	 */
+	public function register_stream_wrapper($protocol = 's3')
+	{
+		require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions'
+			. DIRECTORY_SEPARATOR . 's3streamwrapper.class.php';
+
+		return S3StreamWrapper::register($this, $protocol);
 	}
 }

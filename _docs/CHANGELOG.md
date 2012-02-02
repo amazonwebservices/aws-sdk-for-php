@@ -1,3 +1,48 @@
+# Changelog: 1.5.2 "Copland"
+Code name for Apple's never-released successor to System 7. <http://en.wikipedia.org/wiki/Copland_(operating_system)>
+
+Launched Wednesday, Febraury 1, 2012.
+
+## Bug fixes and enhancements
+* [SSL Cert on PHP SDK 1.5.0.1 ](https://forums.aws.amazon.com/thread.jspa?threadID=84947)
+* [Stream Wrapper need a buffer !](https://forums.aws.amazon.com/thread.jspa?threadID=85436)
+* [Fixing Issue with set_distribution_config](https://github.com/amazonwebservices/aws-sdk-for-php/pull/20)
+* [[Bug] SDK Autoloader Interferes with PHPExcel Autoloader](https://forums.aws.amazon.com/thread.jspa?threadID=85239)
+* [get_object query does not always return the same content type](https://forums.aws.amazon.com/thread.jspa?threadID=84148)
+* [AWSSDKforPHP/authentication/swift_transport_esmtp_signature_handler.class.p ](https://forums.aws.amazon.com/thread.jspa?threadID=85087)
+
+## Runtime
+* **New:** Updated the CA Root Certificates file to version 1.81.
+* **Fixed:** Resolved an issue in the autoloader where the matching logic was too aggressive in certain cases, causing subsequent autoloaders to never trigger.
+
+## Services
+### AmazonAS
+* **New:** Support for Auto Scaling Resource Tagging has been added to the SDK.
+
+### AmazonCloudFront
+* **Fixed:** Resolved an issue where the `set_distribution_config()` method could fail to satisfy an API constraint when using a custom origin server. (Thanks [zoxa](https://github.com/zoxa)!)
+
+### AmazonS3
+* **Fixed:** Resolved an issue where `delete_all_objects()` and `delete_all_object_versions()` was being limited to 1000 items.
+* **Fixed:** Resolved an issue where `delete_bucket()` would fail to delete a bucket with the "force" option enabled if the bucket contained more than 1000 items.
+* **Fixed:** Resolved an issue where JSON documents stored in Amazon S3 would be parsed into a native PHP object when retrieved.
+
+### Auto Scaling
+* **New:** Support added for performing CRUD operations on tags for Auto Scaling groups.
+
+## Utilities
+### S3StreamWrapper
+* **New:** Support for multiple stream wrappers (e.g., one per region) has been added to the SDK.
+* **Fixed:** Writes to Amazon S3 are now buffered, resolving issues with pushing more than 8k of data at a time.
+
+### CFJSON
+* **Fixed:** The JSON-to-XML conversion code is now substantially more robust and better handles encoded characters.
+
+### CacheCore
+* **Changed:** Formerly, attempting to cache to a file system location that didn't exist or was not writable by the PHP process would fail silently. This behavior has been changed to throw a `CacheFile_Exception`.
+
+----
+
 # Changelog: 1.5.1 "Blue"
 Code name for Macintosh System 7. <http://en.wikipedia.org/wiki/System_7>
 
