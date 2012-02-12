@@ -232,7 +232,7 @@ class CFSimpleXML extends SimpleXMLIterator
    */
   public function starts_with($value)
   {
-    return $this->matches(sprintf('@^%s@u', $value));
+    return $this->matches("@^$value@u");
   }
 
   /**
@@ -243,6 +243,6 @@ class CFSimpleXML extends SimpleXMLIterator
    */
   public function ends_with($value)
   {
-    return $this->matches(sprintf('@%s$@u', $value));
+    return $this->matches("@$value$@u");
   }
 }
