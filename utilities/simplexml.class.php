@@ -232,17 +232,17 @@ class CFSimpleXML extends SimpleXMLIterator
    */
   public function starts_with($value)
   {
-    return $this->matches(sprintf('@^%s@', $value));
+    return $this->matches(sprintf('@^%s@u', $value));
   }
 
   /**
-   * Whether or not the current node ends with the compared value.
+   * Whether or not the current node ends with the compared value..
    *
    * @param string $value (Required) The value to compare the current node to.
    * @return boolean Whether or not the current node ends with the compared value.
    */
   public function ends_with($value)
   {
-    return $this->matches(sprintf('@%s$@', $value));
+    return $this->matches(sprintf('@%s$@u', $value));
   }
 }
