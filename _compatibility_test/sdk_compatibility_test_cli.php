@@ -201,7 +201,7 @@ if ($php_ok && $int64_ok && $curl_ok && $simplexml_ok && $dom_ok && $spl_ok && $
 	echo "    )" . PHP_EOL;
 	echo "));" . PHP_EOL;
 }
-elseif ($php_ok && $curl_ok && $simplexml_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok)
+elseif ($php_ok && $curl_ok && $simplexml_ok && $dom_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok)
 {
 	echo success('Bottom Line: Yes, you can!') . PHP_EOL;
 	echo PHP_EOL;
