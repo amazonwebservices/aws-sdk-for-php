@@ -1,3 +1,21 @@
+# Changelog: 1.5.3 "Darwin"
+UNIX foundation upon which Mac OS X, Apple TV, and iOS are based. <http://en.wikipedia.org/wiki/Darwin_operating_system>
+
+Launched Wednesday, Tuesday, February 21, 2012.
+
+## Bug fixes and enhancements
+* [Fixing Issue with set_distribution_config](https://github.com/amazonwebservices/aws-sdk-for-php/pull/20)
+
+## Services
+### AmazonCloudFront
+* **Fixed:** Resolved an issue where the `set_distribution_config()` method could fail to satisfy an API constraint when using a custom origin server. (Thanks [zoxa](https://github.com/zoxa)!)
+
+### AmazonSWF
+* **New:** Support for the new Amazon Simple Workflow Service has been added to the SDK.
+
+
+----
+
 # Changelog: 1.5.2 "Copland"
 Code name for Apple's never-released successor to System 7. <http://en.wikipedia.org/wiki/Copland_(operating_system)>
 
@@ -18,9 +36,6 @@ Launched Wednesday, Febraury 1, 2012.
 ## Services
 ### AmazonAS
 * **New:** Support for Auto Scaling Resource Tagging has been added to the SDK.
-
-### AmazonCloudFront
-* **Fixed:** Resolved an issue where the `set_distribution_config()` method could fail to satisfy an API constraint when using a custom origin server. (Thanks [zoxa](https://github.com/zoxa)!)
 
 ### AmazonS3
 * **Fixed:** Resolved an issue where `delete_all_objects()` and `delete_all_object_versions()` was being limited to 1000 items.
