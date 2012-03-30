@@ -321,7 +321,7 @@ header('Content-type: text/html; charset=UTF-8');
 <html lang="en">
 <head>
 <title>AWS SDK for PHP: Environment Compatibility Test</title>
-
+<meta name="ROBOTS" content="NOINDEX,NOFOLLOW,NOARCHIVE" />
 <script type="text/javascript" charset="utf-8">
 /*!
   * Reqwest! A x-browser general purpose XHR connection manager
