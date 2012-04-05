@@ -1,6 +1,11 @@
 #! /usr/bin/env php
 <?php
-
+//Prevent script from being called via browser
+if (isset($_SERVER['HTTP_HOST']))
+{
+	header("HTTP/1.0 404 Not Found");
+	die("This script is meant to be run via the commandline.");
+}
 // Required
 $php_ok = (function_exists('version_compare') && version_compare(phpversion(), '5.2.0', '>='));
 $simplexml_ok = extension_loaded('simplexml');
