@@ -842,6 +842,13 @@ class AmazonS3 extends CFRuntime
 				(strtolower($header_key) === 'expires' && isset($opt['preauth']) && (integer) $opt['preauth'] > 0)
 			)
 			{
+				// Begin
+				if ( strtolower($header_key) === 'content-type' && isset($opt['preauth']) && isset($opt['content-type']))
+                                {
+                                    $header_value = $opt['content-type'];
+                                }
+                                // End of change
+                                
 				$string_to_sign .= $header_value . "\n";
 			}
 			elseif (substr(strtolower($header_key), 0, 6) === 'x-amz-')
