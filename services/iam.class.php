@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
  */
 
 /**
- * This is the Amazon Web Services (AWS) Identity and Access Management (IAM) API Reference. This
- * guide provides descriptions of the IAM API as well as links to related content in the guide,
- * 	<a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/" target="_blank">Using
- * IAM</a>.
+ * This guide provides descriptions of the Identity and Access Management (IAM) API as well as
+ * links to related content in the guide, <a href=
+ * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/" target="_blank">Using IAM</a>.
  *  
  * IAM is a web service that enables AWS customers to manage users and user permissions under
  * their AWS account. For more information about this product go to <a href=
@@ -31,11 +30,8 @@
  * you can find the product'stechnical documentation at <a href=
  * "http://aws.amazon.com/documentation/" target=
  * "_blank">http://aws.amazon.com/documentation/</a>.
- *  
- * We will refer to Amazon AWS Identity and Access Management using the abbreviated form IAM. All
- * copyrights and legal protections still apply.
  *
- * @version 2011.12.13
+ * @version 2012.04.18
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/iam/ AWS Identity and Access Management
@@ -86,7 +82,7 @@ class AmazonIAM extends CFRuntime
 	{
 		$this->api_version = '2010-05-08';
 		$this->hostname = self::DEFAULT_URL;
-		$this->auth_class = 'AuthV2Query';
+		$this->auth_class = 'AuthV4Query';
 
 		return parent::__construct($options);
 	}
@@ -117,7 +113,7 @@ class AmazonIAM extends CFRuntime
 	 * Adds the specified user to the specified group.
 	 *
 	 * @param string $group_name (Required) Name of the group to update. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
-	 * @param string $user_name (Required) Name of the user to add. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user to add. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -130,6 +126,28 @@ class AmazonIAM extends CFRuntime
 		$opt['UserName'] = $user_name;
 		
 		return $this->authenticate('AddUserToGroup', $opt);
+	}
+
+	/**
+	 * Changes the password of the calling IAM user. The root account password is not affected by this
+	 * action. For information about modifying passwords, see <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_ManagingLogins.html" target=
+	 * "_blank">Managing Passwords</a>.
+	 *
+	 * @param string $old_password (Required)  [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
+	 * @param string $new_password (Required)  [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function change_password($old_password, $new_password, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['OldPassword'] = $old_password;
+		$opt['NewPassword'] = $new_password;
+		
+		return $this->authenticate('ChangePassword', $opt);
 	}
 
 	/**
@@ -154,7 +172,7 @@ class AmazonIAM extends CFRuntime
 	 * </p>
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>UserName</code> - <code>string</code> - Optional - The user name that the new key will belong to. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - The user name that the new key will belong to. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -210,14 +228,12 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Creates a login profile for the specified user, giving the user the ability to access AWS
-	 * services such as the AWS Management Console. For more information about login profiles, see
-	 * 	<a href=
+	 * Creates a password for the specified user, giving the user the ability to access AWS services
+	 * through the AWS Management Console. For more information about managing passwords, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_ManagingLogins.html"
-	 * target="_blank">Creating or Deleting a User Login Profile</a> in <em>Using AWS Identity and
-	 * Access Management</em>.
+	 * target="_blank">Managing Passwords</a> in <em>Using IAM</em>.
 	 *
-	 * @param string $user_name (Required) Name of the user to create a login profile for. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user to create a password for. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param string $password (Required) The new password for the user name. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -296,7 +312,7 @@ class AmazonIAM extends CFRuntime
 	 * Deactivates the specified MFA device and removes it from association with the user name for
 	 * which it was originally enabled.
 	 *
-	 * @param string $user_name (Required) Name of the user whose MFA device you want to deactivate. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user whose MFA device you want to deactivate. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param string $serial_number (Required) The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the device ARN. [Constraints: The value must be between 9 and 256 characters, and must match the following regular expression pattern: <code>[\w+=/:,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -322,7 +338,7 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * @param string $access_key_id (Required) The Access Key ID for the Access Key ID and Secret Access Key you want to delete. [Constraints: The value must be between 16 and 32 characters, and must match the following regular expression pattern: <code>[\w]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user whose key you want to delete. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user whose key you want to delete. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -353,6 +369,21 @@ class AmazonIAM extends CFRuntime
 		$opt['AccountAlias'] = $account_alias;
 		
 		return $this->authenticate('DeleteAccountAlias', $opt);
+	}
+
+	/**
+	 * Deletes the password policy for the AWS account.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_account_password_policy($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		return $this->authenticate('DeleteAccountPasswordPolicy', $opt);
 	}
 
 	/**
@@ -393,17 +424,17 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Deletes the login profile for the specified user, which terminates the user's ability to access
-	 * AWS services through the IAM login page.
+	 * Deletes the password for the specified user, which terminates the user's ability to access AWS
+	 * services through the AWS Management Console.
 	 * 
 	 * <p class="important">
-	 * Deleting a user's login profile does not prevent a user from accessing IAM through the command
-	 * line interface or the API. To prevent all user access you must also either make the access key
+	 * Deleting a user's password does not prevent a user from accessing IAM through the command line
+	 * interface or the API. To prevent all user access you must also either make the access key
 	 * inactive or delete it. For more information about making keys inactive or deleting them, see
 	 * <code>UpdateAccessKey</code> and <code>DeleteAccessKey</code>.
 	 * </p>
 	 *
-	 * @param string $user_name (Required) Name of the user whose login profile you want to delete. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user whose password you want to delete. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -456,7 +487,7 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * @param string $certificate_id (Required) ID of the signing certificate to delete. [Constraints: The value must be between 24 and 128 characters, and must match the following regular expression pattern: <code>[\w]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user the signing certificate belongs to. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user the signing certificate belongs to. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -473,7 +504,7 @@ class AmazonIAM extends CFRuntime
 	 * Deletes the specified user. The user must not belong to any groups, have any keys or signing
 	 * certificates, or have any attached policies.
 	 *
-	 * @param string $user_name (Required) Name of the user to delete. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user to delete. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -490,7 +521,7 @@ class AmazonIAM extends CFRuntime
 	/**
 	 * Deletes the specified policy associated with the specified user.
 	 *
-	 * @param string $user_name (Required) Name of the user the policy is associated with. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user the policy is associated with. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param string $policy_name (Required) Name of the policy document to delete. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -534,7 +565,7 @@ class AmazonIAM extends CFRuntime
 	 * the MFA device is required for every subsequent login by the user name associated with the
 	 * device.
 	 *
-	 * @param string $user_name (Required) Name of the user for whom you want to enable the MFA device. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user for whom you want to enable the MFA device. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param string $serial_number (Required) The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the device ARN. [Constraints: The value must be between 9 and 256 characters, and must match the following regular expression pattern: <code>[\w+=/:,.@-]*</code>]
 	 * @param string $authentication_code1 (Required) An authentication code emitted by the device. [Constraints: The value must be between 6 and 6 characters, and must match the following regular expression pattern: <code>[\d]*</code>]
 	 * @param string $authentication_code2 (Required) A subsequent authentication code emitted by the device. [Constraints: The value must be between 6 and 6 characters, and must match the following regular expression pattern: <code>[\d]*</code>]
@@ -552,6 +583,24 @@ class AmazonIAM extends CFRuntime
 		$opt['AuthenticationCode2'] = $authentication_code2;
 		
 		return $this->authenticate('EnableMFADevice', $opt);
+	}
+
+	/**
+	 * Retrieves the password policy for the AWS account. For more information about using a password
+	 * policy, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_ManagingPasswordPolicies.html">Managing
+	 * an IAM Password Policy</a>.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function get_account_password_policy($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		return $this->authenticate('GetAccountPasswordPolicy', $opt);
 	}
 
 	/**
@@ -616,9 +665,9 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Retrieves the login profile for the specified user.
+	 * Retrieves the password for the specified user.
 	 *
-	 * @param string $user_name (Required) Name of the user whose login profile you want to retrieve. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user whose password you want to retrieve. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -656,7 +705,7 @@ class AmazonIAM extends CFRuntime
 	 * Access Key ID signing the request.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user to get information about. This parameter is optional. If it is not included, it defaults to the user making the request. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user to get information about. This parameter is optional. If it is not included, it defaults to the user making the request. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -673,7 +722,7 @@ class AmazonIAM extends CFRuntime
 	 * URL-encoded according to RFC 3986. For more information about RFC 3986, go to <a href=
 	 * "http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
 	 *
-	 * @param string $user_name (Required) Name of the user who the policy is associated with. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user who the policy is associated with. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param string $policy_name (Required) Name of the policy document to get. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -707,7 +756,7 @@ class AmazonIAM extends CFRuntime
 	 * </p>
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this parameter only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. [Constraints: The value must be between 1 and 320 characters, and must match the following regular expression pattern: <code>[\u0020-\u00FF]*</code>]</li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this parameter only when paginating results to indicate the maximum number of keys you want in the response. If there are additional keys beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -795,7 +844,7 @@ class AmazonIAM extends CFRuntime
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
-	 * @param string $user_name (Required) The name of the user to list groups for. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) The name of the user to list groups for. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. [Constraints: The value must be between 1 and 320 characters, and must match the following regular expression pattern: <code>[\u0020-\u00FF]*</code>]</li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of groups you want in the response. If there are additional groups beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</li>
@@ -820,7 +869,7 @@ class AmazonIAM extends CFRuntime
 	 * parameters.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user whose MFA devices you want to list. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user whose MFA devices you want to list. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. [Constraints: The value must be between 1 and 320 characters, and must match the following regular expression pattern: <code>[\u0020-\u00FF]*</code>]</li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of MFA devices you want in the response. If there are additional MFA devices beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -869,7 +918,7 @@ class AmazonIAM extends CFRuntime
 	 * account has no associated users.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>UserName</code> - <code>string</code> - Optional - The name of the user. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - The name of the user. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. [Constraints: The value must be between 1 and 320 characters, and must match the following regular expression pattern: <code>[\u0020-\u00FF]*</code>]</li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of certificate IDs you want in the response. If there are additional certificate IDs beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -890,7 +939,7 @@ class AmazonIAM extends CFRuntime
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
-	 * @param string $user_name (Required) The name of the user to list policies for. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) The name of the user to list policies for. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. [Constraints: The value must be between 1 and 320 characters, and must match the following regular expression pattern: <code>[\u0020-\u00FF]*</code>]</li>
 	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this only when paginating results to indicate the maximum number of policy names you want in the response. If there are additional policy names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</li>
@@ -1007,7 +1056,7 @@ class AmazonIAM extends CFRuntime
 	 * target="_blank">Making Query Requests</a> in <em>Using AWS Identity and Access Management</em>.
 	 * </p>
 	 *
-	 * @param string $user_name (Required) Name of the user to associate the policy with. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user to associate the policy with. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param string $policy_name (Required) Name of the policy document. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param string $policy_document (Required) The policy document. [Constraints: The value must be between 1 and 131072 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1029,7 +1078,7 @@ class AmazonIAM extends CFRuntime
 	 * Removes the specified user from the specified group.
 	 *
 	 * @param string $group_name (Required) Name of the group to update. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
-	 * @param string $user_name (Required) Name of the user to remove. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user to remove. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -1047,7 +1096,7 @@ class AmazonIAM extends CFRuntime
 	/**
 	 * Synchronizes the specified MFA device with AWS servers.
 	 *
-	 * @param string $user_name (Required) Name of the user whose MFA device you want to resynchronize. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user whose MFA device you want to resynchronize. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param string $serial_number (Required) Serial number that uniquely identifies the MFA device. [Constraints: The value must be between 9 and 256 characters, and must match the following regular expression pattern: <code>[\w+=/:,.@-]*</code>]
 	 * @param string $authentication_code1 (Required) An authentication code emitted by the device. [Constraints: The value must be between 6 and 6 characters, and must match the following regular expression pattern: <code>[\d]*</code>]
 	 * @param string $authentication_code2 (Required) A subsequent authentication code emitted by the device. [Constraints: The value must be between 6 and 6 characters, and must match the following regular expression pattern: <code>[\d]*</code>]
@@ -1084,7 +1133,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $access_key_id (Required) The Access Key ID of the Secret Access Key you want to update. [Constraints: The value must be between 16 and 32 characters, and must match the following regular expression pattern: <code>[\w]*</code>]
 	 * @param string $status (Required) The status you want to assign to the Secret Access Key. <code>Active</code> means the key can be used for API calls to AWS, while <code>Inactive</code> means the key cannot be used. [Allowed values: <code>Active</code>, <code>Inactive</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user whose key you want to update. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user whose key you want to update. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -1096,6 +1145,30 @@ class AmazonIAM extends CFRuntime
 		$opt['Status'] = $status;
 		
 		return $this->authenticate('UpdateAccessKey', $opt);
+	}
+
+	/**
+	 * Updates the password policy settings for the account. For more information about using a
+	 * password policy, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_ManagingPasswordPolicies.html">Managing
+	 * an IAM Password Policy</a>.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>MinimumPasswordLength</code> - <code>integer</code> - Optional - </li>
+	 * 	<li><code>RequireSymbols</code> - <code>boolean</code> - Optional - </li>
+	 * 	<li><code>RequireNumbers</code> - <code>boolean</code> - Optional - </li>
+	 * 	<li><code>RequireUppercaseCharacters</code> - <code>boolean</code> - Optional - </li>
+	 * 	<li><code>RequireLowercaseCharacters</code> - <code>boolean</code> - Optional - </li>
+	 * 	<li><code>AllowUsersToChangePassword</code> - <code>boolean</code> - Optional - </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function update_account_password_policy($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		return $this->authenticate('UpdateAccountPasswordPolicy', $opt);
 	}
 
 	/**
@@ -1133,9 +1206,9 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Updates the login profile for the specified user. Use this API to change the user's password.
+	 * Changes the password for the specified user.
 	 *
-	 * @param string $user_name (Required) Name of the user whose login profile you want to update. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user whose password you want to update. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Password</code> - <code>string</code> - Optional - The new password for the user name. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -1202,7 +1275,7 @@ class AmazonIAM extends CFRuntime
 	 * @param string $certificate_id (Required) The ID of the signing certificate you want to update. [Constraints: The value must be between 24 and 128 characters, and must match the following regular expression pattern: <code>[\w]*</code>]
 	 * @param string $status (Required) The status you want to assign to the certificate. <code>Active</code> means the certificate can be used for API calls to AWS, while <code>Inactive</code> means the certificate cannot be used. [Allowed values: <code>Active</code>, <code>Inactive</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user the signing certificate belongs to. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user the signing certificate belongs to. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -1234,7 +1307,7 @@ class AmazonIAM extends CFRuntime
 	 * "blank">Permissions and Policies</a>.
 	 * </p>
 	 *
-	 * @param string $user_name (Required) Name of the user to update. If you're changing the name of the user, this is the original user name. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user to update. If you're changing the name of the user, this is the original user name. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>NewPath</code> - <code>string</code> - Optional - New path for the user. Include this parameter only if you're changing the user's path. [Constraints: The value must be between 1 and 512 characters, and must match the following regular expression pattern: <code>(\u002F)|(\u002F[\u0021-\u007F]+\u002F)</code>]</li>
 	 * 	<li><code>NewUserName</code> - <code>string</code> - Optional - New name for the user. Include this parameter only if you're changing the user's name. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
@@ -1308,7 +1381,7 @@ class AmazonIAM extends CFRuntime
 	 *
 	 * @param string $certificate_body (Required) The contents of the signing certificate. [Constraints: The value must be between 1 and 16384 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user the signing certificate is for. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
+	 * 	<li><code>UserName</code> - <code>string</code> - Optional - Name of the user the signing certificate is for. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.

@@ -29,7 +29,7 @@
  *  
  * Visit <a href="http://aws.amazon.com/ec2/">http://aws.amazon.com/ec2/</a> for more information.
  *
- * @version 2012.01.17
+ * @version 2012.04.18
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ec2/ Amazon EC2
@@ -138,7 +138,7 @@ class AmazonEC2 extends CFRuntime
 	 */
 	public function __construct(array $options = array())
 	{
-		$this->api_version = '2011-11-01';
+		$this->api_version = '2012-03-01';
 		$this->hostname = self::DEFAULT_URL;
 		$this->auth_class = 'AuthV2Query';
 
@@ -163,6 +163,7 @@ class AmazonEC2 extends CFRuntime
 	// Standard
 	const INSTANCE_MICRO = 't1.micro';
 	const INSTANCE_SMALL = 'm1.small';
+	const INSTANCE_MEDIUM = 'm1.medium';
 	const INSTANCE_LARGE = 'm1.large';
 	const INSTANCE_XLARGE = 'm1.xlarge';
 
@@ -248,6 +249,7 @@ class AmazonEC2 extends CFRuntime
 	 * @param string $public_ip (Required) IP address that you are assigning to the instance.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>AllocationId</code> - <code>string</code> - Optional - The allocation ID that AWS returned when you allocated the elastic IP address for use with Amazon VPC.</li>
+	 * 	<li><code>NetworkInterfaceId</code> - <code>string</code> - Optional - </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -332,6 +334,27 @@ class AmazonEC2 extends CFRuntime
 		$opt['VpcId'] = $vpc_id;
 		
 		return $this->authenticate('AttachInternetGateway', $opt);
+	}
+
+	/**
+	 * 
+	 *
+	 * @param string $network_interface_id (Required) 
+	 * @param string $instance_id (Required) 
+	 * @param integer $device_index (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function attach_network_interface($network_interface_id, $instance_id, $device_index, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['NetworkInterfaceId'] = $network_interface_id;
+		$opt['InstanceId'] = $instance_id;
+		$opt['DeviceIndex'] = $device_index;
+		
+		return $this->authenticate('AttachNetworkInterface', $opt);
 	}
 
 	/**
@@ -530,6 +553,24 @@ class AmazonEC2 extends CFRuntime
 		$opt['BundleId'] = $bundle_id;
 		
 		return $this->authenticate('CancelBundleTask', $opt);
+	}
+
+	/**
+	 * 
+	 *
+	 * @param string $conversion_task_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>ReasonMessage</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function cancel_conversion_task($conversion_task_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['ConversionTaskId'] = $conversion_task_id;
+		
+		return $this->authenticate('CancelConversionTask', $opt);
 	}
 
 	/**
@@ -802,6 +843,35 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param string $subnet_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Description</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>PrivateIpAddress</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>SecurityGroupId</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_network_interface($subnet_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['SubnetId'] = $subnet_id;
+		
+		// Optional list (non-map)
+		if (isset($opt['SecurityGroupId']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'SecurityGroupId' => (is_array($opt['SecurityGroupId']) ? $opt['SecurityGroupId'] : array($opt['SecurityGroupId']))
+			)));
+			unset($opt['SecurityGroupId']);
+		}
+
+		return $this->authenticate('CreateNetworkInterface', $opt);
+	}
+
+	/**
 	 * Creates a <code>PlacementGroup</code> into which multiple Amazon EC2 instances can be launched.
 	 * Users must give the group a name unique within the scope of the user account.
 	 *
@@ -846,6 +916,7 @@ class AmazonEC2 extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>GatewayId</code> - <code>string</code> - Optional - The ID of a VPN or Internet gateway attached to your VPC. You must provide either <code>GatewayId</code> or <code>InstanceId</code>, but not both.</li>
 	 * 	<li><code>InstanceId</code> - <code>string</code> - Optional - The ID of a NAT instance in your VPC. You must provide either <code>GatewayId</code> or <code>InstanceId</code>, but not both.</li>
+	 * 	<li><code>NetworkInterfaceId</code> - <code>string</code> - Optional - </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -1261,6 +1332,23 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param string $network_interface_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_network_interface($network_interface_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['NetworkInterfaceId'] = $network_interface_id;
+		
+		return $this->authenticate('DeleteNetworkInterface', $opt);
+	}
+
+	/**
 	 * Deletes a <code>PlacementGroup</code> from a user's account. Terminate all Amazon EC2 instances
 	 * in the placement group before deletion.
 	 *
@@ -1672,6 +1760,46 @@ class AmazonEC2 extends CFRuntime
 		}
 
 		return $this->authenticate('DescribeBundleTasks', $opt);
+	}
+
+	/**
+	 * 
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Filter</code> - <code>array</code> - Optional - A filter used to limit results when describing tags. Multiple values can be specified per filter. A tag must match at least one of the specified values for it to be returned from an operation. Wildcards can be included in filter values; <code>*</code> specifies that zero or more characters must match, and <code>?</code> specifies that exactly one character must match. Use a backslash to escape special characters. For example, a filter value of <code>\*amazon\?\\</code> specifies the literal string <code>*amazon?\</code>. <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>Name</code> - <code>string</code> - Optional - Specifies the name of the filter.</li>
+	 * 			<li><code>Value</code> - <code>string|array</code> - Optional - Contains one or more values for the filter. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>ConversionTaskId</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_conversion_tasks($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		// Optional list + map
+		if (isset($opt['Filter']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
+			unset($opt['Filter']);
+		}
+		
+		// Optional list (non-map)
+		if (isset($opt['ConversionTaskId']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'ConversionTaskId' => (is_array($opt['ConversionTaskId']) ? $opt['ConversionTaskId'] : array($opt['ConversionTaskId']))
+			)));
+			unset($opt['ConversionTaskId']);
+		}
+
+		return $this->authenticate('DescribeConversionTasks', $opt);
 	}
 
 	/**
@@ -2231,6 +2359,67 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param string $network_interface_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Description</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>SourceDestCheck</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>GroupSet</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>Attachment</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_network_interface_attribute($network_interface_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['NetworkInterfaceId'] = $network_interface_id;
+		
+		return $this->authenticate('DescribeNetworkInterfaceAttribute', $opt);
+	}
+
+	/**
+	 * 
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>NetworkInterfaceId</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>Filter</code> - <code>array</code> - Optional - A filter used to limit results when describing tags. Multiple values can be specified per filter. A tag must match at least one of the specified values for it to be returned from an operation. Wildcards can be included in filter values; <code>*</code> specifies that zero or more characters must match, and <code>?</code> specifies that exactly one character must match. Use a backslash to escape special characters. For example, a filter value of <code>\*amazon\?\\</code> specifies the literal string <code>*amazon?\</code>. <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>Name</code> - <code>string</code> - Optional - Specifies the name of the filter.</li>
+	 * 			<li><code>Value</code> - <code>string|array</code> - Optional - Contains one or more values for the filter. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_network_interfaces($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		// Optional list (non-map)
+		if (isset($opt['NetworkInterfaceId']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'NetworkInterfaceId' => (is_array($opt['NetworkInterfaceId']) ? $opt['NetworkInterfaceId'] : array($opt['NetworkInterfaceId']))
+			)));
+			unset($opt['NetworkInterfaceId']);
+		}
+		
+		// Optional list + map
+		if (isset($opt['Filter']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
+			unset($opt['Filter']);
+		}
+
+		return $this->authenticate('DescribeNetworkInterfaces', $opt);
+	}
+
+	/**
 	 * Returns information about one or more <code>PlacementGroup</code> instances in a user's
 	 * account.
 	 *
@@ -2362,7 +2551,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ReservedInstancesOfferingId</code> - <code>string|array</code> - Optional - An optional list of the unique IDs of the Reserved Instance offerings to describe. Pass a string for a single value, or an indexed array for multiple values.</li>
-	 * 	<li><code>InstanceType</code> - <code>string</code> - Optional - The instance type on which the Reserved Instance can be used. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
+	 * 	<li><code>InstanceType</code> - <code>string</code> - Optional - The instance type on which the Reserved Instance can be used. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.medium</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
 	 * 	<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The Availability Zone in which the Reserved Instance can be used.</li>
 	 * 	<li><code>ProductDescription</code> - <code>string</code> - Optional - The Reserved Instance product description.</li>
 	 * 	<li><code>Filter</code> - <code>array</code> - Optional - A list of filters used to match properties for ReservedInstancesOfferings. For a complete reference to the available filter keys for this operation, see the <a href="http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/">Amazon EC2 API reference</a>. <ul>
@@ -2835,6 +3024,66 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param string $volume_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Attribute</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_volume_attribute($volume_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['VolumeId'] = $volume_id;
+		
+		return $this->authenticate('DescribeVolumeAttribute', $opt);
+	}
+
+	/**
+	 * Describes the status of a volume.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>VolumeId</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>Filter</code> - <code>array</code> - Optional - A filter used to limit results when describing tags. Multiple values can be specified per filter. A tag must match at least one of the specified values for it to be returned from an operation. Wildcards can be included in filter values; <code>*</code> specifies that zero or more characters must match, and <code>?</code> specifies that exactly one character must match. Use a backslash to escape special characters. For example, a filter value of <code>\*amazon\?\\</code> specifies the literal string <code>*amazon?\</code>. <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>Name</code> - <code>string</code> - Optional - Specifies the name of the filter.</li>
+	 * 			<li><code>Value</code> - <code>string|array</code> - Optional - Contains one or more values for the filter. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>MaxResults</code> - <code>integer</code> - Optional - </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_volume_status($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		// Optional list (non-map)
+		if (isset($opt['VolumeId']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'VolumeId' => (is_array($opt['VolumeId']) ? $opt['VolumeId'] : array($opt['VolumeId']))
+			)));
+			unset($opt['VolumeId']);
+		}
+		
+		// Optional list + map
+		if (isset($opt['Filter']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filter' => $opt['Filter']
+			)));
+			unset($opt['Filter']);
+		}
+
+		return $this->authenticate('DescribeVolumeStatus', $opt);
+	}
+
+	/**
 	 * Describes the status of the indicated volume or, in lieu of any specified, all volumes
 	 * belonging to the caller. Volumes that have been deleted are not described.
 	 *
@@ -3050,6 +3299,24 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param string $attachment_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Force</code> - <code>boolean</code> - Optional - </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function detach_network_interface($attachment_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['AttachmentId'] = $attachment_id;
+		
+		return $this->authenticate('DetachNetworkInterface', $opt);
+	}
+
+	/**
 	 * Detach a previously attached volume from a running instance.
 	 *
 	 * @param string $volume_id (Required) The ID of the volume to detach.
@@ -3137,6 +3404,23 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * Enable IO on the volume after an event has occured.
+	 *
+	 * @param string $volume_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function enable_volume_io($volume_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['VolumeId'] = $volume_id;
+		
+		return $this->authenticate('EnableVolumeIO', $opt);
+	}
+
+	/**
 	 * The GetConsoleOutput operation retrieves console output for the specified instance.
 	 *
 	 * Instance console output is buffered and posted shortly after instance boot, reboot, and
@@ -3217,6 +3501,94 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param string $platform (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Description</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>LaunchSpecification</code> - <code>array</code> - Optional -  <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>Architecture</code> - <code>string</code> - Optional - </li>
+	 * 			<li><code>SecurityGroup</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>AdditionalInfo</code> - <code>string</code> - Optional - </li>
+	 * 			<li><code>UserData</code> - <code>string</code> - Optional - </li>
+	 * 			<li><code>InstanceType</code> - <code>string</code> - Optional -  [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.medium</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
+	 * 			<li><code>Placement</code> - <code>array</code> - Optional - Describes where an Amazon EC2 instance is running within an Amazon EC2 region. <ul>
+	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 					<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The availability zone in which an Amazon EC2 instance runs.</li>
+	 * 					<li><code>GroupName</code> - <code>string</code> - Optional - The name of the <code>PlacementGroup</code> in which an Amazon EC2 instance runs. Placement groups are primarily used for launching High Performance Computing instances in the same group to ensure fast connection speeds.</li>
+	 * 					<li><code>Tenancy</code> - <code>string</code> - Optional - The allowed tenancy of instances launched into the VPC. A value of default means instances can be launched with any tenancy; a value of dedicated means instances must be launched with tenancy as dedicated.</li>
+	 * 				</ul></li>
+	 * 			</ul></li>
+	 * 			<li><code>BlockDeviceMapping</code> - <code>array</code> - Optional - The BlockDeviceMappingItemType data type. <ul>
+	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 					<li><code>VirtualName</code> - <code>string</code> - Optional - Specifies the virtual device name.</li>
+	 * 					<li><code>DeviceName</code> - <code>string</code> - Optional - Specifies the device name (e.g., <code>/dev/sdh</code>).</li>
+	 * 					<li><code>Ebs</code> - <code>array</code> - Optional - Specifies parameters used to automatically setup Amazon EBS volumes when the instance is launched. <ul>
+	 * 						<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 							<li><code>SnapshotId</code> - <code>string</code> - Optional - The ID of the snapshot from which the volume will be created.</li>
+	 * 							<li><code>VolumeSize</code> - <code>integer</code> - Optional - The size of the volume, in gigabytes.</li>
+	 * 							<li><code>DeleteOnTermination</code> - <code>boolean</code> - Optional - Specifies whether the Amazon EBS volume is deleted on instance termination.</li>
+	 * 						</ul></li>
+	 * 					</ul></li>
+	 * 					<li><code>NoDevice</code> - <code>string</code> - Optional - Specifies the device name to suppress during instance launch.</li>
+	 * 				</ul></li>
+	 * 			</ul></li>
+	 * 			<li><code>Monitoring</code> - <code>boolean</code> - Optional - </li>
+	 * 			<li><code>SubnetId</code> - <code>string</code> - Optional - </li>
+	 * 			<li><code>DisableApiTermination</code> - <code>boolean</code> - Optional - </li>
+	 * 			<li><code>InstanceInitiatedShutdownBehavior</code> - <code>string</code> - Optional - </li>
+	 * 			<li><code>PrivateIpAddress</code> - <code>string</code> - Optional - </li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>DiskImage</code> - <code>array</code> - Optional -  <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>Image</code> - <code>array</code> - Optional -  <ul>
+	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 					<li><code>Format</code> - <code>string</code> - Required - </li>
+	 * 					<li><code>Bytes</code> - <code>long</code> - Required - </li>
+	 * 					<li><code>ImportManifestUrl</code> - <code>string</code> - Required - </li>
+	 * 				</ul></li>
+	 * 			</ul></li>
+	 * 			<li><code>Description</code> - <code>string</code> - Optional - </li>
+	 * 			<li><code>Volume</code> - <code>array</code> - Optional -  <ul>
+	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 					<li><code>Size</code> - <code>long</code> - Required - </li>
+	 * 				</ul></li>
+	 * 			</ul></li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function import_instance($platform, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['Platform'] = $platform;
+		
+		// Optional map (non-list)
+		if (isset($opt['LaunchSpecification']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'LaunchSpecification' => $opt['LaunchSpecification']
+			)));
+			unset($opt['LaunchSpecification']);
+		}
+		
+		// Optional list + map
+		if (isset($opt['DiskImage']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'DiskImage' => $opt['DiskImage']
+			)));
+			unset($opt['DiskImage']);
+		}
+
+		return $this->authenticate('ImportInstance', $opt);
+	}
+
+	/**
 	 * Imports the public key from an RSA key pair created with a third-party tool. This operation differs
 	 * from CreateKeyPair as the private key is never transferred between the caller and AWS servers.
 	 *
@@ -3249,6 +3621,53 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>AvailabilityZone</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>Image</code> - <code>array</code> - Optional -  <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>Format</code> - <code>string</code> - Required - </li>
+	 * 			<li><code>Bytes</code> - <code>long</code> - Required - </li>
+	 * 			<li><code>ImportManifestUrl</code> - <code>string</code> - Required - </li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>Description</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>Volume</code> - <code>array</code> - Optional -  <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>Size</code> - <code>long</code> - Required - </li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function import_volume($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		// Optional map (non-list)
+		if (isset($opt['Image']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Image' => $opt['Image']
+			)));
+			unset($opt['Image']);
+		}
+		
+		// Optional map (non-list)
+		if (isset($opt['Volume']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Volume' => $opt['Volume']
+			)));
+			unset($opt['Volume']);
+		}
+
+		return $this->authenticate('ImportVolume', $opt);
+	}
+
+	/**
 	 * The ModifyImageAttribute operation modifies an attribute of an AMI.
 	 *
 	 * @param string $image_id (Required) The ID of the AMI whose attribute you want to modify.
@@ -3261,17 +3680,13 @@ class AmazonEC2 extends CFRuntime
 	 * 	<li><code>Value</code> - <code>string</code> - Optional - The value of the attribute being modified. Only valid when the description attribute is being modified.</li>
 	 * 	<li><code>LaunchPermission</code> - <code>array</code> - Optional -  <ul>
 	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
-	 * 			<li><code>Add</code> - <code>array</code> - Optional - <p>
-        Describes a permission to launch an Amazon Machine Image (AMI).
-        </p> <ul>
+	 * 			<li><code>Add</code> - <code>array</code> - Optional - Describes a permission to launch an Amazon Machine Image (AMI). <ul>
 	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 					<li><code>UserId</code> - <code>string</code> - Optional - The AWS user ID of the user involved in this launch permission.</li>
 	 * 					<li><code>Group</code> - <code>string</code> - Optional - The AWS group of the user involved in this launch permission. Available groups: <code>all</code></li>
 	 * 				</ul></li>
 	 * 			</ul></li>
-	 * 			<li><code>Remove</code> - <code>array</code> - Optional - <p>
-        Describes a permission to launch an Amazon Machine Image (AMI).
-        </p> <ul>
+	 * 			<li><code>Remove</code> - <code>array</code> - Optional - Describes a permission to launch an Amazon Machine Image (AMI). <ul>
 	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 					<li><code>UserId</code> - <code>string</code> - Optional - The AWS user ID of the user involved in this launch permission.</li>
 	 * 					<li><code>Group</code> - <code>string</code> - Optional - The AWS group of the user involved in this launch permission. Available groups: <code>all</code></li>
@@ -3387,6 +3802,50 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param string $network_interface_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Description.Value</code> - <code>string</code> - Optional - String value</li>
+	 * 	<li><code>SourceDestCheck.Value</code> - <code>boolean</code> - Optional - Boolean value</li>
+	 * 	<li><code>SecurityGroupId</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>Attachment</code> - <code>array</code> - Optional -  <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>AttachmentId</code> - <code>string</code> - Optional - </li>
+	 * 			<li><code>DeleteOnTermination</code> - <code>boolean</code> - Optional - </li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function modify_network_interface_attribute($network_interface_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['NetworkInterfaceId'] = $network_interface_id;
+		
+		// Optional list (non-map)
+		if (isset($opt['SecurityGroupId']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'SecurityGroupId' => (is_array($opt['SecurityGroupId']) ? $opt['SecurityGroupId'] : array($opt['SecurityGroupId']))
+			)));
+			unset($opt['SecurityGroupId']);
+		}
+		
+		// Optional map (non-list)
+		if (isset($opt['Attachment']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Attachment' => $opt['Attachment']
+			)));
+			unset($opt['Attachment']);
+		}
+
+		return $this->authenticate('ModifyNetworkInterfaceAttribute', $opt);
+	}
+
+	/**
 	 * Adds or remove permission settings for the specified snapshot.
 	 *
 	 * @param string $snapshot_id (Required) The ID of the EBS snapshot whose attributes are being modified.
@@ -3397,19 +3856,13 @@ class AmazonEC2 extends CFRuntime
 	 * 	<li><code>UserGroup</code> - <code>string|array</code> - Optional - The AWS group names to add to or remove from the list of groups that have permission to create EBS volumes from the specified snapshot. Currently supports "all". <p class="note">Only valid when the <code>createVolumePermission</code> attribute is being modified.</p> Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>CreateVolumePermission</code> - <code>array</code> - Optional -  <ul>
 	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
-	 * 			<li><code>Add</code> - <code>array</code> - Optional - <p>
-        Describes a permission allowing either a user or group to create a new EBS
-        volume from a snapshot.
-        </p> <ul>
+	 * 			<li><code>Add</code> - <code>array</code> - Optional - Describes a permission allowing either a user or group to create a new EBS volume from a snapshot. <ul>
 	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 					<li><code>UserId</code> - <code>string</code> - Optional - The user ID of the user that can create volumes from the snapshot.</li>
 	 * 					<li><code>Group</code> - <code>string</code> - Optional - The group that is allowed to create volumes from the snapshot (currently supports "all").</li>
 	 * 				</ul></li>
 	 * 			</ul></li>
-	 * 			<li><code>Remove</code> - <code>array</code> - Optional - <p>
-        Describes a permission allowing either a user or group to create a new EBS
-        volume from a snapshot.
-        </p> <ul>
+	 * 			<li><code>Remove</code> - <code>array</code> - Optional - Describes a permission allowing either a user or group to create a new EBS volume from a snapshot. <ul>
 	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 					<li><code>UserId</code> - <code>string</code> - Optional - The user ID of the user that can create volumes from the snapshot.</li>
 	 * 					<li><code>Group</code> - <code>string</code> - Optional - The group that is allowed to create volumes from the snapshot (currently supports "all").</li>
@@ -3454,6 +3907,24 @@ class AmazonEC2 extends CFRuntime
 		}
 
 		return $this->authenticate('ModifySnapshotAttribute', $opt);
+	}
+
+	/**
+	 * 
+	 *
+	 * @param string $volume_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>AutoEnableIO.Value</code> - <code>boolean</code> - Optional - </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function modify_volume_attribute($volume_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['VolumeId'] = $volume_id;
+		
+		return $this->authenticate('ModifyVolumeAttribute', $opt);
 	}
 
 	/**
@@ -3696,6 +4167,7 @@ class AmazonEC2 extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>GatewayId</code> - <code>string</code> - Optional - The ID of a VPN or Internet gateway attached to your VPC.</li>
 	 * 	<li><code>InstanceId</code> - <code>string</code> - Optional - The ID of a NAT instance in your VPC.</li>
+	 * 	<li><code>NetworkInterfaceId</code> - <code>string</code> - Optional - </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -3737,6 +4209,57 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>InstanceId</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>Status</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>StartTime</code> - <code>string</code> - Optional -  May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
+	 * 	<li><code>EndTime</code> - <code>string</code> - Optional -  May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
+	 * 	<li><code>ReasonCode</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>Description</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function report_instance_status($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		// Optional DateTime
+		if (isset($opt['StartTime']))
+		{
+			$opt['StartTime'] = $this->util->convert_date_to_iso8601($opt['StartTime']);
+		}
+		
+		// Optional DateTime
+		if (isset($opt['EndTime']))
+		{
+			$opt['EndTime'] = $this->util->convert_date_to_iso8601($opt['EndTime']);
+		}
+
+		// Optional list (non-map)
+		if (isset($opt['InstanceId']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'InstanceId' => (is_array($opt['InstanceId']) ? $opt['InstanceId'] : array($opt['InstanceId']))
+			)));
+			unset($opt['InstanceId']);
+		}
+		
+		// Optional list (non-map)
+		if (isset($opt['ReasonCode']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'ReasonCode' => (is_array($opt['ReasonCode']) ? $opt['ReasonCode'] : array($opt['ReasonCode']))
+			)));
+			unset($opt['ReasonCode']);
+		}
+
+		return $this->authenticate('ReportInstanceStatus', $opt);
+	}
+
+	/**
 	 * Creates a Spot Instance request.
 	 *  
 	 * Spot Instances are instances that Amazon EC2 starts on your behalf when the maximum price that
@@ -3761,19 +4284,16 @@ class AmazonEC2 extends CFRuntime
 	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 			<li><code>ImageId</code> - <code>string</code> - Optional - The AMI ID.</li>
 	 * 			<li><code>KeyName</code> - <code>string</code> - Optional - The name of the key pair.</li>
-	 * 			<li><code>GroupSet</code> - <code>array</code> - Optional - <p>
-
-        </p> <ul>
+	 * 			<li><code>GroupSet</code> - <code>array</code> - Optional -  <ul>
 	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 					<li><code>GroupName</code> - <code>string</code> - Optional - </li>
 	 * 					<li><code>GroupId</code> - <code>string</code> - Optional - </li>
 	 * 				</ul></li>
 	 * 			</ul></li>
-	 * 			<li><code>SecurityGroup</code> - <code>string|array</code> - Optional - <p>
-
-        </p> Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>SecurityGroup</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>UserData</code> - <code>string</code> - Optional - Optional data, specific to a user's application, to provide in the launch request. All instances that collectively comprise the launch request have access to this data. User data is never returned through API responses.</li>
-	 * 			<li><code>InstanceType</code> - <code>string</code> - Optional - Specifies the instance type. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
+	 * 			<li><code>AddressingType</code> - <code>string</code> - Optional - </li>
+	 * 			<li><code>InstanceType</code> - <code>string</code> - Optional - Specifies the instance type. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.medium</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
 	 * 			<li><code>Placement</code> - <code>array</code> - Optional - Defines a placement item. <ul>
 	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 					<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The availability zone in which an Amazon EC2 instance runs.</li>
@@ -3798,6 +4318,17 @@ class AmazonEC2 extends CFRuntime
 	 * 			</ul></li>
 	 * 			<li><code>Monitoring.Enabled</code> - <code>boolean</code> - Optional - Enables monitoring for the instance.</li>
 	 * 			<li><code>SubnetId</code> - <code>string</code> - Optional - Specifies the Amazon VPC subnet ID within which to launch the instance(s) for Amazon Virtual Private Cloud.</li>
+	 * 			<li><code>NetworkInterfaceSet</code> - <code>array</code> - Optional -  <ul>
+	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 					<li><code>NetworkInterfaceId</code> - <code>string</code> - Optional - </li>
+	 * 					<li><code>DeviceIndex</code> - <code>integer</code> - Optional - </li>
+	 * 					<li><code>SubnetId</code> - <code>string</code> - Optional - </li>
+	 * 					<li><code>Description</code> - <code>string</code> - Optional - </li>
+	 * 					<li><code>PrivateIpAddress</code> - <code>string</code> - Optional - </li>
+	 * 					<li><code>SecurityGroupId</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 					<li><code>DeleteOnTermination</code> - <code>boolean</code> - Optional - </li>
+	 * 				</ul></li>
+	 * 			</ul></li>
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -3873,6 +4404,24 @@ class AmazonEC2 extends CFRuntime
 		$opt['Attribute'] = $attribute;
 		
 		return $this->authenticate('ResetInstanceAttribute', $opt);
+	}
+
+	/**
+	 * 
+	 *
+	 * @param string $network_interface_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>SourceDestCheck</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function reset_network_interface_attribute($network_interface_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['NetworkInterfaceId'] = $network_interface_id;
+		
+		return $this->authenticate('ResetNetworkInterfaceAttribute', $opt);
 	}
 
 	/**
@@ -4049,7 +4598,8 @@ class AmazonEC2 extends CFRuntime
 	 * 	<li><code>SecurityGroup</code> - <code>string|array</code> - Optional - The names of the security groups into which the instances will be launched. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>SecurityGroupId</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>UserData</code> - <code>string</code> - Optional - Specifies additional information to make available to the instance(s).</li>
-	 * 	<li><code>InstanceType</code> - <code>string</code> - Optional - Specifies the instance type for the launched instances. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
+	 * 	<li><code>AddressingType</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>InstanceType</code> - <code>string</code> - Optional - Specifies the instance type for the launched instances. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.medium</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
 	 * 	<li><code>Placement</code> - <code>array</code> - Optional - Specifies the placement constraints (Availability Zones) for launching the instances. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 			<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The availability zone in which an Amazon EC2 instance runs.</li>
@@ -4084,6 +4634,17 @@ class AmazonEC2 extends CFRuntime
 	 * 	</ul></li>
 	 * 	<li><code>PrivateIpAddress</code> - <code>string</code> - Optional - If you're using Amazon Virtual Private Cloud, you can optionally use this parameter to assign the instance a specific available IP address from the subnet.</li>
 	 * 	<li><code>ClientToken</code> - <code>string</code> - Optional - Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, go to How to Ensure Idempotency in the Amazon Elastic Compute Cloud User Guide.</li>
+	 * 	<li><code>NetworkInterface</code> - <code>array</code> - Optional -  <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>NetworkInterfaceId</code> - <code>string</code> - Optional - </li>
+	 * 			<li><code>DeviceIndex</code> - <code>integer</code> - Optional - </li>
+	 * 			<li><code>SubnetId</code> - <code>string</code> - Optional - </li>
+	 * 			<li><code>Description</code> - <code>string</code> - Optional - </li>
+	 * 			<li><code>PrivateIpAddress</code> - <code>string</code> - Optional - </li>
+	 * 			<li><code>SecurityGroupId</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>DeleteOnTermination</code> - <code>boolean</code> - Optional - </li>
+	 * 		</ul></li>
+	 * 	</ul></li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -4138,6 +4699,15 @@ class AmazonEC2 extends CFRuntime
 				'License' => $opt['License']
 			)));
 			unset($opt['License']);
+		}
+		
+		// Optional list + map
+		if (isset($opt['NetworkInterface']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'NetworkInterface' => $opt['NetworkInterface']
+			)));
+			unset($opt['NetworkInterface']);
 		}
 
 		return $this->authenticate('RunInstances', $opt);

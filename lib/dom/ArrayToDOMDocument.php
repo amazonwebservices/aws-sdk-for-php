@@ -78,7 +78,7 @@ class Array2DOM
 		{
 			if (is_string($key) && !is_numeric($key))
 			{
-				if ($key == self::ATTRIBUTES)
+				if ($key === self::ATTRIBUTES)
 				{
 					foreach ($value as $attributeName => $attributeValue)
 					{
@@ -121,7 +121,7 @@ class Array2DOM
 						$value = $value ? 'true' : 'false';
 					}
 
-					$element->appendChild(self::createDOMElement((string) $value, $key, $document));
+					$element->appendChild(self::createDOMElement($value, $key, $document));
 				}
 			}
 			else

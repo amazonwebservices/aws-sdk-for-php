@@ -212,4 +212,37 @@ class CFSimpleXML extends SimpleXMLIterator
 	{
 		return (stripos((string) $this, $value) !== false);
 	}
+
+	/**
+	 * Whether or not the current node matches the regular expression pattern.
+	 *
+	 * @param string $pattern (Required) The pattern to match the current node against.
+	 * @return boolean Whether or not the current node matches the pattern.
+	 */
+	public function matches($pattern)
+	{
+		return (bool) preg_match($pattern, (string) $this);
+	}
+
+	/**
+	 * Whether or not the current node starts with the compared value.
+	 *
+	 * @param string $value (Required) The value to compare the current node to.
+	 * @return boolean Whether or not the current node starts with the compared value.
+	 */
+	public function starts_with($value)
+	{
+		return $this->matches("@^$value@u");
+	}
+
+	/**
+	 * Whether or not the current node ends with the compared value.
+	 *
+	 * @param string $value (Required) The value to compare the current node to.
+	 * @return boolean Whether or not the current node ends with the compared value.
+	 */
+	public function ends_with($value)
+	{
+		return $this->matches("@$value$@u");
+	}
 }

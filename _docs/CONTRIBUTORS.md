@@ -13,6 +13,7 @@ The following people have provided ideas, support and bug fixes:
 * [Eric Caron](http://www.ericcaron.com) (bug fixes)
 * [Jason Ardell](http://ardell.posterous.com/) (bug fixes)
 * [Jeremy Archuleta](http://code.google.com/u/jeremy.archuleta/) (bug fixes)
+* [Jimmy Berry](http://blog.boombatower.com/) (bug fixes, patches)
 * [Paul Voegler](mailto:voegler@gmx.de) (bug fixes, bug reports, patches)
 * [Peter Bowen](http://github.com/pzb) (feedback, bug reports)
 * [zoxa](https://github.com/zoxa) (bug fixes)

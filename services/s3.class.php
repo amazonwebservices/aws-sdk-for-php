@@ -540,21 +540,12 @@ class AmazonS3 extends CFRuntime
 			return $data;
 		}
 
-		// If we haven't already set a resource prefix...
-		if (!$this->resource_prefix || $this->path_style)
+		// If we haven't already set a resource prefix and the bucket name isn't DNS-valid...
+		if ((!$this->resource_prefix && !$this->validate_bucketname_create($bucket)) || $this->path_style)
 		{
-			// And if the bucket name isn't DNS-valid...
-			if (!$this->validate_bucketname_create($bucket))
-			{
-				// Fall back to the older path-style URI
-				$this->set_resource_prefix('/' . $bucket);
-				$this->temporary_prefix = true;
-			}
-			elseif ($this->path_style)
-			{
-				// Fall back to the older path-style URI
-				$this->set_resource_prefix('/' . $bucket);
-			}
+			// Fall back to the older path-style URI
+			$this->set_resource_prefix('/' . $bucket);
+			$this->temporary_prefix = true;
 		}
 
 		// Determine hostname
@@ -651,6 +642,11 @@ class AmazonS3 extends CFRuntime
 			$non_signable_resource .= $conjunction . $query_string;
 			$conjunction = '&';
 		}
+		if (substr($hostname, -1) === substr($signable_resource, 0, 1))
+		{
+			$signable_resource = ltrim($signable_resource, '/');
+		}
+
 		$this->request_url = $scheme . $hostname . $signable_resource . $signable_query_string . $non_signable_resource;
 
 		if (isset($opt['location']))
@@ -858,10 +854,22 @@ class AmazonS3 extends CFRuntime
 		$signature = base64_encode(hash_hmac('sha1', $string_to_sign, $this->secret_key, true));
 		$request->add_header('Authorization', 'AWS ' . $this->key . ':' . $signature);
 
-		// If we're generating a URL, return certain data to the calling method.
+		// If we're generating a URL, return the URL to the calling method.
 		if (isset($opt['preauth']) && (integer) $opt['preauth'] > 0)
 		{
-			return $this->request_url . $conjunction . 'AWSAccessKeyId=' . $this->key . '&Expires=' . $headers['Expires'] . '&Signature=' . rawurlencode($signature);
+			$query_params = array(
+				'AWSAccessKeyId' => $this->key,
+				'Expires' => $headers['Expires'],
+				'Signature' => $signature,
+			);
+
+			// If using short-term credentials, add the token to the query string
+			if ($this->auth_token)
+			{
+				$query_params['x-amz-security-token'] = $this->auth_token;
+			}
+
+			return $this->request_url . $conjunction . http_build_query($query_params, '', '&');
 		}
 		elseif (isset($opt['preauth']))
 		{
@@ -1097,7 +1105,7 @@ class AmazonS3 extends CFRuntime
 		);
 
 		// Defaults
-		$this->set_region($region);
+		$this->set_region($region); // Also sets path-style
 		$xml = simplexml_load_string($this->base_location_constraint);
 
 		switch ($region)
@@ -1107,22 +1115,20 @@ class AmazonS3 extends CFRuntime
 				break;
 
 			case self::REGION_EU_W1:    // Ireland
-				$this->enable_path_style(); // DNS-style doesn't seem to work for creation, only in EU. Switch over to path-style.
 				$xml->LocationConstraint = 'EU';
 				$opt['body'] = $xml->asXML();
 				break;
 
 			default:
-				$this->enable_path_style(false);
 				$xml->LocationConstraint = str_replace(array('s3-', '.amazonaws.com'), '', $region);
 				$opt['body'] = $xml->asXML();
 				break;
-
-		// @codeCoverageIgnoreStart
 		}
-		// @codeCoverageIgnoreEnd
 
 		$response = $this->authenticate($bucket, $opt);
+
+		// Make sure we're set back to DNS-style URLs
+		$this->enable_path_style(false);
 
 		return $response;
 	}
@@ -1376,6 +1382,8 @@ class AmazonS3 extends CFRuntime
 			unset($opt['meta']);
 		}
 
+		$opt['headers']['Expect'] = '100-continue';
+
 		// Authenticate to S3
 		return $this->authenticate($bucket, $opt);
 	}
@@ -1401,7 +1409,6 @@ class AmazonS3 extends CFRuntime
 	public function get_object($bucket, $filename, $opt = null)
 	{
 		if (!$opt) $opt = array();
-		$this->parse_the_response = false;
 
 		// Add this to our request
 		$opt['verb'] = 'GET';
@@ -1439,7 +1446,11 @@ class AmazonS3 extends CFRuntime
 		}
 
 		// Authenticate to S3
-		return $this->authenticate($bucket, $opt);
+		$this->parse_the_response = false;
+		$response = $this->authenticate($bucket, $opt);
+		$this->parse_the_response = true;
+
+		return $response;
 	}
 
 	/**
@@ -1771,7 +1782,7 @@ class AmazonS3 extends CFRuntime
 	public function update_object($bucket, $filename, $opt = null)
 	{
 		if (!$opt) $opt = array();
-		$opt['metadataDirective'] = 'COPY';
+		$opt['metadataDirective'] = 'REPLACE';
 
 		// Authenticate to S3
 		return $this->copy_object(
@@ -2335,11 +2346,10 @@ class AmazonS3 extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>delimiter</code> - <code>string</code> - Optional - Keys that contain the same string between the prefix and the first occurrence of the delimiter will be rolled up into a single result element in the CommonPrefixes collection.</li>
 	 * 	<li><code>marker</code> - <code>string</code> - Optional - Restricts the response to contain results that only occur alphabetically after the value of the marker.</li>
-	 * 	<li><code>max-keys</code> - <code>string</code> - Optional - The maximum number of results returned by the method call. The returned list will contain no more results than the specified value, but may return less.</li>
+	 * 	<li><code>max-keys</code> - <code>integer</code> - Optional - The maximum number of results returned by the method call. The returned list will contain no more results than the specified value, but may return less. A value of zero is treated as if you did not specify max-keys.</li>
 	 * 	<li><code>pcre</code> - <code>string</code> - Optional - A Perl-Compatible Regular Expression (PCRE) to filter the names against. This is applied only AFTER any native Amazon S3 filtering from specified <code>prefix</code>, <code>marker</code>, <code>max-keys</code>, or <code>delimiter</code> values are applied.</li>
 	 * 	<li><code>prefix</code> - <code>string</code> - Optional - Restricts the response to contain results that begin only with the specified prefix.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
-	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return array The list of matching object names. If there are no results, the method will return an empty array.
 	 * @link http://php.net/pcre Regular Expressions (Perl-Compatible)
 	 */
@@ -2351,14 +2361,16 @@ class AmazonS3 extends CFRuntime
 		}
 
 		if (!$opt) $opt = array();
+		unset($opt['returnCurlHandle']); // This would cause problems
 
 		// Set some default values
 		$pcre = isset($opt['pcre']) ? $opt['pcre'] : null;
-		$max_keys = isset($opt['max-keys']) ? (integer) $opt['max-keys'] : 'all';
+		$max_keys = (isset($opt['max-keys']) && is_int($opt['max-keys'])) ? $opt['max-keys'] : null;
 		$objects = array();
 
-		if ($max_keys === 'all')
+		if (!$max_keys)
 		{
+			// No max-keys specified. Get everything.
 			do
 			{
 				$list = $this->list_objects($bucket, $opt);
@@ -2378,14 +2390,24 @@ class AmazonS3 extends CFRuntime
 		}
 		else
 		{
+			// Max-keys specified. Approximate number of loops and make the requests.
+
+			$max_keys = $opt['max-keys'];
 			$loops = ceil($max_keys / 1000);
 
 			do
 			{
 				$list = $this->list_objects($bucket, $opt);
-				if ($keys = $list->body->query('descendant-or-self::Key')->map_string($pcre))
+				$keys = $list->body->query('descendant-or-self::Key')->map_string($pcre);
+
+				if ($count = count($keys))
 				{
 					$objects = array_merge($objects, $keys);
+
+					if ($count < 1000)
+					{
+						break;
+					}
 				}
 
 				if ($max_keys > 1000)
@@ -2404,12 +2426,7 @@ class AmazonS3 extends CFRuntime
 			while (--$loops);
 		}
 
-		if (count($objects) > 0)
-		{
-			return $objects;
-		}
-
-		return array();
+		return $objects;
 	}
 
 	/**
@@ -2656,6 +2673,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $filename (Required) The file name for the Amazon S3 object.
 	 * @param integer|string $preauth (Optional) Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>https</code> - <code>boolean</code> - Optional - Set to <code>true</code> if you would like the URL be in https mode. Otherwise, the default behavior is always to use http regardless of your SSL settings.
 	 * 	<li><code>method</code> - <code>string</code> - Optional - The HTTP method to use for the request. Defaults to a value of <code>GET</code>.</li>
 	 * 	<li><code>response</code> - <code>array</code> - Optional - Allows adjustments to specific response headers. Pass an associative array where each key is one of the following: <code>cache-control</code>, <code>content-disposition</code>, <code>content-encoding</code>, <code>content-language</code>, <code>content-type</code>, <code>expires</code>. The <code>expires</code> value should use <php:gmdate()> and be formatted with the <code>DATE_RFC2822</code> constant.</li>
 	 * 	<li><code>torrent</code> - <code>boolean</code> - Optional - A value of <code>true</code> will return a URL to a torrent of the Amazon S3 object. A value of <code>false</code> will return a non-torrent URL. Defaults to <code>false</code>.</li>
@@ -2688,11 +2706,15 @@ class AmazonS3 extends CFRuntime
 			}
 		}
 
+		// Determine whether or not to use SSL
+		$use_ssl = isset($opt['https']) ? (bool) $opt['https'] : false;
+		unset($opt['https']);
+		$current_use_ssl_setting = $this->use_ssl;
+
 		// Authenticate to S3
-		$current_ssl_setting = $this->use_ssl;
-		$this->use_ssl = false;
+		$this->use_ssl = $use_ssl;
 		$response = $this->authenticate($bucket, $opt);
-		$this->use_ssl = $current_ssl_setting;
+		$this->use_ssl = $current_use_ssl_setting;
 
 		return $response;
 	}
@@ -3201,6 +3223,8 @@ class AmazonS3 extends CFRuntime
 			$opt['headers']['Content-MD5'] = $opt['md5'];
 			unset($opt['md5']);
 		}
+
+		$opt['headers']['Expect'] = '100-continue';
 
 		// Authenticate to S3
 		return $this->authenticate($bucket, $opt);
@@ -3802,6 +3826,7 @@ class AmazonS3 extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>rules</code> - <code>string</code> - Required - The object expiration rule-sets to apply to the bucket. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - Required - This represents a simple array index. <ul>
+	 * 			<li><code>id</code> - <code>string</code> - Optional - Unique identifier for the rule. The value cannot be longer than 255 characters.
 	 * 			<li><code>prefix</code> - <code>string</code> - Required - The Amazon S3 object prefix which targets the file(s) for expiration.</li>
 	 * 			<li><code>expiration</code> - <code>array</code> - Required - The container for the unit of measurement by which the expiration time is calculated. <ul>
 	 * 				<li><code>days</code> - <code>integer</code> - Required - The number of days until the targetted objects expire from the bucket.</li>
@@ -3822,13 +3847,24 @@ class AmazonS3 extends CFRuntime
 			'Content-Type' => 'application/xml'
 		);
 
-		$xml = simplexml_load_string($this->object_expiration_xml);
+		$xml = simplexml_load_string($this->object_expiration_xml, $this->parser_class);
 
 		if (isset($opt['rules']) && is_array($opt['rules']) && count($opt['rules']))
 		{
 			foreach ($opt['rules'] as $rule)
 			{
 				$xrule = $xml->addChild('Rule');
+
+				// ID
+				if (isset($rule['id']))
+				{
+					if (strlen($rule['id']) > 255)
+					{
+						throw new S3_Exception('The "id" for a rule must not be more than 255 characters in the ' . __FUNCTION__ . ' method.');
+					}
+
+					$xrule->addChild('ID', $rule['id']);
+				}
 
 				// Prefix
 				if (isset($rule['prefix']))
@@ -3837,7 +3873,7 @@ class AmazonS3 extends CFRuntime
 				}
 				else
 				{
-					throw new S3_Exception('The each rule requires a "prefix" in the ' . __FUNCTION__ . ' method.');
+					throw new S3_Exception('Each rule requires a "prefix" in the ' . __FUNCTION__ . ' method.');
 				}
 
 				// Status
@@ -3872,7 +3908,7 @@ class AmazonS3 extends CFRuntime
 				}
 				else
 				{
-					throw new S3_Exception('The each rule requires a "expiration" in the ' . __FUNCTION__ . ' method.');
+					throw new S3_Exception('Each rule requires a "expiration" in the ' . __FUNCTION__ . ' method.');
 				}
 			}
 		}

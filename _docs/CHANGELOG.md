@@ -1,3 +1,74 @@
+ # Changelog: 1.5.4 "Enterprise"
+Code name for Mac OS X Server 1.0 (Rhapsody CR1). <http://en.wikipedia.org/wiki/Rhapsody_(operating_system)>
+
+Launched Thursday, April 19, 2012.
+
+
+## Bug fixes and enhancements
+* [PHP SDK Bug - Memory leak](https://forums.aws.amazon.com/thread.jspa?threadID=72310)
+* [Does update_object work in 1.5.3?](https://forums.aws.amazon.com/thread.jspa?threadID=89297)
+* [The value of CURLOPT_SSL_VERIFYHOST](https://forums.aws.amazon.com/thread.jspa?threadID=86186)
+* [PHP SDK BUG: s3.class.php Line 2396 on 1.5.2](https://forums.aws.amazon.com/thread.jspa?threadID=86779)
+* [first create_bucket(), then get_bucket_list()](https://forums.aws.amazon.com/thread.jspa?messageID=318885)
+* [Issue with AmazonS3::get_object_list() max-keys](https://forums.aws.amazon.com/thread.jspa?threadID=85878)
+* [Correct the "Bottom line" minimum requirements check](https://github.com/amazonwebservices/aws-sdk-for-php/pull/23)
+* [S3 PHP SDK: copy_object() fails to update the header](http://stackoverflow.com/questions/7677837/s3-php-sdk-copy-object-fails-to-update-the-header)
+* [Adds the following utility methods to simplexml.class.php](https://github.com/amazonwebservices/aws-sdk-for-php/pull/22)
+* [Adding the ability to name a 'rule' for Object Expiration (suggested tweak)](https://forums.aws.amazon.com/thread.jspa?messageID=328023)
+
+## Runtime
+* **New:** Support for Signature Version 4 has been added to the SDK. Signature Version 4 is now the default authentication method for AWS Identity and Access Management, AWS Security Token Service, AWS CloudFormation, and Amazon CloudSearch.
+
+## Services
+### AmazonCloudFront
+* **New:** Support for a Minimum TTL of zero has been added to the SDK.
+
+### AmazonCloudSearch
+* **New:** Support for Amazon CloudSearch has been added to the SDK. This includes only the Configuration API.
+
+### AmazonDynamoDB
+* **New:** Support for BatchWriteItem API has been added to the SDK.
+* **New:** Support for the Asia Pacific "Northeast" (Tokyo) endpoint has been added.
+* **New:** Amazon DynamoDB Session Handler has been added to the SDK.
+* **New:** A simplified interface for adding attributes has been added to the SDK.
+
+### AmazonEC2
+* **New:** The new "m1.medium" instance type is now supported.
+* **New:** Amazon EBS support for Volume Status and Volume Attributes have been added to the SDK.
+* **New:** Amazon EBS support for Conversion Tasks has been added to the SDK.
+* **New:** Amazon EC2 support for the Report Instance Status feature has been added to the SDK.
+* **New:** Amazon VPC support for Network Interfaces has been added to the SDK.
+* **Fixed:** Various parameter fixes have been applied.
+
+### AmazonIAM
+* **New:** Support for Password Policies and the ability to change passwords has been added to the SDK.
+
+### AmazonS3
+* **New:** Support for pre-signed URLs using temporary credentials has been added to the SDK.
+* **New:** Support for setting a custom name to Lifecycle (i.e., Object Expiration) rules has been added to the SDK.
+* **New:** Support for pre-signed URLs with https has been added to the SDK.
+* **Fixed:** Resolved an issue where setting a custom XML parsing class was not being respected.
+* **Fixed:** Resolved an issue where the `get_object_list()` method would return an incorrect number of entries.
+* **Fixed:** Resolved an issue where `update_object()` was attempting to COPY instead of REPLACE.
+* **Fixed:** Resolved an issue stemming from using path-style URLs, `create_bucket()` + `list_bucket()` and the EU-West region.
+* **Fixed:** Resolved an issue where XML responses were not being parsed consistently.
+* **Fixed:** Resolved an issue where Private Streaming URLs contained a double-encoded signature.
+* **Fixed:** The `Expect: 100-continue` HTTP header is now only sent during `create_object()` and `upload_part()` requests.
+
+## Utilities
+### CFRuntime
+* **Fixed:** Resolved an issue where `CURLOPT_SSL_VERIFYHOST` was not set strictly enough.
+* **Fixed:** The `Expect: 100-continue` HTTP header is no longer set on every request.
+
+### CFSimpleXML
+* **New:** Support for `matches()`, `starts_with()` and `ends_with()` methods have been added to the SDK. (Thanks [Wil Moore III](https://github.com/wilmoore)!)
+
+## Compatibility Test
+* **New:** SDK Compatibility Test pages are marked up as to not be indexed by search engines. (Thanks [Eric Caron](http://www.ericcaron.com)!)
+* **Fixed:** Duplicate code between the CLI and web versions of the SDK has been refactored. (Thanks [Jimmy Berry](https://github.com/boombatower)!)
+
+---
+
 # Changelog: 1.5.3 "Darwin"
 UNIX foundation upon which Mac OS X, Apple TV, and iOS are based. <http://en.wikipedia.org/wiki/Darwin_operating_system>
 
@@ -12,7 +83,6 @@ Launched Wednesday, Tuesday, February 21, 2012.
 
 ### AmazonSWF
 * **New:** Support for the new Amazon Simple Workflow Service has been added to the SDK.
-
 
 ----
 
@@ -41,9 +111,6 @@ Launched Wednesday, Febraury 1, 2012.
 * **Fixed:** Resolved an issue where `delete_all_objects()` and `delete_all_object_versions()` was being limited to 1000 items.
 * **Fixed:** Resolved an issue where `delete_bucket()` would fail to delete a bucket with the "force" option enabled if the bucket contained more than 1000 items.
 * **Fixed:** Resolved an issue where JSON documents stored in Amazon S3 would be parsed into a native PHP object when retrieved.
-
-### Auto Scaling
-* **New:** Support added for performing CRUD operations on tags for Auto Scaling groups.
 
 ## Utilities
 ### S3StreamWrapper

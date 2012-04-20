@@ -15,20 +15,24 @@
  */
 
 /**
- * This is the <em>AWS Security Token Service API Reference</em>. The AWS Security Token Service
- * is a web service that enables you to request temporary, limited-privilege credentials for AWS
- * Identity and Access Management (IAM) users or for users that you authenticate (federated
- * users). This guide provides descriptions of the AWS Security Token Service API as well as links
- * to related content in <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/" target=
- * "_blank">Using IAM</a>.
+ * The AWS Security Token Service is a web service that enables you to request temporary,
+ * limited-privilege credentials for AWS Identity and Access Management (IAM) users or for users
+ * that you authenticate (federated users). This guide provides descriptions of the AWS Security
+ * Token Service API.
  *  
  * For more detailed information about using this service, go to <a href=
- * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/TokenBasedAuth.html" target=
- * "_blank">Granting Temporary Access to Your AWS Resources</a> in <em>Using IAM</em>.
+ * "http://docs.amazonwebservices.com/IAM/latest/UsingSTS/Welcome.html" target="_blank">Using
+ * Temporary Security Credentials</a>.
  *  
- * For specific information about setting up signatures and authorization through the API, go to
- * 	<a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
- * "_blank">Making Query Requests</a> in <em>Using IAM</em>.
+ * For information about setting up signatures and authorization through the API, go to <a href=
+ * "http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html" target=
+ * "_blank">Signing AWS API Requests</a> in the <em>AWS General Reference</em>. For general
+ * information about the Query API, go to <a href=
+ * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
+ * "_blank">Making Query Requests</a> in <em>Using IAM</em>. For information about using security
+ * tokens with other AWS products, go to <a href=
+ * "http://docs.amazonwebservices.com/IAM/latest/UsingSTS/UsingTokens.html">Using Temporary
+ * Security Credentials to Access AWS</a> in <em>Using Temporary Security Credentials</em>.
  *  
  * If you're new to AWS and need additional technical information about a specific AWS product,
  * you can find the product'stechnical documentation at <a href=
@@ -38,7 +42,7 @@
  * We will refer to Amazon Identity and Access Management using the abbreviated form IAM. All
  * copyrights and legal protections still apply.
  *
- * @version 2012.01.16
+ * @version 2012.04.18
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sts/ Amazon Secure Token Service
@@ -84,7 +88,7 @@ class AmazonSTS extends CFRuntime
 	{
 		$this->api_version = '2011-06-15';
 		$this->hostname = self::DEFAULT_URL;
-		$this->auth_class = 'AuthV2Query';
+		$this->auth_class = 'AuthV4Query';
 
 		return parent::__construct($options);
 	}
@@ -114,8 +118,9 @@ class AmazonSTS extends CFRuntime
 	/**
 	 * The GetFederationToken action returns a set of temporary credentials for a federated user with
 	 * the user name and policy specified in the request. The credentials consist of an Access Key ID,
-	 * a Secret Access Key, and a security token. The credentials are valid for the specified
-	 * duration, between one and 36 hours.
+	 * a Secret Access Key, and a security token. Credentials created by IAM users are valid for the
+	 * specified duration, between one and 36 hours; credentials created using account credentials
+	 * last one hour.
 	 *  
 	 * The federated user who holds these credentials has any permissions allowed by the intersection
 	 * of the specified policy and any resource or user policies that apply to the caller of the
@@ -150,7 +155,8 @@ class AmazonSTS extends CFRuntime
 	 * user. The credentials consist of an Access Key ID, a Secret Access Key, and a security token.
 	 * These credentials are valid for the specified duration only. The session duration for IAM users
 	 * can be between one and 36 hours, with a default of 12 hours. The session duration for AWS
-	 * account owners is restricted to one hour.
+	 * account owners is restricted to one hour. Providing the MFA device serial number and the token
+	 * code is optional.
 	 *  
 	 * For more information about using GetSessionToken to create temporary credentials, go to
 	 * 	<a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/CreatingSessionTokens.html"
@@ -159,6 +165,8 @@ class AmazonSTS extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>DurationSeconds</code> - <code>integer</code> - Optional - The duration, in seconds, that the credentials should remain valid. Acceptable durations for IAM user sessions range from 3600s (one hour) to 129600s (36 hours), with 43200s (12 hours) as the default. Sessions for AWS account owners are restricted to a maximum of 3600s (one hour).</li>
+	 * 	<li><code>SerialNumber</code> - <code>string</code> - Optional -  [Constraints: The value must be between 9 and 256 characters, and must match the following regular expression pattern: <code>[\w+=/:,.@-]*</code>]</li>
+	 * 	<li><code>TokenCode</code> - <code>string</code> - Optional -  [Constraints: The value must be between 6 and 6 characters, and must match the following regular expression pattern: <code>[\d]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.

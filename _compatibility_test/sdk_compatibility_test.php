@@ -248,7 +248,7 @@ elseif (isset($_GET['ssl_check']))
 	curl_setopt($ch, CURLOPT_NOSIGNAL, true);
 	curl_setopt($ch, CURLOPT_USERAGENT, 'aws-sdk-php/compat-www');
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, true);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 	curl_setopt($ch, CURLOPT_VERBOSE, true);
 
 	curl_exec($ch);
@@ -258,61 +258,8 @@ elseif (isset($_GET['ssl_check']))
 	exit;
 }
 
-// Required
-$php_ok = (function_exists('version_compare') && version_compare(phpversion(), '5.2.0', '>='));
-$simplexml_ok = extension_loaded('simplexml');
-$dom_ok = extension_loaded('dom');
-$json_ok = (extension_loaded('json') && function_exists('json_encode') && function_exists('json_decode'));
-$spl_ok = extension_loaded('spl');
-$pcre_ok = extension_loaded('pcre');
-if (function_exists('curl_version'))
-{
-	$curl_version = curl_version();
-	$curl_ok = (function_exists('curl_exec') && in_array('https', $curl_version['protocols'], true));
-}
-$file_ok = (function_exists('file_get_contents') && function_exists('file_put_contents'));
-
-// Optional, but recommended
-$openssl_ok = (extension_loaded('openssl') && function_exists('openssl_sign'));
-$zlib_ok = extension_loaded('zlib');
-
-// Optional
-$apc_ok = extension_loaded('apc');
-$xcache_ok = extension_loaded('xcache');
-$memcached_ok = extension_loaded('memcached');
-$memcache_ok = extension_loaded('memcache');
-$mc_ok = ($memcache_ok || $memcached_ok);
-$pdo_ok = extension_loaded('pdo');
-$pdo_sqlite_ok = extension_loaded('pdo_sqlite');
-$sqlite2_ok = extension_loaded('sqlite');
-$sqlite3_ok = extension_loaded('sqlite3');
-$sqlite_ok = ($pdo_ok && $pdo_sqlite_ok && ($sqlite2_ok || $sqlite3_ok));
-
-// Other
-$int64_ok = (PHP_INT_MAX === 9223372036854775807);
-$ini_memory_limit = get_ini('memory_limit');
-$ini_open_basedir = get_ini('open_basedir');
-$ini_safe_mode = get_ini('safe_mode');
-$ini_zend_enable_gc = get_ini('zend.enable_gc');
-
-function get_ini($config)
-{
-	$cfg_value = ini_get($config);
-
-	if ($cfg_value === false || $cfg_value === '' || $cfg_value === 0)
-	{
-		return false;
-	}
-	elseif ($cfg_value === true || $cfg_value === '1' || $cfg_value === 1)
-	{
-		return true;
-	}
-}
-
-function is_windows()
-{
-	return strtolower(substr(PHP_OS, 0, 3)) === 'win';
-}
+// Include the compatibility test logic
+require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'sdk_compatibility.inc.php';
 
 header('Content-type: text/html; charset=UTF-8');
 
@@ -321,6 +268,7 @@ header('Content-type: text/html; charset=UTF-8');
 <html lang="en">
 <head>
 <title>AWS SDK for PHP: Environment Compatibility Test</title>
+<meta name="ROBOTS" content="NOINDEX, NOFOLLOW, NOARCHIVE" />
 
 <script type="text/javascript" charset="utf-8">
 /*!
@@ -660,7 +608,7 @@ div.important h3 {
 			<br>
 		</div>
 
-		<?php if ($php_ok && $int64_ok && $curl_ok && $simplexml_ok && $dom_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok && $openssl_ok && $zlib_ok && ($apc_ok || $xcache_ok || $mc_ok || $sqlite_ok)): ?>
+		<?php if ($compatiblity == REQUIREMENTS_ALL_MET): ?>
 		<div class="chunk important ok">
 			<h3>Bottom Line: Yes, you can!</h3>
 			<p>Your PHP environment is ready to go, and can take advantage of all possible features!</p>
@@ -670,7 +618,7 @@ div.important h3 {
 			<p>You can download the latest version of the <a href="http://aws.amazon.com/sdkforphp"><strong>AWS SDK for PHP</strong></a> and install it by <a href="http://aws.amazon.com/articles/4261">following the instructions</a>. Also, check out our library of <a href="http://aws.amazon.com/articles/4262">screencasts and tutorials</a>.</p>
 			<p>Take the time to read <a href="http://aws.amazon.com/articles/4261">"Getting Started"</a> to make sure you're prepared to use the AWS SDK for PHP. No seriously, read it.</p>
 		</div>
-		<?php elseif ($php_ok && $curl_ok && $simplexml_ok && $dom_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok): ?>
+		<?php elseif ($compatiblity == REQUIREMENTS_MIN_MET): ?>
 		<div class="chunk important ok">
 			<h3>Bottom Line: Yes, you can!</h3>
 			<p>Your PHP environment is ready to go! <i>There are a couple of minor features that you won't be able to take advantage of, but nothing that's a show-stopper.</i></p>
@@ -692,7 +640,7 @@ div.important h3 {
 		</div>
 		<?php endif; ?>
 
-		<?php if ($apc_ok || $xcache_ok || $file_ok): ?>
+		<?php if ($compatiblity >= REQUIREMENTS_MIN_MET): ?>
 		<div class="chunk">
 			<h3>Recommended settings for config.inc.php</h3>
 			<p>Based on your particular server configuration, the following settings are recommended.</p>
@@ -731,7 +679,7 @@ div.important h3 {
 
 		<div class="chunk">
 			<h3>Give me the details!</h3>
-			<?php if ($php_ok && $curl_ok && $simplexml_ok && $dom_ok && $spl_ok && $json_ok && $pcre_ok && $file_ok): ?>
+			<?php if ($compatiblity >= REQUIREMENTS_MIN_MET): ?>
 			<ol>
 				<li><em>Your environment meets the minimum requirements for using the <strong>AWS SDK for PHP</strong>!</em></li>
 

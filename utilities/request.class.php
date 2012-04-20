@@ -61,7 +61,6 @@ class CFRequest extends RequestCore
 		parent::__construct($url, $proxy, $helpers);
 
 		// Standard settings for all requests
-		$this->add_header('Expect', '100-continue');
 		$this->set_useragent(CFRUNTIME_USERAGENT);
 		$this->credentials = $credentials;
 		$this->cacert_location = ($this->credentials['certificate_authority'] ? $this->credentials['certificate_authority'] : false);

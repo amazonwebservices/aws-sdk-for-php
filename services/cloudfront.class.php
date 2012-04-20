@@ -432,6 +432,24 @@ class AmazonCloudFront extends CFRuntime
 			$required_protocols->addChild('Protocol', $opt['RequiredProtocols']);
 		}
 
+		// Caching Behavior
+		if (isset($opt['CachingBehavior']) && is_array($opt['CachingBehavior']))
+		{
+			$caching_behavior = $xml->addChild('CachingBehavior');
+
+			if (isset($opt['CachingBehavior']['MinTTL']))
+			{
+				$min_ttl = $opt['CachingBehavior']['MinTTL'];
+
+				if (is_string($min_ttl))
+				{
+					$min_ttl = strtotime($min_ttl);
+				}
+
+				$caching_behavior->addChild('MinTTL', $min_ttl);
+			}
+		}
+
 		// Trusted Signers
 		if (isset($opt['TrustedSigners']))
 		{
@@ -610,6 +628,41 @@ class AmazonCloudFront extends CFRuntime
 			$logging = $update->addChild('Logging');
 			$logging->addChild('Bucket', $xml->Logging->Bucket);
 			$logging->addChild('Prefix', $xml->Logging->Prefix);
+		}
+
+		// Required Protocols
+		if (isset($opt['RequiredProtocols']))
+		{
+			$required_protocols = $xml->addChild('RequiredProtocols');
+			$required_protocols->addChild('Protocol', $opt['RequiredProtocols']);
+		}
+		elseif (isset($xml->RequiredProtocols))
+		{
+			$required_protocols = $update->addChild('RequiredProtocols');
+			$required_protocols->addChild('Protocol', $xml->RequiredProtocols->Protocol);
+		}
+
+		// Caching Behavior
+		if (isset($opt['CachingBehavior']) && is_array($opt['CachingBehavior']))
+		{
+			$caching_behavior = $xml->addChild('CachingBehavior');
+
+			if (isset($opt['CachingBehavior']['MinTTL']))
+			{
+				$min_ttl = $opt['CachingBehavior']['MinTTL'];
+
+				if (is_string($min_ttl))
+				{
+					$min_ttl = strtotime($min_ttl);
+				}
+
+				$caching_behavior->addChild('MinTTL', $min_ttl);
+			}
+		}
+		elseif (isset($xml->CachingBehavior))
+		{
+			$caching_behavior = $update->addChild('CachingBehavior');
+			$caching_behavior->addChild('MinTTL', $xml->CachingBehavior->MinTTL);
 		}
 
 		// Trusted Signers
@@ -828,7 +881,10 @@ class AmazonCloudFront extends CFRuntime
 	 * 	<li><code>OriginAccessIdentity</code> - <code>string</code> - Optional - The origin access identity (OAI) associated with this distribution. Use the Identity ID from the OAI, not the <code>CanonicalId</code>. Requires an S3 origin.</li>
 	 * 	<li><code>OriginProtocolPolicy</code> - <code>string</code> - Optional - The origin protocol policy to apply to your origin. If you specify <code>http-only</code>, CloudFront will use HTTP only to access the origin. If you specify <code>match-viewer</code>, CloudFront will fetch from your origin using HTTP or HTTPS, based on the protocol of the viewer request. [Allowed values: <code>http-only</code>, <code>match-viewer</code>]. The default value is <code>match-viewer</code>. Requires a non-S3 origin.</li>
 	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> creates a streaming distribution. A value of <code>false</code> creates a standard distribution. The default value is <code>false</code>.</li>
+	 * 	<li><code>Logging</code> - <code>array</code> - Optional - Controls whether access logs are written for the distribution. If you want to turn on access logs, include this element; if you want to turn off access logs, remove this element.</li>
 	 * 	<li><code>TrustedSigners</code> - <code>array</code> - Optional - An array of AWS account numbers for users who are trusted signers. Explicity add the value <code>Self</code> to the array to add your own account as a trusted signer.</li>
+	 * 	<li><code>RequiredProtocols</code> - <code>string<code> - Optional -  Use this element to restrict access to your distribution solely to HTTPS requests. Without this element, CloudFront can use any available protocol to serve the request.</li>
+	 * 	<li><code>CachingBehavior</code> - <code>array</code> - Optional - Determines the minimum TTL for objects in the CloudFront cache. This value specifies a lower bound for values in the headers for an object, for example, in the Cache-Control max-age directive.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
