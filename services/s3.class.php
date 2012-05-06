@@ -1548,7 +1548,8 @@ class AmazonS3 extends CFRuntime
 		foreach ($opt['objects'] as $object)
 		{
 			$xobject = $xml->addChild('Object');
-			$xobject->addChild('Key', $object['key']);
+			$node = $xobject->addChild('Key');
+			$node[0] = $object['key'];
 
 			if (isset($object['version_id']))
 			{
