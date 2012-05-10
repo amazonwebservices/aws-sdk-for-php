@@ -22,16 +22,19 @@
  * IAM is a web service that enables AWS customers to manage users and user permissions under
  * their AWS account. For more information about this product go to <a href=
  * "http://aws.amazon.com/iam/" target="_blank">AWS Identity and Access Management (IAM)</a>. For
- * specific information about setting up signatures and authorization through the API, go to
- * 	<a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
- * "_blank">Making Query Requests</a> in <em>Using AWS Identity and Access Management</em>.
+ * information about setting up signatures and authorization through the API, go to <a href=
+ * "http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html" target=
+ * "_blank">Signing AWS API Requests</a> in the <em>AWS General Reference</em>. For general
+ * information about using the Query API with IAM, go to <a href=
+ * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
+ * "_blank">Making Query Requests</a> in <em>Using IAM</em>.
  *  
  * If you're new to AWS and need additional technical information about a specific AWS product,
  * you can find the product'stechnical documentation at <a href=
  * "http://aws.amazon.com/documentation/" target=
  * "_blank">http://aws.amazon.com/documentation/</a>.
  *
- * @version 2012.04.18
+ * @version 2012.05.01
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/iam/ AWS Identity and Access Management
@@ -129,10 +132,10 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Changes the password of the calling IAM user. The root account password is not affected by this
-	 * action. For information about modifying passwords, see <a href=
-	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_ManagingLogins.html" target=
-	 * "_blank">Managing Passwords</a>.
+	 * Changes the password of the IAM user calling <code>ChangePassword</code>. The root account
+	 * password is not affected by this action. For information about modifying passwords, see
+	 * 	<a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_ManagingLogins.html"
+	 * target="_blank">Managing Passwords</a>.
 	 *
 	 * @param string $old_password (Required)  [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
 	 * @param string $new_password (Required)  [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
@@ -665,9 +668,9 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Retrieves the password for the specified user.
+	 * Retrieves the user name and password create date for the specified user.
 	 *
-	 * @param string $user_name (Required) Name of the user whose password you want to retrieve. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $user_name (Required) Name of the user whose login profile you want to retrieve. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -1014,9 +1017,13 @@ class AmazonIAM extends CFRuntime
 	 * 
 	 * <p class="note">
 	 * Because policy documents can be large, you should use POST rather than GET when calling
-	 * <code>PutGroupPolicy</code>. For more information, see <a href=
-	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?IAM_UsingQueryAPI.html"
-	 * target="_blank">Making Query Requests</a> in <em>Using AWS Identity and Access Management</em>.
+	 * <code>PutGroupPolicy</code>. For information about setting up signatures and authorization
+	 * through the API, go to <a href=
+	 * "http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html" target=
+	 * "_blank">Signing AWS API Requests</a> in the <em>AWS General Reference</em>. For general
+	 * information about using the Query API with IAM, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
+	 * "_blank">Making Query Requests</a> in <em>Using IAM</em>.
 	 * </p>
 	 *
 	 * @param string $group_name (Required) Name of the group to associate the policy with. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
@@ -1051,9 +1058,13 @@ class AmazonIAM extends CFRuntime
 	 * 
 	 * <p class="note">
 	 * Because policy documents can be large, you should use POST rather than GET when calling
-	 * <code>PutUserPolicy</code>. For more information, see <a href=
-	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?IAM_UsingQueryAPI.html"
-	 * target="_blank">Making Query Requests</a> in <em>Using AWS Identity and Access Management</em>.
+	 * <code>PutUserPolicy</code>. For information about setting up signatures and authorization
+	 * through the API, go to <a href=
+	 * "http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html" target=
+	 * "_blank">Signing AWS API Requests</a> in the <em>AWS General Reference</em>. For general
+	 * information about using the Query API with IAM, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
+	 * "_blank">Making Query Requests</a> in <em>Using IAM</em>.
 	 * </p>
 	 *
 	 * @param string $user_name (Required) Name of the user to associate the policy with. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
@@ -1336,9 +1347,12 @@ class AmazonIAM extends CFRuntime
 	 * <p class="note">
 	 * Because the body of the public key certificate, private key, and the certificate chain can be
 	 * large, you should use POST rather than GET when calling <code>UploadServerCertificate</code>.
-	 * For more information, see <a href=
+	 * For information about setting up signatures and authorization through the API, go to <a href=
+	 * "http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html" target=
+	 * "_blank">Signing AWS API Requests</a> in the <em>AWS General Reference</em>. For general
+	 * information about using the Query API with IAM, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
-	 * "_blank">Making Query Requests</a> in <em>Using AWS Identity and Access Management</em>.
+	 * "_blank">Making Query Requests</a> in <em>Using IAM</em>.
 	 * </p>
 	 *
 	 * @param string $server_certificate_name (Required) The name for the server certificate. Do not include the path in this value. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
@@ -1374,9 +1388,13 @@ class AmazonIAM extends CFRuntime
 	 * 
 	 * <p class="note">
 	 * Because the body of a X.509 certificate can be large, you should use POST rather than GET when
-	 * calling <code>UploadSigningCertificate</code>. For more information, see <a href=
-	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?IAM_UsingQueryAPI.html"
-	 * target="_blank">Making Query Requests</a> in <em>Using AWS Identity and Access Management</em>.
+	 * calling <code>UploadSigningCertificate</code>. For information about setting up signatures and
+	 * authorization through the API, go to <a href=
+	 * "http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html" target=
+	 * "_blank">Signing AWS API Requests</a> in the <em>AWS General Reference</em>. For general
+	 * information about using the Query API with IAM, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
+	 * "_blank">Making Query Requests</a> in <em>Using IAM</em>.
 	 * </p>
 	 *
 	 * @param string $certificate_body (Required) The contents of the signing certificate. [Constraints: The value must be between 1 and 16384 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]

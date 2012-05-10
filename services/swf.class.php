@@ -15,32 +15,179 @@
  */
 
 /**
- * Amazon Simple Workflow Service (SWF) is an orchestration service for building scalable,
- * resilient applications. Using Amazon SWF, developers can structure the various processing steps
- * in an application as tasks that drive independent, distributed components and orchestrate these
- * tasks in a reliable and scalable manner.
+ * The Amazon Simple Workflow Service API Reference is intended for programmers who need detailed
+ * information about the Amazon SWF actions and data types.
  *  
- * The flow for a typical Amazon SWF application is to use long-running processes which are
- * handled by the PHP executable directly, instead of being part of the common web server
- * request/response cycle that PHP developers are typically more familiar with.
+ * For an broader overview of the Amazon SWF programming model, please go to the <a href=
+ * "http://docs.amazonwebservices.com/amazonswf/latest/developerguide/">Amazon SWF Developer
+ * Guide</a>.
  *  
- * <strong>Managing a scalable workflow:</strong>
+ * This section provides an overview of Amazon SWF actions.
+ *  
+ * <strong>Action Categories</strong>
+ *  
+ * The Amazon SWF actions can be grouped into the following major categories.
  * 
- * <ol>
- * 	<li>Create a workflow domain to work within.</li>
- * 	<li>Register any Workflow Types and Activity Types that are relevant to your workflow.</li>
- * 	<li>Start your Workflow Execution.</li>
- * 	<li>Poll for decisions that need to be made and respond to them.</li>
- * 	<li>Poll for activities that a particular state of completion (successful, failure, canceled,
- * in-progress), and respond to them.</li>
- * </ol>
+ * <ul>
+ * 	<li>Actions related to Activities</li>
+ * 	<li>Actions related to Deciders</li>
+ * 	<li>Actions related to Workflow Executions</li>
+ * 	<li>Actions related to Administration</li>
+ * 	<li>Actions related to Visibility</li>
+ * </ul>
  * 
- * Once a Workflow has been configured and execution has started, the acts of polling for
- * decisions and polling for activities follow an event-driven programming model. Since PHP's
- * interpreter is single-threaded, entering into event loops for polling decisions and activities
- * simultaneously requires two separate PHP processes to be running.
+ * <strong>Actions related to Activities</strong>
+ *  
+ * The following are actions that are performed by activity workers:
+ * 
+ * <ul>
+ * 	<li><a href="API_PollForActivityTask.html" title=
+ * 		"PollForActivityTask">PollForActivityTask</a></li>
+ * 	<li><a href="API_RespondActivityTaskCompleted.html" title=
+ * 		"RespondActivityTaskCompleted">RespondActivityTaskCompleted</a></li>
+ * 	<li><a href="API_RespondActivityTaskFailed.html" title=
+ * 		"RespondActivityTaskFailed">RespondActivityTaskFailed</a></li>
+ * 	<li><a href="API_RespondActivityTaskCanceled.html" title=
+ * 		"RespondActivityTaskCanceled">RespondActivityTaskCanceled</a></li>
+ * 	<li><a href="API_RecordActivityTaskHeartbeat.html" title=
+ * 		"RecordActivityTaskHeartbeat">RecordActivityTaskHeartbeat</a></li>
+ * </ul>
+ * 
+ * Activity workers use the <a href="API_PollForActivityTask.html" title=
+ * "PollForActivityTask">PollForActivityTask</a> to get new activity tasks. After a worker
+ * receives an activity task from Amazon SWF, it performs the task and responds using <a href=
+ * "API_RespondActivityTaskCompleted.html" title=
+ * "RespondActivityTaskCompleted">RespondActivityTaskCompleted</a> if successful or <a href=
+ * "API_RespondActivityTaskFailed.html" title=
+ * "RespondActivityTaskFailed">RespondActivityTaskFailed</a> if unsuccessful.
+ *  
+ * <strong>Actions related to Deciders</strong>
+ *  
+ * The following are actions that are performed by deciders:
+ * 
+ * <ul>
+ * 	<li><a href="API_PollForDecisionTask.html" title=
+ * 		"PollForDecisionTask">PollForDecisionTask</a></li>
+ * 	<li><a href="API_RespondDecisionTaskCompleted.html" title=
+ * 		"RespondDecisionTaskCompleted">RespondDecisionTaskCompleted</a></li>
+ * </ul>
+ * 
+ * Deciders use <a href="API_PollForDecisionTask.html" title=
+ * "PollForDecisionTask">PollForDecisionTask</a> to get decision tasks. After a decider receives a
+ * decision task from Amazon SWF, it examines its workflow execution history and decides what to
+ * do next. It calls <a href="API_RespondDecisionTaskCompleted.html" title=
+ * "RespondDecisionTaskCompleted">RespondDecisionTaskCompleted</a> to complete the decision task
+ * and provide zero or more next decisions.
+ *  
+ * <strong>Actions related to Workflow Executions</strong>
+ *  
+ * The following actions operate on a workflow execution:
+ * 
+ * <ul>
+ * 	<li><a href="API_RequestCancelWorkflowExecution.html" title=
+ * 		"RequestCancelWorkflowExecution">RequestCancelWorkflowExecution</a></li>
+ * 	<li><a href="API_StartWorkflowExecution.html" title=
+ * 		"StartWorkflowExecution">StartWorkflowExecution</a></li>
+ * 	<li><a href="API_SignalWorkflowExecution.html" title=
+ * 		"SignalWorkflowExecution">SignalWorkflowExecution</a></li>
+ * 	<li><a href="API_TerminateWorkflowExecution.html" title=
+ * 		"TerminateWorkflowExecution">TerminateWorkflowExecution</a></li>
+ * </ul>
+ * 
+ * <strong>Actions related to Administration</strong>
+ *  
+ * Although you can perform administrative tasks from the Amazon SWF console, you can use the
+ * actions in this section to automate functions or build your own administrative tools.
+ *  
+ * <strong>Activity Management</strong>
+ * 
+ * <ul>
+ * 	<li><a href="API_RegisterActivityType.html" title=
+ * 		"RegisterActivityType">RegisterActivityType</a></li>
+ * 	<li><a href="API_DeprecateActivityType.html" title=
+ * 		"DeprecateActivityType">DeprecateActivityType</a></li>
+ * </ul>
+ * 
+ * <strong>Workflow Management</strong>
+ * 
+ * <ul>
+ * 	<li><a href="API_RegisterWorkflowType.html" title=
+ * 		"RegisterWorkflowType">RegisterWorkflowType</a></li>
+ * 	<li><a href="API_DeprecateWorkflowType.html" title=
+ * 		"DeprecateWorkflowType">DeprecateWorkflowType</a></li>
+ * </ul>
+ * 
+ * <strong>Domain Management</strong>
+ * 
+ * <ul>
+ * 	<li><a href="API_RegisterDomain.html" title="RegisterDomain">RegisterDomain</a></li>
+ * 	<li><a href="API_DeprecateDomain.html" title="DeprecateDomain">DeprecateDomain</a></li>
+ * </ul>
+ * 
+ * <strong>Workflow Execution Management</strong>
+ * 
+ * <ul>
+ * 	<li><a href="API_RequestCancelWorkflowExecution.html" title=
+ * 		"RequestCancelWorkflowExecution">RequestCancelWorkflowExecution</a></li>
+ * 	<li><a href="API_TerminateWorkflowExecution.html" title=
+ * 		"TerminateWorkflowExecution">TerminateWorkflowExecution</a></li>
+ * </ul>
+ * 
+ * <strong>Visibility Actions</strong>
+ *  
+ * Although you can perform visibility actions from the Amazon SWF console, you can use the
+ * actions in this section to build your own console or administrative tools.
+ *  
+ * <strong>Activity Visibility</strong>
+ * 
+ * <ul>
+ * 	<li><a href="API_ListActivityTypes.html" title="ListActivities">ListActivityTypes</a></li>
+ * 	<li><a href="API_DescribeActivityType.html" title=
+ * 		"DescribeActivityType">DescribeActivity</a></li>
+ * </ul>
+ * 
+ * <strong>Workflow Visibility</strong>
+ * 
+ * <ul>
+ * 	<li><a href="API_ListWorkflowTypes.html" title="ListWorkflowTypes">ListWorkflowTypes</a></li>
+ * 	<li><a href="API_DescribeWorkflowType.html" title=
+ * 		"DescribeWorkflowType">DescribeWorkflowType</a></li>
+ * </ul>
+ * 
+ * <strong>Workflow Execution Visibility</strong>
+ * 
+ * <ul>
+ * 	<li><a href="API_DescribeWorkflowExecution.html" title=
+ * 		"DescribeWorkflowExecution">DescribeWorkflowExecution</a></li>
+ * 	<li><a href="API_ListOpenWorkflowExecutions.html" title=
+ * 		"ListOpenWorkflowExecutions">ListOpenWorkflowExecutions</a></li>
+ * 	<li><a href="API_ListClosedWorkflowExecutions.html" title=
+ * 		"ListClosedWorkflowExecutions">ListClosedWorkflowExecutions</a></li>
+ * 	<li><a href="API_CountOpenWorkflowExecutions.html" title=
+ * 		"CountOpenWorkflowExecutions">CountOpenWorkflowExecutions</a></li>
+ * 	<li><a href="API_CountClosedWorkflowExecutions.html" title=
+ * 		"CountClosedWorkflowExecutions">CountClosedWorkflowExecutions</a></li>
+ * 	<li><a href="API_GetWorkflowExecutionHistory.html" title=
+ * 		"GetWorkflowExecutionHistory">GetWorkflowExecutionHistory</a></li>
+ * </ul>
+ * 
+ * <strong>Domain Visibility</strong>
+ * 
+ * <ul>
+ * 	<li><a href="API_ListDomains.html" title="ListDomains">ListDomains</a></li>
+ * 	<li><a href="API_DescribeDomain.html" title="DescribeDomain">DescribeDomain</a></li>
+ * </ul>
+ * 
+ * <strong>Task List Visibility</strong>
+ * 
+ * <ul>
+ * 	<li><a href="API_CountPendingActivityTasks.html" title=
+ * 		"CountPendingActivityTasks">CountPendingActivityTasks</a></li>
+ * 	<li><a href="API_CountPendingDecisionTasks.html" title=
+ * 		"CountPendingDecisionTasks">CountPendingDecisionTasks</a></li>
+ * </ul>
  *
- * @version 2012.04.18
+ * @version 2012.05.01
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/simpleworkflow/ Amazon Simple Workflow
@@ -806,7 +953,7 @@ class AmazonSWF extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>name</code> - <code>string</code> - Required - Name of the domain to register. The name must be unique. The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (\u0000-\u001f | \u007f - \u009f). Also, it must not contain the literal string "arn".</li>
 	 * 	<li><code>description</code> - <code>string</code> - Optional - Textual description of the domain.</li>
-	 * 	<li><code>workflowExecutionRetentionPeriodInDays</code> - <code>string</code> - Required - Specifies the duration-- <strong><em>in days</em></strong> --for which the record (including the history) of workflow executions in this domain should be kept by the service. After the retention period, the workflow execution will not be available in the results of visibility calls. If a duration of <code>NONE</code> is specified, the records for workflow executions in this domain are not retained at all. The valid values are integers greater than or equal to <code>0</code>. An integer value can be used to specify the duration in seconds while <code>NONE</code> can be used to specify unlimited duration.</li>
+	 * 	<li><code>workflowExecutionRetentionPeriodInDays</code> - <code>string</code> - Required - Specifies the duration-- <strong><em>in days</em></strong> --for which the record (including the history) of workflow executions in this domain should be kept by the service. After the retention period, the workflow execution will not be available in the results of visibility calls. If a duration of <code>NONE</code> is specified, the records for workflow executions in this domain are not retained at all.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.

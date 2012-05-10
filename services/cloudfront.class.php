@@ -36,7 +36,7 @@ class CloudFront_Exception extends Exception {}
  * seamlessly with the Amazon Simple Storage Service, which durably stores the original, definitive versions
  * of your files.
  *
- * @version 2012.01.17
+ * @version 2012.04.20
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/cloudfront/ Amazon CloudFront
@@ -97,7 +97,7 @@ class AmazonCloudFront extends CFRuntime
 	 */
 	public function __construct(array $options = array())
 	{
-		$this->api_version = '2010-11-01';
+		$this->api_version = '2012-03-15';
 		$this->hostname = self::DEFAULT_URL;
 		$this->auth_class = 'AuthV2REST';
 

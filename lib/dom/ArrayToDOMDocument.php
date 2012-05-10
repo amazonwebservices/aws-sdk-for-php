@@ -145,13 +145,13 @@ class Array2DOM
 		{
 			$item = $domNode->childNodes->item($i);
 
-			if ($item->nodeType == XML_ELEMENT_NODE)
+			if ($item->nodeType === XML_ELEMENT_NODE)
 			{
 				$arrayElement = array();
 
 				for ($attributeIndex = 0; !is_null($attribute = $item->attributes->item($attributeIndex)); $attributeIndex++)
 				{
-					if ($attribute->nodeType == XML_ATTRIBUTE_NODE)
+					if ($attribute->nodeType === XML_ATTRIBUTE_NODE)
 					{
 						$arrayElement[self::ATTRIBUTES][$attribute->nodeName] = $attribute->nodeValue;
 					}
@@ -170,7 +170,7 @@ class Array2DOM
 
 				$array[$item->nodeName][] = $arrayElement;
 			}
-			elseif ($item->nodeType == XML_CDATA_SECTION_NODE || ($item->nodeType == XML_TEXT_NODE && trim($item->nodeValue) != ''))
+			elseif ($item->nodeType === XML_CDATA_SECTION_NODE || ($item->nodeType === XML_TEXT_NODE && trim($item->nodeValue) !== ''))
 			{
 				return $item->nodeValue;
 			}

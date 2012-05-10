@@ -149,8 +149,8 @@ class AuthV3JSON extends Signer implements Signable
 		// Instantiate the request class
 		$request = new $this->request_class($request_url, $this->proxy, $helpers, $this->credentials);
 		$request->set_method('POST');
-		$request->set_body($this->querystring);
-		$headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
+		//$request->set_body($this->querystring);
+		//$headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
 
 		// Signing using X-Amz-Target is handled differently.
 		$headers['X-Amz-Target'] = $x_amz_target;
