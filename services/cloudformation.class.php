@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2011 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -15,34 +15,16 @@
  */
 
 /**
- * This is the AWS CloudFormation API Reference. The major sections of this guide are described in
- * the following table.
- * 
- * <ul>
- * 	<li><a href=
- * 	"http://docs.amazonwebservices.com/AWSCloudFormation/latest/APIReference/API_Operations.html">
- * 	Actions</a>: Alphabetical list of CloudFormation actions</li>
- * 	<li><a href=
- * 	"http://docs.amazonwebservices.com/AWSCloudFormation/latest/APIReference/API_Types.html">Data
- * 	Types</a>: Alphabetical list of CloudFormation data types</li>
- * 	<li><a href=
- * 	"http://docs.amazonwebservices.com/AWSCloudFormation/latest/APIReference/CommonParameters.html">
- * 	Common Parameters</a>: Parameters that all Query actions can use</li>
- * 	<li><a href=
- * 	"http://docs.amazonwebservices.com/AWSCloudFormation/latest/APIReference/CommonErrors.html">
- * 	Common Errors</a>: Client and server errors that all actions can return</li>
- * </ul>
- * 
- * This guide is for programmers who need detailed information about the CloudFormation APIs. You
- * use AWS CloudFormation to create and manage AWS infrastructure deployments predictably and
- * repeatedly. CloudFormation helps you leverage AWS products such as Amazon EC2, EBS, Amazon SNS,
- * ELB, and Auto Scaling to build highly-reliable, highly scalable, cost effective applications
- * without worrying about creating and configuring the underlying the AWS infrastructure.
+ * AWS CloudFormation enables you to create and manage AWS infrastructure deployments predictably
+ * and repeatedly. AWS CloudFormation helps you leverage AWS products such as Amazon EC2, EBS,
+ * Amazon SNS, ELB, and Auto Scaling to build highly-reliable, highly scalable, cost effective
+ * applications without worrying about creating and configuring the underlying the AWS
+ * infrastructure.
  *  
- * Through the use of a template file you write, and a few AWS CloudFormation commands or API
- * actions, AWS CloudFormation enables you to manage a collection of resources together as a
- * single unit called a stack. AWS CloudFormation creates and deletes all member resources of the
- * stack together and manages all dependencies between the resources for you.
+ * With AWS CloudFormation, you declare all of your resources and dependencies in a template file.
+ * The template defines a collection of resources as a single unit called a stack. AWS
+ * CloudFormation creates and deletes all member resources of the stack together and manages all
+ * dependencies between the resources for you.
  *  
  * For more information about this product, go to the <a href=
  * "http://aws.amazon.com/cloudformation/">CloudFormation Product Page</a>.
@@ -51,7 +33,7 @@
  * information about a specific AWS product, you can find the product's technical documentation at
  * 	<a href="http://aws.amazon.com/documentation/">http://aws.amazon.com/documentation/</a>.
  *
- * @version 2011.12.13
+ * @version 2012.05.09
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudformation/ AWS CloudFormation
@@ -157,7 +139,7 @@ class AmazonCloudFormation extends CFRuntime
 	{
 		$this->api_version = '2010-05-15';
 		$this->hostname = self::DEFAULT_URL;
-		$this->auth_class = 'AuthV2Query';
+		$this->auth_class = 'AuthV4Query';
 
 		return parent::__construct($options);
 	}
@@ -202,10 +184,11 @@ class AmazonCloudFormation extends CFRuntime
 	 * 			<li><code>ParameterValue</code> - <code>string</code> - Optional - The value associated with the parameter.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
-	 * 	<li><code>DisableRollback</code> - <code>boolean</code> - Optional - Boolean to enable or disable rollback on stack creation failures.<br/>Default: <code>false</code></li>
+	 * 	<li><code>DisableRollback</code> - <code>boolean</code> - Optional - Boolean to enable or disable rollback on stack creation failures. Default: <code>false</code></li>
 	 * 	<li><code>TimeoutInMinutes</code> - <code>integer</code> - Optional - The amount of time that can pass before the stack status becomes CREATE_FAILED; if <code>DisableRollback</code> is not set or is set to <code>false</code>, the stack will be rolled back.</li>
 	 * 	<li><code>NotificationARNs</code> - <code>string|array</code> - Optional - The Simple Notification Service (SNS) topic ARNs to publish stack related events. You can find your SNS topic ARNs using the <a href="http://console.aws.amazon.com/sns">SNS console</a> or your Command Line Interface (CLI). Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>Capabilities</code> - <code>string|array</code> - Optional - The list of capabilities that you want to allow in the stack. If your template contains IAM resources, you must specify the CAPABILITY_IAM value for this parameter; otherwise, this action returns an InsufficientCapabilities error. IAM resources are the following: <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html">AWS::IAM::AccessKey</a>, <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html">AWS::IAM::Group</a>, <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html">AWS::IAM::Policy</a>, <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html">AWS::IAM::User</a>, and <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html">AWS::IAM::UserToGroupAddition</a>. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>OnFailure</code> - <code>string</code> - Optional -  [Allowed values: <code>DO_NOTHING</code>, <code>ROLLBACK</code>, <code>DELETE</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -277,8 +260,8 @@ class AmazonCloudFormation extends CFRuntime
 	 * </p>
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>StackName</code> - <code>string</code> - Optional - The name or the unique identifier associated with the stack.<br/>Default: There is no default value.</li>
-	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - String that identifies the start of the next list of events, if there is one.<br/>Default: There is no default value.</li>
+	 * 	<li><code>StackName</code> - <code>string</code> - Optional - The name or the unique identifier associated with the stack. Default: There is no default value.</li>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - String that identifies the start of the next list of events, if there is one. Default: There is no default value.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -297,7 +280,7 @@ class AmazonCloudFormation extends CFRuntime
 	 * the stack has been deleted.
 	 *
 	 * @param string $stack_name (Required) The name or the unique identifier associated with the stack. Default: There is no default value.
-	 * @param string $logical_resource_id (Required) The logical name of the resource as specified in the template.<br/>Default: There is on default value.
+	 * @param string $logical_resource_id (Required) The logical name of the resource as specified in the template. Default: There is no default value.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -334,7 +317,7 @@ class AmazonCloudFormation extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>StackName</code> - <code>string</code> - Optional - The name or the unique identifier associated with the stack. Default: There is no default value.</li>
-	 * 	<li><code>LogicalResourceId</code> - <code>string</code> - Optional - The logical name of the resource as specified in the template.<br/>Default: There is on default value.</li>
+	 * 	<li><code>LogicalResourceId</code> - <code>string</code> - Optional - The logical name of the resource as specified in the template. Default: There is no default value.</li>
 	 * 	<li><code>PhysicalResourceId</code> - <code>string</code> - Optional - The name or unique identifier that corresponds to a physical instance ID of a resource supported by AWS CloudFormation. For example, for an Amazon Elastic Compute Cloud (EC2) instance, <code>PhysicalResourceId</code> corresponds to the <code>InstanceId</code>. You can pass the EC2 <code>InstanceId</code> to <code>DescribeStackResources</code> to find which stack the instance belongs to and what other resources are part of the stack. Default: There is no default value.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -365,7 +348,7 @@ class AmazonCloudFormation extends CFRuntime
 	}
 
 	/**
-	 * Returns the estimated monthly cost of a template. The return value is an AWS Simply Monthly
+	 * Returns the estimated monthly cost of a template. The return value is an AWS Simple Monthly
 	 * Calculator URL with a query string that describes the resources required to run the template.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -430,7 +413,7 @@ class AmazonCloudFormation extends CFRuntime
 	 *
 	 * @param string $stack_name (Required) The name or the unique identifier associated with the stack. Default: There is no default value.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - String that identifies the start of the next list of events, if there is one. Default: There is no default value.</li>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - String that identifies the start of the next list of stack resource summaries, if there is one. Default: There is no default value.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -450,8 +433,8 @@ class AmazonCloudFormation extends CFRuntime
 	 * stacks is returned (including existing stacks and stacks that have been deleted).
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - </li>
-	 * 	<li><code>StackStatusFilter</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - String that identifies the start of the next list of stacks, if there is one. Default: There is no default value.</li>
+	 * 	<li><code>StackStatusFilter</code> - <code>string|array</code> - Optional - Stack status to use as a filter. Specify one or more stack status codes to list only stacks with the specified status codes. For a complete list of stack status codes, see the <code>StackStatus</code> parameter of the <code>Stack</code> data type. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.

@@ -1,8 +1,30 @@
- # Changelog: 1.5.4 "Enterprise"
+# Changelog: 1.5.5 "Fishhead"
+Code name for the Apple II File Mangement Utility. <http://applemuseum.bott.org/sections/codenames.html>
+
+Launched Wednesday, May 9, 2012.
+
+## Services
+### AmazonCloudFormation
+* **New:** Requests to this service are now signed with Signature V4.
+
+### AmazonCloudFront
+* **New:** Updated the supported API version to `2012-03-15`.
+
+### AmazonDynamoDB
+* **New:** Support for the US West (Northern California), US West (Oregon), Asia Pacific "Southeast" (Signapore) endpoints have been added.
+
+### AmazonElasticBeanstalk
+* **New:** Support for the new Asia Pacific "Northeast" (Japan) endpoint has been added.
+
+### AmazonStorageGateway
+* **New:** Support for the AWS Storage Gateway service has been added to the SDK.
+
+---
+
+# Changelog: 1.5.4 "Enterprise"
 Code name for Mac OS X Server 1.0 (Rhapsody CR1). <http://en.wikipedia.org/wiki/Rhapsody_(operating_system)>
 
 Launched Thursday, April 19, 2012.
-
 
 ## Bug fixes and enhancements
 * [PHP SDK Bug - Memory leak](https://forums.aws.amazon.com/thread.jspa?threadID=72310)
@@ -17,7 +39,7 @@ Launched Thursday, April 19, 2012.
 * [Adding the ability to name a 'rule' for Object Expiration (suggested tweak)](https://forums.aws.amazon.com/thread.jspa?messageID=328023)
 
 ## Runtime
-* **New:** Support for Signature Version 4 has been added to the SDK. Signature Version 4 is now the default authentication method for AWS Identity and Access Management, AWS Security Token Service, AWS CloudFormation, and Amazon CloudSearch.
+* **New:** Support for Signature Version 4 has been added to the SDK. Signature Version 4 is now the default authentication method for AWS Identity and Access Management, AWS Security Token Service and Amazon CloudSearch.
 
 ## Services
 ### AmazonCloudFront
@@ -28,6 +50,7 @@ Launched Thursday, April 19, 2012.
 
 ### AmazonDynamoDB
 * **New:** Support for BatchWriteItem API has been added to the SDK.
+* **New:** Support for the European (Ireland) endpoint has been added.
 * **New:** Support for the Asia Pacific "Northeast" (Tokyo) endpoint has been added.
 * **New:** Amazon DynamoDB Session Handler has been added to the SDK.
 * **New:** A simplified interface for adding attributes has been added to the SDK.
