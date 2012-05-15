@@ -283,7 +283,7 @@ class AuthV4Query extends Signer implements Signable
 	protected function service()
 	{
 		$pieces = explode('.', $this->endpoint);
-		return $pieces[0];
+		return ($pieces[0] === 'email') ? 'ses' : $pieces[0];
 	}
 
 	/**
