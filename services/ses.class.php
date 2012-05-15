@@ -26,7 +26,7 @@
  * The endpoint for Amazon SES is located at: <code>https://email.us-east-1.amazonaws.com</code>
  * </p>
  *
- * @version 2012.04.18
+ * @version 2012.05.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ses/ Amazon Simple Email Service
@@ -72,7 +72,7 @@ class AmazonSES extends CFRuntime
 	{
 		$this->api_version = '2010-12-01';
 		$this->hostname = self::DEFAULT_URL;
-		$this->auth_class = 'AuthV3Query';
+		$this->auth_class = 'AuthV4Query';
 
 		return parent::__construct($options);
 	}
@@ -114,9 +114,31 @@ class AmazonSES extends CFRuntime
 	// SERVICE METHODS
 
 	/**
-	 * Deletes the specified email address from the list of verified addresses.
+	 * Deletes the specified identity (email address or domain) from the list of verified identities.
 	 *
-	 * @param string $email_address (Required) An email address to be removed from the list of verified addreses.
+	 * @param string $identity (Required) The identity to be removed from the list of identities for the AWS Account.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_identity($identity, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['Identity'] = $identity;
+		
+		return $this->authenticate('DeleteIdentity', $opt);
+	}
+
+	/**
+	 * Deletes the specified email address from the list of verified addresses.
+	 * 
+	 * <p class="important">
+	 * The DeleteVerifiedEmailAddress action is deprecated as of the May 15, 2012 release of Domain
+	 * Verification. The DeleteIdentity action is now preferred.
+	 * </p>
+	 *
+	 * @param string $email_address (Required) An email address to be removed from the list of verified addresses.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -128,6 +150,28 @@ class AmazonSES extends CFRuntime
 		$opt['EmailAddress'] = $email_address;
 		
 		return $this->authenticate('DeleteVerifiedEmailAddress', $opt);
+	}
+
+	/**
+	 * Given a list of identities (email addresses and/or domains), returns the verification status
+	 * and (for domain identities) the verification token for each identity.
+	 *
+	 * @param string|array $identities (Required) A list of identities. Pass a string for a single value, or an indexed array for multiple values.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function get_identity_verification_attributes($identities, $opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		// Required list (non-map)
+		$opt = array_merge($opt, CFComplexType::map(array(
+			'Identities' => (is_array($identities) ? $identities : array($identities))
+		), 'member'));
+
+		return $this->authenticate('GetIdentityVerificationAttributes', $opt);
 	}
 
 	/**
@@ -164,7 +208,31 @@ class AmazonSES extends CFRuntime
 	}
 
 	/**
+	 * Returns a list containing all of the identities (email addresses and domains) for a specific
+	 * AWS Account, regardless of verification status.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>IdentityType</code> - <code>string</code> - Optional - The type of the identities to list. Possible values are "EmailAddress" and "Domain". If this parameter is omitted, then all identities will be listed. [Allowed values: <code>EmailAddress</code>, <code>Domain</code>]</li>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - The token to use for pagination.</li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - The maximum number of identities per page. Possible values are 1-100 inclusive.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function list_identities($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		return $this->authenticate('ListIdentities', $opt);
+	}
+
+	/**
 	 * Returns a list containing all of the email addresses that have been verified.
+	 * 
+	 * <p class="important">
+	 * The ListVerifiedEmailAddresses action is deprecated as of the May 15, 2012 release of Domain
+	 * Verification. The ListIdentities action is now preferred.
+	 * </p>
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -184,8 +252,9 @@ class AmazonSES extends CFRuntime
 	 * 
 	 * <p class="important">
 	 * If you have not yet requested production access to Amazon SES, then you will only be able to
-	 * send email to and from verified email addresses. For more information, go to the <a href=
-	 * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
+	 * send email to and from verified email addresses and domains. For more information, go to the
+	 * 	<a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer
+	 * Guide</a>.
 	 * </p> 
 	 * The total size of the message cannot exceed 10 MB.
 	 *  
@@ -200,7 +269,7 @@ class AmazonSES extends CFRuntime
 	 * section of the <a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES
 	 * Developer Guide</a>.
 	 *
-	 * @param string $source (Required) The sender's email address.
+	 * @param string $source (Required) The identity's email address.
 	 * @param array $destination (Required) The destination for this email, composed of To:, CC:, and BCC: fields. <ul>
 	 * 	<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 		<li><code>ToAddresses</code> - <code>string|array</code> - Optional - The To: field(s) of the message. Pass a string for a single value, or an indexed array for multiple values.</li>
@@ -275,8 +344,9 @@ class AmazonSES extends CFRuntime
 	 * 
 	 * <p class="important">
 	 * If you have not yet requested production access to Amazon SES, then you will only be able to
-	 * send email to and from verified email addresses. For more information, go to the <a href=
-	 * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
+	 * send email to and from verified email addresses and domains. For more information, go to the
+	 * 	<a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer
+	 * Guide</a>.
 	 * </p> 
 	 * The total size of the message cannot exceed 10 MB. This includes any attachments that are part
 	 * of the message.
@@ -298,7 +368,7 @@ class AmazonSES extends CFRuntime
 	 * 	</ul></li>
 	 * </ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>Source</code> - <code>string</code> - Optional - The sender's email address. <p class="note">If you specify the <code>Source</code> parameter, then bounce notifications and complaints will be sent to this email address. This takes precedence over any <em>Return-Path</em> header that you might include in the raw text of the message.</p></li>
+	 * 	<li><code>Source</code> - <code>string</code> - Optional - The identity's email address. <p class="note">If you specify the <code>Source</code> parameter, then bounce notifications and complaints will be sent to this email address. This takes precedence over any <em>Return-Path</em> header that you might include in the raw text of the message.</p></li>
 	 * 	<li><code>Destinations</code> - <code>string|array</code> - Optional - A list of destinations for the message. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -326,8 +396,30 @@ class AmazonSES extends CFRuntime
 	}
 
 	/**
+	 * Verifies a domain.
+	 *
+	 * @param string $domain (Required) The domain to be verified.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function verify_domain_identity($domain, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['Domain'] = $domain;
+		
+		return $this->authenticate('VerifyDomainIdentity', $opt);
+	}
+
+	/**
 	 * Verifies an email address. This action causes a confirmation email message to be sent to the
 	 * specified address.
+	 * 
+	 * <p class="important">
+	 * The VerifyEmailAddress action is deprecated as of the May 15, 2012 release of Domain
+	 * Verification. The VerifyEmailIdentity action is now preferred.
+	 * </p>
 	 *
 	 * @param string $email_address (Required) The email address to be verified.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -341,6 +433,24 @@ class AmazonSES extends CFRuntime
 		$opt['EmailAddress'] = $email_address;
 		
 		return $this->authenticate('VerifyEmailAddress', $opt);
+	}
+
+	/**
+	 * Verifies an email address. This action causes a confirmation email message to be sent to the
+	 * specified address.
+	 *
+	 * @param string $email_address (Required) The email address to be verified.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function verify_email_identity($email_address, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['EmailAddress'] = $email_address;
+		
+		return $this->authenticate('VerifyEmailIdentity', $opt);
 	}
 }
 

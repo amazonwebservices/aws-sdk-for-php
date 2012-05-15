@@ -1,3 +1,15 @@
+# Changelog: 1.5.6 "Gershwin"
+Code name for Apple's never-released successor to the never-released Copeland. <http://en.wikipedia.org/wiki/Gershwin_operating_system>
+
+Launched Tuesday, May 15th, 2012.
+
+## Services
+### AmazonSES
+- **New:** Support for domain verification has been added to the SDK, which enables customers to verify an entire email domain.
+- **New:** Requests to this service are now signed with Signature V4.
+
+----
+
 # Changelog: 1.5.5 "Fishhead"
 Code name for the Apple II File Mangement Utility. <http://applemuseum.bott.org/sections/codenames.html>
 
