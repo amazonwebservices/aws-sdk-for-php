@@ -12,3 +12,4 @@ build
 _tests
 _vanity
 *~
+/.idea/*
