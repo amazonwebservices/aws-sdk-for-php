@@ -1,3 +1,14 @@
+# Changelog: 1.5.6.1 "Gershwin"
+Code name for Apple's never-released successor to the never-released Copeland. <http://en.wikipedia.org/wiki/Gershwin_operating_system>
+
+Launched Tuesday, May 24th, 2012.
+
+## Services
+### AmazonDynamoDB
+- **Fixed:** STS credentials were not always being cached correctly.
+
+----
+
 # Changelog: 1.5.6 "Gershwin"
 Code name for Apple's never-released successor to the never-released Copeland. <http://en.wikipedia.org/wiki/Gershwin_operating_system>
 
