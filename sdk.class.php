@@ -1405,10 +1405,18 @@ else
 	}
 	elseif (!isset($_ENV['HOME']) && !isset($_SERVER['HOME']))
 	{
-		$_ENV['HOME'] = `cd ~ && pwd`;
+		$os = strtolower(PHP_OS);
+		if (in_array($os, array('windows', 'winnt', 'win32')))
+		{
+			$_ENV['HOME'] = false;
+		}
+		else
+		{
+			$_ENV['HOME'] = `cd ~ && pwd`;
+		}
 		if (!$_ENV['HOME'])
 		{
-			switch (strtolower(PHP_OS))
+			switch ($os)
 			{
 				case 'darwin':
 					$_ENV['HOME'] = '/Users/' . get_current_user();
