@@ -249,7 +249,9 @@ class AmazonDynamoDB extends CFRuntime
 		$cache = new $this->cache_class($cache_id, $this->cache_location, 0, $this->cache_compress);
 		if ($data = $cache->read())
 		{
-			$cache->expire_in(strtotime($data['expires']) - time());
+			$cache->expire_in(
+				(strtotime($data['expires']) - time()) * 0.85
+			);
 		}
 		$sts_credentials = $cache->response_manager(array($this, 'cache_sts_credentials'), array($cache, $options));
 
