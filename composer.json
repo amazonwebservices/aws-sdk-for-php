@@ -1,0 +1,28 @@
+{
+    "name":"amazonwebservices/aws-sdk-for-php",
+    "version":"1.5.6",
+    "description":"AWS SDK for PHP",
+    "keywords":["aws","amazon","sdk"],
+    "type":"library",
+    "license":"Apache-2.0",
+    "authors":[
+        {
+            "name":"Amazon Web Services",
+            "homepage":"http://aws.amazon.com"
+        }
+    ],
+    "homepage": "http://aws.amazon.com/sdkforphp/",
+    "require":{
+        "php":">=5.2.17"
+    },
+    "autoload":{
+        "classmap": [
+            "authentication/",
+            "extensions/",
+            "lib/",
+            "services/",
+            "utilities/",
+            "sdk.class.php"
+        ]
+    }
+}
