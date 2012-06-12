@@ -1522,7 +1522,11 @@ else
 		}
 		else
 		{
-			$_ENV['HOME'] = `cd ~ && pwd`;
+			$_ENV['HOME'] = trim(system('(cd ~ && pwd)2>&1', $retval));
+			if ($retval !== 0) {
+				error_log(__FILE__ . ':' . __LINE__ . ' failed to find HOME. Got: "' . $_ENV['HOME'] . '", exit code=' . $retval);
+				$_ENV['HOME'] = false;
+			}
 		}
 
 		if (!$_ENV['HOME'])
