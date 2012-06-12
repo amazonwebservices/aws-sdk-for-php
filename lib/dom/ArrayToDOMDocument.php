@@ -66,6 +66,12 @@ class Array2DOM
 	{
 		if (!is_array($source))
 		{
+			// Handle NULL bytes
+			if (strpos($source, "\0") !== false)
+			{
+				$source = 'json_encoded::' . json_encode($source);
+			}
+
 			$element = $document->createElement($tagName);
 			$element->appendChild($document->createCDATASection($source));
 

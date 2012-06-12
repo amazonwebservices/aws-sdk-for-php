@@ -115,8 +115,8 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.5.6.2');
-define('CFRUNTIME_BUILD', '20120529180000');
+define('CFRUNTIME_VERSION', '1.5.7');
+define('CFRUNTIME_BUILD', '20120611193000');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . str_replace(' ', '_', php_uname('s')) . '/' . str_replace(' ', '_', php_uname('r')) . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -127,7 +127,7 @@ define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/'
  * Core functionality and default settings shared across all SDK classes. All methods and properties in this
  * class are inherited by the service-specific classes.
  *
- * @version 2012.05.29
+ * @version 2012.05.25
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -387,45 +387,76 @@ class CFRuntime
 		$this->service = get_class($this);
 
 		// Create credentials based on the options
-		$instance_credentials = new CFCredential($options);
+		$runtime_credentials = new CFCredential($options);
+		$credentials_provided = false;
 
-		// Retreive a credential set from config.inc.php if it exists
+		// Retrieve a credential set from config.inc.php if it exists
 		if (isset($options['credentials']))
 		{
-			// Use a specific credential set and merge with the instance credentials
+			// Use a specific credential set and merge with the runtime credentials
 			$this->credentials = CFCredentials::get($options['credentials'])
-				->merge($instance_credentials);
+				->merge($runtime_credentials);
 		}
 		else
 		{
 			try
 			{
-				// Use the default credential set and merge with the instance credentials
+				// Use the default credential set and merge with the runtime credentials
 				$this->credentials = CFCredentials::get(CFCredentials::DEFAULT_KEY)
-					->merge($instance_credentials);
+					->merge($runtime_credentials);
 			}
 			catch (CFCredentials_Exception $e)
 			{
-				if (isset($options['key']) && isset($options['secret']))
-				{
-					// Only the instance credentials were provided
-					$this->credentials = $instance_credentials;
-				}
-				else
-				{
-					// No credentials provided in the config file or constructor
-					throw new CFCredentials_Exception('No credentials were provided to ' . $this->service . '.');
-				}
+				// Only the runtime credentials were provided
+				$this->credentials = $runtime_credentials;
 			}
+		}
+
+		// Check if keys were actually provided
+		if (isset($this->credentials['key']) && isset($this->credentials['secret']))
+		{
+			$credentials_provided = true;
+		}
+
+		// Check for an instance profile credentials override
+		if (isset($this->credentials['use_instance_profile_credentials']) && $this->credentials['use_instance_profile_credentials'])
+		{
+			$credentials_provided = false;
+		}
+
+		// Automatically enable whichever caching mechanism is set to default.
+		$this->set_cache_config($this->credentials->default_cache_config);
+
+		// If no credentials were provided, try to get them from the EC2 instance profile
+		if (!$credentials_provided)
+		{
+			// Default caching mechanism is required
+			if (!$this->credentials->default_cache_config)
+			{
+				// @codeCoverageIgnoreStart
+				throw new CFCredentials_Exception('The Instance Profile credentials '
+					. 'provider requires the "default_cache_config" option to '
+					. 'be set in the config.inc.php file or constructor.');
+				// @codeCoverageIgnoreEnd
+			}
+
+			// Instantiate and invoke the cache for instance profile credentials
+			$cache = new $this->cache_class('instance_profile_credentials', $this->cache_location, 0, $this->cache_compress);
+			if ($data = $cache->read())
+			{
+				$cache->expire_in((strtotime($data['expires']) - time()) * 0.85);
+			}
+			$instance_profile_credentials = $cache->response_manager(array($this, 'cache_instance_profile_credentials'), array($cache, $options));
+
+			$this->credentials->key    = $instance_profile_credentials['key'];
+			$this->credentials->secret = $instance_profile_credentials['secret'];
+			$this->credentials->token  = $instance_profile_credentials['token'];
 		}
 
 		// Set internal credentials after they are resolved
 		$this->key = $this->credentials->key;
 		$this->secret_key = $this->credentials->secret;
 		$this->auth_token = $this->credentials->token;
-
-		// Automatically enable whichever caching mechanism is set to default.
-		$this->set_cache_config($this->credentials->default_cache_config);
 	}
 
 	/**
@@ -607,6 +638,12 @@ class CFRuntime
 	 */
 	public function set_cache_config($location, $gzip = true)
 	{
+		// If location is empty, don't do anything.
+		if (empty($location))
+		{
+			return $this;
+		}
+
 		// If we have an array, we're probably passing in Memcached servers and ports.
 		if (is_array($location))
 		{
@@ -712,15 +749,88 @@ class CFRuntime
 			$cache->expire_in($expiration_duration);
 
 			// Return the important data
+			$credentials = $response->body->GetSessionTokenResult->Credentials;
+
 			return array(
-				'key'     => (string) $response->body->GetSessionTokenResult->Credentials->AccessKeyId,
-				'secret'  => (string) $response->body->GetSessionTokenResult->Credentials->SecretAccessKey,
-				'token'   => (string) $response->body->GetSessionTokenResult->Credentials->SessionToken,
-				'expires' => (string) $response->body->GetSessionTokenResult->Credentials->Expiration,
+				'key'     => (string) $credentials->AccessKeyId,
+				'secret'  => (string) $credentials->SecretAccessKey,
+				'token'   => (string) $credentials->SessionToken,
+				'expires' => (string) $credentials->Expiration,
 			);
 		}
 
-		return null;
+		// @codeCoverageIgnoreStart
+		throw new STS_Exception('Temporary credentials from the AWS Security '
+			. 'Token Service could not be retrieved using the provided long '
+			. 'term credentials. It\'s possible that the provided long term '
+			. 'credentials were invalid.');
+		// @codeCoverageIgnoreEnd
+	}
+
+	/**
+	 * Fetches and caches EC2 instance profile credentials. This is meant to be used by the constructor, and is not to
+	 * be manually invoked.
+	 *
+	 * @param CacheCore $cache (Required) The a reference to the cache object that is being used to handle the caching.
+	 * @param array $options (Required) The options that were passed into the constructor.
+	 * @return mixed The data to be cached, or NULL.
+	 */
+	public function cache_instance_profile_credentials($cache, $options)
+	{
+		$instance_profile_url = 'http://169.254.169.254/latest/meta-data/iam/security-credentials/';
+		$connect_timeout = isset($options['instance_profile_timeout']) ? $options['instance_profile_timeout'] : 2;
+
+		try
+		{
+			// Make a call to the EC2 Metadata Service to find the available instance profile
+			$request = new RequestCore($instance_profile_url);
+			$request->set_curlopts(array(CURLOPT_CONNECTTIMEOUT => $connect_timeout));
+			$response = $request->send_request(true);
+
+			if ($response->isOK())
+			{
+				// Get the instance profile name
+				$profile = (string) $response->body;
+
+				// Make a call to the EC2 Metadata Service to get the instance profile credentials
+				$request = new RequestCore($instance_profile_url . $profile);
+				$request->set_curlopts(array(CURLOPT_CONNECTTIMEOUT => $connect_timeout));
+				$response = $request->send_request(true);
+
+				if ($response->isOK())
+				{
+					// Get the credentials
+					$credentials = json_decode($response->body, true);
+
+					if ($credentials['Code'] === 'Success')
+					{
+						// Determine the expiration time
+						$expiration_time = strtotime((string) $credentials['Expiration']);
+						$expiration_duration = round(($expiration_time - time()) * 0.85);
+						$cache->expire_in($expiration_duration);
+
+						// Return the credential information
+						return array(
+							'key'     => $credentials['AccessKeyId'],
+							'secret'  => $credentials['SecretAccessKey'],
+							'token'   => $credentials['Token'],
+							'expires' => $credentials['Expiration'],
+						);
+					}
+				}
+			}
+		}
+		catch (cURL_Exception $e)
+		{
+			// The EC2 Metadata Service does not exist or had timed out.
+			// An exception will be thrown on the next line.
+		}
+
+		// @codeCoverageIgnoreStart
+		throw new CFCredentials_Exception('The instance profile credentials could not'
+			. ' be found. Instance profile credentials are only accessible on'
+			. ' EC2 instances launched with an IamInstanceProfile specified.');
+		// @codeCoverageIgnoreEnd
 	}
 
 
@@ -1405,10 +1515,19 @@ else
 	}
 	elseif (!isset($_ENV['HOME']) && !isset($_SERVER['HOME']))
 	{
-		$_ENV['HOME'] = `cd ~ && pwd`;
+		$os = strtolower(PHP_OS);
+		if (in_array($os, array('windows', 'winnt', 'win32')))
+		{
+			$_ENV['HOME'] = false;
+		}
+		else
+		{
+			$_ENV['HOME'] = `cd ~ && pwd`;
+		}
+
 		if (!$_ENV['HOME'])
 		{
-			switch (strtolower(PHP_OS))
+			switch ($os)
 			{
 				case 'darwin':
 					$_ENV['HOME'] = '/Users/' . get_current_user();

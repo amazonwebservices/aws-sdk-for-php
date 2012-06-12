@@ -17,11 +17,11 @@
 /**
  * Amazon DynamoDB is a fast, highly scalable, highly available, cost-effective non-relational
  * database service.
- *
+ *  
  * Amazon DynamoDB removes traditional scalability limitations on data storage while maintaining
  * low latency and predictable performance.
  *
- * @version 2012.04.18
+ * @version 2012.05.31
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/dynamodb/ Amazon DynamoDB
@@ -43,6 +43,26 @@ class AmazonDynamoDB extends CFRuntime
 	const REGION_VIRGINIA = self::REGION_US_E1;
 
 	/**
+	 * Specify the queue URL for the United States West (Northern California) Region.
+	 */
+	const REGION_US_W1 = 'dynamodb.us-west-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the United States West (Northern California) Region.
+	 */
+	const REGION_CALIFORNIA = self::REGION_US_W1;
+
+	/**
+	 * Specify the queue URL for the United States West (Oregon) Region.
+	 */
+	const REGION_US_W2 = 'dynamodb.us-west-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the United States West (Oregon) Region.
+	 */
+	const REGION_OREGON = self::REGION_US_W2;
+
+	/**
 	 * Specify the queue URL for the Europe West (Ireland) Region.
 	 */
 	const REGION_EU_W1 = 'dynamodb.eu-west-1.amazonaws.com';
@@ -51,6 +71,16 @@ class AmazonDynamoDB extends CFRuntime
 	 * Specify the queue URL for the Europe West (Ireland) Region.
 	 */
 	const REGION_IRELAND = self::REGION_EU_W1;
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_APAC_SE1 = 'dynamodb.ap-southeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_SINGAPORE = self::REGION_APAC_SE1;
 
 	/**
 	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
@@ -233,32 +263,34 @@ class AmazonDynamoDB extends CFRuntime
 
 		parent::__construct($options);
 
-		// Default caching mechanism is required
-		if (!$this->credentials->default_cache_config)
+		// Only attempt to get STS credentials if there is no token (i.e. they
+		// are not already using STS or instance profile credentials)
+		if (!$this->auth_token)
 		{
-			// @codeCoverageIgnoreStart
-			throw new DynamoDB_Exception('The DynamoDB class requires the "default_cache_config" configuration to be set in the config.inc.php file.');
-			// @codeCoverageIgnoreEnd
+			// Default caching mechanism is required
+			if (!$this->credentials->default_cache_config)
+			{
+				// @codeCoverageIgnoreStart
+				throw new DynamoDB_Exception('The DynamoDB class requires the '
+					. '"default_cache_config" option to be set in the '
+					. 'config.inc.php file or AmazonDynamoDB constructor.');
+				// @codeCoverageIgnoreEnd
+			}
+
+			// Instantiate and invoke the cache
+			$cache_id = $this->key . '_sts_credentials_' . sha1(serialize($options));
+			$cache = new $this->cache_class($cache_id, $this->cache_location, 0, $this->cache_compress);
+			if ($data = $cache->read())
+			{
+				$cache->expire_in((strtotime($data['expires']) - time()) * 0.85);
+			}
+			$sts_credentials = $cache->response_manager(array($this, 'cache_sts_credentials'), array($cache, $options));
+
+			// Store the credentials inside the class
+			$this->key        = $sts_credentials['key'];
+			$this->secret_key = $sts_credentials['secret'];
+			$this->auth_token = $sts_credentials['token'];
 		}
-
-		// Configure cache
-		$this->set_cache_config($this->credentials->default_cache_config);
-		$cache_id = $this->key . '_sts_credentials_' . sha1(serialize($options));
-
-		// Instantiate and invoke the cache
-		$cache = new $this->cache_class($cache_id, $this->cache_location, 0, $this->cache_compress);
-		if ($data = $cache->read())
-		{
-			$cache->expire_in(
-				(strtotime($data['expires']) - time()) * 0.85
-			);
-		}
-		$sts_credentials = $cache->response_manager(array($this, 'cache_sts_credentials'), array($cache, $options));
-
-		// Store the credentials inside the class
-		$this->key        = $sts_credentials['key'];
-		$this->secret_key = $sts_credentials['secret'];
-		$this->auth_token = $sts_credentials['token'];
 	}
 
 
@@ -268,7 +300,7 @@ class AmazonDynamoDB extends CFRuntime
 	/**
 	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_EU_W1>, <REGION_APAC_NE1>.
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_NE1>.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
@@ -444,13 +476,13 @@ class AmazonDynamoDB extends CFRuntime
 
 	/**
 	 * Retrieves the attributes for multiple items from multiple tables using their primary keys.
-	 *
+	 *  
 	 * The maximum number of item attributes that can be retrieved for a single operation is 100.
 	 * Also, the number of items retrieved is constrained by a 1 MB the size limit. If the response
 	 * size limit is exceeded or a partial result is returned due to an internal processing failure,
 	 * Amazon DynamoDB returns an <code>UnprocessedKeys</code> value so you can retry the operation
 	 * starting with the next item to get.
-	 *
+	 *  
 	 * Amazon DynamoDB automatically adjusts the number of items returned per page to enforce this
 	 * limit. For example, even if you ask to retrieve 100 items, but each individual item is 50k in
 	 * size, the system returns 20 items and an appropriate <code>UnprocessedKeys</code> value so you
@@ -486,15 +518,14 @@ class AmazonDynamoDB extends CFRuntime
 	public function batch_get_item($opt = null)
 	{
 		if (!$opt) $opt = array();
-
-		$opt = json_encode($opt);
+		
 		return $this->authenticate('BatchGetItem', $opt);
 	}
 
 	/**
 	 * Allows to execute a batch of Put and/or Delete Requests for many tables in a single call. A
 	 * total of 25 requests are allowed.
-	 *
+	 *  
 	 * There are no transaction guarantees provided by this API. It does not allow conditional puts
 	 * nor does it support return values.
 	 *
@@ -544,17 +575,16 @@ class AmazonDynamoDB extends CFRuntime
 	public function batch_write_item($opt = null)
 	{
 		if (!$opt) $opt = array();
-
-		$opt = json_encode($opt);
+		
 		return $this->authenticate('BatchWriteItem', $opt);
 	}
 
 	/**
 	 * Adds a new table to your account.
-	 *
+	 *  
 	 * The table name must be unique among those associated with the AWS Account issuing the request,
 	 * and the AWS Region that receives the request (e.g. <code>us-east-1</code>).
-	 *
+	 *  
 	 * The <code>CreateTable</code> operation triggers an asynchronous workflow to begin creating the
 	 * table. Amazon DynamoDB immediately returns the state of the table (<code>CREATING</code>) until
 	 * the table is in the <code>ACTIVE</code> state. Once the table is in the <code>ACTIVE</code>
@@ -583,14 +613,13 @@ class AmazonDynamoDB extends CFRuntime
 	public function create_table($opt = null)
 	{
 		if (!$opt) $opt = array();
-
-		$opt = json_encode($opt);
+		
 		return $this->authenticate('CreateTable', $opt);
 	}
 
 	/**
 	 * Deletes a single item in a table by primary key.
-	 *
+	 *  
 	 * You can perform a conditional delete operation that deletes the item if it exists, or if it has
 	 * an expected attribute value.
 	 *
@@ -629,14 +658,13 @@ class AmazonDynamoDB extends CFRuntime
 	public function delete_item($opt = null)
 	{
 		if (!$opt) $opt = array();
-
-		$opt = json_encode($opt);
+		
 		return $this->authenticate('DeleteItem', $opt);
 	}
 
 	/**
 	 * Deletes a table and all of its items.
-	 *
+	 *  
 	 * If the table is in the <code>ACTIVE</code> state, you can delete it. If a table is in
 	 * <code>CREATING</code> or <code>UPDATING</code> states then Amazon DynamoDB returns a
 	 * <code>ResourceInUseException</code>. If the specified table does not exist, Amazon DynamoDB
@@ -651,15 +679,14 @@ class AmazonDynamoDB extends CFRuntime
 	public function delete_table($opt = null)
 	{
 		if (!$opt) $opt = array();
-
-		$opt = json_encode($opt);
+		
 		return $this->authenticate('DeleteTable', $opt);
 	}
 
 	/**
 	 * Retrieves information about the table, including the current status of the table, the primary
 	 * key schema and when the table was created.
-	 *
+	 *  
 	 * If the table does not exist, Amazon DynamoDB returns a <code>ResourceNotFoundException</code>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -671,14 +698,13 @@ class AmazonDynamoDB extends CFRuntime
 	public function describe_table($opt = null)
 	{
 		if (!$opt) $opt = array();
-
-		$opt = json_encode($opt);
+		
 		return $this->authenticate('DescribeTable', $opt);
 	}
 
 	/**
 	 * Retrieves a set of Attributes for an item that matches the primary key.
-	 *
+	 *  
 	 * The <code>GetItem</code> operation provides an eventually-consistent read by default. If
 	 * eventually-consistent reads are not acceptable for your application, use
 	 * <code>ConsistentRead</code>. Although this operation might take longer than a standard read, it
@@ -709,14 +735,13 @@ class AmazonDynamoDB extends CFRuntime
 	public function get_item($opt = null)
 	{
 		if (!$opt) $opt = array();
-
+		
 		// List (non-map)
 		if (isset($opt['AttributesToGet']))
 		{
 			$opt['AttributesToGet'] = (is_array($opt['AttributesToGet']) ? $opt['AttributesToGet'] : array($opt['AttributesToGet']));
 		}
 
-		$opt = json_encode($opt);
 		return $this->authenticate('GetItem', $opt);
 	}
 
@@ -734,14 +759,13 @@ class AmazonDynamoDB extends CFRuntime
 	public function list_tables($opt = null)
 	{
 		if (!$opt) $opt = array();
-
-		$opt = json_encode($opt);
+		
 		return $this->authenticate('ListTables', $opt);
 	}
 
 	/**
 	 * Creates a new item, or replaces an old item with a new item (including all the attributes).
-	 *
+	 *  
 	 * If an item already exists in the specified table with the same primary key, the new item
 	 * completely replaces the existing item. You can perform a conditional put (insert a new item if
 	 * one with the specified primary key doesn't exist), or replace an existing item if it has
@@ -776,15 +800,14 @@ class AmazonDynamoDB extends CFRuntime
 	public function put_item($opt = null)
 	{
 		if (!$opt) $opt = array();
-
-		$opt = json_encode($opt);
+		
 		return $this->authenticate('PutItem', $opt);
 	}
 
 	/**
 	 * Gets the values of one or more items and its attributes by primary key (composite primary key,
 	 * only).
-	 *
+	 *  
 	 * Narrow the scope of the query using comparison operators on the <code>RangeKeyValue</code> of
 	 * the composite key. Use the <code>ScanIndexForward</code> parameter to get results in forward or
 	 * reverse order by range key.
@@ -834,20 +857,19 @@ class AmazonDynamoDB extends CFRuntime
 	public function query($opt = null)
 	{
 		if (!$opt) $opt = array();
-
+		
 		// List (non-map)
 		if (isset($opt['AttributesToGet']))
 		{
 			$opt['AttributesToGet'] = (is_array($opt['AttributesToGet']) ? $opt['AttributesToGet'] : array($opt['AttributesToGet']));
 		}
 
-		$opt = json_encode($opt);
 		return $this->authenticate('Query', $opt);
 	}
 
 	/**
 	 * Retrieves one or more items and its attributes by performing a full scan of a table.
-	 *
+	 *  
 	 * Provide a <code>ScanFilter</code> to get more specific results.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -889,20 +911,19 @@ class AmazonDynamoDB extends CFRuntime
 	public function scan($opt = null)
 	{
 		if (!$opt) $opt = array();
-
+		
 		// List (non-map)
 		if (isset($opt['AttributesToGet']))
 		{
 			$opt['AttributesToGet'] = (is_array($opt['AttributesToGet']) ? $opt['AttributesToGet'] : array($opt['AttributesToGet']));
 		}
 
-		$opt = json_encode($opt);
 		return $this->authenticate('Scan', $opt);
 	}
 
 	/**
 	 * Edits an existing item's attributes.
-	 *
+	 *  
 	 * You can perform a conditional update (insert a new attribute name-value pair if it doesn't
 	 * exist, or replace an existing name-value pair if it has certain expected attribute values).
 	 *
@@ -952,14 +973,13 @@ class AmazonDynamoDB extends CFRuntime
 	public function update_item($opt = null)
 	{
 		if (!$opt) $opt = array();
-
-		$opt = json_encode($opt);
+		
 		return $this->authenticate('UpdateItem', $opt);
 	}
 
 	/**
 	 * Updates the provisioned throughput for the given table.
-	 *
+	 *  
 	 * Setting the throughput for a table helps you manage performance and is part of the Provisioned
 	 * Throughput feature of Amazon DynamoDB.
 	 *
@@ -976,8 +996,7 @@ class AmazonDynamoDB extends CFRuntime
 	public function update_table($opt = null)
 	{
 		if (!$opt) $opt = array();
-
-		$opt = json_encode($opt);
+		
 		return $this->authenticate('UpdateTable', $opt);
 	}
 }

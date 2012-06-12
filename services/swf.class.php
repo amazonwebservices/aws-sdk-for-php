@@ -187,7 +187,7 @@
  * 		"CountPendingDecisionTasks">CountPendingDecisionTasks</a></li>
  * </ul>
  *
- * @version 2012.05.01
+ * @version 2012.05.31
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/simpleworkflow/ Amazon Simple Workflow
@@ -334,7 +334,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('CountClosedWorkflowExecutions', $opt);
 	}
 
@@ -371,7 +370,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('CountOpenWorkflowExecutions', $opt);
 	}
 
@@ -393,7 +391,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('CountPendingActivityTasks', $opt);
 	}
 
@@ -415,7 +412,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('CountPendingDecisionTasks', $opt);
 	}
 
@@ -443,7 +439,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DeprecateActivityType', $opt);
 	}
 
@@ -468,7 +463,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DeprecateDomain', $opt);
 	}
 
@@ -497,7 +491,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DeprecateWorkflowType', $opt);
 	}
 
@@ -519,7 +512,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DescribeActivityType', $opt);
 	}
 
@@ -536,7 +528,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DescribeDomain', $opt);
 	}
 
@@ -563,7 +554,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DescribeWorkflowExecution', $opt);
 	}
 
@@ -586,7 +576,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DescribeWorkflowType', $opt);
 	}
 
@@ -607,7 +596,7 @@ class AmazonSWF extends CFRuntime
 	 * 		<li><code>runId</code> - <code>string</code> - Required - A system generated unique identifier for the workflow execution.</li>
 	 * 	</ul></li>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If a <code>NextPageToken</code> is returned, the result has more than one pages. To get the next page, repeat the call and specify the nextPageToken with all other arguments unchanged.</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - Specifies the maximum number of history events returned in one page. The next page in the result is identified by the <code>NextPageToken</code> returned. By default 100 history events are returned in a page but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size larger than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - Specifies the maximum number of history events returned in one page. The next page in the result is identified by the <code>NextPageToken</code> returned. By default 100 history events are returned in a page but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size larger than 100. Note that the number of events may be less than the maxiumum page size, in which case, a smaller page size is returned.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the events in reverse order. By default the results are returned in ascending order of the <code>eventTimeStamp</code> of the events.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -617,7 +606,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('GetWorkflowExecutionHistory', $opt);
 	}
 
@@ -633,7 +621,7 @@ class AmazonSWF extends CFRuntime
 	 * 	<li><code>name</code> - <code>string</code> - Optional - If specified, only lists the activity types that have this name.</li>
 	 * 	<li><code>registrationStatus</code> - <code>string</code> - Required - Specifies the registration status of the activity types to list. [Allowed values: <code>REGISTERED</code>, <code>DEPRECATED</code>]</li>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If on a previous call to this method a <code>NextResultToken</code> was returned, the results have more than one page. To get the next page of results, repeat the call with the <code>nextPageToken</code> and keep all other arguments unchanged.</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100. Note that the number of types may be less than the maxiumum page size, in which case, a smaller page size is returned.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the results in reverse order. By default the results are returned in ascending alphabetical order of the <code>name</code> of the activity types.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -643,7 +631,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('ListActivityTypes', $opt);
 	}
 
@@ -681,7 +668,7 @@ class AmazonSWF extends CFRuntime
 	 * 		<li><code>tag</code> - <code>string</code> - Required - Specifies the tag that must be associated with the execution for it to meet the filter criteria. This field is required.</li>
 	 * 	</ul></li>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If on a previous call to this method a <code>NextPageToken</code> was returned, the results are being paginated. To get the next page of results, repeat the call with the returned token and all other arguments unchanged.</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100. Note that the number of executions may be less than the maxiumum page size, in which case, a smaller page size is returned.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the results in reverse order. By default the results are returned in descending order of the start or the close time of the executions.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -691,7 +678,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('ListClosedWorkflowExecutions', $opt);
 	}
 
@@ -708,7 +694,7 @@ class AmazonSWF extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If on a previous call to this method a <code>NextPageToken</code> was returned, the result has more than one page. To get the next page of results, repeat the call with the returned token and all other arguments unchanged.</li>
 	 * 	<li><code>registrationStatus</code> - <code>string</code> - Required - Specifies the registration status of the domains to list. [Allowed values: <code>REGISTERED</code>, <code>DEPRECATED</code>]</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100. Note that the number of domains may be less than the maxiumum page size, in which case, a smaller page size is returned.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the results in reverse order. By default the results are returned in ascending alphabetical order of the <code>name</code> of the domains.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -718,7 +704,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('ListDomains', $opt);
 	}
 
@@ -746,7 +731,7 @@ class AmazonSWF extends CFRuntime
 	 * 		<li><code>tag</code> - <code>string</code> - Required - Specifies the tag that must be associated with the execution for it to meet the filter criteria. This field is required.</li>
 	 * 	</ul></li>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If on a previous call to this method a <code>NextPageToken</code> was returned, the results are being paginated. To get the next page of results, repeat the call with the returned token and all other arguments unchanged.</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100. Note that the number of executions may be less than the maxiumum page size, in which case, a smaller page size is returned.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the results in reverse order. By default the results are returned in descending order of the start time of the executions.</li>
 	 * 	<li><code>executionFilter</code> - <code>array</code> - Optional - If specified, only workflow executions matching the workflow id specified in the filter are returned. <p class="note"> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> <ul>
 	 * 		<li><code>workflowId</code> - <code>string</code> - Required - The workflowId to pass of match the criteria of this filter.</li>
@@ -759,7 +744,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('ListOpenWorkflowExecutions', $opt);
 	}
 
@@ -772,7 +756,7 @@ class AmazonSWF extends CFRuntime
 	 * 	<li><code>name</code> - <code>string</code> - Optional - If specified, lists the workflow type with this name.</li>
 	 * 	<li><code>registrationStatus</code> - <code>string</code> - Required - Specifies the registration status of the workflow types to list. [Allowed values: <code>REGISTERED</code>, <code>DEPRECATED</code>]</li>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If on a previous call to this method a <code>NextPageToken</code> was returned, the results are being paginated. To get the next page of results, repeat the call with the returned token and all other arguments unchanged.</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100. Note that the number of types may be less than the maxiumum page size, in which case, a smaller page size is returned.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the results in reverse order. By default the results are returned in ascending alphabetical order of the <code>name</code> of the workflow types.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -782,7 +766,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('ListWorkflowTypes', $opt);
 	}
 
@@ -814,7 +797,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('PollForActivityTask', $opt);
 	}
 
@@ -851,7 +833,7 @@ class AmazonSWF extends CFRuntime
 	 * 	</ul></li>
 	 * 	<li><code>identity</code> - <code>string</code> - Optional - Identity of the decider making the request, which is recorded in the DecisionTaskStarted event in the workflow history. This enables diagnostic tracing when problems arise. The form of this identity is user defined.</li>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If on a previous call to this method a <code>NextPageToken</code> was returned, the results are being paginated. To get the next page of results, repeat the call with the returned token and all other arguments unchanged. <p class="note">The <code>nextPageToken</code> returned by this action cannot be used with <code>GetWorkflowExecutionHistory</code> to get the next page. You must call <code>PollForDecisionTask</code> again (with the <code>nextPageToken</code>) to retrieve the next page of history records. Calling <code>PollForDecisionTask</code> with a <code>nextPageToken</code> will not return a new decision task.</p> .</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of history events returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of history events returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100. Note that the number of events may be less than the maxiumum page size, in which case, a smaller page size is returned.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the events in reverse order. By default the results are returned in ascending order of the <code>eventTimestamp</code> of the events.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -861,7 +843,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('PollForDecisionTask', $opt);
 	}
 
@@ -909,7 +890,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('RecordActivityTaskHeartbeat', $opt);
 	}
 
@@ -943,7 +923,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('RegisterActivityType', $opt);
 	}
 
@@ -962,7 +941,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('RegisterDomain', $opt);
 	}
 
@@ -994,7 +972,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('RegisterWorkflowType', $opt);
 	}
 
@@ -1026,7 +1003,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('RequestCancelWorkflowExecution', $opt);
 	}
 
@@ -1055,7 +1031,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('RespondActivityTaskCanceled', $opt);
 	}
 
@@ -1084,7 +1059,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('RespondActivityTaskCompleted', $opt);
 	}
 
@@ -1107,7 +1081,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('RespondActivityTaskFailed', $opt);
 	}
 
@@ -1222,7 +1195,6 @@ class AmazonSWF extends CFRuntime
 			$opt['decisions'] = (is_array($opt['decisions']) ? $opt['decisions'] : array($opt['decisions']));
 		}
 
-		$opt = json_encode($opt);
 		return $this->authenticate('RespondDecisionTaskCompleted', $opt);
 	}
 
@@ -1255,7 +1227,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('SignalWorkflowExecution', $opt);
 	}
 
@@ -1294,7 +1265,6 @@ class AmazonSWF extends CFRuntime
 			$opt['tagList'] = (is_array($opt['tagList']) ? $opt['tagList'] : array($opt['tagList']));
 		}
 
-		$opt = json_encode($opt);
 		return $this->authenticate('StartWorkflowExecution', $opt);
 	}
 
@@ -1332,7 +1302,6 @@ class AmazonSWF extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('TerminateWorkflowExecution', $opt);
 	}
 }

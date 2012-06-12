@@ -62,11 +62,7 @@ class AuthV4JSON extends Signer implements Signable
 		$this->query = array();
 
 		// Prepare JSON structure
-		$decoded = json_decode($this->payload, true);
-		$data = (array) (is_array($decoded) ? $decoded : $this->payload);
-		unset($data['curlopts']);
-		unset($data['returnCurlHandle']);
-		$this->body = json_encode($data);
+		$this->body = json_encode($this->payload);
 		if ($this->body === '' || $this->body === '[]')
 		{
 			$this->body = '{}';

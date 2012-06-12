@@ -54,11 +54,9 @@ class AuthV3JSON extends Signer implements Signable
 		$date = gmdate(CFUtilities::DATE_FORMAT_RFC2616, $current_time);
 		$timestamp = gmdate(CFUtilities::DATE_FORMAT_ISO8601, $current_time);
 		$nonce = $this->util->generate_guid();
-		$curlopts = array();
 		$signed_headers = array();
-		$return_curl_handle = false;
 		$x_amz_target = null;
-		$query = array('body' => $this->payload);
+		$query = array();
 
 		// Do we have an authentication token?
 		if ($this->auth_token)
@@ -83,28 +81,11 @@ class AuthV3JSON extends Signer implements Signable
 			$query['Version'] = $this->api_version;
 		}
 
-		$curlopts = array();
-
-		// Set custom CURLOPT settings
-		if (is_array($this->payload) && isset($this->payload['curlopts']))
-		{
-			$curlopts = $this->payload['curlopts'];
-			unset($this->payload['curlopts']);
-		}
-
-		// Merge in any options that were passed in
-		if (is_array($this->payload))
-		{
-			$query = array_merge($query, $this->payload);
-		}
-
-		$return_curl_handle = isset($query['returnCurlHandle']) ? $query['returnCurlHandle'] : false;
-		unset($query['returnCurlHandle']);
-
 		// Do a case-sensitive, natural order sort on the array keys.
 		uksort($query, 'strcmp');
 
 		// Normalize JSON input
+		$query['body'] = json_encode($this->payload);
 		if (isset($query['body']) && $query['body'] === '[]')
 		{
 			$query['body'] = '{}';

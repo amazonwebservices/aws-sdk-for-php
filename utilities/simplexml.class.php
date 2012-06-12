@@ -22,7 +22,7 @@
  * Wraps the underlying `SimpleXMLIterator` class with enhancements for rapidly traversing the DOM tree,
  * converting types, and comparisons.
  *
- * @version 2012.01.17
+ * @version 2012.05.31
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -39,6 +39,11 @@ class CFSimpleXML extends SimpleXMLIterator
 	 * Stores the namespace URI to use in XPath queries.
 	 */
 	public $xml_ns_url;
+
+	/**
+	 * Stores whether or not the value is encoded.
+	 */
+	public $encoded = false;
 
 	/**
 	 * Catches requests made to methods that don't exist. Specifically, looks for child nodes via XPath.
@@ -75,6 +80,16 @@ class CFSimpleXML extends SimpleXMLIterator
 		}
 
 		return $results;
+	}
+
+	/**
+	 * Gets the current XML node as a true string.
+	 *
+	 * @return string The current XML node as a true string.
+	 */
+	public function __toString()
+	{
+		return $this->to_string();
 	}
 
 	/**
@@ -144,7 +159,14 @@ class CFSimpleXML extends SimpleXMLIterator
 	 */
 	public function to_string()
 	{
-		return (string) $this;
+		$s = (string) $this;
+
+		if (substr($s, 0, 14) === 'json_encoded::')
+		{
+			return json_decode(substr($s, 14));
+		}
+
+		return $s;
 	}
 
 	/**
