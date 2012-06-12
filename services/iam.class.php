@@ -34,7 +34,7 @@
  * "http://aws.amazon.com/documentation/" target=
  * "_blank">http://aws.amazon.com/documentation/</a>.
  *
- * @version 2012.05.01
+ * @version 2012.05.31
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/iam/ AWS Identity and Access Management
@@ -92,6 +92,12 @@ class AmazonIAM extends CFRuntime
 
 
 	/*%******************************************************************************************%*/
+	// CONVENIENCE CONSTANTS
+
+	const STANDARD_EC2_ASSUME_ROLE_POLICY = '{"Statement":[{"Principal":{"Service":["ec2.amazonaws.com"]},"Effect":"Allow","Action":["sts:AssumeRole"]}]}';
+
+
+	/*%******************************************************************************************%*/
 	// SETTERS
 
 	/**
@@ -111,6 +117,25 @@ class AmazonIAM extends CFRuntime
 
 	/*%******************************************************************************************%*/
 	// SERVICE METHODS
+
+	/**
+	 * Adds the specified role to the specified instance profile.
+	 *
+	 * @param string $instance_profile_name (Required) Name of the instance profile to update. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $role_name (Required) Name of the role to add. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function add_role_to_instance_profile($instance_profile_name, $role_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['InstanceProfileName'] = $instance_profile_name;
+		$opt['RoleName'] = $role_name;
+		
+		return $this->authenticate('AddRoleToInstanceProfile', $opt);
+	}
 
 	/**
 	 * Adds the specified user to the specified group.
@@ -231,6 +256,29 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
+	 * Creates a new instance profile.
+	 *  
+	 * For information about the number of instance profiles you can create, see <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
+	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
+	 * Management</em>.
+	 *
+	 * @param string $instance_profile_name (Required) Name of the instance profile to create. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Path</code> - <code>string</code> - Optional - The path to the instance profile. For more information about paths, see <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_Identifiers.html" target="_blank">Identifiers for IAM Entities</a> in <em>Using AWS Identity and Access Management</em>. This parameter is optional. If it is not included, it defaults to a slash (/). [Constraints: The value must be between 1 and 512 characters, and must match the following regular expression pattern: <code>(\u002F)|(\u002F[\u0021-\u007F]+\u002F)</code>]</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_instance_profile($instance_profile_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['InstanceProfileName'] = $instance_profile_name;
+		
+		return $this->authenticate('CreateInstanceProfile', $opt);
+	}
+
+	/**
 	 * Creates a password for the specified user, giving the user the ability to access AWS services
 	 * through the AWS Management Console. For more information about managing passwords, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_ManagingLogins.html"
@@ -250,6 +298,31 @@ class AmazonIAM extends CFRuntime
 		$opt['Password'] = $password;
 		
 		return $this->authenticate('CreateLoginProfile', $opt);
+	}
+
+	/**
+	 * Creates a new role for your AWS account.
+	 *  
+	 * For information about limitations on the number of roles you can create, see <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
+	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
+	 * Management</em>.
+	 *
+	 * @param string $role_name (Required) Name of the role to create. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $assume_role_policy_document (Required) The policy govering by who and under what conditions the role can be assumed. [Constraints: The value must be between 1 and 131072 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Path</code> - <code>string</code> - Optional - The path to the role. For more information about paths, see <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_Identifiers.html" target="_blank">Identifiers for IAM Entities</a> in <em>Using AWS Identity and Access Management</em>. This parameter is optional. If it is not included, it defaults to a slash (/). [Constraints: The value must be between 1 and 512 characters, and must match the following regular expression pattern: <code>(\u002F)|(\u002F[\u0021-\u007F]+\u002F)</code>]</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_role($role_name, $assume_role_policy_document, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['RoleName'] = $role_name;
+		$opt['AssumeRolePolicyDocument'] = $assume_role_policy_document;
+		
+		return $this->authenticate('CreateRole', $opt);
 	}
 
 	/**
@@ -427,6 +500,23 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
+	 * Deletes the specified instance profile. The instance profile must have an associated role.
+	 *
+	 * @param string $instance_profile_name (Required) Name of the instance profile to delete. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_instance_profile($instance_profile_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['InstanceProfileName'] = $instance_profile_name;
+		
+		return $this->authenticate('DeleteInstanceProfile', $opt);
+	}
+
+	/**
 	 * Deletes the password for the specified user, which terminates the user's ability to access AWS
 	 * services through the AWS Management Console.
 	 * 
@@ -449,6 +539,42 @@ class AmazonIAM extends CFRuntime
 		$opt['UserName'] = $user_name;
 		
 		return $this->authenticate('DeleteLoginProfile', $opt);
+	}
+
+	/**
+	 * Deletes the specified role. The role must not have any attached policies.
+	 *
+	 * @param string $role_name (Required) Name of the role to delete. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_role($role_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['RoleName'] = $role_name;
+		
+		return $this->authenticate('DeleteRole', $opt);
+	}
+
+	/**
+	 * Deletes the specified policy associated with the specified role.
+	 *
+	 * @param string $role_name (Required) Name of the role the policy is associated with. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $policy_name (Required) Name of the policy document to delete. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_role_policy($role_name, $policy_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['RoleName'] = $role_name;
+		$opt['PolicyName'] = $policy_name;
+		
+		return $this->authenticate('DeleteRolePolicy', $opt);
 	}
 
 	/**
@@ -668,6 +794,24 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
+	 * Retrieves information about the specified instance profile, including the instance profile's
+	 * path, GUID, ARN, and role.
+	 *
+	 * @param string $instance_profile_name (Required) Name of the instance profile to get information about. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function get_instance_profile($instance_profile_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['InstanceProfileName'] = $instance_profile_name;
+		
+		return $this->authenticate('GetInstanceProfile', $opt);
+	}
+
+	/**
 	 * Retrieves the user name and password create date for the specified user.
 	 *
 	 * @param string $user_name (Required) Name of the user whose login profile you want to retrieve. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
@@ -682,6 +826,45 @@ class AmazonIAM extends CFRuntime
 		$opt['UserName'] = $user_name;
 		
 		return $this->authenticate('GetLoginProfile', $opt);
+	}
+
+	/**
+	 * Retrieves information about the specified role, including the role's path, GUID, ARN, and the
+	 * assume role policy.
+	 *
+	 * @param string $role_name (Required) Name of the role to get information about. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function get_role($role_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['RoleName'] = $role_name;
+		
+		return $this->authenticate('GetRole', $opt);
+	}
+
+	/**
+	 * Retrieves the specified policy document for the specified role. The returned policy is
+	 * URL-encoded according to RFC 3986. For more information about RFC 3986, go to <a href=
+	 * "http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
+	 *
+	 * @param string $role_name (Required) Name of the role who the policy is associated with. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $policy_name (Required) Name of the policy document to get. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function get_role_policy($role_name, $policy_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['RoleName'] = $role_name;
+		$opt['PolicyName'] = $policy_name;
+		
+		return $this->authenticate('GetRolePolicy', $opt);
 	}
 
 	/**
@@ -864,6 +1047,51 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
+	 * Lists the instance profiles that have the specified path prefix. If there are none, the action
+	 * returns an empty list.
+	 *  
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
+	 * parameters.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>PathPrefix</code> - <code>string</code> - Optional - The path prefix for filtering the results. For example: <code>/application_abc/component_xyz/</code>, which would get all instance profiles whose path starts with <code>/application_abc/component_xyz/</code>. This parameter is optional. If it is not included, it defaults to a slash (/), listing all instance profiles. [Constraints: The value must be between 1 and 512 characters, and must match the following regular expression pattern: <code>\u002F[\u0021-\u007F]*</code>]</li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this parameter only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. [Constraints: The value must be between 1 and 320 characters, and must match the following regular expression pattern: <code>[\u0020-\u00FF]*</code>]</li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this parameter only when paginating results to indicate the maximum number of user names you want in the response. If there are additional user names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function list_instance_profiles($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		return $this->authenticate('ListInstanceProfiles', $opt);
+	}
+
+	/**
+	 * Lists the instance profiles that have the specified associated role. If there are none, the
+	 * action returns an empty list.
+	 *  
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
+	 * parameters.
+	 *
+	 * @param string $role_name (Required) The name of the role to list instance profiles for. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this parameter only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. [Constraints: The value must be between 1 and 320 characters, and must match the following regular expression pattern: <code>[\u0020-\u00FF]*</code>]</li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this parameter only when paginating results to indicate the maximum number of user names you want in the response. If there are additional user names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function list_instance_profiles_for_role($role_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['RoleName'] = $role_name;
+		
+		return $this->authenticate('ListInstanceProfilesForRole', $opt);
+	}
+
+	/**
 	 * Lists the MFA devices. If the request includes the user name, then this action lists all the
 	 * MFA devices associated with the specified user name. If you do not specify a user name, IAM
 	 * determines the user name implicitly based on the AWS Access Key ID signing the request.
@@ -884,6 +1112,51 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 				
 		return $this->authenticate('ListMFADevices', $opt);
+	}
+
+	/**
+	 * Lists the names of the policies associated with the specified role. If there are none, the
+	 * action returns an empty list.
+	 *  
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
+	 * parameters.
+	 *
+	 * @param string $role_name (Required) The name of the role to list policies for. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this parameter only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. [Constraints: The value must be between 1 and 320 characters, and must match the following regular expression pattern: <code>[\u0020-\u00FF]*</code>]</li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this parameter only when paginating results to indicate the maximum number of user names you want in the response. If there are additional user names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function list_role_policies($role_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['RoleName'] = $role_name;
+		
+		return $this->authenticate('ListRolePolicies', $opt);
+	}
+
+	/**
+	 * Lists the roles have the specified path prefix. If there are none, the action returns an empty
+	 * list.
+	 *  
+	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
+	 * parameters.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>PathPrefix</code> - <code>string</code> - Optional - The path prefix for filtering the results. For example: <code>/application_abc/component_xyz/</code>, which would get all roles whose path starts with <code>/application_abc/component_xyz/</code>. This parameter is optional. If it is not included, it defaults to a slash (/), listing all roles. [Constraints: The value must be between 1 and 512 characters, and must match the following regular expression pattern: <code>\u002F[\u0021-\u007F]*</code>]</li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - Use this parameter only when paginating results, and only in a subsequent request after you've received a response where the results are truncated. Set it to the value of the <code>Marker</code> element in the response you just received. [Constraints: The value must be between 1 and 320 characters, and must match the following regular expression pattern: <code>[\u0020-\u00FF]*</code>]</li>
+	 * 	<li><code>MaxItems</code> - <code>integer</code> - Optional - Use this parameter only when paginating results to indicate the maximum number of user names you want in the response. If there are additional user names beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function list_roles($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		return $this->authenticate('ListRoles', $opt);
 	}
 
 	/**
@@ -1045,6 +1318,47 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
+	 * Adds (or updates) a policy document associated with the specified role. For information about
+	 * policies, refer to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html"
+	 * target="_blank">Overview of Policies</a> in <em>Using AWS Identity and Access Management</em>.
+	 *  
+	 * For information about limits on the number of policies you can associate with a role, see
+	 * 	<a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
+	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
+	 * Management</em>.
+	 * 
+	 * <p class="note">
+	 * Because policy documents can be large, you should use POST rather than GET when calling
+	 * <code>PutRolePolicy</code>. For information about setting up signatures and authorization
+	 * through the API, go to <a href=
+	 * "http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html" target=
+	 * "_blank">Signing AWS API Requests</a> in the <em>AWS General Reference</em>. For general
+	 * information about using the Query API with IAM, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
+	 * "_blank">Making Query Requests</a> in <em>Using IAM</em>.
+	 * </p>
+	 *
+	 * @param string $role_name (Required) Name of the role to associate the policy with. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $policy_name (Required) Name of the policy document. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $policy_document (Required) The policy document. [Constraints: The value must be between 1 and 131072 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function put_role_policy($role_name, $policy_name, $policy_document, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['RoleName'] = $role_name;
+		$opt['PolicyName'] = $policy_name;
+		$opt['PolicyDocument'] = $policy_document;
+		
+		return $this->authenticate('PutRolePolicy', $opt);
+	}
+
+	/**
 	 * Adds (or updates) a policy document associated with the specified user. For information about
 	 * policies, refer to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html"
@@ -1083,6 +1397,25 @@ class AmazonIAM extends CFRuntime
 		$opt['PolicyDocument'] = $policy_document;
 		
 		return $this->authenticate('PutUserPolicy', $opt);
+	}
+
+	/**
+	 * Removes the specified role from the specified instance profile.
+	 *
+	 * @param string $instance_profile_name (Required) Name of the instance profile to update. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $role_name (Required) Name of the role to remove. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function remove_role_from_instance_profile($instance_profile_name, $role_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['InstanceProfileName'] = $instance_profile_name;
+		$opt['RoleName'] = $role_name;
+		
+		return $this->authenticate('RemoveRoleFromInstanceProfile', $opt);
 	}
 
 	/**
@@ -1180,6 +1513,25 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 				
 		return $this->authenticate('UpdateAccountPasswordPolicy', $opt);
+	}
+
+	/**
+	 * Updates the policy governing how the given role can be assumed.
+	 *
+	 * @param string $role_name (Required) Name of the role to update. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $policy_document (Required) The policy govering by who and under what conditions the role can be assumed. [Constraints: The value must be between 1 and 131072 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function update_assume_role_policy($role_name, $policy_document, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['RoleName'] = $role_name;
+		$opt['PolicyDocument'] = $policy_document;
+		
+		return $this->authenticate('UpdateAssumeRolePolicy', $opt);
 	}
 
 	/**

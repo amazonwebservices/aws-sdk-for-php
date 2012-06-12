@@ -36,7 +36,7 @@
  * "http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html">Regions and
  * Endpoints</a> in the Amazon Web Services General Reference.
  *
- * @version 2012.05.09
+ * @version 2012.05.31
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/as/ Auto Scaling
@@ -280,6 +280,7 @@ class AmazonAS extends CFRuntime
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>SpotPrice</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>IamInstanceProfile</code> - <code>string</code> - Optional -  [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -926,7 +927,7 @@ class AmazonAS extends CFRuntime
 	 * @param string $adjustment_type (Required) Specifies whether the <code>ScalingAdjustment</code> is an absolute number or a percentage of the current capacity. Valid values are <code>ChangeInCapacity</code>, <code>ExactCapacity</code>, and <code>PercentChangeInCapacity</code>. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Cooldown</code> - <code>integer</code> - Optional - The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start.</li>
-	 * 	<li><code>MinAdjustmentMagnitude</code> - <code>integer</code> - Optional - </li>
+	 * 	<li><code>MinAdjustmentStep</code> - <code>integer</code> - Optional - </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.

@@ -42,7 +42,7 @@
  * We will refer to Amazon Identity and Access Management using the abbreviated form IAM. All
  * copyrights and legal protections still apply.
  *
- * @version 2012.04.18
+ * @version 2012.05.31
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sts/ Amazon Secure Token Service
@@ -165,8 +165,6 @@ class AmazonSTS extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>DurationSeconds</code> - <code>integer</code> - Optional - The duration, in seconds, that the credentials should remain valid. Acceptable durations for IAM user sessions range from 3600s (one hour) to 129600s (36 hours), with 43200s (12 hours) as the default. Sessions for AWS account owners are restricted to a maximum of 3600s (one hour).</li>
-	 * 	<li><code>SerialNumber</code> - <code>string</code> - Optional -  [Constraints: The value must be between 9 and 256 characters, and must match the following regular expression pattern: <code>[\w+=/:,.@-]*</code>]</li>
-	 * 	<li><code>TokenCode</code> - <code>string</code> - Optional -  [Constraints: The value must be between 6 and 6 characters, and must match the following regular expression pattern: <code>[\d]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.

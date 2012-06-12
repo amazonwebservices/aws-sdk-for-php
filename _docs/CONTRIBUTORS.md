@@ -9,6 +9,8 @@ The following people have provided ideas, support and bug fixes:
 * [arech8](http://developer.amazonwebservices.com/connect/profile.jspa?userID=154435) (bug fixes)
 * [Aizat Faiz](http://aizatto.com) (bug fixes)
 * [Ben Lumley](http://github.com/benlumley) (bug fixes)
+* [Dan Stillman](https://github.com/dstillman) (bug fixes)
+* [Daniel Holmes](https://github.com/danielholmes) (bug fixes)
 * [David Chan](http://www.chandeeland.org) (bug fixes)
 * [Eric Caron](http://www.ericcaron.com) (bug fixes)
 * [Jason Ardell](http://ardell.posterous.com/) (bug fixes)
@@ -16,6 +18,7 @@ The following people have provided ideas, support and bug fixes:
 * [Jimmy Berry](http://blog.boombatower.com/) (bug fixes, patches)
 * [Paul Voegler](mailto:voegler@gmx.de) (bug fixes, bug reports, patches)
 * [Peter Bowen](http://github.com/pzb) (feedback, bug reports)
+* [Roman Cambian](https://github.com/rcambien) (patches)
 * [zoxa](https://github.com/zoxa) (bug fixes)
 
 

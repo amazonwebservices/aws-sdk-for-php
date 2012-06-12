@@ -35,13 +35,9 @@
  * 	Errors</a>: Client and server errors that all actions can return.</li>
  * 	<li><a href="http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html">Regions
  * 	and Endpoints</a>: Itemized regions and endpoints for all AWS products.</li>
- * 	<li><a href=
- * 	"http://sns.us-east-1.amazonaws.com/doc/2010-03-31/SimpleNotificationService.wsdl">WSDL
- * 	Location</a>:
- * 	http://storagegateway.us-east-1.amazonaws.com/doc/2012-04-15/AWSStorageGatewayService.wsdl</li>
  * </ul>
  *
- * @version 2012.05.09
+ * @version 2012.05.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/storagegateway/ AWS Storage Gateway
@@ -232,7 +228,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('ActivateGateway', $opt);
 	}
 
@@ -259,7 +254,6 @@ class AmazonStorageGateway extends CFRuntime
 			$opt['DiskIds'] = (is_array($opt['DiskIds']) ? $opt['DiskIds'] : array($opt['DiskIds']));
 		}
 
-		$opt = json_encode($opt);
 		return $this->authenticate('AddWorkingStorage', $opt);
 	}
 
@@ -299,7 +293,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('CreateSnapshot', $opt);
 	}
 
@@ -329,7 +322,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('CreateStorediSCSIVolume', $opt);
 	}
 
@@ -350,7 +342,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DeleteBandwidthRateLimit', $opt);
 	}
 
@@ -369,7 +360,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DeleteChapCredentials', $opt);
 	}
 
@@ -392,7 +382,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DeleteGateway', $opt);
 	}
 
@@ -421,7 +410,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DeleteVolume', $opt);
 	}
 
@@ -444,7 +432,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DescribeBandwidthRateLimit', $opt);
 	}
 
@@ -462,7 +449,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DescribeChapCredentials', $opt);
 	}
 
@@ -481,7 +467,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DescribeGatewayInformation', $opt);
 	}
 
@@ -499,7 +484,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DescribeMaintenanceStartTime', $opt);
 	}
 
@@ -518,7 +502,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DescribeSnapshotSchedule', $opt);
 	}
 
@@ -543,7 +526,6 @@ class AmazonStorageGateway extends CFRuntime
 			$opt['VolumeARNs'] = (is_array($opt['VolumeARNs']) ? $opt['VolumeARNs'] : array($opt['VolumeARNs']));
 		}
 
-		$opt = json_encode($opt);
 		return $this->authenticate('DescribeStorediSCSIVolumes', $opt);
 	}
 
@@ -562,7 +544,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('DescribeWorkingStorage', $opt);
 	}
 
@@ -588,7 +569,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('ListGateways', $opt);
 	}
 
@@ -609,7 +589,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('ListLocalDisks', $opt);
 	}
 
@@ -636,7 +615,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('ListVolumes', $opt);
 	}
 
@@ -673,7 +651,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('ShutdownGateway', $opt);
 	}
 
@@ -702,7 +679,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('StartGateway', $opt);
 	}
 
@@ -730,7 +706,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('UpdateBandwidthRateLimit', $opt);
 	}
 
@@ -752,7 +727,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('UpdateChapCredentials', $opt);
 	}
 
@@ -773,7 +747,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('UpdateGatewayInformation', $opt);
 	}
 
@@ -803,7 +776,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('UpdateGatewaySoftwareNow', $opt);
 	}
 
@@ -824,7 +796,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('UpdateMaintenanceStartTime', $opt);
 	}
 
@@ -851,7 +822,6 @@ class AmazonStorageGateway extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		
-		$opt = json_encode($opt);
 		return $this->authenticate('UpdateSnapshotSchedule', $opt);
 	}
 }

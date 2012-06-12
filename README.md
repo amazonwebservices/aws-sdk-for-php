@@ -127,6 +127,10 @@ your project with:
 3. Make sure that `getenv('HOME')` points to your user directory. If not you'll need to set
    `putenv('HOME=<your-user-directory>')`.
 
+This is because PHP will attempt to load the file from your user directory (e.g., `~/.aws/sdk/config.inc.php`).
+If PHP doesn't happen to know where your user directory is, you'll need to tell PHP where it is with the `putenv()`
+function.
+
 
 ## Additional Information
 

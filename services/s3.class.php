@@ -1548,7 +1548,8 @@ class AmazonS3 extends CFRuntime
 		foreach ($opt['objects'] as $object)
 		{
 			$xobject = $xml->addChild('Object');
-			$xobject->addChild('Key', $object['key']);
+			$node = $xobject->addChild('Key');
+			$node[0] = $object['key'];
 
 			if (isset($object['version_id']))
 			{
@@ -1666,19 +1667,6 @@ class AmazonS3 extends CFRuntime
 			$opt['headers']['x-amz-copy-source'] = '/' . $source['bucket'] . '/' . rawurlencode($source['filename'])
 				. (isset($opt['versionId']) ? ('?' . 'versionId=' . rawurlencode($opt['versionId'])) : ''); // Append the versionId to copy, if available
 			unset($opt['versionId']);
-
-			// Determine if we need to lookup the pre-existing content-type.
-			if (
-				(!$this->use_batch_flow && !isset($opt['returnCurlHandle'])) &&
-				!in_array(strtolower('content-type'), array_map('strtolower', array_keys($opt['headers'])))
-			)
-			{
-				$response = $this->get_object_headers($source['bucket'], $source['filename']);
-				if ($response->isOK())
-				{
-					$opt['headers']['Content-Type'] = $response->header['content-type'];
-				}
-			}
 		}
 
 		// Handle metadata directive
@@ -2673,7 +2661,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $filename (Required) The file name for the Amazon S3 object.
 	 * @param integer|string $preauth (Optional) Specifies that a presigned URL for this request should be returned. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>https</code> - <code>boolean</code> - Optional - Set to <code>true</code> if you would like the URL be in https mode. Otherwise, the default behavior is always to use http regardless of your SSL settings.
+	 * 	<li><code>https</code> - <code>boolean</code> - Optional - Set to <code>true</code> if you would like the URL be in https mode. Otherwise, the default behavior is always to use http regardless of your SSL settings.</li>
 	 * 	<li><code>method</code> - <code>string</code> - Optional - The HTTP method to use for the request. Defaults to a value of <code>GET</code>.</li>
 	 * 	<li><code>response</code> - <code>array</code> - Optional - Allows adjustments to specific response headers. Pass an associative array where each key is one of the following: <code>cache-control</code>, <code>content-disposition</code>, <code>content-encoding</code>, <code>content-language</code>, <code>content-type</code>, <code>expires</code>. The <code>expires</code> value should use <php:gmdate()> and be formatted with the <code>DATE_RFC2822</code> constant.</li>
 	 * 	<li><code>torrent</code> - <code>boolean</code> - Optional - A value of <code>true</code> will return a URL to a torrent of the Amazon S3 object. A value of <code>false</code> will return a non-torrent URL. Defaults to <code>false</code>.</li>

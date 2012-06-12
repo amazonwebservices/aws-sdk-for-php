@@ -61,10 +61,6 @@ class CFCredentials
 		{
 			$credential_sets[self::DEFAULT_KEY] = reset($credential_sets);
 		}
-		elseif (!isset($credential_sets[self::DEFAULT_KEY]))
-		{
-			throw new CFCredentials_Exception('If more than one credential set is provided, a default credential set (identified by the key "' . self::DEFAULT_KEY . '") must be specified.');
-		}
 
 		// Resolve any @inherit tags
 		foreach ($credential_sets as $credential_name => &$credential_set)
@@ -88,15 +84,18 @@ class CFCredentials
 		}
 
 		// Normalize the value of the @default credential set
-		$default = $credential_sets[self::DEFAULT_KEY];
-		if (is_string($default))
+		if (isset($credential_sets[self::DEFAULT_KEY]))
 		{
-			if (!isset($credential_sets[$default]))
+			$default = $credential_sets[self::DEFAULT_KEY];
+			if (is_string($default))
 			{
-				throw new CFCredentials_Exception('The credential set, "' . $default . '", does not exist and cannot be used as the default credential set.');
-			}
+				if (!isset($credential_sets[$default]))
+				{
+					throw new CFCredentials_Exception('The credential set, "' . $default . '", does not exist and cannot be used as the default credential set.');
+				}
 
-			$credential_sets[self::DEFAULT_KEY] = $credential_sets[$default];
+				$credential_sets[self::DEFAULT_KEY] = $credential_sets[$default];
+			}
 		}
 
 		// Store the credentials
