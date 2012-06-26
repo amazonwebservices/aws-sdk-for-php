@@ -20,7 +20,7 @@
  * application loads between two or more EC2 instances. Elastic Load Balancing enables
  * availability through redundancy and supports traffic growth of your application.
  *
- * @version 2012.04.18
+ * @version 2012.06.25
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticloadbalancing/ Elastic Load Balancing
@@ -124,7 +124,7 @@ class AmazonELB extends CFRuntime
 	 */
 	public function __construct(array $options = array())
 	{
-		$this->api_version = '2011-11-15';
+		$this->api_version = '2012-06-01';
 		$this->hostname = self::DEFAULT_URL;
 		$this->auth_class = 'AuthV2Query';
 
@@ -342,6 +342,7 @@ class AmazonELB extends CFRuntime
 	 * 	<li><code>AvailabilityZones</code> - <code>string|array</code> - Optional - A list of Availability Zones. At least one Availability Zone must be specified. Specified Availability Zones must be in the same EC2 Region as the LoadBalancer. Traffic will be equally distributed across all zones. This list can be modified after the creation of the LoadBalancer. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>Subnets</code> - <code>string|array</code> - Optional - A list of subnet IDs in your VPC to attach to your LoadBalancer. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>SecurityGroups</code> - <code>string|array</code> - Optional - The security groups assigned to your LoadBalancer within your VPC. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>Scheme</code> - <code>string</code> - Optional - Specifies the type of a load balancer, which can be internet-facing or internal. - internet-facing: (default) The load balancer will have a publicly resolvable DNS name that resolves to public IP addresses. - internal: The load balancer will have a publicly resolvable DNS name that resolves to private IP addresses This option is only available for load balancers attached to a VPC. [Allowed values: <code>internet-facing</code>, <code>internal</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.

@@ -26,7 +26,7 @@
  * The endpoint for Amazon SES is located at: <code>https://email.us-east-1.amazonaws.com</code>
  * </p>
  *
- * @version 2012.05.14
+ * @version 2012.06.21
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ses/ Amazon Simple Email Service
@@ -106,7 +106,7 @@ class AmazonSES extends CFRuntime
 	 */
 	public function disable_ssl()
 	{
-		throw new Email_Exception('SSL/HTTPS is REQUIRED for Amazon Email Service and cannot be disabled.');
+		throw new SES_Exception('SSL/HTTPS is REQUIRED for Amazon Email Service and cannot be disabled.');
 	}
 
 
@@ -150,6 +150,30 @@ class AmazonSES extends CFRuntime
 		$opt['EmailAddress'] = $email_address;
 		
 		return $this->authenticate('DeleteVerifiedEmailAddress', $opt);
+	}
+
+	/**
+	 * Given a list of verified identities (email addresses and/or domains), returns a structure
+	 * describing identity notification attributes. For more information about feedback notification,
+	 * see the <a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES
+	 * Developer Guide</a>.
+	 *
+	 * @param string|array $identities (Required) A list of one or more identities. Pass a string for a single value, or an indexed array for multiple values.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function get_identity_notification_attributes($identities, $opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		// Required list (non-map)
+		$opt = array_merge($opt, CFComplexType::map(array(
+			'Identities' => (is_array($identities) ? $identities : array($identities))
+		), 'member'));
+
+		return $this->authenticate('GetIdentityNotificationAttributes', $opt);
 	}
 
 	/**
@@ -393,6 +417,52 @@ class AmazonSES extends CFRuntime
 		}
 
 		return $this->authenticate('SendRawEmail', $opt);
+	}
+
+	/**
+	 * Given an identity (email address or domain), enables or disables whether Amazon SES forwards
+	 * feedback notifications as email. Feedback forwarding may only be disabled when both complaint
+	 * and bounce topics are set. For more information about feedback notification, see the <a href=
+	 * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
+	 *
+	 * @param string $identity (Required) The identity for which to set feedback notification forwarding. Examples: <code>user@example.com</code>, <code>example.com</code>.
+	 * @param boolean $forwarding_enabled (Required) Sets whether Amazon SES will forward feedback notifications as email. <code>true</code> specifies that Amazon SES will forward feedback notifications as email, in addition to any Amazon SNS topic publishing otherwise specified. <code>false</code> specifies that Amazon SES will publish feedback notifications only through Amazon SNS. This value can only be set to <code>false</code> when topics are specified for both <code>Bounce</code> and <code>Complaint</code> topic types.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function set_identity_feedback_forwarding_enabled($identity, $forwarding_enabled, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['Identity'] = $identity;
+		$opt['ForwardingEnabled'] = $forwarding_enabled;
+		
+		return $this->authenticate('SetIdentityFeedbackForwardingEnabled', $opt);
+	}
+
+	/**
+	 * Given an identity (email address or domain), sets the Amazon SNS topic to which Amazon SES will
+	 * publish bounce and complaint notifications for emails sent with that identity as the
+	 * <code>Source</code>. Publishing to topics may only be disabled when feedback forwarding is
+	 * enabled. For more information about feedback notification, see the <a href=
+	 * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
+	 *
+	 * @param string $identity (Required) The identity for which the topic will be set. Examples: <code>user@example.com</code>, <code>example.com</code>.
+	 * @param string $notification_type (Required) The type of feedback notifications that will be published to the specified topic. [Allowed values: <code>Bounce</code>, <code>Complaint</code>]
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>SnsTopic</code> - <code>string</code> - Optional - The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (Amazon SNS) topic. If the parameter is ommited from the request or a null value is passed, the topic is cleared and publishing is disabled.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function set_identity_notification_topic($identity, $notification_type, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['Identity'] = $identity;
+		$opt['NotificationType'] = $notification_type;
+		
+		return $this->authenticate('SetIdentityNotificationTopic', $opt);
 	}
 
 	/**

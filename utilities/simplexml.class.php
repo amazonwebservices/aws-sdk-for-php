@@ -161,7 +161,7 @@ class CFSimpleXML extends SimpleXMLIterator
 	{
 		$s = (string) $this;
 
-		if (substr($s, 0, 14) === 'json_encoded::')
+		if ($this->attributes())
 		{
 			return json_decode(substr($s, 14));
 		}

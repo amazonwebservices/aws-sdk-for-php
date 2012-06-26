@@ -36,7 +36,7 @@
  * "http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html">Regions and
  * Endpoints</a> in the Amazon Web Services General Reference.
  *
- * @version 2012.05.31
+ * @version 2012.06.21
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/as/ Auto Scaling
@@ -142,7 +142,7 @@ class AmazonAS extends CFRuntime
 	{
 		$this->api_version = '2011-01-01';
 		$this->hostname = self::DEFAULT_URL;
-		$this->auth_class = 'AuthV2Query';
+		$this->auth_class = 'AuthV4Query';
 
 		return parent::__construct($options);
 	}
