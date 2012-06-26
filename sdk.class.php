@@ -115,8 +115,8 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.5.7');
-define('CFRUNTIME_BUILD', '20120611193000');
+define('CFRUNTIME_VERSION', '1.5.8');
+define('CFRUNTIME_BUILD', '20120626150000');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . str_replace(' ', '_', php_uname('s')) . '/' . str_replace(' ', '_', php_uname('r')) . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -374,8 +374,10 @@ class CFRuntime
 	 * 	<li><code>credentials</code> - <code>string</code> - Optional - The name of the credential set to use for authentication.</li>
 	 * 	<li><code>default_cache_config</code> - <code>string</code> - Optional - This option allows a preferred storage type to be configured for long-term caching. This can be changed later using the <set_cache_config()> method. Valid values are: <code>apc</code>, <code>xcache</code>, or a file system path such as <code>./cache</code> or <code>/tmp/cache/</code>.</li>
 	 * 	<li><code>key</code> - <code>string</code> - Optional - Your AWS key, or a session key. If blank, the default credential set will be used.</li>
+	 * 	<li><code>instance_profile_timeout</code> - <code>integer</code> - Optional - When retrieving IAM instance profile credentials, there is a hard connection timeout that defaults to 2 seconds to prevent unnecessary on non-EC2 systems. This setting allows you to change that timeout if needed.</li>
 	 * 	<li><code>secret</code> - <code>string</code> - Optional - Your AWS secret key, or a session secret key. If blank, the default credential set will be used.</li>
-	 * 	<li><code>token</code> - <code>string</code> - Optional - An AWS session token.</li></ul>
+	 * 	<li><code>token</code> - <code>string</code> - Optional - An AWS session token.</li>
+	 * 	<li><code>use_instance_profile_credentials</code> - <code>boolean</code> - Optional - Forces the use of IAM Instance Profile credentials, even when regular credentials are provided.</li></ul>
 	 * @return void
 	 */
 	public function __construct(array $options = array())
@@ -434,9 +436,10 @@ class CFRuntime
 			if (!$this->credentials->default_cache_config)
 			{
 				// @codeCoverageIgnoreStart
-				throw new CFCredentials_Exception('The Instance Profile credentials '
-					. 'provider requires the "default_cache_config" option to '
-					. 'be set in the config.inc.php file or constructor.');
+				throw new CFCredentials_Exception('No credentials were provided. The SDK attempts to retrieve Instance '
+					. 'Profile credentials from the EC2 Instance Metadata Service, but doing this requires the '
+					. '"default_cache_config" option to be set in the config.inc.php file or constructor. In order to '
+					. 'cache the retrieved credentials.');
 				// @codeCoverageIgnoreEnd
 			}
 
@@ -827,9 +830,9 @@ class CFRuntime
 		}
 
 		// @codeCoverageIgnoreStart
-		throw new CFCredentials_Exception('The instance profile credentials could not'
-			. ' be found. Instance profile credentials are only accessible on'
-			. ' EC2 instances launched with an IamInstanceProfile specified.');
+		throw new CFCredentials_Exception('No credentials were provided. The SDK attempted to retrieve Instance '
+			. 'Profile credentials from the EC2 Instance Metadata Service, but failed to do so. Instance profile '
+			. 'credentials are only accessible on EC2 instances configured with a specific IAM role.');
 		// @codeCoverageIgnoreEnd
 	}
 

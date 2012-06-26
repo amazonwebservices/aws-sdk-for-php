@@ -1,7 +1,36 @@
+# Changelog: "I Tripoli"
+Code name for Macintosh System 7.1. <http://en.wikipedia.org/wiki/System_7>
+
+Launched Tuesday, June 26th, 2012.
+
+## Runtime
+* Updates to documentation and exception messages related to IAM Instance Profile credentials.
+
+## Services
+### AmazonAS
+* **New:** Requests to this service are now signed with Signature V4.
+
+### AmazonCloudWatch
+* **New:** Requests to this service are now signed with Signature V4.
+
+### AmazonELB
+* **New:** Support for internal load balancers in VPC has been added to the SDK.
+
+### AmazonS3
+* **New:** Support for `x-amz-grant-*` headers have been added to the SDK.
+
+### AmazonSES
+* **New:** Support for feedback notifications has been added to the SDK.
+
+## Samples
+* **New:** A sample demonstrating how to use Amazon Simple Workflow Service to coordinate workers started by cron jobs has been added to the SDK. The samples are located in `_samples/AmazonSimpleWorkflow/cron`.
+
+----
+
 # Changelog: "HyperCard"
 One of the first successful hypermedia systems before the World Wide Web, developed by Apple. <http://en.wikipedia.org/wiki/HyperCard>
 
-Launched Monday, June 11th, 2012. (Currently scheduled HOSM release)
+Launched Monday, June 11th, 2012.
 
 ## Bug fixes and enhancements
 * [Handling of NULL bytes](https://forums.aws.amazon.com/thread.jspa?threadID=94935)
@@ -20,24 +49,31 @@ Launched Monday, June 11th, 2012. (Currently scheduled HOSM release)
 ### AmazonAS
 * **New:** Support for specifying spot instances in Auto Scaling has been added to the SDK.
 * **New:** Support for IAM Instance Profiles has been added to the SDK.
+
 ### AmazonDynamoDB
 * **Fixed:** Resolved an issue where JSON encoding was happening too early in the request process.
 * **Fixed:** Resolved an issue where providing token-based credentials caused errors.
 * **Fixed:** Resolved an issue where null-bytes were causing data to be truncated.
+
 ### AmazonEC2
 * **New:** Support for IAM Instance Profiles has been added to the SDK.
 * **New:** Support for VM export tasks has been added to the SDK.
 * **New:** Support for AWS Marketplace product codes has been added to the SDK.
-* **New:** Support for an enhanced describe_instance_status has been added to the SDK.
+* **New:** Support for an enhanced `describe_instance_status()` has been added to the SDK.
+
 ### AmazonElastiCache
 * **New:** Support for reserved cache nodes has been added to the SDK.
+
 ### AmazonIAM
 * **New:** Support for IAM Instance Profiles has been added to the SDK.
+
 ### AmazonS3
 * **Fixed:** Resolved an issue where ampersands were not being encoded correctly in `delete_objects` calls.
 * **Fixed:** Resolved an issue where content-types were being incorrectly set in `copy_object` calls.
+
 ### AmazonStorageGateway
 * **Fixed:** Resolved an issue where JSON encoding was happening too early in the request process.
+
 ### AmazonSWF
 * **Fixed:** Resolved an issue where JSON encoding was happening too early in the request process.
 

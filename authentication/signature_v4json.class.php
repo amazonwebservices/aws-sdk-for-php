@@ -129,7 +129,8 @@ class AuthV4JSON extends Signer implements Signable
 		$request->set_method('POST');
 		$request->set_body($this->body);
 		$this->querystring = $this->body;
-		$this->headers['Content-Type'] = 'application/x-amz-json-1.1';
+		$content_type = (stripos($this->operation, 'StorageGateway') !== false) ? 'application/x-amz-json-1.1' : 'application/x-amz-json-1.0';
+		$this->headers['Content-Type'] = $content_type;
 		$this->headers['X-Amz-Target'] = $x_amz_target;
 
 		// Pass along registered stream callbacks

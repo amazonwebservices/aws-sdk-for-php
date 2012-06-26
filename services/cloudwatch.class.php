@@ -47,7 +47,7 @@
  * 	http://monitoring.amazonaws.com/doc/2010-08-01/CloudWatch.wsdl</li>
  * </ul>
  *
- * @version 2012.01.16
+ * @version 2012.06.21
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudwatch/ Amazon CloudWatch
@@ -158,7 +158,7 @@ class AmazonCloudWatch extends CFRuntime
 	{
 		$this->api_version = '2010-08-01';
 		$this->hostname = self::DEFAULT_URL;
-		$this->auth_class = 'AuthV2Query';
+		$this->auth_class = 'AuthV4Query';
 
 		return parent::__construct($options);
 	}

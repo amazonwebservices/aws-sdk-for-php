@@ -49,7 +49,7 @@ class S3_Exception extends Exception {}
  *
  * Visit <http://aws.amazon.com/s3/> for more information.
  *
- * @version 2012.01.17
+ * @version 2012.06.18
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/s3/ Amazon Simple Storage Service
@@ -1070,7 +1070,7 @@ class AmazonS3 extends CFRuntime
 	 *
 	 * @param string $bucket (Required) The name of the bucket to create.
 	 * @param string $region (Required) The preferred geographical location for the bucket. [Allowed values: `AmazonS3::REGION_US_E1 `, `AmazonS3::REGION_US_W1`, `AmazonS3::REGION_EU_W1`, `AmazonS3::REGION_APAC_SE1`, `AmazonS3::REGION_APAC_NE1`]
-	 * @param string $acl (Optional) The ACL settings for the specified bucket. [Allowed values: <code>AmazonS3::ACL_PRIVATE</code>, <code>AmazonS3::ACL_PUBLIC</code>, <code>AmazonS3::ACL_OPEN</code>, <code>AmazonS3::ACL_AUTH_READ</code>, <code>AmazonS3::ACL_OWNER_READ</code>, <code>AmazonS3::ACL_OWNER_FULL_CONTROL</code>]. The default value is <ACL_PRIVATE>.
+	 * @param string $acl (Optional) The ACL settings for the specified object. Accepts any of the following constants: [Allowed values: <code>AmazonS3::ACL_PRIVATE</code>, <code>AmazonS3::ACL_PUBLIC</code>, <code>AmazonS3::ACL_OPEN</code>, <code>AmazonS3::ACL_AUTH_READ</code>, <code>AmazonS3::ACL_OWNER_READ</code>, <code>AmazonS3::ACL_OWNER_FULL_CONTROL</code>]. Alternatively, an array of associative arrays. Each associative array contains an <code>id</code> and a <code>permission</code> key. The default value is <code>ACL_PRIVATE</code>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request.</li></ul>
@@ -1100,9 +1100,21 @@ class AmazonS3 extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['verb'] = 'PUT';
 		$opt['headers'] = array(
-			'Content-Type' => 'application/xml',
-			'x-amz-acl' => $acl
+			'Content-Type' => 'application/xml'
 		);
+
+		// Handle Access Control Lists. Can also be passed as an HTTP header.
+		if (isset($acl))
+		{
+			if (is_array($acl))
+			{
+				$opt['headers'] = array_merge($opt['headers'], $this->generate_access_policy_headers($acl));
+			}
+			else
+			{
+				$opt['headers']['x-amz-acl'] = $acl;
+			}
+		}
 
 		// Defaults
 		$this->set_region($region); // Also sets path-style
@@ -1287,7 +1299,7 @@ class AmazonS3 extends CFRuntime
 
 		if (is_array($acl))
 		{
-			$opt['body'] = $this->generate_access_policy($this->credentials->canonical_id, $this->credentials->canonical_name, $acl);
+			$opt['headers'] = array_merge($opt['headers'], $this->generate_access_policy_headers($acl));
 		}
 		else
 		{
@@ -1313,11 +1325,11 @@ class AmazonS3 extends CFRuntime
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param string $filename (Required) The file name for the object.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>acl</code> - <code>string</code> - Optional - The ACL settings for the specified object. Accepts any of the following constants: [Allowed values: <code>AmazonS3::ACL_PRIVATE</code>, <code>AmazonS3::ACL_PUBLIC</code>, <code>AmazonS3::ACL_OPEN</code>, <code>AmazonS3::ACL_AUTH_READ</code>, <code>AmazonS3::ACL_OWNER_READ</code>, <code>AmazonS3::ACL_OWNER_FULL_CONTROL</code>]. Alternatively, an array of associative arrays. Each associative array contains an <code>id</code> and a <code>permission</code> key. The default value is <code>ACL_PRIVATE</code>.</li>
 	 * 	<li><code>body</code> - <code>string</code> - Required; Conditional - The data to be stored in the object. Either this parameter or <code>fileUpload</code> must be specified.</li>
-	 * 	<li><code>fileUpload</code> - <code>string|resource</code> - Required; Conditional - The URL/path for the file to upload, or an open resource. Either this parameter or <code>body</code> is required.</li>
-	 * 	<li><code>acl</code> - <code>string</code> - Optional - The ACL settings for the specified object. [Allowed values: <code>AmazonS3::ACL_PRIVATE</code>, <code>AmazonS3::ACL_PUBLIC</code>, <code>AmazonS3::ACL_OPEN</code>, <code>AmazonS3::ACL_AUTH_READ</code>, <code>AmazonS3::ACL_OWNER_READ</code>, <code>AmazonS3::ACL_OWNER_FULL_CONTROL</code>]. The default value is <code>ACL_PRIVATE</code>.</li>
 	 * 	<li><code>contentType</code> - <code>string</code> - Optional - The type of content that is being sent in the body. If a file is being uploaded via <code>fileUpload</code> as a file system path, it will attempt to determine the correct mime-type based on the file extension. The default value is <code>application/octet-stream</code>.</li>
 	 * 	<li><code>encryption</code> - <code>string</code> - Optional - The algorithm to use for encrypting the object. [Allowed values: <code>AES256</code>]</li>
+	 * 	<li><code>fileUpload</code> - <code>string|resource</code> - Required; Conditional - The URL/path for the file to upload, or an open resource. Either this parameter or <code>body</code> is required.</li>
 	 * 	<li><code>headers</code> - <code>array</code> - Optional - Standard HTTP headers to send along in the request. Accepts an associative array of key-value pairs.</li>
 	 * 	<li><code>length</code> - <code>integer</code> - Optional - The size of the object in bytes. For more information, see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.13">RFC 2616, section 14.13</a>. The value can also be passed to the <code>header</code> option as <code>Content-Length</code>.</li>
 	 * 	<li><code>meta</code> - <code>array</code> - Optional - An associative array of key-value pairs. Represented by <code>x-amz-meta-:</code>. Any header starting with this prefix is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.</li>
@@ -1353,8 +1365,14 @@ class AmazonS3 extends CFRuntime
 		// Handle Access Control Lists. Can also be passed as an HTTP header.
 		if (isset($opt['acl']))
 		{
-			$opt['headers']['x-amz-acl'] = $opt['acl'];
-			unset($opt['acl']);
+			if (is_array($opt['acl']))
+			{
+				$opt['headers'] = array_merge($opt['headers'], $this->generate_access_policy_headers($opt['acl']));
+			}
+			else
+			{
+				$opt['headers']['x-amz-acl'] = $opt['acl'];
+			}
 		}
 
 		// Handle storage settings. Can also be passed as an HTTP header.
@@ -1512,7 +1530,10 @@ class AmazonS3 extends CFRuntime
 	}
 
 	/**
-	 * Deletes two or more specified Amazon S3 objects from the specified bucket.
+	 * Deletes one or more specified Amazon S3 objects from the specified bucket.
+	 *
+	 * Since `delete_object()` is designed for deleting a single object, this method is intended to be used
+	 * when there are two or more objects to delete.
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1746,7 +1767,7 @@ class AmazonS3 extends CFRuntime
 		$response = $this->authenticate($dest['bucket'], $opt);
 
 		// Attempt to reset ACLs
-		$http = new RequestCore();
+		$http = new CFRequest();
 		$http->send_multi_request($batch);
 
 		return $response;
@@ -1828,7 +1849,6 @@ class AmazonS3 extends CFRuntime
 		$opt['verb'] = 'PUT';
 		$opt['resource'] = $filename;
 		$opt['sub_resource'] = 'acl';
-
 		// Retrieve the original metadata
 		$metadata = $this->get_object_metadata($bucket, $filename);
 		if ($metadata && $metadata['ContentType'])
@@ -1853,7 +1873,7 @@ class AmazonS3 extends CFRuntime
 
 		if (is_array($acl))
 		{
-			$opt['body'] = $this->generate_access_policy($this->credentials->canonical_id, $this->credentials->canonical_name, $acl);
+			$opt['headers'] = array_merge($opt['headers'], $this->generate_access_policy_headers($acl));
 		}
 		else
 		{
@@ -1872,7 +1892,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $canonical_name (Required) The canonical display name for the bucket owner. This is provided as the `display_name` value from <get_canonical_user_id()>.
 	 * @param array $users (Optional) An array of associative arrays. Each associative array contains an `id` value and a `permission` value.
 	 * @return string Access Control Policy XML.
-	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/S3_ACLs.html Access Control Lists
+	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/ACLOverview.html Access Control Lists
 	 */
 	public function generate_access_policy($canonical_id, $canonical_name, $users)
 	{
@@ -1927,6 +1947,59 @@ class AmazonS3 extends CFRuntime
 		}
 
 		return $xml->asXML();
+	}
+
+	/**
+	 * Generates the HTTP headers to be used for the Access Control Policy Grants.
+	 *
+	 * @param array $users (Optional) An array of associative arrays. Each associative array contains an `id` value and a `permission` value.
+	 * @return array HTTP headers to be applied to the request.
+	 * @link http://docs.amazonwebservices.com/AmazonS3/latest/dev/ACLOverview.html Access Control Lists
+	 */
+	public function generate_access_policy_headers($users)
+	{
+		$headers = array();
+
+		foreach ($users as $user)
+		{
+			// Determine permission. If doesn't exist, create it.
+			$permission = 'x-amz-grant-' . str_replace('_', '-', strtolower($user['permission']));
+			if (!isset($headers[$permission]))
+			{
+				$headers[$permission] = array();
+			}
+
+			// Handle the IDs
+			switch ($user['id'])
+			{
+				case self::USERS_AUTH:    // Authorized Users
+				case self::USERS_ALL:     // All Users
+				case self::USERS_LOGGING: // The Logging User
+					$headers[$permission][] = 'uri="' . $user['id'] . '"';
+					break;
+
+				// Email Address or Canonical Id
+				default:
+					if (strpos($user['id'], '@'))
+					{
+						// Treat as email address
+						$headers[$permission][] = 'emailAddress="' . $user['id'] . '"';
+					}
+					else
+					{
+						// Assume Canonical Id
+						$headers[$permission][] = 'id="' . $user['id'] . '"';
+					}
+					break;
+			}
+		}
+
+		foreach ($headers as &$permission)
+		{
+			$permission = implode(', ', $permission);
+		}
+
+		return $headers;
 	}
 
 
@@ -2603,14 +2676,14 @@ class AmazonS3 extends CFRuntime
 		}
 
 		$data = array(
-			'ACL' => array(),
-			'ContentType' => null,
-			'ETag' => null,
-			'Headers' => null,
-			'Key' => null,
+			'ACL'          => array(),
+			'ContentType'  => null,
+			'ETag'         => null,
+			'Headers'      => null,
+			'Key'          => null,
 			'LastModified' => null,
-			'Owner' => array(),
-			'Size' => null,
+			'Owner'        => array(),
+			'Size'         => null,
 			'StorageClass' => null,
 		);
 
@@ -3084,7 +3157,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param string $filename (Required) The file name for the object.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>acl</code> - <code>string</code> - Optional - The ACL settings for the specified object. [Allowed values: <code>AmazonS3::ACL_PRIVATE</code>, <code>AmazonS3::ACL_PUBLIC</code>, <code>AmazonS3::ACL_OPEN</code>, <code>AmazonS3::ACL_AUTH_READ</code>, <code>AmazonS3::ACL_OWNER_READ</code>, <code>AmazonS3::ACL_OWNER_FULL_CONTROL</code>]. The default value is <code>ACL_PRIVATE</code>.</li>
+	 * 	<li><code>acl</code> - <code>string</code> - Optional - The ACL settings for the specified object. Accepts any of the following constants: [Allowed values: <code>AmazonS3::ACL_PRIVATE</code>, <code>AmazonS3::ACL_PUBLIC</code>, <code>AmazonS3::ACL_OPEN</code>, <code>AmazonS3::ACL_AUTH_READ</code>, <code>AmazonS3::ACL_OWNER_READ</code>, <code>AmazonS3::ACL_OWNER_FULL_CONTROL</code>]. Alternatively, an array of associative arrays. Each associative array contains an <code>id</code> and a <code>permission</code> key. The default value is <code>ACL_PRIVATE</code>.</li>
 	 * 	<li><code>contentType</code> - <code>string</code> - Optional - The type of content that is being sent. The default value is <code>application/octet-stream</code>.</li>
 	 * 	<li><code>encryption</code> - <code>string</code> - Optional - The algorithm to use for encrypting the object. [Allowed values: <code>AES256</code>]</li>
 	 * 	<li><code>headers</code> - <code>array</code> - Optional - Standard HTTP headers to send along in the request. Accepts an associative array of key-value pairs.</li>
@@ -3121,8 +3194,14 @@ class AmazonS3 extends CFRuntime
 		// Handle Access Control Lists. Can also be passed as an HTTP header.
 		if (isset($opt['acl']))
 		{
-			$opt['headers']['x-amz-acl'] = $opt['acl'];
-			unset($opt['acl']);
+			if (is_array($opt['acl']))
+			{
+				$opt['headers'] = array_merge($opt['headers'], $this->generate_access_policy_headers($opt['acl']));
+			}
+			else
+			{
+				$opt['headers']['x-amz-acl'] = $opt['acl'];
+			}
 		}
 
 		// Handle storage settings. Can also be passed as an HTTP header.
@@ -3810,11 +3889,13 @@ class AmazonS3 extends CFRuntime
 	 * measured as number of days from creation time. Amazon S3 guarantees that the object will be
 	 * deleted when the expiration time is passed.
 	 *
+	 * This feature is also known as "lifecycle" (e.g., in the AWS Console).
+	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>rules</code> - <code>string</code> - Required - The object expiration rule-sets to apply to the bucket. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - Required - This represents a simple array index. <ul>
-	 * 			<li><code>id</code> - <code>string</code> - Optional - Unique identifier for the rule. The value cannot be longer than 255 characters.
+	 * 			<li><code>id</code> - <code>string</code> - Optional - Unique identifier for the rule. The value cannot be longer than 255 characters.</li>
 	 * 			<li><code>prefix</code> - <code>string</code> - Required - The Amazon S3 object prefix which targets the file(s) for expiration.</li>
 	 * 			<li><code>expiration</code> - <code>array</code> - Required - The container for the unit of measurement by which the expiration time is calculated. <ul>
 	 * 				<li><code>days</code> - <code>integer</code> - Required - The number of days until the targetted objects expire from the bucket.</li>
@@ -3907,6 +3988,17 @@ class AmazonS3 extends CFRuntime
 		return $this->authenticate($bucket, $opt);
 	}
 
+	/**
+	 * Retrieves the expiry period (i.e., lifecycle) for objects.
+	 *
+	 * This feature is also known as "lifecycle" (e.g., in the AWS Console).
+	 *
+	 * @param string $bucket (Required) The name of the bucket to use.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
 	public function get_object_expiration_config($bucket, $opt = null)
 	{
 		if (!$opt) $opt = array();
@@ -3917,6 +4009,17 @@ class AmazonS3 extends CFRuntime
 		return $this->authenticate($bucket, $opt);
 	}
 
+	/**
+	 * Deletes the expiry period (i.e., lifecycle) for objects.
+	 *
+	 * This feature is also known as "lifecycle" (e.g., in the AWS Console).
+	 *
+	 * @param string $bucket (Required) The name of the bucket to use.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
 	public function delete_object_expiration_config($bucket, $opt = null)
 	{
 		if (!$opt) $opt = array();
