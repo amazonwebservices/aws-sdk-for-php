@@ -267,7 +267,7 @@ class AuthV4Query extends Signer implements Signable
 		$pieces = explode('.', $this->endpoint);
 
 		// Handle cases with single/no region (i.e. service.region.amazonaws.com vs. service.amazonaws.com)
-		if (count($pieces < 4))
+		if (count($pieces) < 4)
 		{
 			return 'us-east-1';
 		}

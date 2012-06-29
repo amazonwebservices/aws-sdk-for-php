@@ -1,3 +1,13 @@
+# Changelog: 1.5.8.1 "I Tripoli"
+Code name for Macintosh System 7.1. <http://en.wikipedia.org/wiki/System_7>
+
+Launched Friday, June 29th, 2012.
+
+## Bug fixes and enhancements
+* Resolved an issue in which our implementation of SignatureV4 produced an invalid signature for regions other than us-east-1.
+
+----
+
 # Changelog: "I Tripoli"
 Code name for Macintosh System 7.1. <http://en.wikipedia.org/wiki/System_7>
 
