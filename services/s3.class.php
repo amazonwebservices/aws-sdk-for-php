@@ -2324,7 +2324,7 @@ class AmazonS3 extends CFRuntime
 			'headers' => array(
 				'Content-Type' => $contentType
 			),
-			'metadataDirective' => 'COPY'
+			'metadataDirective' => 'REPLACE'
 		), $opt);
 
 		return $this->copy_object(
