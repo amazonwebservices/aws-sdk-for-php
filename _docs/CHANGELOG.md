@@ -1,3 +1,13 @@
+# Changelog: 1.5.8.2 "I Tripoli"
+Code name for Macintosh System 7.1. <http://en.wikipedia.org/wiki/System_7>
+
+Launched Tuesday, July 10th, 2012.
+
+## Bug fixes and enhancements
+* Resolved an issue in which requests to Amazon DynamoDB larger than 1 KB had extra latency.
+
+----
+
 # Changelog: 1.5.8.1 "I Tripoli"
 Code name for Macintosh System 7.1. <http://en.wikipedia.org/wiki/System_7>
 

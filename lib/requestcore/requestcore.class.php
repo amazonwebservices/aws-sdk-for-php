@@ -685,6 +685,11 @@ class RequestCore
 		{
 			$temp_headers = array();
 
+			if (!array_key_exists('Expect', $this->request_headers))
+			{
+				$this->request_headers['Expect'] = '';
+			}
+
 			foreach ($this->request_headers as $k => $v)
 			{
 				$temp_headers[] = $k . ': ' . $v;
