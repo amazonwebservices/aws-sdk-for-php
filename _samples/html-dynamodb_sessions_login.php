@@ -28,8 +28,6 @@
 	* You've already added your credentials to your config.inc.php file, as per the
 	  instructions in the Getting Started Guide.
 
-	* You've set the "default_cache_config" in your config.inc.php file.
-
 	* You've already created a table in Amazon DynamoDB called "sessions-test" with
 	  a string primary key called "id".
 

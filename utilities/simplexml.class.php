@@ -19,8 +19,10 @@
 // CLASS
 
 /**
- * Wraps the underlying `SimpleXMLIterator` class with enhancements for rapidly traversing the DOM tree,
- * converting types, and comparisons.
+ * Wraps the underlying `SimpleXMLIterator` class with enhancements for rapidly traversing the
+ * DOM tree, converting types, and comparisons. You will need to be familiar with traversing
+ * objects with the PHP SimpleXML extension in order to use this class effectively. Also,
+ * CFResponse bodies are typically represented as CFSimpleXML objects.
  *
  * @version 2012.05.31
  * @license See the included NOTICE.md file for more information.

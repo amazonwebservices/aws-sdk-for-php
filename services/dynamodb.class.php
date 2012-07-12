@@ -21,7 +21,7 @@
  * Amazon DynamoDB removes traditional scalability limitations on data storage while maintaining
  * low latency and predictable performance.
  *
- * @version 2012.05.31
+ * @version 2012.06.21
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/dynamodb/ Amazon DynamoDB
@@ -258,39 +258,10 @@ class AmazonDynamoDB extends CFRuntime
 	{
 		$this->api_version = '2011-12-05';
 		$this->hostname = self::DEFAULT_URL;
-		$this->auth_class = 'AuthV3JSON';
+		$this->auth_class = 'AuthV4JSON';
 		$this->operation_prefix = 'x-amz-target:DynamoDB_20111205.';
 
 		parent::__construct($options);
-
-		// Only attempt to get STS credentials if there is no token (i.e. they
-		// are not already using STS or instance profile credentials)
-		if (!$this->auth_token)
-		{
-			// Default caching mechanism is required
-			if (!$this->credentials->default_cache_config)
-			{
-				// @codeCoverageIgnoreStart
-				throw new DynamoDB_Exception('The DynamoDB class requires the '
-					. '"default_cache_config" option to be set in the '
-					. 'config.inc.php file or AmazonDynamoDB constructor.');
-				// @codeCoverageIgnoreEnd
-			}
-
-			// Instantiate and invoke the cache
-			$cache_id = $this->key . '_sts_credentials_' . sha1(serialize($options));
-			$cache = new $this->cache_class($cache_id, $this->cache_location, 0, $this->cache_compress);
-			if ($data = $cache->read())
-			{
-				$cache->expire_in((strtotime($data['expires']) - time()) * 0.85);
-			}
-			$sts_credentials = $cache->response_manager(array($this, 'cache_sts_credentials'), array($cache, $options));
-
-			// Store the credentials inside the class
-			$this->key        = $sts_credentials['key'];
-			$this->secret_key = $sts_credentials['secret'];
-			$this->auth_token = $sts_credentials['token'];
-		}
 	}
 
 

@@ -1793,6 +1793,27 @@ class AmazonS3 extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['metadataDirective'] = 'REPLACE';
 
+		// Retrieve the original metadata
+		$metadata = $this->get_object_metadata($bucket, $filename);
+		if ($metadata && isset($metadata['ACL']))
+		{
+			$opt['acl'] = isset($opt['acl']) ? $opt['acl'] : $metadata['ACL'];
+		}
+		if ($metadata && isset($metadata['StorageClass']))
+		{
+			$opt['headers']['x-amz-storage-class'] = $metadata['StorageClass'];
+		}
+		if ($metadata && isset($metadata['ContentType']))
+		{
+			$opt['headers']['Content-Type'] = $metadata['ContentType'];
+		}
+
+		// Remove a header
+		unset($metadata['Headers']['date']);
+
+		// Merge headers
+		$opt['headers'] = array_merge($opt['headers'], $metadata['Headers']);
+
 		// Authenticate to S3
 		return $this->copy_object(
 			array('bucket' => $bucket, 'filename' => $filename),
@@ -2310,11 +2331,11 @@ class AmazonS3 extends CFRuntime
 
 		// Retrieve the original metadata
 		$metadata = $this->get_object_metadata($bucket, $filename);
-		if ($metadata && $metadata['ACL'])
+		if ($metadata && isset($metadata['ACL']))
 		{
 			$opt['acl'] = $metadata['ACL'];
 		}
-		if ($metadata && $metadata['StorageClass'])
+		if ($metadata && isset($metadata['StorageClass']))
 		{
 			$opt['headers']['x-amz-storage-class'] = $metadata['StorageClass'];
 		}
@@ -2324,7 +2345,7 @@ class AmazonS3 extends CFRuntime
 			'headers' => array(
 				'Content-Type' => $contentType
 			),
-			'metadataDirective' => 'COPY'
+			'metadataDirective' => 'REPLACE'
 		), $opt);
 
 		return $this->copy_object(
@@ -2351,13 +2372,13 @@ class AmazonS3 extends CFRuntime
 
 		// Retrieve the original metadata
 		$metadata = $this->get_object_metadata($bucket, $filename);
-		if ($metadata && $metadata['ACL'])
+		if ($metadata && isset($metadata['ACL']))
 		{
 			$opt['acl'] = $metadata['ACL'];
 		}
-		if ($metadata && $metadata['ContentType'])
+		if ($metadata && isset($metadata['StorageClass']))
 		{
-			$opt['headers']['Content-Type'] = $metadata['ContentType'];
+			$opt['headers']['x-amz-storage-class'] = $metadata['StorageClass'];
 		}
 
 		// Merge optional parameters

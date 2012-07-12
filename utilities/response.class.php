@@ -19,7 +19,8 @@
 // CLASS
 
 /**
- * Wraps the underlying `ResponseCore` class with some AWS-specific customizations.
+ * Wraps the underlying `ResponseCore` class with some AWS-specific customizations. Response
+ * bodies are typically represented as CFSimpleXML objects.
  *
  * @version 2010.10.11
  * @license See the included NOTICE.md file for more information.

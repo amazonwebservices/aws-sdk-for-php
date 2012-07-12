@@ -34,7 +34,7 @@
  * 	<li>https://elasticbeanstalk.us-east-1.amazonaws.com</li>
  * </ul>
  *
- * @version 2012.05.01
+ * @version 2012.06.21
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticbeanstalk/ AWS ElasticBeanstalk
@@ -64,6 +64,36 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
 	 */
 	const REGION_TOKYO = self::REGION_APAC_NE1;
+
+	/**
+	 * Specify the queue URL for the United States West (Northern California) Region.
+	 */
+	const REGION_US_W1 = 'elasticbeanstalk.us-west-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the United States West (Northern California) Region.
+	 */
+	const REGION_CALIFORNIA = self::REGION_US_W1;
+
+	/**
+	 * Specify the queue URL for the United States West (Oregon) Region.
+	 */
+	const REGION_US_W2 = 'elasticbeanstalk.us-west-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the United States West (Oregon) Region.
+	 */
+	const REGION_OREGON = self::REGION_US_W2;
+
+	/**
+	 * Specify the queue URL for the Europe West (Ireland) Region.
+	 */
+	const REGION_EU_W1 = 'elasticbeanstalk.eu-west-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Europe West (Ireland) Region.
+	 */
+	const REGION_IRELAND = self::REGION_EU_W1;
 
 	/**
 	 * Default service endpoint.
@@ -102,7 +132,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	/**
 	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_APAC_NE1>.
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_APAC_NE1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)

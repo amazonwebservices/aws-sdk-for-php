@@ -126,7 +126,7 @@ class AmazonELB extends CFRuntime
 	{
 		$this->api_version = '2012-06-01';
 		$this->hostname = self::DEFAULT_URL;
-		$this->auth_class = 'AuthV2Query';
+		$this->auth_class = 'AuthV4Query';
 
 		return parent::__construct($options);
 	}

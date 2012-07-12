@@ -1,3 +1,27 @@
+# Changelog: 1.5.9 "Jaguar"
+Code name for Mac OS X 10.2. <http://en.wikipedia.org/wiki/Mac_OS_X_v10.2>
+
+Launched Thursday, July 12th, 2012.
+
+## Bug fixes and enhancements
+* Resolved an issue in `AmazonS3` where Content-Type and other headers weren't being preserved when updating an object. This affects `update_object()`, `change_content_type()` and `change_storage_redundancy()`.
+
+## Services
+### AmazonDynamoDB
+* **New:** Requests to this service are now signed with Signature V4 and no longer require STS credentials.
+
+### AmazonElasticBeanstalk
+* **New:** Support for the US West (Northern California), US West (Oregon), EU West (Ireland) endpoints have been added to the SDK.
+
+### AmazonELB
+* **New:** Requests to this service are now signed with Signature V4.
+
+### AmazonSTS
+* **New:** Support for MFA-protected access through AWS Identity and Access Management has been added to the SDK.
+
+
+----
+
 # Changelog: 1.5.8.2 "I Tripoli"
 Code name for Macintosh System 7.1. <http://en.wikipedia.org/wiki/System_7>
 
@@ -18,7 +42,7 @@ Launched Friday, June 29th, 2012.
 
 ----
 
-# Changelog: "I Tripoli"
+# Changelog: 1.5.8 "I Tripoli"
 Code name for Macintosh System 7.1. <http://en.wikipedia.org/wiki/System_7>
 
 Launched Tuesday, June 26th, 2012.
@@ -47,7 +71,7 @@ Launched Tuesday, June 26th, 2012.
 
 ----
 
-# Changelog: "HyperCard"
+# Changelog: 1.5.7 "HyperCard"
 One of the first successful hypermedia systems before the World Wide Web, developed by Apple. <http://en.wikipedia.org/wiki/HyperCard>
 
 Launched Monday, June 11th, 2012.
