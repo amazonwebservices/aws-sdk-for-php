@@ -21,7 +21,7 @@
 /**
  * The <CFCredentials> class enables developers to easily switch between multiple sets of credentials.
  *
- * @version 2011.11.15
+ * @version 2012.07.13
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -118,6 +118,16 @@ class CFCredentials
 
 		// Return the credential set as an object
 		return new CFCredential(self::$credentials[$credential_name]);
+	}
+
+	/**
+	 * Retrieves a list of all available credential set names.
+	 *
+	 * @return CFArray A list of all available credential set names.
+	 */
+	public static function list_sets()
+	{
+		return new CFArray(array_keys(self::$credentials));
 	}
 }
 

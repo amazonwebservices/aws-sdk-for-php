@@ -26,7 +26,7 @@
  * The endpoint for Amazon SES is located at: <code>https://email.us-east-1.amazonaws.com</code>
  * </p>
  *
- * @version 2012.06.21
+ * @version 2012.07.09
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ses/ Amazon Simple Email Service
@@ -150,6 +150,44 @@ class AmazonSES extends CFRuntime
 		$opt['EmailAddress'] = $email_address;
 		
 		return $this->authenticate('DeleteVerifiedEmailAddress', $opt);
+	}
+
+	/**
+	 * Returns the DNS records, or <em>tokens</em>, that must be present in order for Easy DKIM to
+	 * sign outgoing email messages.
+	 *  
+	 * This action takes a list of verified identities as input. It then returns the following
+	 * information for each identity:
+	 * 
+	 * <ul>
+	 * 	<li>Whether Easy DKIM signing is enabled or disabled.</li>
+	 * 	<li>The set of tokens that are required for Easy DKIM signing. These tokens must be published
+	 * in the domain name's DNS records in order for DKIM verification to complete, and must remain
+	 * published in order for Easy DKIM signing to operate correctly. (This information is only
+	 * returned for domain name identities, not for email addresses.)</li>
+	 * 	<li>Whether Amazon SES has successfully verified the DKIM tokens published in the domain name's
+	 * DNS. (This information is only returned for domain name identities, not for email addresses.)</li>
+	 * </ul>
+	 * 
+	 * For more information about Easy DKIM signing, go to the <a href=
+	 * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
+	 *
+	 * @param string|array $identities (Required) A list of one or more verified identities - email addresses, domains, or both. Pass a string for a single value, or an indexed array for multiple values.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function get_identity_dkim_attributes($identities, $opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		// Required list (non-map)
+		$opt = array_merge($opt, CFComplexType::map(array(
+			'Identities' => (is_array($identities) ? $identities : array($identities))
+		), 'member'));
+
+		return $this->authenticate('GetIdentityDkimAttributes', $opt);
 	}
 
 	/**
@@ -420,6 +458,40 @@ class AmazonSES extends CFRuntime
 	}
 
 	/**
+	 * Enables or disables Easy DKIM signing of email sent from an identity:
+	 * 
+	 * <ul>
+	 * 	<li>If Easy DKIM signing is enabled for a domain name identity (e.g.,
+	 * <code>example.com</code>), then Amazon SES will DKIM-sign all email sent by addresses under
+	 * that domain name (e.g., <code>user@example.com</code>).</li>
+	 * 	<li>If Easy DKIM signing is enabled for an email address, then Amazon SES will DKIM-sign all
+	 * email sent by that email address.</li>
+	 * </ul>
+	 * 
+	 * For email addresses (e.g., <code>user@example.com</code>), you can only enable Easy DKIM
+	 * signing if the corresponding domain (e.g., <code>example.com</code>) has been set up for Easy
+	 * DKIM using the AWS Console or the <code>VerifyDomainDkim</code> action.
+	 *  
+	 * For more information about Easy DKIM signing, go to the <a href=
+	 * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
+	 *
+	 * @param string $identity (Required) The identity for which DKIM signing should be enabled or disabled.
+	 * @param boolean $dkim_enabled (Required) Sets whether DKIM signing is enabled for an identity. Set to <code>true</code> to enable DKIM signing for this identity; <code>false</code> to disable it.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function set_identity_dkim_enabled($identity, $dkim_enabled, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['Identity'] = $identity;
+		$opt['DkimEnabled'] = $dkim_enabled;
+		
+		return $this->authenticate('SetIdentityDkimEnabled', $opt);
+	}
+
+	/**
 	 * Given an identity (email address or domain), enables or disables whether Amazon SES forwards
 	 * feedback notifications as email. Feedback forwarding may only be disabled when both complaint
 	 * and bounce topics are set. For more information about feedback notification, see the <a href=
@@ -463,6 +535,34 @@ class AmazonSES extends CFRuntime
 		$opt['NotificationType'] = $notification_type;
 		
 		return $this->authenticate('SetIdentityNotificationTopic', $opt);
+	}
+
+	/**
+	 * Returns a set of DNS records, or <em>tokens</em>, that must be published in the domain name's
+	 * DNS to complete the DKIM verification process. These tokens are DNS <code>CNAME</code> records
+	 * that point to DKIM public keys hosted by Amazon SES. To complete the DKIM verification process,
+	 * these tokens must be published in the domain's DNS. The tokens must remain published in order
+	 * for Easy DKIM signing to function correctly.
+	 *  
+	 * After the tokens are added to the domain's DNS, Amazon SES will be able to DKIM-sign email
+	 * originating from that domain. To enable or disable Easy DKIM signing for a domain, use the
+	 * <code>SetIdentityDkimEnabled</code> action.
+	 *  
+	 * For more information about Easy DKIM, go to the <a href=
+	 * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
+	 *
+	 * @param string $domain (Required) The name of the domain to be verified for Easy DKIM signing.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function verify_domain_dkim($domain, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['Domain'] = $domain;
+		
+		return $this->authenticate('VerifyDomainDkim', $opt);
 	}
 
 	/**

@@ -1,3 +1,20 @@
+# Changelog: 1.5.10 "Killer Rabbit"
+Code name for AppleShare 3.0. <http://en.wikipedia.org/wiki/AppleShare>
+
+Launched Tuesday, July 17th, 2012.
+
+## Bug fixes and enhancements
+
+## Services
+### AmazonSES
+* **New:** Support for Easy DKIM has been added to the SDK.
+
+## Runtime
+* The `list_sets()` method has been added to the `CFCredentials` class.
+
+
+----
+
 # Changelog: 1.5.9 "Jaguar"
 Code name for Mac OS X 10.2. <http://en.wikipedia.org/wiki/Mac_OS_X_v10.2>
 
