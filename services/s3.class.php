@@ -1409,6 +1409,9 @@ class AmazonS3 extends CFRuntime
 	/**
 	 * Gets the contents of an Amazon S3 object in the specified bucket.
 	 *
+	 * The MD5 value for an object can be retrieved from the ETag HTTP header for any object that was uploaded
+	 * with a normal PUT/POST. This value is incorrect for multipart uploads.
+	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param string $filename (Required) The file name for the object.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1473,6 +1476,9 @@ class AmazonS3 extends CFRuntime
 
 	/**
 	 * Gets the HTTP headers for the specified Amazon S3 object.
+	 *
+	 * The MD5 value for an object can be retrieved from the ETag HTTP header for any object that was uploaded
+	 * with a normal PUT/POST. This value is incorrect for multipart uploads.
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param string $filename (Required) The file name for the object.
@@ -2175,7 +2181,7 @@ class AmazonS3 extends CFRuntime
 		}
 
 		$header = $this->get_bucket_headers($bucket);
-		return (bool) $header->isOK();
+		return (integer) $header->status !== 404;
 	}
 
 	/**
@@ -2670,6 +2676,9 @@ class AmazonS3 extends CFRuntime
 
 	/**
 	 * Gets the collective metadata for the given Amazon S3 object.
+	 *
+	 * The MD5 value for an object can be retrieved from the ETag HTTP header for any object that was uploaded
+	 * with a normal PUT/POST. This value is incorrect for multipart uploads.
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param string $filename (Required) The file name for the Amazon S3 object.

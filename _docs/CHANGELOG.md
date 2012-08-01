@@ -1,3 +1,25 @@
+# Changelog: 1.5.11 "Leopard"
+Code name for Mac OS X 10.5. <http://en.wikipedia.org/wiki/Mac_OS_X_v10.5>
+
+Launched Wednesday, August 1st, 2012.
+
+## Bug fixes and enhancements
+* **Fixed:** [Inconsistent format between GET and SCAN](https://forums.aws.amazon.com/thread.jspa?threadID=98044).
+* **Fixed:** Improved the documentation around retrieving MD5 sums for objects.
+* **Fixed:** Added multi-region support to the `CFHadoop*` helper classes.
+
+## Services
+### AmazonDynamoDB
+* **Fixed:** Resolved an issue where the results of a `scan()` or `query()` command would incorrectly nest `SS` or `NS` values when unmarshalling.
+
+### AmazonEC2
+* **New:** Support for multiple IP addresses for VPC instances has been added to the SDK.
+* **New:** Support for high I/O instances (hi1.xlarge) has been added to the SDK.
+* **New:** Support for provisioned IOPS EBS volumes and EBS-optimized instances have been added to the SDK.
+
+
+----
+
 # Changelog: 1.5.10 "Killer Rabbit"
 Code name for AppleShare 3.0. <http://en.wikipedia.org/wiki/AppleShare>
 

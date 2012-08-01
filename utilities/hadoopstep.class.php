@@ -21,7 +21,7 @@
 /**
  * Contains a set of pre-built Amazon EMR Hadoop steps.
  *
- * @version 2011.05.03
+ * @version 2012.07.24
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -37,7 +37,7 @@ class CFHadoopStep extends CFHadoopBase
 	 */
 	public static function enable_debugging()
 	{
-		return self::script_runner('s3://us-east-1.elasticmapreduce/libs/state-pusher/0.1/fetch');
+		return self::script_runner('s3://' . self::$region . '.elasticmapreduce/libs/state-pusher/0.1/fetch');
 	}
 
 	/**
@@ -76,7 +76,7 @@ class CFHadoopStep extends CFHadoopBase
 	 */
 	public static function install_pig()
 	{
-		return self::hive_pig_script('pig', '--install-pig');
+		return self::hive_pig_script('pig', array('--install-pig', '--pig-versions', 'latest'));
 	}
 
 	/**

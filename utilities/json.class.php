@@ -21,7 +21,7 @@
 /**
  * Handles the conversion of data from JSON to other formats.
  *
- * @version 2012.01.27
+ * @version 2012.07.27
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -76,7 +76,7 @@ class CFJSON
 		}
 
 		// Hand off for the recursive work
-		$string = Array2DOM::arrayToXMLString($json, 'rootElement', true);
+		$string = Transmogrifier::to_xml($json, 'rootElement');
 
 		return simplexml_load_string($string, $parser, LIBXML_NOCDATA);
 	}

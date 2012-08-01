@@ -7,7 +7,7 @@
 class Array2DOM
 {
 	const ATTRIBUTES = '__attributes__';
-	const CONTENT = '__content__';
+	const CONTENT    = '__content__';
 
 	/**
 	 * @param array $source

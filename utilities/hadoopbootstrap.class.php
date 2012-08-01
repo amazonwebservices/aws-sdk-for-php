@@ -21,7 +21,7 @@
 /**
  * Contains a set of pre-built Amazon EMR Hadoop Bootstrap Actions.
  *
- * @version 2011.05.03
+ * @version 2012.07.24
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -30,18 +30,18 @@
 class CFHadoopBootstrap extends CFHadoopBase
 {
 	// Config file types
-	const CONFIG_SITE = 'S';
-	const CONFIG_DEFAULT = 'D';
-	const CONFIG_CORE = 'C';
-	const CONFIG_HDFS = 'H';
+	const CONFIG_SITE      = 'S';
+	const CONFIG_DEFAULT   = 'D';
+	const CONFIG_CORE      = 'C';
+	const CONFIG_HDFS      = 'H';
 	const CONFIG_MAPREDUCE = 'M';
 
 	// Daemon types
-	const DAEMON_NAME_NODE = 'namenode';
-	const DAEMON_DATA_NODE = 'datanode';
-	const DAEMON_JOB_TRACKER = 'jobtracker';
+	const DAEMON_NAME_NODE    = 'namenode';
+	const DAEMON_DATA_NODE    = 'datanode';
+	const DAEMON_JOB_TRACKER  = 'jobtracker';
 	const DAEMON_TASK_TRACKER = 'tasktracker';
-	const DAEMON_CLIENT = 'client';
+	const DAEMON_CLIENT       = 'client';
 
 	/**
 	 * Create a new run-if bootstrap action which lets you conditionally run bootstrap actions.
@@ -55,7 +55,7 @@ class CFHadoopBootstrap extends CFHadoopBase
 		if (!$args) $args = array();
 		$args = is_array($args) ? $args : array($args);
 
-        return self::script_runner('s3://us-east-1.elasticmapreduce/bootstrap-actions/run-if', $args);
+        return self::script_runner('s3://' . self::$region . '.elasticmapreduce/bootstrap-actions/run-if', $args);
 	}
 
 	/**
@@ -84,7 +84,7 @@ class CFHadoopBootstrap extends CFHadoopBase
 			}
 		}
 
-        return self::script_runner('s3://us-east-1.elasticmapreduce/bootstrap-actions/configure-hadoop', $args);
+        return self::script_runner('s3://' . self::$region . '.elasticmapreduce/bootstrap-actions/configure-hadoop', $args);
 	}
 
     /**
@@ -122,6 +122,6 @@ class CFHadoopBootstrap extends CFHadoopBase
 			}
 		}
 
-        return self::script_runner('s3://us-east-1.elasticmapreduce/bootstrap-actions/configure-daemons', $args);
+        return self::script_runner('s3://' . self::$region . '.elasticmapreduce/bootstrap-actions/configure-daemons', $args);
 	}
 }

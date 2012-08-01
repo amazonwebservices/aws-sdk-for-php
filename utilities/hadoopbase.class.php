@@ -21,7 +21,7 @@
 /**
  * Contains core functionality for Hadoop helpers.
  *
- * @version 2011.05.03
+ * @version 2012.07.24
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -29,6 +29,8 @@
  */
 class CFHadoopBase
 {
+	public static $region = 'us-east-1';
+
 	/**
 	 * Runs a specified script on the master node of your cluster.
 	 *
@@ -42,7 +44,7 @@ class CFHadoopBase
 		array_unshift($args, $script);
 
 		return array(
-			'Jar' => 's3://us-east-1.elasticmapreduce/libs/script-runner/script-runner.jar',
+			'Jar' => 's3://' . self::$region . '.elasticmapreduce/libs/script-runner/script-runner.jar',
 			'Args' => $args
 		);
 	}
@@ -60,8 +62,8 @@ class CFHadoopBase
 	{
 		if (!$args) $args = array();
 		$args = is_array($args) ? $args : array($args);
-		$args = array_merge(array('--base-path', 's3://us-east-1.elasticmapreduce/libs/' . $type . '/'), $args);
+		$args = array_merge(array('--base-path', 's3://' . self::$region . '.elasticmapreduce/libs/' . $type . '/'), $args);
 
-        return self::script_runner('s3://us-east-1.elasticmapreduce/libs/' . $type . '/' . $type . '-script', $args);
+        return self::script_runner('s3://' . self::$region . '.elasticmapreduce/libs/' . $type . '/' . $type . '-script', $args);
 	}
 }
