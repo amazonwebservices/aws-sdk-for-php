@@ -715,7 +715,9 @@ class AmazonSDB extends CFRuntime
 				{
 					$fromEndPos = strpos(strtolower($select_expression), ' from ')+6;
 					$query = 'select count(*) from '.substr($select_expression, $fromEndPos, $limitPos-$fromEndPos)." limit {$limit[0]}";
-					$countResult = $this->select($query, $opt);
+					$countOpt = $opt;
+					unset($countOpt['Output']);
+					$countResult = $this->select($query, $countOpt);
 					$token = $countResult->body->SelectResult->NextToken->to_string();
 					$opt["NextToken"] = $token;
 					return $this->select(substr($select_expression, 0, $limitPos)." limit {$limit[1]}", $opt);
