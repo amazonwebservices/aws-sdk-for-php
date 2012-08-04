@@ -31,7 +31,7 @@
  * Visit <a href="http://aws.amazon.com/simpledb/">http://aws.amazon.com/simpledb/</a> for more
  * information.
  *
- * @version 2012.08.02
+ * @version 2012.08.04
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/simpledb/ Amazon SimpleDB
@@ -701,6 +701,28 @@ class AmazonSDB extends CFRuntime
 	 */
 	public function select($select_expression, $opt = null)
 	{
+		$limitPos = strrpos(strtolower($select_expression), ' limit ');
+		if ($limitPos !== false)
+		{
+			$limit = explode(' ', substr($select_expression, $limitPos+7));
+			if (!empty($limit[1]))
+			{
+				if ($limit[0] == '0')
+				{
+					return $this->select(substr($select_expression, 0, $limitPos)." limit {$limit[1]}", $opt);
+				}
+				else
+				{
+					$fromEndPos = strpos(strtolower($select_expression), ' from ')+6;
+					$query = 'select count(*) from '.substr($select_expression, $fromEndPos, $limitPos-$fromEndPos)." limit {$limit[0]}";
+					$countResult = $this->select($query, $opt);
+					$token = $countResult->body->SelectResult->NextToken->to_string();
+					$opt["NextToken"] = $token;
+					return $this->select(substr($select_expression, 0, $limitPos)." limit {$limit[1]}", $opt);
+				}
+			}
+		}
+
 		if (!$opt) $opt = array();
 		$opt['SelectExpression'] = $select_expression;
 		if (isset($opt['Output']))
