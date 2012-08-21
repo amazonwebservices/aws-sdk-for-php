@@ -1,3 +1,15 @@
+# Changelog: 1.5.12 "Marklar"
+Code name for Mac OS X for Intel architecture. <http://en.wikipedia.org/wiki/Mac_OS_X#Apple.E2.80.93Intel_transition>
+
+Launched Tuesday, August 21, 2012.
+
+## Services
+### AmazonDynamoDB
+* Support for binary data types has been added to the SDK.
+
+
+----
+
 # Changelog: 1.5.11 "Leopard"
 Code name for Mac OS X 10.5. <http://en.wikipedia.org/wiki/Mac_OS_X_v10.5>
 

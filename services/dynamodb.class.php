@@ -21,7 +21,7 @@
  * Amazon DynamoDB removes traditional scalability limitations on data storage while maintaining
  * low latency and predictable performance.
  *
- * @version 2012.06.21
+ * @version 2012.08.17
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/dynamodb/ Amazon DynamoDB
@@ -229,14 +229,47 @@ class AmazonDynamoDB extends CFRuntime
 	const TYPE_NUMBER = 'N';
 
 	/**
-	 * Content type: array of strings
+	 * Content type: binary
 	 */
-	const TYPE_ARRAY_OF_STRINGS = 'SS';
+	const TYPE_BINARY = 'B';
 
 	/**
-	 * Content type: array of strings
+	 * Content type: string set
 	 */
-	const TYPE_ARRAY_OF_NUMBERS = 'NS';
+	const TYPE_STRING_SET = 'SS';
+
+	/**
+	 * Content type: number set
+	 */
+	const TYPE_NUMBER_SET = 'NS';
+
+	/**
+	 * Content type: binary set
+	 */
+	const TYPE_BINARY_SET = 'BS';
+
+	/**
+	 * Content type: string set
+	 * @deprecated Please use TYPE_STRING_SET
+	 */
+	const TYPE_ARRAY_OF_STRINGS = self::TYPE_STRING_SET;
+
+	/**
+	 * Content type: number set
+	 * @deprecated Please use TYPE_NUMBER_SET
+	 */
+	const TYPE_ARRAY_OF_NUMBERS = self::TYPE_NUMBER_SET;
+
+	/**
+	 * Content type: binary set
+	 * @deprecated Please use TYPE_BINARY_SET
+	 */
+	const TYPE_ARRAY_OF_BINARIES = self::TYPE_BINARY_SET;
+
+	/**
+	 * The suffix used for identifying a set type
+	 */
+	const SUFFIX_FOR_TYPES = 'S';
 
 
 	/*%******************************************************************************************%*/
@@ -325,8 +358,10 @@ class AmazonDynamoDB extends CFRuntime
 			static $valid_types = array(
 				self::TYPE_STRING,
 				self::TYPE_NUMBER,
-				self::TYPE_ARRAY_OF_STRINGS,
-				self::TYPE_ARRAY_OF_NUMBERS
+				self::TYPE_BINARY,
+				self::TYPE_STRING_SET,
+				self::TYPE_NUMBER_SET,
+				self::TYPE_BINARY_SET,
 			);
 
 			$info['type'] = in_array($type_override, $valid_types) ? $type_override : $info['type'];
@@ -379,11 +414,33 @@ class AmazonDynamoDB extends CFRuntime
 			return null;
 		}
 
-		// Do some validation on the value up-front. Only non-empty, string-friendly values allowed.
-		$value_is_empty = ($value === null || $value === array() || $value === '');
-		$value_is_complex = (is_resource($value) || (is_object($value) && !method_exists($value, '__toString')));
+		// Handle objects (including DynamoDB Binary types)
+		if (is_object($value))
+		{
+			if ($value instanceof DynamoDB_Binary || $value instanceof DynamoDB_BinarySet)
+			{
+				$type = ($value instanceof DynamoDB_Binary) ? self::TYPE_BINARY : self::TYPE_BINARY_SET;
+				return array(
+					'value' => $value->{$type},
+					'type'  => $type
+				);
+			}
+			elseif ($value instanceof Traversable)
+			{
+				$value = iterator_to_array($value);
+			}
+			elseif (method_exists($value, '__toString'))
+			{
+				$value = (string) $value;
+			}
+			else
+			{
+				return null;
+			}
+		}
 
-		if ($value_is_empty || $value_is_complex)
+		// Handle empty values (zeroes are OK though) and resources
+		if ($value === null || $value === array() || $value === '' || is_resource($value))
 		{
 			return null;
 		}
@@ -434,11 +491,41 @@ class AmazonDynamoDB extends CFRuntime
 				$info['value'][] = $sub_info['value'];
 			}
 
-			// Make sure the type is changed to be the appropriate array type
-			$info['type'] = ($set_type == self::TYPE_STRING) ? self::TYPE_ARRAY_OF_STRINGS : self::TYPE_ARRAY_OF_NUMBERS;
+			// Make sure the type is changed to be the appropriate array/set type
+			$info['type'] = $set_type . self::SUFFIX_FOR_TYPES;
 		}
 
 		return $info;
+	}
+
+	/**
+	 * A shortcut/factory-type method for indicating a DynamoDB binary type. Binary types are
+	 * like strings but get base64 encoded automatically. The DynamoDB service decodes these
+	 * values and stores them in the raw format. This allows the transfer of binary data to
+	 * DynamoDB without the extra storage costs of the base64 encoding inflation.
+	 *
+	 * @param string $value (Required) The value to be converted to a binary type
+	 * @return DynamoDB_Binary
+	 */
+	public function binary($value)
+	{
+		return new DynamoDB_Binary($value);
+	}
+
+	/**
+	 * A shortcut/factory-type method for indicating a DynamoDB binary set type.
+	 *
+	 * @param array $values (Required) The values to be converted to a binary set.
+	 * @return DynamoDB_BinarySet
+	 */
+	public function binary_set($values)
+	{
+		if (is_scalar($values))
+		{
+			$values = func_get_args();
+		}
+
+		return new DynamoDB_BinarySet($values);
 	}
 
 
@@ -468,14 +555,18 @@ class AmazonDynamoDB extends CFRuntime
 	 * 					<li><code>HashKeyElement</code> - <code>array</code> - Required - A hash key element is treated as the primary key, and can be a string or a number. Single attribute primary keys have one index value. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 						<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 						<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 						<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 						<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 						<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 						<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 					</ul></li>
 	 * 					<li><code>RangeKeyElement</code> - <code>array</code> - Optional - A range key element is treated as a secondary key (used in conjunction with the primary key), and can be a string or a number, and is only used for hash-and-range primary keys. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 						<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 						<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 						<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 						<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 						<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 						<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 					</ul></li>
 	 * 				</ul></li>
 	 * 			</ul></li>
@@ -506,11 +597,13 @@ class AmazonDynamoDB extends CFRuntime
 	 * 			<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 				<li><code>PutRequest</code> - <code>array</code> - Optional - A container for a Put BatchWrite request <ul>
 	 * 					<li><code>Item</code> - <code>array</code> - Required - The item to put <ul>
-	 * 						<li><code>[custom-key]</code> - <code>array</code> - Optional - AttributeValue can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
+	 * 						<li><code>[custom-key]</code> - <code>array</code> - Optional - AttributeValue can be <code>String</code>, <code>Number</code>, <code>Binary</code>, <code>StringSet</code>, <code>NumberSet</code>, <code>BinarySet</code>. <ul>
 	 * 							<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 							<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 							<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 							<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 							<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 							<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 						</ul></li>
 	 * 					</ul></li>
 	 * 				</ul></li>
@@ -519,24 +612,30 @@ class AmazonDynamoDB extends CFRuntime
 	 * 						<li><code>HashKeyElement</code> - <code>array</code> - Required - A hash key element is treated as the primary key, and can be a string or a number. Single attribute primary keys have one index value. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 							<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 							<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 							<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 							<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 							<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 							<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 						</ul></li>
 	 * 						<li><code>RangeKeyElement</code> - <code>array</code> - Optional - A range key element is treated as a secondary key (used in conjunction with the primary key), and can be a string or a number, and is only used for hash-and-range primary keys. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 							<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 							<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 							<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 							<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 							<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 							<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 						</ul></li>
 	 * 					</ul></li>
 	 * 				</ul></li>
 	 * 			</ul></li>
 	 * 		</ul></li>
-	 * 		<li><code>value</code> - <code>array</code> - Optional - AttributeValue can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
+	 * 		<li><code>value</code> - <code>array</code> - Optional - AttributeValue can be <code>String</code>, <code>Number</code>, <code>Binary</code>, <code>StringSet</code>, <code>NumberSet</code>, <code>BinarySet</code>. <ul>
 	 * 			<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 			<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 			<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 			<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -566,11 +665,11 @@ class AmazonDynamoDB extends CFRuntime
 	 * 	<li><code>KeySchema</code> - <code>array</code> - Required - The KeySchema identifies the primary key as a one attribute primary key (hash) or a composite two attribute (hash-and-range) primary key. Single attribute primary keys have one index value: a <code>HashKeyElement</code>. A composite hash-and-range primary key contains two attribute values: a <code>HashKeyElement</code> and a <code>RangeKeyElement</code>. <ul>
 	 * 		<li><code>HashKeyElement</code> - <code>array</code> - Required - A hash key element is treated as the primary key, and can be a string or a number. Single attribute primary keys have one index value. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 			<li><code>AttributeName</code> - <code>string</code> - Required - The <code>AttributeName</code> of the <code>KeySchemaElement</code>.</li>
-	 * 			<li><code>AttributeType</code> - <code>string</code> - Required - The <code>AttributeType</code> of the <code>KeySchemaElement</code> which can be a <code>String</code> or a <code>Number</code>. [Allowed values: <code>S</code>, <code>N</code>]</li>
+	 * 			<li><code>AttributeType</code> - <code>string</code> - Required - The <code>AttributeType</code> of the <code>KeySchemaElement</code> which can be a <code>String</code> or a <code>Number</code>. [Allowed values: <code>S</code>, <code>N</code>, <code>B</code>]</li>
 	 * 		</ul></li>
 	 * 		<li><code>RangeKeyElement</code> - <code>array</code> - Optional - A range key element is treated as a secondary key (used in conjunction with the primary key), and can be a string or a number, and is only used for hash-and-range primary keys. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 			<li><code>AttributeName</code> - <code>string</code> - Required - The <code>AttributeName</code> of the <code>KeySchemaElement</code>.</li>
-	 * 			<li><code>AttributeType</code> - <code>string</code> - Required - The <code>AttributeType</code> of the <code>KeySchemaElement</code> which can be a <code>String</code> or a <code>Number</code>. [Allowed values: <code>S</code>, <code>N</code>]</li>
+	 * 			<li><code>AttributeType</code> - <code>string</code> - Required - The <code>AttributeType</code> of the <code>KeySchemaElement</code> which can be a <code>String</code> or a <code>Number</code>. [Allowed values: <code>S</code>, <code>N</code>, <code>B</code>]</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>ProvisionedThroughput</code> - <code>array</code> - Required - Provisioned throughput reserves the required read and write resources for your table in terms of <code>ReadCapacityUnits</code> and <code>WriteCapacityUnits</code>. Values for provisioned throughput depend upon your expected read/write rates, item size, and consistency. Provide the expected number of read and write operations, assuming an item size of 1k and strictly consistent reads. For 2k item size, double the value. For 3k, triple the value, etc. Eventually-consistent reads consume half the resources of strictly consistent reads. <ul>
@@ -600,14 +699,18 @@ class AmazonDynamoDB extends CFRuntime
 	 * 		<li><code>HashKeyElement</code> - <code>array</code> - Required - A hash key element is treated as the primary key, and can be a string or a number. Single attribute primary keys have one index value. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 			<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 			<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 			<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 			<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 		</ul></li>
 	 * 		<li><code>RangeKeyElement</code> - <code>array</code> - Optional - A range key element is treated as a secondary key (used in conjunction with the primary key), and can be a string or a number, and is only used for hash-and-range primary keys. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 			<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 			<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 			<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 			<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>Expected</code> - <code>array</code> - Optional - Designates an attribute for a conditional modification. The <code>Expected</code> parameter allows you to provide an attribute name, and whether or not Amazon DynamoDB should check to see if the attribute has a particular value before modifying it. <ul>
@@ -615,8 +718,10 @@ class AmazonDynamoDB extends CFRuntime
 	 * 			<li><code>Value</code> - <code>array</code> - Optional - Specify whether or not a value already exists and has a specific content for the attribute name-value pair. <ul>
 	 * 				<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 				<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 				<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 				<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 				<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 				<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 			</ul></li>
 	 * 			<li><code>Exists</code> - <code>boolean</code> - Optional - Specify whether or not a value already exists for the attribute name-value pair.</li>
 	 * 		</ul></li>
@@ -687,14 +792,18 @@ class AmazonDynamoDB extends CFRuntime
 	 * 		<li><code>HashKeyElement</code> - <code>array</code> - Required - A hash key element is treated as the primary key, and can be a string or a number. Single attribute primary keys have one index value. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 			<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 			<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 			<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 			<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 		</ul></li>
 	 * 		<li><code>RangeKeyElement</code> - <code>array</code> - Optional - A range key element is treated as a secondary key (used in conjunction with the primary key), and can be a string or a number, and is only used for hash-and-range primary keys. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 			<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 			<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 			<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 			<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>AttributesToGet</code> - <code>string|array</code> - Optional - List of <code>Attribute</code> names. If attribute names are not specified then all attributes will be returned. If some attributes are not found, they will not appear in the result. Pass a string for a single value, or an indexed array for multiple values.</li>
@@ -745,11 +854,13 @@ class AmazonDynamoDB extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>TableName</code> - <code>string</code> - Required - The name of the table in which you want to put an item. Allowed characters are <code>a-z</code>, <code>A-Z</code>, <code>0-9</code>, <code>_</code> (underscore), <code>-</code> (hyphen) and <code>.</code> (period). [Constraints: The value must be between 3 and 255 characters, and must match the following regular expression pattern: <code>[a-zA-Z0-9_.-]+</code>]</li>
 	 * 	<li><code>Item</code> - <code>array</code> - Required - A map of the attributes for the item, and must include the primary key values that define the item. Other attribute name-value pairs can be provided for the item. <ul>
-	 * 		<li><code>[custom-key]</code> - <code>array</code> - Optional - AttributeValue can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
+	 * 		<li><code>[custom-key]</code> - <code>array</code> - Optional - AttributeValue can be <code>String</code>, <code>Number</code>, <code>Binary</code>, <code>StringSet</code>, <code>NumberSet</code>, <code>BinarySet</code>. <ul>
 	 * 			<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 			<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 			<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 			<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>Expected</code> - <code>array</code> - Optional - Designates an attribute for a conditional modification. The <code>Expected</code> parameter allows you to provide an attribute name, and whether or not Amazon DynamoDB should check to see if the attribute has a particular value before modifying it. <ul>
@@ -757,8 +868,10 @@ class AmazonDynamoDB extends CFRuntime
 	 * 			<li><code>Value</code> - <code>array</code> - Optional - Specify whether or not a value already exists and has a specific content for the attribute name-value pair. <ul>
 	 * 				<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 				<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 				<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 				<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 				<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 				<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 			</ul></li>
 	 * 			<li><code>Exists</code> - <code>boolean</code> - Optional - Specify whether or not a value already exists for the attribute name-value pair.</li>
 	 * 		</ul></li>
@@ -792,16 +905,20 @@ class AmazonDynamoDB extends CFRuntime
 	 * 	<li><code>HashKeyValue</code> - <code>array</code> - Required - Attribute value of the hash component of the composite primary key. <ul>
 	 * 		<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 		<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 		<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 		<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 		<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 		<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 	</ul></li>
 	 * 	<li><code>RangeKeyCondition</code> - <code>array</code> - Optional - A container for the attribute values and comparison operators to use for the query. <ul>
 	 * 		<li><code>AttributeValueList</code> - <code>array</code> - Optional - A list of attribute values to be used with a comparison operator for a scan or query operation. For comparisons that require more than one value, such as a <code>BETWEEN</code> comparison, the AttributeValueList contains two attribute values and the comparison operator. <ul>
 	 * 			<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 				<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 				<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 				<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 				<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 				<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 				<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 			</ul></li>
 	 * 		</ul></li>
 	 * 		<li><code>ComparisonOperator</code> - <code>string</code> - Required - A comparison operator is an enumeration of several operations:<ul><li> <code>EQ</code> for <em>equal</em>.</li><li> <code>NE</code> for <em>not equal</em>.</li><li> <code>IN</code> checks for exact matches.</li><li> <code>LE</code> for <em>less than or equal to</em>.</li><li> <code>LT</code> for <em>less than</em>.</li><li> <code>GE</code> for <em>greater than or equal to</em>.</li><li> <code>GT</code> for <em>greater than</em>.</li><li> <code>BETWEEN</code> for <em>between</em>.</li><li> <code>NOT_NULL</code> for <em>exists</em>.</li><li> <code>NULL</code> for <em>not exists</em>.</li><li> <code>CONTAINS</code> for substring or value in a set.</li><li> <code>NOT_CONTAINS</code> for absence of a substring or absence of a value in a set.</li><li> <code>BEGINS_WITH</code> for a substring prefix.</li></ul>Scan operations support all available comparison operators. Query operations support a subset of the available comparison operators: EQ, LE, LT, GE, GT, BETWEEN, and BEGINS_WITH. [Allowed values: <code>EQ</code>, <code>NE</code>, <code>IN</code>, <code>LE</code>, <code>LT</code>, <code>GE</code>, <code>GT</code>, <code>BETWEEN</code>, <code>NOT_NULL</code>, <code>NULL</code>, <code>CONTAINS</code>, <code>NOT_CONTAINS</code>, <code>BEGINS_WITH</code>]</li>
@@ -811,14 +928,18 @@ class AmazonDynamoDB extends CFRuntime
 	 * 		<li><code>HashKeyElement</code> - <code>array</code> - Required - A hash key element is treated as the primary key, and can be a string or a number. Single attribute primary keys have one index value. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 			<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 			<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 			<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 			<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 		</ul></li>
 	 * 		<li><code>RangeKeyElement</code> - <code>array</code> - Optional - A range key element is treated as a secondary key (used in conjunction with the primary key), and can be a string or a number, and is only used for hash-and-range primary keys. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 			<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 			<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 			<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 			<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -854,8 +975,10 @@ class AmazonDynamoDB extends CFRuntime
 	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 					<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 					<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 					<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 					<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 					<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 					<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 				</ul></li>
 	 * 			</ul></li>
 	 * 			<li><code>ComparisonOperator</code> - <code>string</code> - Required - A comparison operator is an enumeration of several operations:<ul><li> <code>EQ</code> for <em>equal</em>.</li><li> <code>NE</code> for <em>not equal</em>.</li><li> <code>IN</code> checks for exact matches.</li><li> <code>LE</code> for <em>less than or equal to</em>.</li><li> <code>LT</code> for <em>less than</em>.</li><li> <code>GE</code> for <em>greater than or equal to</em>.</li><li> <code>GT</code> for <em>greater than</em>.</li><li> <code>BETWEEN</code> for <em>between</em>.</li><li> <code>NOT_NULL</code> for <em>exists</em>.</li><li> <code>NULL</code> for <em>not exists</em>.</li><li> <code>CONTAINS</code> for substring or value in a set.</li><li> <code>NOT_CONTAINS</code> for absence of a substring or absence of a value in a set.</li><li> <code>BEGINS_WITH</code> for a substring prefix.</li></ul>Scan operations support all available comparison operators. Query operations support a subset of the available comparison operators: EQ, LE, LT, GE, GT, BETWEEN, and BEGINS_WITH. [Allowed values: <code>EQ</code>, <code>NE</code>, <code>IN</code>, <code>LE</code>, <code>LT</code>, <code>GE</code>, <code>GT</code>, <code>BETWEEN</code>, <code>NOT_NULL</code>, <code>NULL</code>, <code>CONTAINS</code>, <code>NOT_CONTAINS</code>, <code>BEGINS_WITH</code>]</li>
@@ -865,14 +988,18 @@ class AmazonDynamoDB extends CFRuntime
 	 * 		<li><code>HashKeyElement</code> - <code>array</code> - Required - A hash key element is treated as the primary key, and can be a string or a number. Single attribute primary keys have one index value. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 			<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 			<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 			<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 			<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 		</ul></li>
 	 * 		<li><code>RangeKeyElement</code> - <code>array</code> - Optional - A range key element is treated as a secondary key (used in conjunction with the primary key), and can be a string or a number, and is only used for hash-and-range primary keys. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 			<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 			<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 			<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 			<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -904,23 +1031,29 @@ class AmazonDynamoDB extends CFRuntime
 	 * 		<li><code>HashKeyElement</code> - <code>array</code> - Required - A hash key element is treated as the primary key, and can be a string or a number. Single attribute primary keys have one index value. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 			<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 			<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 			<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 			<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 		</ul></li>
 	 * 		<li><code>RangeKeyElement</code> - <code>array</code> - Optional - A range key element is treated as a secondary key (used in conjunction with the primary key), and can be a string or a number, and is only used for hash-and-range primary keys. The value can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
 	 * 			<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 			<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 			<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 			<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>AttributeUpdates</code> - <code>array</code> - Required - Map of attribute name to the new value and action for the update. The attribute names specify the attributes to modify, and cannot contain any primary key attributes. <ul>
 	 * 		<li><code>[custom-key]</code> - <code>array</code> - Optional - Specifies the attribute to update and how to perform the update. Possible values: <code>PUT</code> (default), <code>ADD</code> or <code>DELETE</code>. <ul>
-	 * 			<li><code>Value</code> - <code>array</code> - Optional - AttributeValue can be <code>String</code>, <code>Number</code>, <code>StringSet</code>, <code>NumberSet</code>. <ul>
+	 * 			<li><code>Value</code> - <code>array</code> - Optional - AttributeValue can be <code>String</code>, <code>Number</code>, <code>Binary</code>, <code>StringSet</code>, <code>NumberSet</code>, <code>BinarySet</code>. <ul>
 	 * 				<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 				<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 				<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 				<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 				<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 				<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 			</ul></li>
 	 * 			<li><code>Action</code> - <code>string</code> - Optional - The type of action for an item update operation. Only use the add action for numbers or sets; the specified value is added to the existing value. If a set of values is specified, the values are added to the existing set. Adds the specified attribute. If the attribute exists, it is replaced by the new value. If no value is specified, this removes the attribute and its value. If a set of values is specified, then the values in the specified set are removed from the old set. [Allowed values: <code>ADD</code>, <code>PUT</code>, <code>DELETE</code>]</li>
 	 * 		</ul></li>
@@ -930,8 +1063,10 @@ class AmazonDynamoDB extends CFRuntime
 	 * 			<li><code>Value</code> - <code>array</code> - Optional - Specify whether or not a value already exists and has a specific content for the attribute name-value pair. <ul>
 	 * 				<li><code>S</code> - <code>string</code> - Optional - Strings are Unicode with UTF-8 binary encoding. The maximum size is limited by the size of the primary key (1024 bytes as a range part of a key or 2048 bytes as a single part hash key) or the item size (64k).</li>
 	 * 				<li><code>N</code> - <code>string</code> - Optional - Numbers are positive or negative exact-value decimals and integers. A number can have up to 38 digits precision and can be between 10^-128 to 10^+126.</li>
+	 * 				<li><code>B</code> - <code>blob</code> - Optional - Binary attributes are sequences of unsigned bytes.</li>
 	 * 				<li><code>SS</code> - <code>string|array</code> - Optional - A set of strings. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 				<li><code>NS</code> - <code>string|array</code> - Optional - A set of numbers. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 				<li><code>BS</code> - <code>blob</code> - Optional - A set of binary attributes.</li>
 	 * 			</ul></li>
 	 * 			<li><code>Exists</code> - <code>boolean</code> - Optional - Specify whether or not a value already exists for the attribute name-value pair.</li>
 	 * 		</ul></li>
@@ -977,3 +1112,46 @@ class AmazonDynamoDB extends CFRuntime
 // EXCEPTIONS
 
 class DynamoDB_Exception extends Exception {}
+
+
+/*%******************************************************************************************%*/
+// BINARY TYPE HELPER CLASSES
+
+/**
+ * Represents a DynamoDB Binary type. Does base64_encoding automatically and can be
+ * json_encoded directly.
+ */
+class DynamoDB_Binary
+{
+	/**
+	 * Constructor for DynamoDB Binary type.
+	 *
+	 * @param string $value The binary value.
+	 */
+	public function __construct($value)
+	{
+		$this->{AmazonDynamoDB::TYPE_BINARY} = base64_encode((string) $value);
+	}
+}
+
+/**
+ * Represents a DynamoDB binary set type. Does base64_encoding automatically and can be
+ * json_encoded directly.
+ */
+class DynamoDB_BinarySet
+{
+	/**
+	 * Constructor for DynamoDB Binary Set type.
+	 *
+	 * @param array $values Array of binary values.
+	 */
+	public function __construct(array $values)
+	{
+		foreach ($values as &$value)
+		{
+			$value = base64_encode((string) $value);
+		}
+
+		$this->{AmazonDynamoDB::TYPE_BINARY_SET} = array_values($values);
+	}
+}
