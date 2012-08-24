@@ -49,7 +49,7 @@ class S3_Exception extends Exception {}
  *
  * Visit <http://aws.amazon.com/s3/> for more information.
  *
- * @version 2012.06.18
+ * @version 2012.08.23
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/s3/ Amazon Simple Storage Service
@@ -405,6 +405,11 @@ class AmazonS3 extends CFRuntime
 	public $object_expiration_xml;
 
 	/**
+	 * The base XML elements to use for bucket tagging.
+	 */
+	public $bucket_tagging_xml;
+
+	/**
 	 * The DNS vs. Path-style setting.
 	 */
 	public $path_style = false;
@@ -436,15 +441,16 @@ class AmazonS3 extends CFRuntime
 		$this->api_version = '2006-03-01';
 		$this->hostname = self::DEFAULT_URL;
 
-		$this->base_acp_xml             = '<?xml version="1.0" encoding="UTF-8"?><AccessControlPolicy xmlns="http://s3.amazonaws.com/doc/latest/"></AccessControlPolicy>';
-		$this->base_location_constraint = '<?xml version="1.0" encoding="UTF-8"?><CreateBucketConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"><LocationConstraint></LocationConstraint></CreateBucketConfiguration>';
-		$this->base_logging_xml         = '<?xml version="1.0" encoding="utf-8"?><BucketLoggingStatus xmlns="http://doc.s3.amazonaws.com/' . $this->api_version . '"></BucketLoggingStatus>';
-		$this->base_notification_xml    = '<?xml version="1.0" encoding="utf-8"?><NotificationConfiguration></NotificationConfiguration>';
-		$this->base_versioning_xml      = '<?xml version="1.0" encoding="utf-8"?><VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"></VersioningConfiguration>';
-		$this->complete_mpu_xml         = '<?xml version="1.0" encoding="utf-8"?><CompleteMultipartUpload></CompleteMultipartUpload>';
+		$this->base_acp_xml             = '<?xml version="1.0" encoding="UTF-8"?><AccessControlPolicy xmlns="http://s3.amazonaws.com/doc/latest/"/>';
+		$this->base_location_constraint = '<?xml version="1.0" encoding="UTF-8"?><CreateBucketConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"><LocationConstraint/></CreateBucketConfiguration>';
+		$this->base_logging_xml         = '<?xml version="1.0" encoding="utf-8"?><BucketLoggingStatus xmlns="http://doc.s3.amazonaws.com/' . $this->api_version . '"/>';
+		$this->base_notification_xml    = '<?xml version="1.0" encoding="utf-8"?><NotificationConfiguration/>';
+		$this->base_versioning_xml      = '<?xml version="1.0" encoding="utf-8"?><VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"/>';
+		$this->complete_mpu_xml         = '<?xml version="1.0" encoding="utf-8"?><CompleteMultipartUpload/>';
 		$this->website_config_xml       = '<?xml version="1.0" encoding="utf-8"?><WebsiteConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"><IndexDocument><Suffix>index.html</Suffix></IndexDocument><ErrorDocument><Key>error.html</Key></ErrorDocument></WebsiteConfiguration>';
-		$this->multi_object_delete_xml  = '<?xml version="1.0" encoding="utf-8"?><Delete></Delete>';
-		$this->object_expiration_xml    = '<?xml version="1.0" encoding="utf-8"?><LifecycleConfiguration></LifecycleConfiguration>';
+		$this->multi_object_delete_xml  = '<?xml version="1.0" encoding="utf-8"?><Delete/>';
+		$this->object_expiration_xml    = '<?xml version="1.0" encoding="utf-8"?><LifecycleConfiguration/>';
+		$this->bucket_tagging_xml       = '<?xml version="1.0" encoding="utf-8"?><Tagging><TagSet/></Tagging>';
 
 		parent::__construct($options);
 	}
@@ -4055,6 +4061,90 @@ class AmazonS3 extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['verb'] = 'DELETE';
 		$opt['sub_resource'] = 'lifecycle';
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+
+	/*%******************************************************************************************%*/
+	// BUCKET TAGS
+
+	/**
+	 * Apply a set of tags to the specified bucket. Bucket Tags simplify the task of associating Amazon S3
+	 * costs with specific buckets.
+	 *
+	 * This operation requires permission to perform <code>s3:PutBucketTagging</code> actions. By default,
+	 * the bucket owner is permitted to perform these actions, and can grant permission to other users.
+	 *
+	 * @param string $bucket (Required) The name of the bucket to use.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>tags</code> - <code>array</code> - Required - An associative array of custom key-value pairs. <ul>
+	 * 		<li><code>[custom-key]</code> - <code>string</code> - Optional - A custom key-value pair to tag the bucket with.</li>
+	 * 	</ul></li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_bucket_tags($bucket, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['verb'] = 'PUT';
+		$opt['sub_resource'] = 'tagging';
+
+		$xml = simplexml_load_string($this->bucket_tagging_xml);
+		if (isset($opt['tags']) && is_array($opt['tags']))
+		{
+			foreach ($opt['tags'] as $key => $value)
+			{
+				$xtag = $xml->TagSet->addChild('Tag');
+				$xtag->addChild('Key', $key);
+				$xtag->addChild('Value', $value);
+			}
+		}
+
+		$opt['body'] = $xml->asXML();
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+	/**
+	 * Retrieve all associated tags for the specified bucket.
+	 *
+	 * @param string $bucket (Required) The name of the bucket to use.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function get_bucket_tags($bucket, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['verb'] = 'GET';
+		$opt['sub_resource'] = 'tagging';
+		$opt['headers'] = array(
+			'Content-Type' => 'application/xml'
+		);
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+	/**
+	 * Delete all associated tags from the specified bucket.
+	 *
+	 * @param string $bucket (Required) The name of the bucket to use.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_bucket_tags($bucket, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['verb'] = 'DELETE';
+		$opt['sub_resource'] = 'tagging';
 
 		// Authenticate to S3
 		return $this->authenticate($bucket, $opt);

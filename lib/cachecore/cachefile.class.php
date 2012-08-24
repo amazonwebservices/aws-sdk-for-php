@@ -3,7 +3,7 @@
  * Container for all file-based cache methods. Inherits additional methods from <CacheCore>. Adheres
  * to the ICacheCore interface.
  *
- * @version 2012.04.17
+ * @version 2012.05.25
  * @copyright 2006-2012 Ryan Parman
  * @copyright 2006-2010 Foleeo, Inc.
  * @copyright 2012 Amazon.com, Inc. or its affiliates.
@@ -50,7 +50,12 @@ class CacheFile extends CacheCore implements ICacheCore
 			$data = serialize($data);
 			$data = $this->gzip ? gzcompress($data) : $data;
 
-			return (bool) file_put_contents($this->id, $data);
+			$result = (
+				(bool) file_put_contents($this->id, $data) &&
+				touch($this->id, time() + (integer) $this->expires)
+			);
+
+			return $result;
 		}
 		elseif (realpath($this->location) && file_exists($this->location))
 		{
@@ -108,7 +113,12 @@ class CacheFile extends CacheCore implements ICacheCore
 			$data = serialize($data);
 			$data = $this->gzip ? gzcompress($data) : $data;
 
-			return (bool) file_put_contents($this->id, $data);
+			$result = (
+				(bool) file_put_contents($this->id, $data) &&
+				touch($this->id, time() + (integer) $this->expires)
+			);
+
+			return $result;
 		}
 		else
 		{
@@ -140,7 +150,7 @@ class CacheFile extends CacheCore implements ICacheCore
 	 */
 	public function is_expired()
 	{
-		if ($this->timestamp() + $this->expires < time())
+		if ((integer) $this->timestamp() < time())
 		{
 			return true;
 		}

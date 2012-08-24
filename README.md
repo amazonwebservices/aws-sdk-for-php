@@ -18,20 +18,29 @@ For more information about the AWS SDK for PHP, including a complete list of sup
 [aws.amazon.com/sdkforphp](http://aws.amazon.com/sdkforphp).
 
 
-## Signing up for Amazon Web Services
+## Staying up-to-date!
+We tend to release new updates very frequently. In order to keep up with the newest features and the latest bug fixes,
+we encourage you to subscribe to our release announcements, and to keep your code current.
 
-Before you can begin, you must sign up for each service you want to use.
+### Release announcements
+You can subscribe to release announcements via:
 
-To sign up for a service:
+* [RSS feed](http://pear.amazonwebservices.com/feed.xml)
+* [Twitter](https://twitter.com/awssdkforphp)
+* [Facebook](https://www.facebook.com/pages/AWS-SDK-for-PHP/276240099155588)
+* [Mobile notifications](http://ifttt.com/recipes/52404)
+* [SMS notifications](http://ifttt.com/recipes/52409)
+* [Email notifications](http://ifttt.com/recipes/52408)
 
-* Go to the home page for the service. You can find a list of services on
-  [aws.amazon.com/products](http://aws.amazon.com/products).
-* Click the Sign Up button on the top right corner of the page. If you don't already have an AWS account, you
-  are prompted to create one as part of the sign up process.
-* Follow the on-screen instructions.
-* AWS sends you a confirmation e-mail after the sign-up process is complete. At any time, you can view your
-  current account activity and manage your account by going to [aws.amazon.com](http://aws.amazon.com) and
-  clicking "Your Account".
+Only the RSS feed is supported by AWS. The other channels are bots created/managed by third-parties.
+
+### Getting the latest versions
+You can get the latest version of the SDK via:
+
+* [Composer/Packagist](http://packagist.org/packages/amazonwebservices/aws-sdk-for-php)
+* [PEAR channel](http://pear.amazonwebservices.com)
+* [GitHub](http://github.com/amazonwebservices/aws-sdk-for-php)
+* [Zip file](http://aws.amazon.com/sdkforphp/)
 
 
 ## Source

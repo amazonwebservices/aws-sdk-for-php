@@ -33,7 +33,7 @@
  * information about a specific AWS product, you can find the product's technical documentation at
  * 	<a href="http://aws.amazon.com/documentation/">http://aws.amazon.com/documentation/</a>.
  *
- * @version 2012.05.09
+ * @version 2012.08.22
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudformation/ AWS CloudFormation
@@ -184,11 +184,17 @@ class AmazonCloudFormation extends CFRuntime
 	 * 			<li><code>ParameterValue</code> - <code>string</code> - Optional - The value associated with the parameter.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
-	 * 	<li><code>DisableRollback</code> - <code>boolean</code> - Optional - Boolean to enable or disable rollback on stack creation failures. Default: <code>false</code></li>
+	 * 	<li><code>DisableRollback</code> - <code>boolean</code> - Optional - Set to <code>true</code> to disable rollback of the stack if stack creation failed. You can specify either <code>DisableRollback</code> or <code>OnFailure</code>, but not both. Default: <code>false</code></li>
 	 * 	<li><code>TimeoutInMinutes</code> - <code>integer</code> - Optional - The amount of time that can pass before the stack status becomes CREATE_FAILED; if <code>DisableRollback</code> is not set or is set to <code>false</code>, the stack will be rolled back.</li>
 	 * 	<li><code>NotificationARNs</code> - <code>string|array</code> - Optional - The Simple Notification Service (SNS) topic ARNs to publish stack related events. You can find your SNS topic ARNs using the <a href="http://console.aws.amazon.com/sns">SNS console</a> or your Command Line Interface (CLI). Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>Capabilities</code> - <code>string|array</code> - Optional - The list of capabilities that you want to allow in the stack. If your template contains IAM resources, you must specify the CAPABILITY_IAM value for this parameter; otherwise, this action returns an InsufficientCapabilities error. IAM resources are the following: <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html">AWS::IAM::AccessKey</a>, <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html">AWS::IAM::Group</a>, <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html">AWS::IAM::Policy</a>, <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html">AWS::IAM::User</a>, and <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html">AWS::IAM::UserToGroupAddition</a>. Pass a string for a single value, or an indexed array for multiple values.</li>
-	 * 	<li><code>OnFailure</code> - <code>string</code> - Optional -  [Allowed values: <code>DO_NOTHING</code>, <code>ROLLBACK</code>, <code>DELETE</code>]</li>
+	 * 	<li><code>OnFailure</code> - <code>string</code> - Optional - Determines what action will be taken if stack creation fails. This must be one of: DO_NOTHING, ROLLBACK, or DELETE. You can specify either <code>OnFailure</code> or <code>DisableRollback</code>, but not both. Default: <code>ROLLBACK</code> [Allowed values: <code>DO_NOTHING</code>, <code>ROLLBACK</code>, <code>DELETE</code>]</li>
+	 * 	<li><code>Tags</code> - <code>array</code> - Optional - A set of user-defined <code>Tags</code> to associate with this stack, represented by key/value pairs. Tags defined for the stack are propogated to EC2 resources that are created as part of the stack. A maximum number of 10 tags can be specified. <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>Key</code> - <code>string</code> - Optional - <em>Required</em>. A string used to identify this tag. You can specify a maximum of 128 characters for a tag key. Tags owned by Amazon Web Services (AWS) have the reserved prefix: <code>aws:</code>.</li>
+	 * 			<li><code>Value</code> - <code>string</code> - Optional - <em>Required</em>. A string containing the value for this tag. You can specify a maximum of 256 characters for a tag value.</li>
+	 * 		</ul></li>
+	 * 	</ul></li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -223,6 +229,15 @@ class AmazonCloudFormation extends CFRuntime
 				'Capabilities' => (is_array($opt['Capabilities']) ? $opt['Capabilities'] : array($opt['Capabilities']))
 			), 'member'));
 			unset($opt['Capabilities']);
+		}
+		
+		// Optional list + map
+		if (isset($opt['Tags']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Tags' => $opt['Tags']
+			), 'member'));
+			unset($opt['Tags']);
 		}
 
 		return $this->authenticate('CreateStack', $opt);
@@ -304,11 +319,18 @@ class AmazonCloudFormation extends CFRuntime
 	 * For deleted stacks, DescribeStackResources returns resource information for up to 90 days after
 	 * the stack has been deleted.
 	 *  
-	 * You must specify <code>StackName</code> or <code>PhysicalResourceId.</code> In addition, you
-	 * can specify <code>LogicalResourceId</code> to filter the returned result. For more information
-	 * about resources, the <code>LogicalResourceId</code> and <code>PhysicalResourceId</code>, go to
-	 * the <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide">AWS
-	 * CloudFormation User Guide</a>.
+	 * If you do not provide either a stack or resource id, information for all stacks and resources
+	 * will be returned, up to a limit of 100 records.
+	 * 
+	 * <p class="note"></p> 
+	 * To list more than 100 resources use <code>ListStackResources</code> instead.
+	 *  
+	 * You can specify either <code>StackName</code> or <code>PhysicalResourceId.</code>, but not
+	 * both. In addition, you can specify <code>LogicalResourceId</code> to filter the returned
+	 * result. For more information about resources, the <code>LogicalResourceId</code> and
+	 * <code>PhysicalResourceId</code>, go to the <a href=
+	 * "http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide">AWS CloudFormation User
+	 * Guide</a>.
 	 * 
 	 * <p class="note">
 	 * A <code>ValidationError</code> is returned if you specify both <code>StackName</code> and
@@ -336,6 +358,7 @@ class AmazonCloudFormation extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>StackName</code> - <code>string</code> - Optional - The name or the unique identifier associated with the stack. Default: There is no default value.</li>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -462,6 +485,9 @@ class AmazonCloudFormation extends CFRuntime
 	 *  
 	 * To get a copy of the template for an existing stack, you can use the <code>GetTemplate</code>
 	 * action.
+	 *  
+	 * Tags that were associated with this stack during creation time will still be associated with
+	 * the stack after an <code>UpdateStack</code> operation.
 	 *  
 	 * For more information about creating an update template, updating a stack, and monitoring the
 	 * progress of the update, see <a href=

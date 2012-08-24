@@ -1,3 +1,30 @@
+# Changelog: 1.5.13 "Ninja"
+Code name for Claris FileMaker Pro. <http://en.wikipedia.org/wiki/FileMaker_Pro>
+
+Launched Friday, August 24, 2012.
+
+## Services
+### AmazonCloudFormation
+* **New:** Cost Allocation Tagging.
+
+### AmazonRDS
+* **New:** RDS instances running in VPC.
+* **New:** Support for forced failover features for Oracle and MySQL, as well as additional features for Oracle.
+* **New:** Microsoft SQL Server support.
+* **New:** Read Replicas for MySQL instances in Amazon VPC.
+* **New:** Support for option groups. The option to be supported with this release is Oracle Enterprise Management Database Control.
+* **New:** MySQL support for `db.t1.micro` DB instances.
+* **New:** Microsoft SQL Server support for the Database Engine Tuning Advisor.
+* **New:** Cost Allocation Tagging.
+* **New:** SQL Server Agent support.
+* **New:** Request signing with Signature V4.
+
+### AmazonS3
+* **New:** Cost Allocation Tagging
+
+
+----
+
 # Changelog: 1.5.12 "Marklar"
 Code name for Mac OS X for Intel architecture. <http://en.wikipedia.org/wiki/Mac_OS_X#Apple.E2.80.93Intel_transition>
 
