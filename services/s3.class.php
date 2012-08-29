@@ -2309,7 +2309,11 @@ class AmazonS3 extends CFRuntime
 		}
 
 		$object = $this->get_object_headers($bucket, $filename);
-		$filesize = (integer) $object->header['content-length'];
+		if ($object->isOK()) {
+			$filesize = (integer) $object->header['content-length'];
+		} else {
+			$filesize = 0;
+		}
 
 		if ($friendly_format)
 		{
