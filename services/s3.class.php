@@ -1795,15 +1795,20 @@ class AmazonS3 extends CFRuntime
 
 		// Retrieve the original metadata
 		$metadata = $this->get_object_metadata($bucket, $filename);
-		if ($metadata && isset($metadata['ACL']))
+		// response failed, thus no $filename found on $bucket
+		if (!is_array($metadata) === false) {
+			return;
+		}
+
+		if (isset($metadata['ACL']))
 		{
 			$opt['acl'] = isset($opt['acl']) ? $opt['acl'] : $metadata['ACL'];
 		}
-		if ($metadata && isset($metadata['StorageClass']))
+		if (isset($metadata['StorageClass']))
 		{
 			$opt['headers']['x-amz-storage-class'] = $metadata['StorageClass'];
 		}
-		if ($metadata && isset($metadata['ContentType']))
+		if (isset($metadata['ContentType']))
 		{
 			$opt['headers']['Content-Type'] = $metadata['ContentType'];
 		}
