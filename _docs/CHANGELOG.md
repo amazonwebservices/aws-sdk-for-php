@@ -1,3 +1,14 @@
+# Changelog: 1.5.14 "Panther"
+Code name for Mac OS X 10.3. <http://en.wikipedia.org/wiki/Mac_OS_X_v10.3>
+
+Launched Wednesday. August 31, 2012.
+
+## Services
+### Amazon S3
+* **New:** Support for Cross-Origin Resource Sharing (CORS) configuration on buckets
+
+----
+
 # Changelog: 1.5.13 "Ninja"
 Code name for Claris FileMaker Pro. <http://en.wikipedia.org/wiki/FileMaker_Pro>
 
@@ -21,7 +32,6 @@ Launched Friday, August 24, 2012.
 
 ### AmazonS3
 * **New:** Cost Allocation Tagging
-
 
 ----
 
