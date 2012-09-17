@@ -1525,7 +1525,7 @@ else
 		}
 		else
 		{
-			$_ENV['HOME'] = `cd ~ && pwd`;
+			$_ENV['HOME'] = trim(`cd ~ && pwd`);
 		}
 
 		if (!$_ENV['HOME'])
@@ -1549,8 +1549,8 @@ else
 		}
 	}
 
-	if (getenv('HOME') && file_exists(getenv('HOME') . DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php'))
+	if (!!$_ENV['HOME'] && file_exists($_ENV['HOME'] . DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php'))
 	{
-		include_once getenv('HOME') . DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php';
+		include_once $_ENV['HOME'] . DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php';
 	}
 }
