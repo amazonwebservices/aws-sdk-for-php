@@ -445,8 +445,7 @@ class AmazonDynamoDB extends CFRuntime
 			return null;
 		}
 
-		// Create the info to return. Treat all values as strings by default
-		$info = array('value' => (string) $value, 'type' => self::TYPE_STRING);
+		$info = array();
 
 		// Handle boolean values
 		if (is_bool($value))
@@ -458,6 +457,7 @@ class AmazonDynamoDB extends CFRuntime
 		elseif (is_int($value) || is_float($value))
 		{
 			$info['type'] = self::TYPE_NUMBER;
+			$info['value'] = (string)$value;
 		}
 		// Handle arrays
 		elseif (is_array($value))
@@ -493,6 +493,11 @@ class AmazonDynamoDB extends CFRuntime
 
 			// Make sure the type is changed to be the appropriate array/set type
 			$info['type'] = $set_type . self::SUFFIX_FOR_TYPES;
+		}
+		else 
+		{
+			$info['type']  = self::TYPE_STRING;
+			$info['value'] = (string)$value;
 		}
 
 		return $info;
