@@ -218,6 +218,7 @@ class CFMimeTypes
 	 */
 	public static function get_mimetype($ext)
 	{
+        $ext = strtolower( $ext );  // Make sure the passed extension is lowercase
 		return (isset(self::$mime_types[$ext]) ? self::$mime_types[$ext] : 'application/octet-stream');
 	}
 }
