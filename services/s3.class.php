@@ -555,9 +555,15 @@ class AmazonS3 extends CFRuntime
 			$this->temporary_prefix = true;
 		}
 
+		$bucket_name_may_cause_ssl_wildcard_failures = false;
+		if (strpos($bucket, '.') !== false)
+		{
+		    $bucket_name_may_cause_ssl_wildcard_failures = true;
+		}
+
 		// Determine hostname
 		$scheme = $this->use_ssl ? 'https://' : 'http://';
-		if ($this->resource_prefix || $this->path_style) // Use bucket-in-path method.
+		if ($bucket_name_may_cause_ssl_wildcard_failures || $this->resource_prefix || $this->path_style) // Use bucket-in-path method.
 		{
 			$hostname = $this->hostname . $this->resource_prefix . (($bucket === '' || $this->resource_prefix === '/' . $bucket) ? '' : ('/' . $bucket));
 		}
