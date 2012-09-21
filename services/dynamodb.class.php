@@ -446,7 +446,7 @@ class AmazonDynamoDB extends CFRuntime
 		}
 
 		// Create the info to return. Treat all values as strings by default
-		$info = array('value' => (string) $value, 'type' => self::TYPE_STRING);
+		$info = array('value' => $value, 'type' => self::TYPE_STRING);
 
 		// Handle boolean values
 		if (is_bool($value))
