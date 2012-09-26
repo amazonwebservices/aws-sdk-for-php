@@ -405,6 +405,11 @@ class AmazonS3 extends CFRuntime
 	public $object_expiration_xml;
 
 	/**
+	 * The base XML elements to use for bucket tagging.
+	 */
+	public $bucket_tagging_xml;
+
+	/**
 	 * The base XML elements to use for CORS support.
 	 */
 	public $cors_config_xml;
@@ -555,10 +560,18 @@ class AmazonS3 extends CFRuntime
 			$this->temporary_prefix = true;
 		}
 
+		// If the bucket name has periods and we are using SSL, we need to switch to path style URLs
+		$bucket_name_may_cause_ssl_wildcard_failures = false;
+		if ($this->use_ssl && strpos($bucket, '.') !== false)
+		{
+			$bucket_name_may_cause_ssl_wildcard_failures = true;
+		}
+
 		// Determine hostname
 		$scheme = $this->use_ssl ? 'https://' : 'http://';
-		if ($this->resource_prefix || $this->path_style) // Use bucket-in-path method.
+		if ($bucket_name_may_cause_ssl_wildcard_failures || $this->resource_prefix || $this->path_style)
 		{
+            // Use bucket-in-path method
 			$hostname = $this->hostname . $this->resource_prefix . (($bucket === '' || $this->resource_prefix === '/' . $bucket) ? '' : ('/' . $bucket));
 		}
 		else
@@ -1807,18 +1820,20 @@ class AmazonS3 extends CFRuntime
 		$opt['metadataDirective'] = 'REPLACE';
 
 		// Retrieve the original metadata
-		$metadata = $this->get_object_metadata($bucket, $filename);
-		if ($metadata && isset($metadata['ACL']))
+		if ($metadata = $this->get_object_metadata($bucket, $filename))
 		{
-			$opt['acl'] = isset($opt['acl']) ? $opt['acl'] : $metadata['ACL'];
-		}
-		if ($metadata && isset($metadata['StorageClass']))
-		{
-			$opt['headers']['x-amz-storage-class'] = $metadata['StorageClass'];
-		}
-		if ($metadata && isset($metadata['ContentType']))
-		{
-			$opt['headers']['Content-Type'] = $metadata['ContentType'];
+			if (isset($metadata['ACL']))
+			{
+				$opt['acl'] = isset($opt['acl']) ? $opt['acl'] : $metadata['ACL'];
+			}
+			if (isset($metadata['StorageClass']))
+			{
+				$opt['headers']['x-amz-storage-class'] = $metadata['StorageClass'];
+			}
+			if (isset($metadata['ContentType']))
+			{
+				$opt['headers']['Content-Type'] = $metadata['ContentType'];
+			}
 		}
 
 		// Remove a header
@@ -2317,7 +2332,11 @@ class AmazonS3 extends CFRuntime
 		}
 
 		$object = $this->get_object_headers($bucket, $filename);
-		$filesize = (integer) $object->header['content-length'];
+        if ($object->isOK()) {
+		    $filesize = (integer) $object->header['content-length'];
+		} else {
+		    $filesize = 0;
+		}
 
 		if ($friendly_format)
 		{
@@ -4192,31 +4211,58 @@ class AmazonS3 extends CFRuntime
 				// New rule node
 				$xrule = $xml->addChild('CORSRule');
 
-				// Simple nodes
-				$xrule->addChild('AllowedHeader', $rule_set['allowed_header']);
-				$xrule->addChild('ExposeHeader', $rule_set['expose_header']);
-				$xrule->addChild('MaxAgeSec', $rule_set['max_age']);
-
-				// AllowedMethod node
-				if (!is_array($rule_set['allowed_method']))
+				// ExposeHeader node
+				if (isset($rule_set['expose_header']))
 				{
-					$rule_set['allowed_method'] = array($rule_set['allowed_method']);
+					$xrule->addChild('ExposeHeader', $rule_set['expose_header']);
 				}
 
-				foreach ($rule_set['allowed_method'] as $method)
+				// MaxAgeSeconds node
+				if (isset($rule_set['max_age']))
 				{
-					$xrule->addChild('AllowedMethod', $method);
+					$xrule->addChild('MaxAgeSeconds', $rule_set['max_age']);
+				}
+
+				// AllowedHeader node
+				if (isset($rule_set['allowed_header']))
+				{
+					if (!is_array($rule_set['allowed_header']))
+					{
+						$rule_set['allowed_header'] = array($rule_set['allowed_header']);
+					}
+
+					foreach ($rule_set['allowed_header'] as $method)
+					{
+						$xrule->addChild('AllowedHeader', $method);
+					}
+				}
+
+				// AllowedMethod node
+				if (isset($rule_set['allowed_method']))
+				{
+					if (!is_array($rule_set['allowed_method']))
+					{
+						$rule_set['allowed_method'] = array($rule_set['allowed_method']);
+					}
+
+					foreach ($rule_set['allowed_method'] as $method)
+					{
+						$xrule->addChild('AllowedMethod', $method);
+					}
 				}
 
 				// AllowedOrigin node
-				if (!is_array($rule_set['allowed_origin']))
+				if (isset($rule_set['allowed_origin']))
 				{
-					$rule_set['allowed_origin'] = array($rule_set['allowed_origin']);
-				}
+					if (!is_array($rule_set['allowed_origin']))
+					{
+						$rule_set['allowed_origin'] = array($rule_set['allowed_origin']);
+					}
 
-				foreach ($rule_set['allowed_origin'] as $method)
-				{
-					$xrule->addChild('AllowedOrigin', $method);
+					foreach ($rule_set['allowed_origin'] as $method)
+					{
+						$xrule->addChild('AllowedOrigin', $method);
+					}
 				}
 			}
 		}

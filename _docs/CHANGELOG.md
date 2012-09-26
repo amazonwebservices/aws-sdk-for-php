@@ -1,10 +1,36 @@
+# Changelog: 1.5.15 "Quixote"
+"Rocinante" (Don Quixote's horse) was the code name for the PowerMac Upgrade enabler. <http://applemuseum.bott.org/sections/codenames.html>
+
+Launched Wednesday, September 26, 2012.
+
+## Bug fixes and enhancements
+* **Fixed:** SignatureV4 implementation now correctly collapses consecutive whitespace within headers to match the spec.
+* **Fixed:** [Improve error message when backticks fail](https://github.com/amazonwebservices/aws-sdk-for-php/pull/31)
+* **Fixed:** [Fixed invalid detection of MIME type with upper case file extensions](https://github.com/amazonwebservices/aws-sdk-for-php/pull/33)
+* **Fixed:** [prevent notice for unfound keys on s3](https://github.com/amazonwebservices/aws-sdk-for-php/pull/34)
+* **Fixed:** [Optimization of set_time_limit() call](https://github.com/amazonwebservices/aws-sdk-for-php/pull/36)
+* **Fixed:** [Fallback for config will work correctly when having to determine the HOME directory](https://github.com/amazonwebservices/aws-sdk-for-php/pull/38)
+* **Fixed:** [Fixed circular to string method in simplexml](https://github.com/amazonwebservices/aws-sdk-for-php/pull/39)
+* **Fixed:** [Fixed E_NOTICE being raised by AmazonDynamoDB->attributes()](https://github.com/amazonwebservices/aws-sdk-for-php/pull/40)
+* **Fixed:** [Fix bug caused by some SSL implementations with bucket names that have dots in them](https://github.com/amazonwebservices/aws-sdk-for-php/pull/42)
+
+## Services
+### AmazonAS
+* **New:** Support for termination policies for Auto Scaling groups has been added to the SDK.
+
+### AmazonEC2
+* **New:** Support for Reserved Instance Marketplace for Amazon EC2 has been added to the SDK.
+* **New:** Support for static routing configurations (non-BGP) for Amazon VPC has been added to the SDK.
+
+----
+
 # Changelog: 1.5.14 "Panther"
 Code name for Mac OS X 10.3. <http://en.wikipedia.org/wiki/Mac_OS_X_v10.3>
 
-Launched Wednesday. August 31, 2012.
+Launched Wednesday, August 29, 2012.
 
 ## Services
-### Amazon S3
+### AmazonS3
 * **New:** Support for Cross-Origin Resource Sharing (CORS) configuration on buckets
 
 ----

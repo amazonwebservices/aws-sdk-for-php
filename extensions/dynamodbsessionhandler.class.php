@@ -298,7 +298,8 @@ class DynamoDBSessionHandler
 			{
 				foreach ($response->body->{$node_name}->children() as $key => $value)
 				{
-					$item[$key] = (string) current($value);
+					$type = $value->children()->getName();
+					$item[$key] = $value->{$type}->to_string();
 				}
 			}
 

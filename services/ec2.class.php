@@ -29,7 +29,7 @@
  *  
  * Visit <a href="http://aws.amazon.com/ec2/">http://aws.amazon.com/ec2/</a> for more information.
  *
- * @version 2012.08.01
+ * @version 2012.09.18
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ec2/ Amazon EC2
@@ -138,7 +138,7 @@ class AmazonEC2 extends CFRuntime
 	 */
 	public function __construct(array $options = array())
 	{
-		$this->api_version = '2012-07-20';
+		$this->api_version = '2012-08-15';
 		$this->hostname = self::DEFAULT_URL;
 		$this->auth_class = 'AuthV2Query';
 
@@ -626,6 +626,23 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param string $reserved_instances_listing_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function cancel_reserved_instances_listing($reserved_instances_listing_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['ReservedInstancesListingId'] = $reserved_instances_listing_id;
+		
+		return $this->authenticate('CancelReservedInstancesListing', $opt);
+	}
+
+	/**
 	 * Cancels one or more Spot Instance requests.
 	 *  
 	 * Spot Instances are instances that Amazon EC2 starts on your behalf when the maximum price that
@@ -1021,6 +1038,39 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param string $reserved_instances_id (Required) 
+	 * @param integer $instance_count (Required) 
+	 * @param array $price_schedules (Required)  <ul>
+	 * 	<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 		<li><code>Term</code> - <code>long</code> - Optional - </li>
+	 * 		<li><code>Price</code> - <code>double</code> - Optional - </li>
+	 * 		<li><code>CurrencyCode</code> - <code>string</code> - Optional - </li>
+	 * 	</ul></li>
+	 * </ul>
+	 * @param string $client_token (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_reserved_instances_listing($reserved_instances_id, $instance_count, $price_schedules, $client_token, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['ReservedInstancesId'] = $reserved_instances_id;
+		$opt['InstanceCount'] = $instance_count;
+		$opt['ClientToken'] = $client_token;
+		
+		// Required list + map
+		$opt = array_merge($opt, CFComplexType::map(array(
+			'PriceSchedules' => (is_array($price_schedules) ? $price_schedules : array($price_schedules))
+		)));
+
+		return $this->authenticate('CreateReservedInstancesListing', $opt);
+	}
+
+	/**
 	 * Creates a new route in a route table within a VPC. The route's target can be either a gateway
 	 * attached to the VPC or a NAT instance in the VPC.
 	 *  
@@ -1291,6 +1341,11 @@ class AmazonEC2 extends CFRuntime
 	 * @param string $customer_gateway_id (Required) The ID of the customer gateway.
 	 * @param string $vpn_gateway_id (Required) The ID of the VPN gateway.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Options</code> - <code>array</code> - Optional -  <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>StaticRoutesOnly</code> - <code>boolean</code> - Optional - </li>
+	 * 		</ul></li>
+	 * 	</ul></li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -1302,7 +1357,35 @@ class AmazonEC2 extends CFRuntime
 		$opt['CustomerGatewayId'] = $customer_gateway_id;
 		$opt['VpnGatewayId'] = $vpn_gateway_id;
 		
+		// Optional map (non-list)
+		if (isset($opt['Options']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Options' => $opt['Options']
+			)));
+			unset($opt['Options']);
+		}
+
 		return $this->authenticate('CreateVpnConnection', $opt);
+	}
+
+	/**
+	 * 
+	 *
+	 * @param string $vpn_connection_id (Required) 
+	 * @param string $destination_cidr_block (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_vpn_connection_route($vpn_connection_id, $destination_cidr_block, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['VpnConnectionId'] = $vpn_connection_id;
+		$opt['DestinationCidrBlock'] = $destination_cidr_block;
+		
+		return $this->authenticate('CreateVpnConnectionRoute', $opt);
 	}
 
 	/**
@@ -1715,6 +1798,25 @@ class AmazonEC2 extends CFRuntime
 		$opt['VpnConnectionId'] = $vpn_connection_id;
 		
 		return $this->authenticate('DeleteVpnConnection', $opt);
+	}
+
+	/**
+	 * 
+	 *
+	 * @param string $vpn_connection_id (Required) 
+	 * @param string $destination_cidr_block (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_vpn_connection_route($vpn_connection_id, $destination_cidr_block, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['VpnConnectionId'] = $vpn_connection_id;
+		$opt['DestinationCidrBlock'] = $destination_cidr_block;
+		
+		return $this->authenticate('DeleteVpnConnectionRoute', $opt);
 	}
 
 	/**
@@ -2701,6 +2803,38 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>ReservedInstancesId</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>ReservedInstancesListingId</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>Filters</code> - <code>array</code> - Optional - A filter used to limit results when describing tags. Multiple values can be specified per filter. A tag must match at least one of the specified values for it to be returned from an operation. Wildcards can be included in filter values; <code>*</code> specifies that zero or more characters must match, and <code>?</code> specifies that exactly one character must match. Use a backslash to escape special characters. For example, a filter value of <code>\*amazon\?\\</code> specifies the literal string <code>*amazon?\</code>. <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>Name</code> - <code>string</code> - Optional - Specifies the name of the filter.</li>
+	 * 			<li><code>Value</code> - <code>string|array</code> - Optional - Contains one or more values for the filter. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 		</ul></li>
+	 * 	</ul></li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_reserved_instances_listings($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		// Optional list + map
+		if (isset($opt['Filters']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'Filters' => $opt['Filters']
+			)));
+			unset($opt['Filters']);
+		}
+
+		return $this->authenticate('DescribeReservedInstancesListings', $opt);
+	}
+
+	/**
 	 * The DescribeReservedInstancesOfferings operation describes Reserved Instance offerings that are
 	 * available for purchase. With Amazon EC2 Reserved Instances, you purchase the right to launch
 	 * Amazon EC2 instances for a period of time (without getting insufficient capacity errors) and
@@ -3518,6 +3652,25 @@ class AmazonEC2 extends CFRuntime
 	}
 
 	/**
+	 * 
+	 *
+	 * @param string $route_table_id (Required) 
+	 * @param string $gateway_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function disable_vgw_route_propagation($route_table_id, $gateway_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['RouteTableId'] = $route_table_id;
+		$opt['GatewayId'] = $gateway_id;
+		
+		return $this->authenticate('DisableVgwRoutePropagation', $opt);
+	}
+
+	/**
 	 * The DisassociateAddress operation disassociates the specified elastic IP address from the
 	 * instance to which it is assigned. This is an idempotent operation. If you enter it more than
 	 * once, Amazon EC2 does not return an error.
@@ -3558,6 +3711,25 @@ class AmazonEC2 extends CFRuntime
 		$opt['AssociationId'] = $association_id;
 		
 		return $this->authenticate('DisassociateRouteTable', $opt);
+	}
+
+	/**
+	 * 
+	 *
+	 * @param string $route_table_id (Required) 
+	 * @param string $gateway_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function enable_vgw_route_propagation($route_table_id, $gateway_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['RouteTableId'] = $route_table_id;
+		$opt['GatewayId'] = $gateway_id;
+		
+		return $this->authenticate('EnableVgwRoutePropagation', $opt);
 	}
 
 	/**
@@ -4117,6 +4289,12 @@ class AmazonEC2 extends CFRuntime
 	 * @param string $reserved_instances_offering_id (Required) The unique ID of the Reserved Instances offering being purchased.
 	 * @param integer $instance_count (Required) The number of Reserved Instances to purchase.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>LimitPrice</code> - <code>array</code> - Optional -  <ul>
+	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
+	 * 			<li><code>Amount</code> - <code>double</code> - Optional - </li>
+	 * 			<li><code>CurrencyCode</code> - <code>string</code> - Optional - </li>
+	 * 		</ul></li>
+	 * 	</ul></li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -4127,6 +4305,15 @@ class AmazonEC2 extends CFRuntime
 		$opt['ReservedInstancesOfferingId'] = $reserved_instances_offering_id;
 		$opt['InstanceCount'] = $instance_count;
 		
+		// Optional map (non-list)
+		if (isset($opt['LimitPrice']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'LimitPrice' => $opt['LimitPrice']
+			)));
+			unset($opt['LimitPrice']);
+		}
+
 		return $this->authenticate('PurchaseReservedInstancesOffering', $opt);
 	}
 

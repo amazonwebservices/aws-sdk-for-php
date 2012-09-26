@@ -156,6 +156,11 @@ class RequestCore
 	 */
 	public $registered_streaming_write_callback = null;
 
+	/**
+	 * Whether or not the set_time_limit function should be called.
+	 */
+	public $allow_set_time_limit = true;
+
 
 	/*%******************************************************************************************%*/
 	// CONSTANTS
@@ -204,6 +209,12 @@ class RequestCore
 		$this->method = self::HTTP_GET;
 		$this->request_headers = array();
 		$this->request_body = '';
+
+		// Determine if set_time_limit can be called
+		if (strpos(ini_get('disable_functions'), 'set_time_limit') !== false)
+		{
+			$this->allow_set_time_limit = false;
+		}
 
 		// Set a new Request class if one was set.
 		if (isset($helpers['request']) && !empty($helpers['request']))
@@ -819,7 +830,10 @@ class RequestCore
 	 */
 	public function send_request($parse = false)
 	{
-		set_time_limit(0);
+		if ($this->allow_set_time_limit)
+		{
+			set_time_limit(0);
+		}
 
 		$curl_handle = $this->prep_request();
 		$this->response = curl_exec($curl_handle);
@@ -852,7 +866,10 @@ class RequestCore
 	 */
 	public function send_multi_request($handles, $opt = null)
 	{
-		set_time_limit(0);
+		if ($this->allow_set_time_limit)
+		{
+			set_time_limit(0);
+		}
 
 		// Skip everything if there are no handles to process.
 		if (count($handles) === 0) return array();

@@ -15,15 +15,16 @@
  */
 
 /**
- * This is the <em>Auto Scaling API Reference</em>. This guide provides detailed information about
- * Auto Scaling actions, data types, parameters, and errors. For detailed information about Auto
- * Scaling features and their associated API calls, go to the <a href=
+ * This guide provides detailed information about Auto Scaling actions, data types, parameters,
+ * and errors. For detailed information about Auto Scaling features and their associated API
+ * calls, go to the <a href=
  * "http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/">Auto Scaling Developer
  * Guide</a>.
  *  
- * Auto Scaling is a web service designed to automatically launch or terminate EC2 instances based
- * on user-defined policies, schedules, and health checks. This service is used in conjunction
- * with Amazon CloudWatch and Elastic Load Balancing services.
+ * Auto Scaling is a web service designed to automatically launch or terminate Amazon Elastic
+ * Compute Cloud (Amazon EC2) instances based on user-defined policies, schedules, and health
+ * checks. This service is used in conjunction with Amazon CloudWatch and Elastic Load Balancing
+ * services.
  *  
  * This reference is based on the current WSDL, which is available at:
  *  
@@ -36,7 +37,7 @@
  * "http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html">Regions and
  * Endpoints</a> in the Amazon Web Services General Reference.
  *
- * @version 2012.06.21
+ * @version 2012.09.18
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/as/ Auto Scaling
@@ -170,8 +171,8 @@ class AmazonAS extends CFRuntime
 	// SERVICE METHODS
 
 	/**
-	 * Creates a new Auto Scaling group with the specified name. When the creation request is
-	 * completed, the Auto Scaling group is ready to be used in other calls.
+	 * Creates a new Auto Scaling group with the specified name and other attributes. When the
+	 * creation request is completed, the Auto Scaling group is ready to be used in other calls.
 	 * 
 	 * <p class="note">
 	 * The Auto Scaling group name must be unique within the scope of your AWS account, and under the
@@ -182,22 +183,23 @@ class AmazonAS extends CFRuntime
 	 * @param string $launch_configuration_name (Required) The name of the launch configuration to use with the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param integer $min_size (Required) The minimum size of the Auto Scaling group.
 	 * @param integer $max_size (Required) The maximum size of the Auto Scaling group.
-	 * @param string|array $availability_zones (Required) A list of availability zones for the Auto Scaling group. Pass a string for a single value, or an indexed array for multiple values.
+	 * @param string|array $availability_zones (Required) A list of Availability Zones for the Auto Scaling group. Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>DesiredCapacity</code> - <code>integer</code> - Optional - The number of Amazon EC2 instances that should be running in the group.</li>
 	 * 	<li><code>DefaultCooldown</code> - <code>integer</code> - Optional - The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start.</li>
-	 * 	<li><code>LoadBalancerNames</code> - <code>string|array</code> - Optional - A list of LoadBalancers to use. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>LoadBalancerNames</code> - <code>string|array</code> - Optional - A list of load balancers to use. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>HealthCheckType</code> - <code>string</code> - Optional - The service you want the health status from, Amazon EC2 or Elastic Load Balancer. Valid values are <code>EC2</code> or <code>ELB</code>. [Constraints: The value must be between 1 and 32 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 	<li><code>HealthCheckGracePeriod</code> - <code>integer</code> - Optional - Length of time in seconds after a new EC2 instance comes into service that Auto Scaling starts checking its health.</li>
+	 * 	<li><code>HealthCheckGracePeriod</code> - <code>integer</code> - Optional - Length of time in seconds after a new Amazon EC2 instance comes into service that Auto Scaling starts checking its health.</li>
 	 * 	<li><code>PlacementGroup</code> - <code>string</code> - Optional - Physical location of your cluster placement group created in Amazon EC2. For more information about cluster placement group, see <a href="http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/using_cluster_computing.html">Using Cluster Instances</a> [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>VPCZoneIdentifier</code> - <code>string</code> - Optional - A comma-separated list of subnet identifiers of Amazon Virtual Private Clouds (Amazon VPCs). When you specify subnets and Availability Zones with this call, ensure that the subnets' Availability Zones match the Availability Zones specified. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 	<li><code>Tags</code> - <code>array</code> - Optional -  <ul>
+	 * 	<li><code>TerminationPolicies</code> - <code>string|array</code> - Optional - A standalone termination policy or a list of termination policies used to select the instance to terminate. The policies are executed in the order that they are listed. For more information on configuring a termination policy for your Auto Scaling group, go to <a href="http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/us-termination-policy.html">Instance Termination Policy for Your Auto Scaling Group</a> in the the <em>Auto Scaling Developer Guide</em>. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>Tags</code> - <code>array</code> - Optional - The tag to be created or updated. Each tag should be defined by its resource type, resource ID, key, value, and a propagate flag. Valid values: key= <em>value</em>, value= <em>value</em>, propagate= <em>true</em> or <em>false</em>. Value and propagate are optional parameters. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
-	 * 			<li><code>ResourceId</code> - <code>string</code> - Optional -  [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 			<li><code>ResourceType</code> - <code>string</code> - Optional -  [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 			<li><code>Key</code> - <code>string</code> - Required -  [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 			<li><code>Value</code> - <code>string</code> - Optional -  [Constraints: The value must be between 0 and 256 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 			<li><code>PropagateAtLaunch</code> - <code>boolean</code> - Optional - </li>
+	 * 			<li><code>ResourceId</code> - <code>string</code> - Optional - The name of the Auto Scaling group. [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 			<li><code>ResourceType</code> - <code>string</code> - Optional - The kind of resource to which the tag is applied. Currently, Auto Scaling supports the <code>auto-scaling-group</code> resource type. [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 			<li><code>Key</code> - <code>string</code> - Required - The key of the tag. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 			<li><code>Value</code> - <code>string</code> - Optional - The value of the tag. [Constraints: The value must be between 0 and 256 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 			<li><code>PropagateAtLaunch</code> - <code>boolean</code> - Optional - Specifies whether the new tag will be applied to instances launched after the tag is created. The same behavior applies to updates: If you change a tag, the changed tag will be applied to all instances launched after you made the change.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -226,6 +228,15 @@ class AmazonAS extends CFRuntime
 			unset($opt['LoadBalancerNames']);
 		}
 		
+		// Optional list (non-map)
+		if (isset($opt['TerminationPolicies']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'TerminationPolicies' => (is_array($opt['TerminationPolicies']) ? $opt['TerminationPolicies'] : array($opt['TerminationPolicies']))
+			), 'member'));
+			unset($opt['TerminationPolicies']);
+		}
+		
 		// Optional list + map
 		if (isset($opt['Tags']))
 		{
@@ -249,27 +260,27 @@ class AmazonAS extends CFRuntime
 	 * security groups, or vice versa.
 	 * 
 	 * <p class="note">
-	 * At this time, Auto Scaling launch configurations don't support compressed (e.g. gzipped) user
+	 * At this time, Auto Scaling launch configurations don't support compressed (e.g. zipped) user
 	 * data files.
 	 * </p>
 	 *
 	 * @param string $launch_configuration_name (Required) The name of the launch configuration to create. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
-	 * @param string $image_id (Required) Unique ID of the <em>Amazon Machine Image</em> (AMI) which was assigned during registration. For more information about Amazon EC2 images, please see <a href="http://aws.amazon.com/ec2/">Amazon EC2 product documentation</a> [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
-	 * @param string $instance_type (Required) The instance type of the EC2 instance. For more information about Amazon EC2 instance types, please see <a href="http://aws.amazon.com/ec2/">Amazon EC2 product documentation</a> [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
+	 * @param string $image_id (Required) Unique ID of the <em>Amazon Machine Image</em> (AMI) which was assigned during registration. For more information about Amazon EC2 images, please see <a href="http://aws.amazon.com/ec2/">Amazon EC2 product documentation</a>. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
+	 * @param string $instance_type (Required) The instance type of the Amazon EC2 instance. For more information about Amazon EC2 instance types, please see <a href="http://aws.amazon.com/ec2/">Amazon EC2 product documentation</a> [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>KeyName</code> - <code>string</code> - Optional - The name of the EC2 key pair. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 	<li><code>KeyName</code> - <code>string</code> - Optional - The name of the Amazon EC2 key pair. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>SecurityGroups</code> - <code>string|array</code> - Optional - The names of the security groups with which to associate Amazon EC2 or Amazon VPC instances. Specify Amazon EC2 security groups using security group names, such as <code>websrv</code>. Specify Amazon VPC security groups using security group IDs, such as <code>sg-12345678</code>. For more information about Amazon EC2 security groups, go to <a href="http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/index.html?using-network-security.html">Using Security Groups</a> in the Amazon EC2 product documentation. For more information about Amazon VPC security groups, go to <a href="http://docs.amazonwebservices.com/AmazonVPC/latest/UserGuide/index.html?VPC_SecurityGroups.html">Security Groups</a> in the Amazon VPC product documentation. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>UserData</code> - <code>string</code> - Optional - The user data available to the launched Amazon EC2 instances. For more information about Amazon EC2 user data, please see <a href="http://aws.amazon.com/ec2/">Amazon EC2 product documentation</a>. [Constraints: The value must be between 0 and 21847 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 	<li><code>KernelId</code> - <code>string</code> - Optional - The ID of the kernel associated with the EC2 AMI. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 	<li><code>RamdiskId</code> - <code>string</code> - Optional - The ID of the RAM disk associated with the EC2 AMI. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 	<li><code>BlockDeviceMappings</code> - <code>array</code> - Optional - A list of mappings that specify how block devices are exposed to the instance. Each mapping is made up of a <em>VirtualName</em>, a <em>DeviceName</em>, and an <em>ebs</em> data structure that contains information about the associated Elastic Block Storage volume. For more information about Amazon EC2 BlockDeviceMappings, please go to <a href="http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/index.html?block-device-mapping-concepts.html">Block Device Mapping</a> in the Amazon EC2 product documentation. <ul>
+	 * 	<li><code>KernelId</code> - <code>string</code> - Optional - The ID of the kernel associated with the Amazon EC2 AMI. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 	<li><code>RamdiskId</code> - <code>string</code> - Optional - The ID of the RAM disk associated with the Amazon EC2 AMI. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 	<li><code>BlockDeviceMappings</code> - <code>array</code> - Optional - A list of mappings that specify how block devices are exposed to the instance. Each mapping is made up of a <em>VirtualName</em>, a <em>DeviceName</em>, and an <em>ebs</em> data structure that contains information about the associated Elastic Block Storage volume. For more information about Amazon EC2 BlockDeviceMappings, go to <a href="http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/index.html?block-device-mapping-concepts.html">Block Device Mapping</a> in the Amazon EC2 product documentation. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 			<li><code>VirtualName</code> - <code>string</code> - Optional - The virtual name associated with the device. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 			<li><code>DeviceName</code> - <code>string</code> - Required - The name of the device within Amazon EC2. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 			<li><code>Ebs</code> - <code>array</code> - Optional - The Elastic Block Storage volume information. <ul>
 	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
-	 * 					<li><code>SnapshotId</code> - <code>string</code> - Optional - The Snapshot ID. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 					<li><code>VolumeSize</code> - <code>integer</code> - Optional - The volume size, in GigaBytes.</li>
+	 * 					<li><code>SnapshotId</code> - <code>string</code> - Optional - The snapshot ID. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 					<li><code>VolumeSize</code> - <code>integer</code> - Optional - The volume size, in gigabytes.</li>
 	 * 				</ul></li>
 	 * 			</ul></li>
 	 * 		</ul></li>
@@ -279,8 +290,8 @@ class AmazonAS extends CFRuntime
 	 * 			<li><code>Enabled</code> - <code>boolean</code> - Optional - If <code>True</code>, instance monitoring is enabled.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
-	 * 	<li><code>SpotPrice</code> - <code>string</code> - Optional - </li>
-	 * 	<li><code>IamInstanceProfile</code> - <code>string</code> - Optional -  [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 	<li><code>SpotPrice</code> - <code>string</code> - Optional - The maximum hourly price to be paid for any Spot Instance launched to fulfill the request. Spot Instances are launched when the price you specify exceeds the current Spot market price. For more information on launching Spot Instances, go to <a href="http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/US-SpotInstances.html">Using Auto Scaling to Launch Spot Instances</a> in the <em>Auto Scaling Developer Guide</em>.</li>
+	 * 	<li><code>IamInstanceProfile</code> - <code>string</code> - Optional - The name or the Amazon Resource Name (ARN) of the instance profile associated with the IAM role for the instance. For information on launching EC2 instances with an IAM role, go to <a href="http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/us-iam-role.html">Launching Auto Scaling Instances With an IAM Role</a> in the <em>Auto Scaling Developer Guide</em>. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -323,15 +334,21 @@ class AmazonAS extends CFRuntime
 	}
 
 	/**
+	 * Creates new tags or updates existing tags for an Auto Scaling group.
 	 * 
+	 * <p class="note">
+	 * A tag's definition is composed of a resource ID, resource type, key and value, and the
+	 * propagate flag. Value and the propagate flag are optional parameters. See the Request
+	 * Parameters for more information.
+	 * </p>
 	 *
-	 * @param array $tags (Required)  <ul>
+	 * @param array $tags (Required) The tag to be created or updated. Each tag should be defined by its resource type, resource ID, key, value, and a propagate flag. The resource type and resource ID identify the type and name of resource for which the tag is created. Currently, <code>auto-scaling-group</code> is the only supported resource type. The valid value for the resource ID is <em>groupname</em>. The <code>PropagateAtLaunch</code> flag defines whether the new tag will be applied to instances launched by the Auto Scaling group. Valid values are <code>true</code> or <code>false</code>. However, instances that are already running will not get the new or updated tag. Likewise, when you modify a tag, the updated version will be applied only to new instances launched by the Auto Scaling group after the change. Running instances that had the previous version of the tag will continue to have the older tag. When you create a tag and a tag of the same name already exists, the operation overwrites the previous tag definition, but you will not get an error message. <ul>
 	 * 	<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
-	 * 		<li><code>ResourceId</code> - <code>string</code> - Optional -  [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 		<li><code>ResourceType</code> - <code>string</code> - Optional -  [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 		<li><code>Key</code> - <code>string</code> - Required -  [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 		<li><code>Value</code> - <code>string</code> - Optional -  [Constraints: The value must be between 0 and 256 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 		<li><code>PropagateAtLaunch</code> - <code>boolean</code> - Optional - </li>
+	 * 		<li><code>ResourceId</code> - <code>string</code> - Optional - The name of the Auto Scaling group. [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 		<li><code>ResourceType</code> - <code>string</code> - Optional - The kind of resource to which the tag is applied. Currently, Auto Scaling supports the <code>auto-scaling-group</code> resource type. [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 		<li><code>Key</code> - <code>string</code> - Required - The key of the tag. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 		<li><code>Value</code> - <code>string</code> - Optional - The value of the tag. [Constraints: The value must be between 0 and 256 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 		<li><code>PropagateAtLaunch</code> - <code>boolean</code> - Optional - Specifies whether the new tag will be applied to instances launched after the tag is created. The same behavior applies to updates: If you change a tag, the changed tag will be applied to all instances launched after you made the change.</li>
 	 * 	</ul></li>
 	 * </ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -352,7 +369,7 @@ class AmazonAS extends CFRuntime
 	}
 
 	/**
-	 * Deletes the specified auto scaling group if the group has no instances and no scaling
+	 * Deletes the specified Auto Scaling group if the group has no instances and no scaling
 	 * activities in progress.
 	 * 
 	 * <p class="note">
@@ -416,9 +433,9 @@ class AmazonAS extends CFRuntime
 	}
 
 	/**
-	 * Deletes a policy created by <code>PutScalingPolicy</code>
+	 * Deletes a policy created by <code>PutScalingPolicy</code>.
 	 *
-	 * @param string $policy_name (Required) The name or PolicyARN of the policy you want to delete [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
+	 * @param string $policy_name (Required) The name or PolicyARN of the policy you want to delete. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -439,7 +456,7 @@ class AmazonAS extends CFRuntime
 	 *
 	 * @param string $scheduled_action_name (Required) The name of the action you want to delete. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name of the Auto Scaling group [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -453,15 +470,15 @@ class AmazonAS extends CFRuntime
 	}
 
 	/**
-	 * 
+	 * Removes the specified tags or a set of tags from a set of resources.
 	 *
-	 * @param array $tags (Required)  <ul>
+	 * @param array $tags (Required) Each tag should be defined by its resource type, resource ID, key, value, and a propagate flag. Valid values are: Resource type = <em>auto-scaling-group</em>, Resource ID = <em>AutoScalingGroupName</em>, key= <em>value</em>, value= <em>value</em>, propagate= <em>true</em> or <em>false</em>. <ul>
 	 * 	<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
-	 * 		<li><code>ResourceId</code> - <code>string</code> - Optional -  [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 		<li><code>ResourceType</code> - <code>string</code> - Optional -  [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 		<li><code>Key</code> - <code>string</code> - Required -  [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 		<li><code>Value</code> - <code>string</code> - Optional -  [Constraints: The value must be between 0 and 256 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 		<li><code>PropagateAtLaunch</code> - <code>boolean</code> - Optional - </li>
+	 * 		<li><code>ResourceId</code> - <code>string</code> - Optional - The name of the Auto Scaling group. [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 		<li><code>ResourceType</code> - <code>string</code> - Optional - The kind of resource to which the tag is applied. Currently, Auto Scaling supports the <code>auto-scaling-group</code> resource type. [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 		<li><code>Key</code> - <code>string</code> - Required - The key of the tag. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 		<li><code>Value</code> - <code>string</code> - Optional - The value of the tag. [Constraints: The value must be between 0 and 256 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 		<li><code>PropagateAtLaunch</code> - <code>boolean</code> - Optional - Specifies whether the new tag will be applied to instances launched after the tag is created. The same behavior applies to updates: If you change a tag, the changed tag will be applied to all instances launched after you made the change.</li>
 	 * 	</ul></li>
 	 * </ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -578,9 +595,10 @@ class AmazonAS extends CFRuntime
 	}
 
 	/**
-	 * Returns a full description of the launch configurations given the specified names.
+	 * Returns a full description of the launch configurations, or the specified launch
+	 * configurations, if they exist.
 	 *  
-	 * If no names are specified, then the full details of all launch configurations are returned.
+	 * If no name is specified, then the full details of all launch configurations are returned.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>LaunchConfigurationNames</code> - <code>string|array</code> - Optional - A list of launch configuration names. Pass a string for a single value, or an indexed array for multiple values.</li>
@@ -656,7 +674,7 @@ class AmazonAS extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 	<li><code>PolicyNames</code> - <code>string|array</code> - Optional - A list of policy names or policy ARNs to be described. If this list is omitted, all policy names are described. If an auto scaling group name is provided, the results are limited to that group.The list of requested policy names cannot contain more than 50 items. If unknown policy names are requested, they are ignored with no error. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>PolicyNames</code> - <code>string|array</code> - Optional - A list of policy names or policy ARNs to be described. If this list is omitted, all policy names are described. If an auto scaling group name is provided, the results are limited to that group. The list of requested policy names cannot contain more than 50 items. If unknown policy names are requested, they are ignored with no error. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - A string that is used to mark the start of the next batch of returned results for pagination. [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of policies that will be described with each call.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -691,7 +709,7 @@ class AmazonAS extends CFRuntime
 	 * <code>NextToken</code> parameter.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>ActivityIds</code> - <code>string|array</code> - Optional - A list containing the activity IDs of the desired scaling activities. If this list is omitted, all activities are described. If an AutoScalingGroupName is provided, the results are limited to that group. The list of requested activities cannot contain more than 50 items. If unknown activities are requested, they are ignored with no error. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>ActivityIds</code> - <code>string|array</code> - Optional - A list containing the activity IDs of the desired scaling activities. If this list is omitted, all activities are described. If an <code>AutoScalingGroupName</code> is provided, the results are limited to that group. The list of requested activities cannot contain more than 50 items. If unknown activities are requested, they are ignored with no error. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name of the <code>AutoScalingGroup</code>. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of scaling activities to return.</li>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - A string that marks the start of the next batch of returned results for pagination. [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
@@ -733,14 +751,14 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 * Lists all the actions scheduled for your Auto Scaling group that haven't been executed. To see
-	 * a list of action already executed, see the activity record returned in
+	 * a list of actions already executed, see the activity record returned in
 	 * <code>DescribeScalingActivities</code>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>ScheduledActionNames</code> - <code>string|array</code> - Optional - A list of scheduled actions to be described. If this list is omitted, all scheduled actions are described. The list of requested scheduled actions cannot contain more than 50 items. If an auto scaling group name is provided, the results are limited to that group. If unknown scheduled actions are requested, they are ignored with no error. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>StartTime</code> - <code>string</code> - Optional - The earliest scheduled start time to return. If scheduled action names are provided, this field will be ignored. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
-	 * 	<li><code>EndTime</code> - <code>string</code> - Optional - The latest scheduled start time to return. If scheduled action names are provided, this field will be ignored. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
+	 * 	<li><code>EndTime</code> - <code>string</code> - Optional - The latest scheduled start time to return. If scheduled action names are provided, this field is ignored. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
 	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - A string that marks the start of the next batch of returned results. [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of scheduled actions to return.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -776,17 +794,24 @@ class AmazonAS extends CFRuntime
 	}
 
 	/**
-	 * 
+	 * Lists the Auto Scaling group tags.
+	 *  
+	 * You can use filters to limit results when describing tags. For example, you can query for tags
+	 * of a particular Auto Scaling group. You can specify multiple values for a filter. A tag must
+	 * match at least one of the specified values for it to be included in the results.
+	 *  
+	 * You can also specify multiple filters. The result includes information for a particular tag
+	 * only if it matches all your filters. If there's no match, no special message is returned.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>Filters</code> - <code>array</code> - Optional -  <ul>
+	 * 	<li><code>Filters</code> - <code>array</code> - Optional - The value of the filter type used to identify the tags to be returned. For example, you can filter so that tags are returned according to Auto Scaling group, the key and value, or whether the new tag will be applied to instances launched after the tag is created (PropagateAtLaunch). <ul>
 	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
-	 * 			<li><code>Name</code> - <code>string</code> - Optional -  [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 			<li><code>Values</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>Name</code> - <code>string</code> - Optional - The name of the filter. Valid Name values are: <code>"auto-scaling-group"</code>, <code>"key"</code>, <code>"value"</code>, and <code>"propagate-at-launch"</code>. [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 			<li><code>Values</code> - <code>string|array</code> - Optional - The value of the filter. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
-	 * 	<li><code>NextToken</code> - <code>string</code> - Optional -  [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - </li>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - A string that marks the start of the next batch of returned results. [Constraints: The value must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of records to return.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -808,8 +833,24 @@ class AmazonAS extends CFRuntime
 	}
 
 	/**
+	 * Returns a list of all termination policies supported by Auto Scaling.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_termination_policy_types($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		return $this->authenticate('DescribeTerminationPolicyTypes', $opt);
+	}
+
+	/**
 	 * Disables monitoring of group metrics for the Auto Scaling group specified in
-	 * AutoScalingGroupName. You can specify the list of affected metrics with the Metrics parameter.
+	 * <code>AutoScalingGroupName</code>. You can specify the list of affected metrics with the
+	 * <code>Metrics</code> parameter.
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name or ARN of the Auto Scaling Group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -837,12 +878,13 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 * Enables monitoring of group metrics for the Auto Scaling group specified in
-	 * AutoScalingGroupName. You can specify the list of enabled metrics with the Metrics parameter.
+	 * <code>AutoScalingGroupName</code>. You can specify the list of enabled metrics with the
+	 * <code>Metrics</code> parameter.
 	 *  
 	 * Auto scaling metrics collection can be turned on only if the <code>InstanceMonitoring</code>
 	 * flag, in the Auto Scaling group's launch configuration, is set to <code>True</code>.
 	 *
-	 * @param string $auto_scaling_group_name (Required) The name or ARN of the Auto Scaling Group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
+	 * @param string $auto_scaling_group_name (Required) The name or ARN of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param string $granularity (Required) The granularity to associate with the metrics to collect. Currently, the only legal granularity is "1Minute". [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Metrics</code> - <code>string|array</code> - Optional - The list of metrics to collect. If no metrics are specified, all metrics are enabled. The following metrics are supported:<ul><li>GroupMinSize</li><li>GroupMaxSize</li><li>GroupDesiredCapacity</li><li>GroupInServiceInstances</li><li>GroupPendingInstances</li><li>GroupTerminatingInstances</li><li>GroupTotalInstances</li></ul> Pass a string for a single value, or an indexed array for multiple values.</li>
@@ -873,8 +915,8 @@ class AmazonAS extends CFRuntime
 	 *
 	 * @param string $policy_name (Required) The name or PolicyARN of the policy you want to run. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name or ARN of the Auto Scaling Group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 	<li><code>HonorCooldown</code> - <code>boolean</code> - Optional - Set to True if you want Auto Scaling to reject this request when the Auto Scaling group is in cooldown.</li>
+	 * 	<li><code>AutoScalingGroupName</code> - <code>string</code> - Optional - The name or ARN of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 	<li><code>HonorCooldown</code> - <code>boolean</code> - Optional - Set to <code>True</code> if you want Auto Scaling to reject this request when the Auto Scaling group is in cooldown.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -894,7 +936,7 @@ class AmazonAS extends CFRuntime
 	 *  
 	 * A new <code>PutNotificationConfiguration</code> overwrites an existing configuration.
 	 *
-	 * @param string $auto_scaling_group_name (Required) The name of the Auto Scaling Group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
+	 * @param string $auto_scaling_group_name (Required) The name of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param string $topic_arn (Required) The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param string|array $notification_types (Required) The type of events that will trigger the notification. For more information, go to <code>DescribeAutoScalingNotificationTypes</code>. Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -921,13 +963,13 @@ class AmazonAS extends CFRuntime
 	 * existing policy name and set the parameter(s) you want to change. Any existing parameter not
 	 * changed in an update to an existing policy is not changed in this update request.
 	 *
-	 * @param string $auto_scaling_group_name (Required) The name or ARN of the Auto Scaling Group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
+	 * @param string $auto_scaling_group_name (Required) The name or ARN of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param string $policy_name (Required) The name of the policy you want to create or update. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param integer $scaling_adjustment (Required) The number of instances by which to scale. <code>AdjustmentType</code> determines the interpretation of this number (e.g., as an absolute number or as a percentage of the existing Auto Scaling group size). A positive increment adds to the current capacity and a negative value removes from the current capacity.
 	 * @param string $adjustment_type (Required) Specifies whether the <code>ScalingAdjustment</code> is an absolute number or a percentage of the current capacity. Valid values are <code>ChangeInCapacity</code>, <code>ExactCapacity</code>, and <code>PercentChangeInCapacity</code>. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Cooldown</code> - <code>integer</code> - Optional - The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start.</li>
-	 * 	<li><code>MinAdjustmentStep</code> - <code>integer</code> - Optional - </li>
+	 * 	<li><code>MinAdjustmentStep</code> - <code>integer</code> - Optional - Used with <code>AdjustmentType</code> with the value <code>PercentChangeInCapacity</code>, the scaling policy changes the <code>DesiredCapacity</code> of the Auto Scaling group by at least the number of instances specified in the value. You will get a <code>ValidationError</code> if you use <code>MinAdjustmentStep</code> on a policy with an <code>AdjustmentType</code> other than <code>PercentChangeInCapacity</code>.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -944,10 +986,10 @@ class AmazonAS extends CFRuntime
 	}
 
 	/**
-	 * Creates a scheduled scaling action for a Auto Scaling group. If you leave a parameter
+	 * Creates a scheduled scaling action for an Auto Scaling group. If you leave a parameter
 	 * unspecified, the corresponding value remains unchanged in the affected Auto Scaling group.
 	 *
-	 * @param string $auto_scaling_group_name (Required) The name or ARN of the Auto Scaling Group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
+	 * @param string $auto_scaling_group_name (Required) The name or ARN of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param string $scheduled_action_name (Required) The name of this scaling action. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Time</code> - <code>string</code> - Optional - <code>Time</code> is deprecated. The time for this action to start. <code>Time</code> is an alias for <code>StartTime</code> and can be specified instead of <code>StartTime</code>, or vice versa. If both <code>Time</code> and <code>StartTime</code> are specified, their values should be identical. Otherwise, <code>PutScheduledUpdateGroupAction</code> will return an error. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
@@ -994,7 +1036,7 @@ class AmazonAS extends CFRuntime
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name or Amazon Resource Name (ARN) of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>ScalingProcesses</code> - <code>string|array</code> - Optional - The processes that you want to suspend or resume, which can include one or more of the following:<ul><li>Launch</li><li>Terminate</li><li>HealthCheck</li><li>ReplaceUnhealthy</li><li>AZRebalance</li><li>AlarmNotifications</li><li>ScheduledActions</li><li>AddToLoadBalancer</li></ul>To suspend all process types, omit this parameter. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>ScalingProcesses</code> - <code>string|array</code> - Optional - The processes that you want to suspend or resume, which can include one or more of the following:<ul><li>Launch</li><li>Terminate</li><li>HealthCheck</li><li>ReplaceUnhealthy</li><li>AZRebalance</li><li>AlarmNotification</li><li>ScheduledActions</li><li>AddToLoadBalancer</li></ul>To suspend all process types, omit this parameter. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -1018,8 +1060,8 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 * Adjusts the desired size of the <code>AutoScalingGroup</code> by initiating scaling activities.
-	 * When reducing the size of the group, it is not possible to define which EC2 instances will be
-	 * terminated. This applies to any Auto Scaling decisions that might result in terminating
+	 * When reducing the size of the group, it is not possible to define which Amazon EC2 instances
+	 * will be terminated. This applies to any Auto Scaling decisions that might result in terminating
 	 * instances.
 	 *  
 	 * There are two common use cases for <code>SetDesiredCapacity</code>: one for users of the Auto
@@ -1030,7 +1072,7 @@ class AmazonAS extends CFRuntime
 	 * <code>SetDesiredCapacity</code> changes the size of your Auto Scaling group without regard to
 	 * the cooldown period. This could be useful, for example, if Auto Scaling did something
 	 * unexpected for some reason. If your cooldown period is 10 minutes, Auto Scaling would normally
-	 * reject requests to change the size of the group for that entire 10 minute period. The
+	 * reject requests to change the size of the group for that entire 10-minute period. The
 	 * <code>SetDesiredCapacity</code> command allows you to circumvent this restriction and change
 	 * the size of the group before the end of the cooldown period.
 	 *  
@@ -1040,10 +1082,10 @@ class AmazonAS extends CFRuntime
 	 * <code>SetDesiredCapacity</code> to honor cooldown by setting the <code>HonorCooldown</code>
 	 * parameter to <code>true</code>.
 	 *
-	 * @param string $auto_scaling_group_name (Required) The name of the AutoScalingGroup. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
-	 * @param integer $desired_capacity (Required) The new capacity setting for the AutoScalingGroup.
+	 * @param string $auto_scaling_group_name (Required) The name of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
+	 * @param integer $desired_capacity (Required) The new capacity setting for the Auto Scaling group.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>HonorCooldown</code> - <code>boolean</code> - Optional - By default, <code>SetDesiredCapacity</code> overrides any cooldown period. Set to True if you want Auto Scaling to reject this request when the Auto Scaling group is in cooldown.</li>
+	 * 	<li><code>HonorCooldown</code> - <code>boolean</code> - Optional - By default, <code>SetDesiredCapacity</code> overrides any cooldown period. Set to <code>True</code> if you want Auto Scaling to reject this request when the Auto Scaling group is in cooldown.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -1060,7 +1102,7 @@ class AmazonAS extends CFRuntime
 	/**
 	 * Sets the health status of an instance.
 	 *
-	 * @param string $instance_id (Required) The identifier of the EC2 instance. [Constraints: The value must be between 1 and 16 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
+	 * @param string $instance_id (Required) The identifier of the Amazon EC2 instance. [Constraints: The value must be between 1 and 16 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param string $health_status (Required) The health status of the instance. "Healthy" means that the instance is healthy and should remain in service. "Unhealthy" means that the instance is unhealthy. Auto Scaling should terminate and replace it. [Constraints: The value must be between 1 and 32 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ShouldRespectGracePeriod</code> - <code>boolean</code> - Optional - If True, this call should respect the grace period associated with the group.</li>
@@ -1091,7 +1133,7 @@ class AmazonAS extends CFRuntime
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name or Amazon Resource Name (ARN) of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>ScalingProcesses</code> - <code>string|array</code> - Optional - The processes that you want to suspend or resume, which can include one or more of the following:<ul><li>Launch</li><li>Terminate</li><li>HealthCheck</li><li>ReplaceUnhealthy</li><li>AZRebalance</li><li>AlarmNotifications</li><li>ScheduledActions</li><li>AddToLoadBalancer</li></ul>To suspend all process types, omit this parameter. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>ScalingProcesses</code> - <code>string|array</code> - Optional - The processes that you want to suspend or resume, which can include one or more of the following:<ul><li>Launch</li><li>Terminate</li><li>HealthCheck</li><li>ReplaceUnhealthy</li><li>AZRebalance</li><li>AlarmNotification</li><li>ScheduledActions</li><li>AddToLoadBalancer</li></ul>To suspend all process types, omit this parameter. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -1121,7 +1163,7 @@ class AmazonAS extends CFRuntime
 	 * immediately.
 	 * </p>
 	 *
-	 * @param string $instance_id (Required) The ID of the EC2 instance to be terminated. [Constraints: The value must be between 1 and 16 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
+	 * @param string $instance_id (Required) The ID of the Amazon EC2 instance to be terminated. [Constraints: The value must be between 1 and 16 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param boolean $should_decrement_desired_capacity (Required) Specifies whether (<em>true</em>) or not (<em>false</em>) terminating this instance should also decrement the size of the <code>AutoScalingGroup</code>.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -1152,11 +1194,18 @@ class AmazonAS extends CFRuntime
 	 * settings take effect on any triggers after this call returns. Triggers that are currently in
 	 * progress aren't affected.
 	 * 
-	 * <p class="note">
-	 * If the new values are specified for the <em>MinSize</em> or <em>MaxSize</em> parameters, then
-	 * there will be an implicit call to <code>SetDesiredCapacity</code> to set the group to the new
-	 * <em>MaxSize</em>. All optional parameters are left unchanged if not passed in the request.
-	 * </p>
+	 * <p class="note"></p>
+	 * <ul>
+	 * 	<li>If a new value is specified for <em>MinSize</em> without specifying the value for
+	 * 		<em>DesiredCapacity</em>, and if the new <em>MinSize</em> is larger than the current
+	 * 		size of the Auto Scaling Group, there will be an implicit call to
+	 * 		<code>SetDesiredCapacity</code> to set the group to the new <em>MinSize</em>.</li>
+	 * 	<li>If a new value is specified for <em>MaxSize</em> without specifying the value for
+	 * 		<em>DesiredCapacity</em>, and the new <em>MaxSize</em> is smaller than the current size
+	 * 		of the Auto Scaling Group, there will be an implicit call to
+	 * 		<code>SetDesiredCapacity</code> to set the group to the new <em>MaxSize</em>.</li>
+	 * 	<li>All other optional parameters are left unchanged if not passed in the request.</li>
+	 * </ul>
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1165,11 +1214,12 @@ class AmazonAS extends CFRuntime
 	 * 	<li><code>MaxSize</code> - <code>integer</code> - Optional - The maximum size of the Auto Scaling group.</li>
 	 * 	<li><code>DesiredCapacity</code> - <code>integer</code> - Optional - The desired capacity for the Auto Scaling group.</li>
 	 * 	<li><code>DefaultCooldown</code> - <code>integer</code> - Optional - The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start.</li>
-	 * 	<li><code>AvailabilityZones</code> - <code>string|array</code> - Optional - Availability zones for the group. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>AvailabilityZones</code> - <code>string|array</code> - Optional - Availability Zones for the group. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>HealthCheckType</code> - <code>string</code> - Optional - The service of interest for the health status check, either "EC2" for Amazon EC2 or "ELB" for Elastic Load Balancing. [Constraints: The value must be between 1 and 32 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>HealthCheckGracePeriod</code> - <code>integer</code> - Optional - The length of time that Auto Scaling waits before checking an instance's health status. The grace period begins when an instance comes into service.</li>
 	 * 	<li><code>PlacementGroup</code> - <code>string</code> - Optional - The name of the cluster placement group, if applicable. For more information, go to <a href="http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/using_cluster_computing.html">Using Cluster Instances</a> in the Amazon EC2 User Guide. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>VPCZoneIdentifier</code> - <code>string</code> - Optional - The subnet identifier for the Amazon VPC connection, if applicable. You can specify several subnets in a comma-separated list. When you specify <code>VPCZoneIdentifier</code> with <code>AvailabilityZones</code>, ensure that the subnets' Availability Zones match the values you specify for <code>AvailabilityZones</code>. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 	<li><code>TerminationPolicies</code> - <code>string|array</code> - Optional - A standalone termination policy or a list of termination policies used to select the instance to terminate. The policies are executed in the order that they are listed. For more information on creating a termination policy for your Auto Scaling group, go to <a href="http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/us-termination-policy.html">Instance Termination Policy for Your Auto Scaling Group</a> in the the <em>Auto Scaling Developer Guide</em>. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -1186,6 +1236,15 @@ class AmazonAS extends CFRuntime
 				'AvailabilityZones' => (is_array($opt['AvailabilityZones']) ? $opt['AvailabilityZones'] : array($opt['AvailabilityZones']))
 			), 'member'));
 			unset($opt['AvailabilityZones']);
+		}
+		
+		// Optional list (non-map)
+		if (isset($opt['TerminationPolicies']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'TerminationPolicies' => (is_array($opt['TerminationPolicies']) ? $opt['TerminationPolicies'] : array($opt['TerminationPolicies']))
+			), 'member'));
+			unset($opt['TerminationPolicies']);
 		}
 
 		return $this->authenticate('UpdateAutoScalingGroup', $opt);
