@@ -155,12 +155,11 @@ class AuthV4JSON extends Signer implements Signable
 		// Add headers to request and compute the string to sign
 		foreach ($this->headers as $header_key => $header_value)
 		{
-			// Strip linebreaks from header values as they're illegal and can allow for security issues
-			$header_value = str_replace(array("\r", "\n"), '', $header_value);
+			// Strip line breaks and remove consecutive spaces. Services collapse whitespace in signature calculation
+			$header_value = preg_replace('/\s+/', ' ', trim($header_value));
 
 			$request->add_header($header_key, $header_value);
 			$this->canonical_headers[] = strtolower($header_key) . ':' . $header_value;
-
 			$this->signed_headers[] = strtolower($header_key);
 		}
 

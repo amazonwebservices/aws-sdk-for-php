@@ -115,8 +115,8 @@ function __aws_sdk_ua_callback()
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.5.14');
-define('CFRUNTIME_BUILD', '20120831150000');
+define('CFRUNTIME_VERSION', '1.5.15');
+define('CFRUNTIME_BUILD', '20120926163000');
 define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . str_replace(' ', '_', php_uname('s')) . '/' . str_replace(' ', '_', php_uname('r')) . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
 
 
@@ -1525,7 +1525,16 @@ else
 		}
 		else
 		{
-			$_ENV['HOME'] = `cd ~ && pwd`;
+			$dir = exec('(cd ~ && pwd) 2>&1', $out, $exit);
+			if ($exit === 0)
+			{
+				$_ENV['HOME'] = trim($dir);
+			}
+			else
+			{
+				error_log('Failed to determine HOME directory after trying "' . $dir . '" (exit code ' . $exit . ')');
+				$_ENV['HOME'] = false;
+			}
 		}
 
 		if (!$_ENV['HOME'])
@@ -1549,8 +1558,11 @@ else
 		}
 	}
 
-	if (getenv('HOME') && file_exists(getenv('HOME') . DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php'))
+	$path = DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php';
+	if (isset($_ENV['HOME']) && file_exists($_ENV['HOME'] . $path))
 	{
-		include_once getenv('HOME') . DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php';
+		include_once $_ENV['HOME'] . $path;
 	}
+
+	unset($os, $dir, $out, $exit, $path);
 }

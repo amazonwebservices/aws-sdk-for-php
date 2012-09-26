@@ -8,7 +8,10 @@ The following people have provided ideas, support and bug fixes:
 
 * [arech8](http://developer.amazonwebservices.com/connect/profile.jspa?userID=154435) (bug fixes)
 * [Aizat Faiz](http://aizatto.com) (bug fixes)
+* [Adam Monsen](https://github.com/meonkeys) (bug fixes)
+* [Alan Pinstein](https://github.com/apinstein) (bug fixes)
 * [Ben Lumley](http://github.com/benlumley) (bug fixes)
+* [Brady Doll](https://github.com/bradydoll) (bug fixes)
 * [Dan Stillman](https://github.com/dstillman) (bug fixes)
 * [Daniel Holmes](https://github.com/danielholmes) (bug fixes)
 * [David Chan](http://www.chandeeland.org) (bug fixes)
@@ -16,11 +19,14 @@ The following people have provided ideas, support and bug fixes:
 * [Jason Ardell](http://ardell.posterous.com/) (bug fixes)
 * [Jeremy Archuleta](http://code.google.com/u/jeremy.archuleta/) (bug fixes)
 * [Jimmy Berry](http://blog.boombatower.com/) (bug fixes, patches)
+* [Jarrod Swift](https://github.com/jswift) (bg fixes)
+* [Richard Quadling](https://github.com/RichardQuadling) (bug fixes)
 * [Paul Voegler](mailto:voegler@gmx.de) (bug fixes, bug reports, patches)
 * [Peter Bowen](http://github.com/pzb) (feedback, bug reports)
+* [Robin Speekenbrink](https://github.com/fruitl00p) (bug fixes)
 * [Roman Cambian](https://github.com/rcambien) (patches)
 * [zoxa](https://github.com/zoxa) (bug fixes)
-
+* [ziege](https://github.com/ziege) (bug fixes)
 
 ## CloudFusion/CacheCore/RequestCore Contributors
 

@@ -21,7 +21,7 @@
  * Amazon DynamoDB removes traditional scalability limitations on data storage while maintaining
  * low latency and predictable performance.
  *
- * @version 2012.08.17
+ * @version 2012.09.18
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/dynamodb/ Amazon DynamoDB
@@ -445,8 +445,8 @@ class AmazonDynamoDB extends CFRuntime
 			return null;
 		}
 
-		// Create the info to return. Treat all values as strings by default
-		$info = array('value' => (string) $value, 'type' => self::TYPE_STRING);
+		// Create the attribute value info
+		$info = array();
 
 		// Handle boolean values
 		if (is_bool($value))
@@ -458,6 +458,7 @@ class AmazonDynamoDB extends CFRuntime
 		elseif (is_int($value) || is_float($value))
 		{
 			$info['type'] = self::TYPE_NUMBER;
+			$info['value'] = (string) $value;
 		}
 		// Handle arrays
 		elseif (is_array($value))
@@ -493,6 +494,11 @@ class AmazonDynamoDB extends CFRuntime
 
 			// Make sure the type is changed to be the appropriate array/set type
 			$info['type'] = $set_type . self::SUFFIX_FOR_TYPES;
+		}
+		// Handle strings
+		else
+		{
+			$info = array('value' => (string) $value, 'type' => self::TYPE_STRING);
 		}
 
 		return $info;
