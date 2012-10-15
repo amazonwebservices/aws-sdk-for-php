@@ -2488,6 +2488,12 @@ class AmazonS3 extends CFRuntime
 			do
 			{
 				$list = $this->list_objects($bucket, $opt);
+
+				if (is_string($list->body))
+				{
+					$list->body = new CFSimpleXML($list->body);
+				}
+
 				if ($keys = $list->body->query('descendant-or-self::Key')->map_string($pcre))
 				{
 					$objects = array_merge($objects, $keys);
@@ -2512,6 +2518,12 @@ class AmazonS3 extends CFRuntime
 			do
 			{
 				$list = $this->list_objects($bucket, $opt);
+
+				if (is_string($list->body))
+				{
+					$list->body = new CFSimpleXML($list->body);
+				}
+
 				$keys = $list->body->query('descendant-or-self::Key')->map_string($pcre);
 
 				if ($count = count($keys))
