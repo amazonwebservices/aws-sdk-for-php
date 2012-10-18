@@ -803,8 +803,18 @@ class RequestCore
 			$header_assoc = array();
 			foreach ($this->response_headers as $header)
 			{
-				$kv = explode(': ', $header);
-				$header_assoc[strtolower($kv[0])] = $kv[1];
+				/*
+                                 * split on only colon
+                                 * 
+                                 */
+				$kv = explode(':', $header);
+                                /*
+                                 * now remove leading whitespace
+                                 * for previous use cases
+                                 * 
+                                 */
+                                $val = ltrim($kv[1], ' ');
+                                $header_assoc[strtolower($kv[0])] = $val;
 			}
 
 			// Reset the headers to the appropriate property.
