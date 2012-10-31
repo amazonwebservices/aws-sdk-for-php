@@ -31,7 +31,7 @@
  * Visit <a href="http://aws.amazon.com/simpledb/">http://aws.amazon.com/simpledb/</a> for more
  * information.
  *
- * @version 2012.01.16
+ * @version 2012.08.04
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/simpledb/ Amazon SimpleDB
@@ -701,10 +701,85 @@ class AmazonSDB extends CFRuntime
 	 */
 	public function select($select_expression, $opt = null)
 	{
+		$limitPos = strrpos(strtolower($select_expression), ' limit ');
+		if ($limitPos !== false)
+		{
+			$limit = explode(' ', substr($select_expression, $limitPos+7));
+			if (!empty($limit[1]))
+			{
+				if ($limit[0] == '0')
+				{
+					return $this->select(substr($select_expression, 0, $limitPos)." limit {$limit[1]}", $opt);
+				}
+				else
+				{
+					$fromEndPos = strpos(strtolower($select_expression), ' from ')+6;
+					$query = 'select count(*) from '.substr($select_expression, $fromEndPos, $limitPos-$fromEndPos)." limit {$limit[0]}";
+					$countOpt = $opt;
+					unset($countOpt['Output']);
+					$countResult = $this->select($query, $countOpt);
+					$token = $countResult->body->SelectResult->NextToken->to_string();
+					$opt["NextToken"] = $token;
+					return $this->select(substr($select_expression, 0, $limitPos)." limit {$limit[1]}", $opt);
+				}
+			}
+		}
+
 		if (!$opt) $opt = array();
 		$opt['SelectExpression'] = $select_expression;
-		
-		return $this->authenticate('Select', $opt);
+		if (isset($opt['Output']))
+		{
+			$output = $opt['Output'];
+			unset($opt['Output']);
+			$result = $this->authenticate('Select', $opt);
+			if ($result->isOK())
+			{
+				switch($output)
+				{
+					case 'array':
+						$resultSet = $result->body->SelectResult->Item;
+						$resultArray = array ();
+						foreach($resultSet as $entry)
+						{
+							$entryArray = array();
+							foreach($entry->Attribute as $attribute)
+							{
+								$name = $attribute->Name->to_string();
+								$value = $attribute->Value->to_string();
+								if (isset($entryArray[$name]))
+								{
+									if (is_array($entryArray[$name]))
+									{
+										$entryArray[$name][] = $value;
+									}
+									else
+									{
+										$entryArray[$name] = array($entryArray[$name], $value);
+									}
+								}
+								else
+								{
+									$entryArray[$name] = $value;
+								}
+							}
+							$resultArray[$entry->Name->to_string()] = $entryArray;
+						}
+						return $resultArray;
+						break;
+					default:
+						return $result;
+						break;
+				}
+			}
+			else
+			{
+				return $result;
+			}
+		}
+		else
+		{
+			return $this->authenticate('Select', $opt);
+		}
 	}
 }
 
