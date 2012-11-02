@@ -1,5 +1,7 @@
 # AWS SDK for PHP
 
+> This is the repository for AWS SDK for PHP 1.x. For **AWS SDK for PHP 2.x**, see <http://github.com/aws/aws-sdk-php>.
+
 The AWS SDK for PHP enables developers to build solutions for Amazon Simple Storage Service (Amazon S3),
 Amazon Elastic Compute Cloud (Amazon EC2), Amazon SimpleDB, and more. With the AWS SDK for PHP, developers
 can get started in minutes with a single, downloadable package.
