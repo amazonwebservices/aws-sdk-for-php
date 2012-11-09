@@ -30,7 +30,7 @@
  *  
  * Visit <a href="http://aws.amazon.com/sqs/">http://aws.amazon.com/sqs/</a> for more information.
  *
- * @version 2012.01.29
+ * @version 2012.10.04
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sqs/ Amazon Simple Queue Service
@@ -134,7 +134,7 @@ class AmazonSQS extends CFRuntime
 	 */
 	public function __construct(array $options = array())
 	{
-		$this->api_version = '2011-10-01';
+		$this->api_version = '2012-09-15';
 		$this->hostname = self::DEFAULT_URL;
 		$this->auth_class = 'AuthV2Query';
 
@@ -398,7 +398,7 @@ class AmazonSQS extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Attribute</code> - <code>array</code> - Optional - A map of attributes with their corresponding values. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
-	 * 			<li><code>Name</code> - <code>string</code> - Optional - The name of a queue attribute. [Allowed values: <code>Policy</code>, <code>VisibilityTimeout</code>, <code>MaximumMessageSize</code>, <code>MessageRetentionPeriod</code>, <code>ApproximateNumberOfMessages</code>, <code>ApproximateNumberOfMessagesNotVisible</code>, <code>CreatedTimestamp</code>, <code>LastModifiedTimestamp</code>, <code>QueueArn</code>, <code>ApproximateNumberOfMessagesDelayed</code>, <code>DelaySeconds</code>]</li>
+	 * 			<li><code>Name</code> - <code>string</code> - Optional - The name of a queue attribute. [Allowed values: <code>Policy</code>, <code>VisibilityTimeout</code>, <code>MaximumMessageSize</code>, <code>MessageRetentionPeriod</code>, <code>ApproximateNumberOfMessages</code>, <code>ApproximateNumberOfMessagesNotVisible</code>, <code>CreatedTimestamp</code>, <code>LastModifiedTimestamp</code>, <code>QueueArn</code>, <code>ApproximateNumberOfMessagesDelayed</code>, <code>DelaySeconds</code>, <code>ReceiveMessageWaitTimeSeconds</code>]</li>
 	 * 			<li><code>Value</code> - <code>string</code> - Optional - The value of a queue attribute.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
@@ -522,6 +522,8 @@ class AmazonSQS extends CFRuntime
 	 * 	<li><code>ApproximateNumberOfMessagesDelayed</code> - returns the approximate number of
 	 * 	messages that are pending to be added to the queue.</li>
 	 * 	<li><code>DelaySeconds</code> - returns the default delay on the queue in seconds.</li>
+	 * 	<li><code>ReceiveMessageWaitTimeSeconds</code> - returns the time for which a ReceiveMessage
+	 * 	call will wait for a message to arrive.</li>
 	 * </ul>
 	 *
 	 * @param string $queue_url (Required) The URL of the SQS queue to take action on.
@@ -589,12 +591,22 @@ class AmazonSQS extends CFRuntime
 	 * returned on subsequent <code>ReceiveMessage</code> requests for the duration of the
 	 * <code>VisibilityTimeout</code>. If you do not specify a <code>VisibilityTimeout</code> in the
 	 * request, the overall visibility timeout for the queue is used for the returned messages.
+	 *  
+	 * If a message is available in the queue, the call will return immediately. Otherwise, it will
+	 * wait up to <code>WaitTimeSeconds</code> for a message to arrive. If you do not specify
+	 * <code>WaitTimeSeconds</code> in the request, the queue attribute ReceiveMessageWaitTimeSeconds
+	 * is used to determine how long to wait.
+	 *  
+	 * You could ask for additional information about each message through the attributes. Attributes
+	 * that can be requested are <code>[SenderId, ApproximateFirstReceiveTimestamp,
+	 * ApproximateReceiveCount, SentTimestamp]</code>.
 	 *
 	 * @param string $queue_url (Required) The URL of the SQS queue to take action on.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>AttributeName</code> - <code>string|array</code> - Optional - A list of attributes to retrieve information for. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>AttributeName</code> - <code>string|array</code> - Optional - A list of attributes that need to be returned along with each message. The set of valid attributes are [SenderId, ApproximateFirstReceiveTimestamp, ApproximateReceiveCount, SentTimestamp]. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>MaxNumberOfMessages</code> - <code>integer</code> - Optional - The maximum number of messages to return. Amazon SQS never returns more messages than this value but may return fewer. All of the messages are not necessarily returned.</li>
 	 * 	<li><code>VisibilityTimeout</code> - <code>integer</code> - Optional - The duration (in seconds) that the received messages are hidden from subsequent retrieve requests after being retrieved by a <code>ReceiveMessage</code> request.</li>
+	 * 	<li><code>WaitTimeSeconds</code> - <code>integer</code> - Optional - The duration (in seconds) for which the call will wait for a message to arrive in the queue before returning. If a message is available, the call will return sooner than WaitTimeSeconds.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -689,13 +701,14 @@ class AmazonSQS extends CFRuntime
 	}
 
 	/**
-	 * Sets an attribute of a queue. The set of attributes that can be set are - DelaySeconds,
-	 * MessageRetentionPeriod, MaximumMessageSize, VisibilityTimeout and Policy.
+	 * Sets the value of one or more queue attributes. Valid attributes that can be set are
+	 * [VisibilityTimeout, Policy, MaximumMessageSize, MessageRetentionPeriod,
+	 * ReceiveMessageWaitTimeSeconds].
 	 *
 	 * @param string $queue_url (Required) The URL of the SQS queue to take action on.
 	 * @param array $attribute (Required) A map of attributes to set. <ul>
 	 * 	<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
-	 * 		<li><code>Name</code> - <code>string</code> - Optional - The name of a queue attribute. [Allowed values: <code>Policy</code>, <code>VisibilityTimeout</code>, <code>MaximumMessageSize</code>, <code>MessageRetentionPeriod</code>, <code>ApproximateNumberOfMessages</code>, <code>ApproximateNumberOfMessagesNotVisible</code>, <code>CreatedTimestamp</code>, <code>LastModifiedTimestamp</code>, <code>QueueArn</code>, <code>ApproximateNumberOfMessagesDelayed</code>, <code>DelaySeconds</code>]</li>
+	 * 		<li><code>Name</code> - <code>string</code> - Optional - The name of a queue attribute. [Allowed values: <code>Policy</code>, <code>VisibilityTimeout</code>, <code>MaximumMessageSize</code>, <code>MessageRetentionPeriod</code>, <code>ApproximateNumberOfMessages</code>, <code>ApproximateNumberOfMessagesNotVisible</code>, <code>CreatedTimestamp</code>, <code>LastModifiedTimestamp</code>, <code>QueueArn</code>, <code>ApproximateNumberOfMessagesDelayed</code>, <code>DelaySeconds</code>, <code>ReceiveMessageWaitTimeSeconds</code>]</li>
 	 * 		<li><code>Value</code> - <code>string</code> - Optional - The value of a queue attribute.</li>
 	 * 	</ul></li>
 	 * </ul>

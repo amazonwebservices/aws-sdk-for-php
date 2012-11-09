@@ -289,7 +289,7 @@ class DynamoDBSessionHandler
 			$node_name = 'Item';
 		}
 
-		if ($response->isOK())
+		if ($response && $response->isOK())
 		{
 			$item = array();
 
@@ -502,13 +502,17 @@ class DynamoDBSessionHandler
 			{
 				return $response;
 			}
-			else
+			elseif (stripos((string) $response->body->asXML(), 'ConditionalCheckFailedException') !== false)
 			{
 				usleep(rand($this->_min_lock_retry_utime, $this->_max_lock_retry_utime));
 
 				$now = time();
 			}
+			else
+			{
+				return null;
+			}
 		}
-		while(true);
+		while (true);
 	}
 }

@@ -1,3 +1,14 @@
+# Changelog: 1.5.16 "Rhapsody"
+The pre-cursor to Mac OS X, built from technology acquired from NeXT. <http://en.wikipedia.org/wiki/Rhapsody_(operating_system)>
+
+Launched Thursday, November 08, 2012.
+
+## Services
+### AmazonSQS
+* **New:** Support for Long Polling in SQS has been added to the SDK.
+
+----
+
 # Changelog: 1.5.15 "Quixote"
 "Rocinante" (Don Quixote's horse) was the code name for the PowerMac Upgrade enabler. <http://applemuseum.bott.org/sections/codenames.html>
 
