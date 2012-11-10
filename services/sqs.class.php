@@ -134,7 +134,7 @@ class AmazonSQS extends CFRuntime
 	 */
 	public function __construct(array $options = array())
 	{
-		$this->api_version = '2012-09-15';
+		$this->api_version = '2012-11-05';
 		$this->hostname = self::DEFAULT_URL;
 		$this->auth_class = 'AuthV2Query';
 
