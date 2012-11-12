@@ -1,7 +1,17 @@
+# Changelog: 1.5.16.1 "Rhapsody"
+The pre-cursor to Mac OS X, built from technology acquired from NeXT. <http://en.wikipedia.org/wiki/Rhapsody_(operating_system)>
+
+Launched Monday, November 12, 2012.
+
+## Bug fixes and enhancements
+* **Fixed:** The Amazon SQS client now uses the correct API version.
+
+----
+
 # Changelog: 1.5.16 "Rhapsody"
 The pre-cursor to Mac OS X, built from technology acquired from NeXT. <http://en.wikipedia.org/wiki/Rhapsody_(operating_system)>
 
-Launched Thursday, November 08, 2012.
+Launched Friday, November 09, 2012.
 
 ## Services
 ### AmazonSQS
