@@ -29,7 +29,7 @@
  *  
  * Visit <a href="http://aws.amazon.com/ec2/">http://aws.amazon.com/ec2/</a> for more information.
  *
- * @version 2012.09.18
+ * @version 2012.11.12
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ec2/ Amazon EC2
@@ -89,6 +89,16 @@ class AmazonEC2 extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
 	 */
 	const REGION_SINGAPORE = self::REGION_APAC_SE1;
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_APAC_SE2 = 'ec2.ap-southeast-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_SYDNEY = self::REGION_APAC_SE2;
 
 	/**
 	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
@@ -191,7 +201,7 @@ class AmazonEC2 extends CFRuntime
 	/**
 	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_NE1>, <REGION_US_GOV1>, <REGION_SA_E1>.
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_SE2>, <REGION_APAC_NE1>, <REGION_US_GOV1>, <REGION_SA_E1>.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)

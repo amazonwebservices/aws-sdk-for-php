@@ -28,13 +28,11 @@
  *  
  * <strong>Endpoints</strong>
  *  
- * AWS Elastic Beanstalk supports the following region-specific endpoint:
- * 
- * <ul>
- * 	<li>https://elasticbeanstalk.us-east-1.amazonaws.com</li>
- * </ul>
+ * For a list of region-specific endpoints that AWS Elastic Beanstalk supports, go to <a href=
+ * "http://docs.amazonwebservices.com/general/latest/gr/rande.html#elasticbeanstalk_region">Regions
+ * and Endpoints</a> in the <em>Amazon Web Services Glossary</em>.
  *
- * @version 2012.06.21
+ * @version 2012.11.12
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticbeanstalk/ AWS ElasticBeanstalk
@@ -54,16 +52,6 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 * Specify the queue URL for the United States East (Northern Virginia) Region.
 	 */
 	const REGION_VIRGINIA = self::REGION_US_E1;
-
-	/**
-	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
-	 */
-	const REGION_APAC_NE1 = 'elasticbeanstalk.ap-northeast-1.amazonaws.com';
-
-	/**
-	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
-	 */
-	const REGION_TOKYO = self::REGION_APAC_NE1;
 
 	/**
 	 * Specify the queue URL for the United States West (Northern California) Region.
@@ -94,6 +82,36 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 * Specify the queue URL for the Europe West (Ireland) Region.
 	 */
 	const REGION_IRELAND = self::REGION_EU_W1;
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_APAC_SE1 = 'elasticbeanstalk.ap-southeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_SINGAPORE = self::REGION_APAC_SE1;
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_APAC_SE2 = 'elasticbeanstalk.ap-southeast-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_SYDNEY = self::REGION_APAC_SE2;
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
+	 */
+	const REGION_APAC_NE1 = 'elasticbeanstalk.ap-northeast-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
+	 */
+	const REGION_TOKYO = self::REGION_APAC_NE1;
 
 	/**
 	 * Default service endpoint.
@@ -132,7 +150,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	/**
 	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_APAC_NE1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>.
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_SE2>, <REGION_APAC_NE1>.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
@@ -365,7 +383,8 @@ class AmazonElasticBeanstalk extends CFRuntime
 	}
 
 	/**
-	 * Deletes the specified application along with all associated versions and configurations.
+	 * Deletes the specified application along with all associated versions and configurations. The
+	 * application versions will not be deleted from your Amazon S3 bucket.
 	 * 
 	 * <p class="note">
 	 * You cannot delete an application that has a running environment.
@@ -373,6 +392,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 *
 	 * @param string $application_name (Required) The name of the application to delete.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>TerminateEnvByForce</code> - <code>boolean</code> - Optional - When set to true, running environments will be terminated before deleting the application.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
