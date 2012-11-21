@@ -1,7 +1,38 @@
+# Changelog: 1.5.17
+
+Launched Tuesday, November 13, 2012.
+
+## Bug fixes and enhancements
+* **New:** Support for the new Asia Pacific (Sydney) Region has been added. Region endpoint constants have been added to several clients.
+
+## Services
+### AmazonDynamoDB
+* **New:** Support for ConsistentRead option on the BatchWriteItem operation has been added to the SDK.
+* **New:** Support for CRC32 checksums has been added to the SDK. Requests are automatically retried on the if there is a checksum mismatch on the response.
+
+### AmazonElasticBeanstalk
+* **New:** Support for the TerminateEnvByForce option on the DeleteApplication operation has been added to the SDK.
+
+### AmazonS3
+* **New:** Support for website page redirects has been added to the SDK.
+* **New:** Support for archiving data to Amazon Glacier has been added to the SDK.
+
+----
+
+# Changelog: 1.5.16.1 "Rhapsody"
+The pre-cursor to Mac OS X, built from technology acquired from NeXT. <http://en.wikipedia.org/wiki/Rhapsody_(operating_system)>
+
+Launched Monday, November 12, 2012.
+
+## Bug fixes and enhancements
+* **Fixed:** The Amazon SQS client now uses the correct API version.
+
+----
+
 # Changelog: 1.5.16 "Rhapsody"
 The pre-cursor to Mac OS X, built from technology acquired from NeXT. <http://en.wikipedia.org/wiki/Rhapsody_(operating_system)>
 
-Launched Thursday, November 08, 2012.
+Launched Friday, November 09, 2012.
 
 ## Services
 ### AmazonSQS

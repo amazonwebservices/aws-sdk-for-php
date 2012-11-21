@@ -15,6 +15,7 @@ The following people have provided ideas, support and bug fixes:
 * [Dan Stillman](https://github.com/dstillman) (bug fixes)
 * [Daniel Holmes](https://github.com/danielholmes) (bug fixes)
 * [David Chan](http://www.chandeeland.org) (bug fixes)
+* [derekclapham](https://github.com/derekclapham) (bug fixes)
 * [Eric Caron](http://www.ericcaron.com) (bug fixes)
 * [Jason Ardell](http://ardell.posterous.com/) (bug fixes)
 * [Jeremy Archuleta](http://code.google.com/u/jeremy.archuleta/) (bug fixes)

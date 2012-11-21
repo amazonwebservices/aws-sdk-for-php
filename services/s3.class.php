@@ -49,7 +49,7 @@ class S3_Exception extends Exception {}
  *
  * Visit <http://aws.amazon.com/s3/> for more information.
  *
- * @version 2012.08.28
+ * @version 2012.10.02
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/s3/ Amazon Simple Storage Service
@@ -114,6 +114,16 @@ class AmazonS3 extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific (Singapore) Region.
 	 */
 	const REGION_SINGAPORE = self::REGION_APAC_SE1;
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Sydney) Region.
+	 */
+	const REGION_APAC_SE2 = 's3-ap-southeast-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Sydney) Region.
+	 */
+	const REGION_SYDNEY = self::REGION_APAC_SE2;
 
 	/**
 	 * Specify the queue URL for the Asia Pacific (Japan) Region.
@@ -208,6 +218,16 @@ class AmazonS3 extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific (Singapore) Website Region.
 	 */
 	const REGION_SINGAPORE_WEBSITE = self::REGION_APAC_SE1_WEBSITE;
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Sydney) Website Region.
+	 */
+	const REGION_APAC_SE2_WEBSITE = 's3-website-ap-southeast-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific (Sydney) Website Region.
+	 */
+	const REGION_SYDNEY_WEBSITE = self::REGION_APAC_SE2_WEBSITE;
 
 	/**
 	 * Specify the queue URL for the Asia Pacific (Japan) Website Region.
@@ -345,6 +365,11 @@ class AmazonS3 extends CFRuntime
 	 */
 	const STORAGE_REDUCED = 'REDUCED_REDUNDANCY';
 
+	/**
+	 * Storage in Glacier.
+	 */
+	const STORAGE_GLACIER = 'GLACIER';
+
 
 	/*%******************************************************************************************%*/
 	// PROPERTIES
@@ -415,6 +440,11 @@ class AmazonS3 extends CFRuntime
 	public $cors_config_xml;
 
 	/**
+	 * The base XML elements to use for restoration requests.
+	 */
+	public $restore_request_xml;
+
+	/**
 	 * The DNS vs. Path-style setting.
 	 */
 	public $path_style = false;
@@ -457,6 +487,7 @@ class AmazonS3 extends CFRuntime
 		$this->object_expiration_xml    = '<?xml version="1.0" encoding="utf-8"?><LifecycleConfiguration/>';
 		$this->bucket_tagging_xml       = '<?xml version="1.0" encoding="utf-8"?><Tagging><TagSet/></Tagging>';
 		$this->cors_config_xml          = '<?xml version="1.0" encoding="utf-8"?><CORSConfiguration />';
+		$this->restore_request_xml      = '<?xml version="1.0" encoding="utf-8"?><RestoreRequest xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '"/>';
 
 		parent::__construct($options);
 	}
@@ -1353,6 +1384,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>headers</code> - <code>array</code> - Optional - Standard HTTP headers to send along in the request. Accepts an associative array of key-value pairs.</li>
 	 * 	<li><code>length</code> - <code>integer</code> - Optional - The size of the object in bytes. For more information, see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.13">RFC 2616, section 14.13</a>. The value can also be passed to the <code>header</code> option as <code>Content-Length</code>.</li>
 	 * 	<li><code>meta</code> - <code>array</code> - Optional - An associative array of key-value pairs. Represented by <code>x-amz-meta-:</code>. Any header starting with this prefix is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.</li>
+	 * 	<li><code>redirectTo</code> - <code>string</code> - Optional - The URI to send an HTTP 301 redirect to when accessing this object. Value must be prefixed either <code>/</code>, <code>http://</code> or <code>https://</code>.</li>
 	 * 	<li><code>seekTo</code> - <code>integer</code> - Optional - The starting position in bytes within the file/stream to upload from.</li>
 	 * 	<li><code>storage</code> - <code>string</code> - Optional - Whether to use Standard or Reduced Redundancy storage. [Allowed values: <code>AmazonS3::STORAGE_STANDARD</code>, <code>AmazonS3::STORAGE_REDUCED</code>]. The default value is <code>STORAGE_STANDARD</code>.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -1407,6 +1439,13 @@ class AmazonS3 extends CFRuntime
 		{
 			$opt['headers']['x-amz-server-side-encryption'] = $opt['encryption'];
 			unset($opt['encryption']);
+		}
+
+		// URI to redirect to. Can also be passed as an HTTP header.
+		if (isset($opt['redirectTo']))
+		{
+			$opt['headers']['x-amz-website-redirect-location'] = $opt['redirectTo'];
+			unset($opt['redirectTo']);
 		}
 
 		// Handle meta tags. Can also be passed as an HTTP header.
@@ -1674,6 +1713,8 @@ class AmazonS3 extends CFRuntime
 
 	/**
 	 * Copies an Amazon S3 object to a new location, whether in the same Amazon S3 region, bucket, or otherwise.
+	 *
+	 * NOTE: Object redirect locations are not carried over when an object is copied.
 	 *
 	 * @param array $source (Required) The bucket and file name to copy from. The following keys must be set: <ul>
 	 * 	<li><code>bucket</code> - <code>string</code> - Required - Specifies the name of the bucket containing the source object.</li>
@@ -3629,6 +3670,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>limit</code> - <code>integer</code> - Optional - The maximum number of concurrent uploads done by cURL. Gets passed to <code>CFBatchRequest</code>.</li>
 	 * 	<li><code>meta</code> - <code>array</code> - Optional - An associative array of key-value pairs. Any header starting with <code>x-amz-meta-:</code> is considered user metadata. It will be stored with the object and returned when you retrieve the object. The total size of the HTTP request, not including the body, must be less than 4 KB.</li>
 	 * 	<li><code>partSize</code> - <code>integer</code> - Optional - The size of an individual part. The size may not be smaller than 5 MB or larger than 500 MB. The default value is 50 MB.</li>
+	 * 	<li><code>redirectTo</code> - <code>string</code> - Optional - The URI to send an HTTP 301 redirect to when accessing this object. Value must be prefixed either <code>/</code>, <code>http://</code> or <code>https://</code>.</li>
 	 * 	<li><code>seekTo</code> - <code>integer</code> - Optional - The starting position in bytes for the first piece of the file/stream to upload.</li>
 	 * 	<li><code>storage</code> - <code>string</code> - Optional - Whether to use Standard or Reduced Redundancy storage. [Allowed values: <code>AmazonS3::STORAGE_STANDARD</code>, <code>AmazonS3::STORAGE_REDUCED</code>]. The default value is <code>STORAGE_STANDARD</code>.</li>
 	 * 	<li><code>uploadId</code> - <code>string</code> - Optional - An upload ID identifying an existing multipart upload to use. If this option is not set, one will be created automatically.</li>
@@ -3651,6 +3693,13 @@ class AmazonS3 extends CFRuntime
 		{
 			$opt['headers']['Content-Length'] = $opt['length'];
 			unset($opt['length']);
+		}
+
+		// URI to redirect to. Can also be passed as an HTTP header.
+		if (isset($opt['redirectTo']))
+		{
+			$opt['headers']['x-amz-website-redirect-location'] = $opt['redirectTo'];
+			unset($opt['redirectTo']);
 		}
 
 		if (!isset($opt['fileUpload']))
@@ -3938,14 +3987,13 @@ class AmazonS3 extends CFRuntime
 
 
 	/*%******************************************************************************************%*/
-	// OBJECT EXPIRATION
+	// OBJECT LIFECYCLE
 
 	/**
-	 * Enables the ability to specify an expiry period for objects when an object should be deleted,
-	 * measured as number of days from creation time. Amazon S3 guarantees that the object will be
-	 * deleted when the expiration time is passed.
+	 * Enables the ability to specify a configuration that relates to the object's _lifecycle_.
 	 *
-	 * This feature is also known as "lifecycle" (e.g., in the AWS Console).
+	 * **NOTE:** In cases where the lifecycle configuration dictates that an object should be deleted, Amazon S3
+	 * guarantees that the object will be deleted when the expiration time is passed.
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -3953,8 +4001,14 @@ class AmazonS3 extends CFRuntime
 	 * 		<li><code>x</code> - <code>array</code> - Required - This represents a simple array index. <ul>
 	 * 			<li><code>id</code> - <code>string</code> - Optional - Unique identifier for the rule. The value cannot be longer than 255 characters.</li>
 	 * 			<li><code>prefix</code> - <code>string</code> - Required - The Amazon S3 object prefix which targets the file(s) for expiration.</li>
-	 * 			<li><code>expiration</code> - <code>array</code> - Required - The container for the unit of measurement by which the expiration time is calculated. <ul>
-	 * 				<li><code>days</code> - <code>integer</code> - Required - The number of days until the targetted objects expire from the bucket.</li>
+	 * 			<li><code>expiration</code> - <code>array</code> - Optional - The container for the unit of measurement by which the expiration time is calculated. At least one action (either <code>transition</code> or <code>expiration</code>) is required within one lifecycle rule. <ul>
+	 *     			<li><code>date</code> - <code>string</code> - Conditionally Required - The timestamp for when the targetted objects are to be moved or expired from the bucket. Should be in ISO 8601 Format. HH:MM:SS will be enforced as midnight GMT/UTC.</li>
+	 * 				<li><code>days</code> - <code>integer</code> - Conditionally Required - The number of days until the targetted objects are to be moved or expired from the bucket. Must be a positive integer.</li>
+	 * 			</ul></li>
+	 * 			<li><code>transition</code> - <code>array</code> - Optional - The container for the element that describes a transition action. At least one action (either <code>transition</code> or <code>expiration</code>) is required within one lifecycle rule. <ul>
+	 *     			<li><code>date</code> - <code>string</code> - Conditionally Required - The timestamp for when the targetted objects are to be moved or expired from the bucket. Should be in ISO 8601 Format. HH:MM:SS will be enforced as midnight GMT/UTC.</li>
+	 * 				<li><code>days</code> - <code>integer</code> - Conditionally Required - The number of days until the targetted objects are to be moved or expired from the bucket. Must be a positive integer.</li>
+	 *     			<li><code>storage</code> - <code>string</code> - Required - The storage setting of an object. [Allowed values: <code>AmazonS3::STORAGE_STANDARD</code>, <code>AmazonS3::STORAGE_REDUCED</code>, <code>STORAGE_GLACIER</code>]. The default value is <code>STORAGE_STANDARD</code>.</li>
 	 * 			</ul></li>
 	 * 			<li><code>enabled</code> - <code>boolean</code> - Optional - Whether or not to enable this rule-set. A value of <code>true</code> enables the rule-set. A value of <code>false</code> disables the rule-set. The default value is <code>true</code>.</li>
 	 * 		</ul></li>
@@ -3963,7 +4017,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function create_object_expiration_config($bucket, $opt = null)
+	public function create_lifecycle_config($bucket, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['verb'] = 'PUT';
@@ -4026,14 +4080,39 @@ class AmazonS3 extends CFRuntime
 				{
 					$xexpiration = $xrule->addChild('Expiration');
 
-					if (isset($rule['expiration']['days']))
+					if (isset($rule['expiration']['date']))
+					{
+						$xexpiration->addChild('Date', $rule['expiration']['date']);
+					}
+					elseif (isset($rule['expiration']['days']))
 					{
 						$xexpiration->addChild('Days', $rule['expiration']['days']);
 					}
 				}
-				else
+
+				// Transition
+				if (isset($rule['transition']))
 				{
-					throw new S3_Exception('Each rule requires a "expiration" in the ' . __FUNCTION__ . ' method.');
+					$xtransition = $xrule->addChild('Transition');
+
+					if (isset($rule['transition']['date']))
+					{
+						$xtransition->addChild('Date', $rule['transition']['date']);
+					}
+					elseif (isset($rule['transition']['days']))
+					{
+						$xtransition->addChild('Days', $rule['transition']['days']);
+					}
+
+					if (isset($rule['transition']['storage']))
+					{
+						$xtransition->addChild('StorageClass', $rule['transition']['storage']);
+					}
+				}
+
+				if (!isset($rule['expiration']) && !isset($rule['transition']))
+				{
+					throw new S3_Exception('Each rule requires a either a "transition" or "expiration" entry in the ' . __FUNCTION__ . ' method.');
 				}
 			}
 		}
@@ -4045,9 +4124,7 @@ class AmazonS3 extends CFRuntime
 	}
 
 	/**
-	 * Retrieves the expiry period (i.e., lifecycle) for objects.
-	 *
-	 * This feature is also known as "lifecycle" (e.g., in the AWS Console).
+	 * Retrieves the configuration that relates to the object's _lifecycle_.
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -4055,7 +4132,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function get_object_expiration_config($bucket, $opt = null)
+	public function get_lifecycle_config($bucket, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['verb'] = 'GET';
@@ -4066,9 +4143,7 @@ class AmazonS3 extends CFRuntime
 	}
 
 	/**
-	 * Deletes the expiry period (i.e., lifecycle) for objects.
-	 *
-	 * This feature is also known as "lifecycle" (e.g., in the AWS Console).
+	 * Deletes the configuration that relates to the object's _lifecycle_.
 	 *
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -4076,7 +4151,7 @@ class AmazonS3 extends CFRuntime
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function delete_object_expiration_config($bucket, $opt = null)
+	public function delete_lifecycle_config($bucket, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['verb'] = 'DELETE';
@@ -4084,6 +4159,65 @@ class AmazonS3 extends CFRuntime
 
 		// Authenticate to S3
 		return $this->authenticate($bucket, $opt);
+	}
+
+	/**
+	 * Restore an object archived in Amazon Glacier back to Amazon S3.
+	 *
+	 * @param string $bucket (Required) The name of the bucket to use.
+	 * @param string $filename (Required) The file name for the object.
+	 * @param integer $days (Required) The number of days until the targetted objects are to be moved or expired from the bucket. Must be a positive integer.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function restore_archived_object($bucket, $filename, $days, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['verb'] = 'POST';
+		$opt['sub_resource'] = 'restore';
+		$opt['headers'] = array(
+			'Content-Type' => 'application/xml'
+		);
+
+		$xml = simplexml_load_string($this->restore_request_xml, $this->parser_class);
+		$xml->addChild('Days', (integer) $days);
+
+		$opt['body'] = $xml->asXML();
+
+		// Authenticate to S3
+		return $this->authenticate($bucket, $opt);
+	}
+
+	/**
+	 * Alias of {@see AmazonS3::create_lifecycle_config()}.
+	 *
+	 * @deprecated
+	 */
+	public function create_object_expiration_config($bucket, $opt = null)
+	{
+		return $this->create_lifecycle_config($bucket, $opt);
+	}
+
+	/**
+	 * Alias of {@see AmazonS3::get_lifecycle_config()}.
+	 *
+	 * @deprecated
+	 */
+	public function get_object_expiration_config($bucket, $opt = null)
+	{
+		return $this->get_lifecycle_config($bucket, $opt);
+	}
+
+	/**
+	 * Alias of {@see AmazonS3::delete_lifecycle_config()}.
+	 *
+	 * @deprecated
+	 */
+	public function delete_object_expiration_config($bucket, $opt = null)
+	{
+		return $this->delete_lifecycle_config($bucket, $opt);
 	}
 
 
@@ -4210,6 +4344,12 @@ class AmazonS3 extends CFRuntime
 			{
 				// New rule node
 				$xrule = $xml->addChild('CORSRule');
+
+				// ID node
+				if (isset($rule_set['id']))
+				{
+					$xrule->addChild('ID', $rule_set['id']);
+				}
 
 				// ExposeHeader node
 				if (isset($rule_set['expose_header']))
