@@ -90,6 +90,16 @@ class AmazonSQS extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
 	 */
 	const REGION_SINGAPORE = self::REGION_APAC_SE1;
+	
+	/**
+	 * Specify the queue URL for the Asia Pacific (Sydney) Region.
+	 */
+	const REGION_APAC_SE2 = 'sqs.ap-southeast-2.amazonaws.com';
+	
+	/**
+	 * Specify the queue URL for the Asia Pacific (Sydney) Region.
+	 */
+	const REGION_SYDNEY = self::REGION_APAC_SE2;
 
 	/**
 	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
