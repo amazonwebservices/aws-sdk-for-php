@@ -1,3 +1,14 @@
+# Changelog: 1.5.17.1
+
+Launched Monday, November 26, 2012.
+
+## Bug fixes and enhancements
+* **Fixed:** Resolved an issue where large responses from Amazon DynamoDB were triggering unnecessary request retries.
+
+## Services
+### AmazonDynamoDB
+* **New:** Support for the South American (São Paulo) Region has been added to Amazon DynamoDB.
+
 # Changelog: 1.5.17
 
 Launched Tuesday, November 13, 2012.
