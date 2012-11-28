@@ -2376,10 +2376,11 @@ class AmazonS3 extends CFRuntime
         if ($object->isOK()) {
 		    $filesize = (integer) $object->header['content-length'];
 		} else {
-		    $filesize = 0;
+		    // If the file doesn't exist, return a value of -1	
+		    $filesize = -1;
 		}
 
-		if ($friendly_format)
+		if ($friendly_format && $filesize != -1)
 		{
 			$filesize = $this->util->size_readable($filesize);
 		}
