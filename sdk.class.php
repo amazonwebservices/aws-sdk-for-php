@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -30,94 +30,24 @@ class Parser_Exception extends Exception {}
 
 
 /*%******************************************************************************************%*/
-// DETERMINE WHAT ENVIRONMENT DATA TO ADD TO THE USERAGENT FOR METRIC TRACKING
-
-/*
-	Define a temporary callback function for this calculation. Get the PHP version and any
-	required/optional extensions that are leveraged.
-
-	Tracking this data gives Amazon better metrics about what configurations are being used
-	so that forward-looking plans for the code can be made with more certainty (e.g. What
-	version of PHP are most people running? Do they tend to have the latest PCRE?).
-*/
-function __aws_sdk_ua_callback()
-{
-	$ua_append = '';
-	$extensions = get_loaded_extensions();
-	$sorted_extensions = array();
-
-	if ($extensions)
-	{
-		foreach ($extensions as $extension)
-		{
-			if ($extension === 'curl' && function_exists('curl_version'))
-			{
-				$curl_version = curl_version();
-				$sorted_extensions[strtolower($extension)] = $curl_version['version'];
-			}
-			elseif ($extension === 'pcre' && defined('PCRE_VERSION'))
-			{
-				$pcre_version = explode(' ', PCRE_VERSION);
-				$sorted_extensions[strtolower($extension)] = $pcre_version[0];
-			}
-			elseif ($extension === 'openssl' && defined('OPENSSL_VERSION_TEXT'))
-			{
-				$openssl_version = explode(' ', OPENSSL_VERSION_TEXT);
-				$sorted_extensions[strtolower($extension)] = $openssl_version[1];
-			}
-			else
-			{
-				$sorted_extensions[strtolower($extension)] = phpversion($extension);
-			}
-		}
-	}
-
-	foreach (array('simplexml', 'json', 'pcre', 'spl', 'curl', 'openssl', 'apc', 'xcache', 'memcache', 'memcached', 'pdo', 'pdo_sqlite', 'sqlite', 'sqlite3', 'zlib', 'xdebug') as $ua_ext)
-	{
-		if (isset($sorted_extensions[$ua_ext]) && $sorted_extensions[$ua_ext])
-		{
-			$ua_append .= ' ' . $ua_ext . '/' . $sorted_extensions[$ua_ext];
-		}
-		elseif (isset($sorted_extensions[$ua_ext]))
-		{
-			$ua_append .= ' ' . $ua_ext . '/0';
-		}
-	}
-
-	foreach (array('memory_limit', 'date.timezone', 'open_basedir', 'safe_mode', 'zend.enable_gc') as $cfg)
-	{
-		$cfg_value = ini_get($cfg);
-
-		if (in_array($cfg, array('memory_limit', 'date.timezone'), true))
-		{
-			$ua_append .= ' ' . $cfg . '/' . str_replace('/', '.', $cfg_value);
-		}
-		elseif (in_array($cfg, array('open_basedir', 'safe_mode', 'zend.enable_gc'), true))
-		{
-			if ($cfg_value === false || $cfg_value === '' || $cfg_value === 0)
-			{
-				$cfg_value = 'off';
-			}
-			elseif ($cfg_value === true || $cfg_value === '1' || $cfg_value === 1)
-			{
-				$cfg_value = 'on';
-			}
-
-			$ua_append .= ' ' . $cfg . '/' . $cfg_value;
-		}
-	}
-
-	return $ua_append;
-}
-
-
-/*%******************************************************************************************%*/
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.5.17.1');
-define('CFRUNTIME_BUILD', '20121126140000');
-define('CFRUNTIME_USERAGENT', CFRUNTIME_NAME . '/' . CFRUNTIME_VERSION . ' PHP/' . PHP_VERSION . ' ' . str_replace(' ', '_', php_uname('s')) . '/' . str_replace(' ', '_', php_uname('r')) . ' Arch/' . php_uname('m') . ' SAPI/' . php_sapi_name() . ' Integer/' . PHP_INT_MAX . ' Build/' . CFRUNTIME_BUILD . __aws_sdk_ua_callback());
+define('CFRUNTIME_VERSION', '1.6.0');
+define('CFRUNTIME_BUILD', '20130121120000');
+$user_agent = sprintf('%s/%s PHP/%s', CFRUNTIME_NAME, CFRUNTIME_VERSION, PHP_VERSION);
+if (function_exists('curl_version'))
+{
+	$curl_version = curl_version();
+	$user_agent .= ' curl/' . $curl_version['version'];
+}
+if (defined('OPENSSL_VERSION_TEXT'))
+{
+	$openssl_version = explode(' ', OPENSSL_VERSION_TEXT);
+	$user_agent .=  ' openssl/' . $openssl_version[1];
+}
+define('CFRUNTIME_USERAGENT', $user_agent);
+unset($user_agent);
 
 
 /*%******************************************************************************************%*/
@@ -1311,8 +1241,7 @@ class CFRuntime
 	 * <set_cache_config()>.
 	 *
 	 * @param string|integer $expires (Required) The time the cache is to expire. Accepts a number of seconds as an integer, or an amount of time, as a string, that is understood by <php:strtotime()> (e.g. "1 hour").
-	 * @param $this A reference to the current instance.
-	 * @return $this
+	 * @return $this A reference to the current instance.
 	 */
 	public function cache($expires)
 	{
@@ -1520,6 +1449,9 @@ spl_autoload_register(array('CFLoader', 'autoloader'));
 
 /*%******************************************************************************************%*/
 // CONFIGURATION
+
+// If config auto-discovery is explicitly disabled, stop here
+if (defined('AWS_DISABLE_CONFIG_AUTO_DISCOVERY')) return;
 
 // Look for include file in the same directory (e.g. `./config.inc.php`).
 if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.inc.php'))

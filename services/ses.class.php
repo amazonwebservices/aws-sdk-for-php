@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
  * The endpoint for Amazon SES is located at: <code>https://email.us-east-1.amazonaws.com</code>
  * </p>
  *
- * @version 2012.07.09
+ * @version 2013.01.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ses/ Amazon Simple Email Service

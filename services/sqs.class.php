@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
  *  
  * Visit <a href="http://aws.amazon.com/sqs/">http://aws.amazon.com/sqs/</a> for more information.
  *
- * @version 2012.10.04
+ * @version 2013.01.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sqs/ Amazon Simple Queue Service
@@ -92,6 +92,16 @@ class AmazonSQS extends CFRuntime
 	const REGION_SINGAPORE = self::REGION_APAC_SE1;
 
 	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_APAC_SE2 = 'sqs.ap-southeast-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_SYDNEY = self::REGION_APAC_SE2;
+
+	/**
 	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
 	 */
 	const REGION_APAC_NE1 = 'sqs.ap-northeast-1.amazonaws.com';
@@ -110,6 +120,11 @@ class AmazonSQS extends CFRuntime
 	 * Specify the queue URL for the South America (Sao Paulo) Region.
 	 */
 	const REGION_SAO_PAULO = self::REGION_SA_E1;
+
+	/**
+	 * Specify the queue URL for the United States GovCloud Region.
+	 */
+	const REGION_US_GOV1 = 'sqs.us-gov-west-1.amazonaws.com';
 
 	/**
 	 * Default service endpoint.
@@ -136,7 +151,7 @@ class AmazonSQS extends CFRuntime
 	{
 		$this->api_version = '2012-11-05';
 		$this->hostname = self::DEFAULT_URL;
-		$this->auth_class = 'AuthV2Query';
+		$this->auth_class = 'AuthV4Query';
 
 		return parent::__construct($options);
 	}
@@ -148,7 +163,7 @@ class AmazonSQS extends CFRuntime
 	/**
 	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_NE1>, <REGION_SA_E1>.
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_SE2>, <REGION_APAC_NE1>, <REGION_SA_E1>, <REGION_US_GOV1>.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)

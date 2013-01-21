@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
  * the key performance statistics associated with their cache and can receive alarms if a part of
  * their cache runs hot.
  *
- * @version 2012.05.31
+ * @version 2013.01.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticache/ AWS ElastiCache
@@ -131,7 +131,7 @@ class AmazonElastiCache extends CFRuntime
 	 */
 	public function __construct(array $options = array())
 	{
-		$this->api_version = '2012-03-09';
+		$this->api_version = '2012-11-15';
 		$this->hostname = self::DEFAULT_URL;
 		$this->auth_class = 'AuthV2Query';
 
@@ -193,13 +193,15 @@ class AmazonElastiCache extends CFRuntime
 	 *
 	 * @param string $cache_cluster_id (Required) The Cache Cluster identifier. This parameter is stored as a lowercase string. Constraints:<ul><li>Must contain from 1 to 20 alphanumeric characters or hyphens.</li><li>First character must be a letter.</li><li>Cannot end with a hyphen or contain two consecutive hyphens.</li></ul>Example: <code>mycachecluster</code>
 	 * @param integer $num_cache_nodes (Required) The number of Cache Nodes the Cache Cluster should have.
-	 * @param string $cache_node_type (Required) The compute and memory capacity of nodes in a Cache Cluster. Valid values: <code>cache.m1.large | cache.m1.xlarge | cache.m2.xlarge | cache.m2.2xlarge | cache.m2.4xlarge | cache.c1.xlarge</code>
+	 * @param string $cache_node_type (Required) The compute and memory capacity of nodes in a Cache Cluster. Valid values: <code>cache.t1.micro</code> | <code>cache.m1.small</code> | <code>cache.m1.medium</code> | <code>cache.m1.large</code> | <code>cache.m1.xlarge</code> | <code>cache.m3.xlarge</code> | <code>cache.m3.2xlarge</code> | <code>cache.m2.xlarge</code> | <code>cache.m2.2xlarge</code> | <code>cache.m2.4xlarge</code> | <code>cache.c1.xlarge</code>
 	 * @param string $engine (Required) The name of the cache engine to be used for this Cache Cluster. <p class="note">Currently, <em>memcached</em> is the only cache engine supported by the service.</p>
-	 * @param string|array $cache_security_group_names (Required) A list of Cache Security Group Names to associate with this Cache Cluster. Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>EngineVersion</code> - <code>string</code> - Optional - The version of the cache engine to be used for this cluster.</li>
 	 * 	<li><code>CacheParameterGroupName</code> - <code>string</code> - Optional - The name of the cache parameter group to associate with this Cache cluster. If this argument is omitted, the default CacheParameterGroup for the specified engine will be used.</li>
-	 * 	<li><code>PreferredAvailabilityZone</code> - <code>string</code> - Optional - The EC2 Availability Zone that the Cache Cluster will be created in. In normal use, all CacheNodes belonging to a CacheCluster are placed in the preferred availability zone. In rare circumstances, some of the CacheNodes might temporarily be in a different availability zone. Default: System chosen (random) availability zone.</li>
+	 * 	<li><code>CacheSubnetGroupName</code> - <code>string</code> - Optional - The name of the Cache Subnet Group to be used for the Cache Cluster. Use this parameter only when you are creating a cluster in an Amazon Virtual Private Cloud (VPC).</li>
+	 * 	<li><code>CacheSecurityGroupNames</code> - <code>string|array</code> - Optional - A list of Cache Security Group Names to associate with this Cache Cluster. Use this parameter only when you are creating a cluster outside of an Amazon Virtual Private Cloud (VPC). Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>SecurityGroupIds</code> - <code>string|array</code> - Optional - Specifies the VPC Security Groups associated with the Cache Cluster. Use this parameter only when you are creating a cluster in an Amazon Virtual Private Cloud (VPC). Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>PreferredAvailabilityZone</code> - <code>string</code> - Optional - The EC2 Availability Zone that the Cache Cluster will be created in. All cache nodes belonging to a cache cluster are placed in the preferred availability zone. Default: System chosen (random) availability zone.</li>
 	 * 	<li><code>PreferredMaintenanceWindow</code> - <code>string</code> - Optional - The weekly time range (in UTC) during which system maintenance can occur. Example: <code>sun:05:00-sun:09:00</code></li>
 	 * 	<li><code>Port</code> - <code>integer</code> - Optional - The port number on which each of the Cache Nodes will accept connections.</li>
 	 * 	<li><code>NotificationTopicArn</code> - <code>string</code> - Optional - The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic to which notifications will be sent. <p class="note">The Amazon SNS topic owner must be the same as the Cache Cluster owner.</p></li>
@@ -208,7 +210,7 @@ class AmazonElastiCache extends CFRuntime
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function create_cache_cluster($cache_cluster_id, $num_cache_nodes, $cache_node_type, $engine, $cache_security_group_names, $opt = null)
+	public function create_cache_cluster($cache_cluster_id, $num_cache_nodes, $cache_node_type, $engine, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['CacheClusterId'] = $cache_cluster_id;
@@ -216,10 +218,23 @@ class AmazonElastiCache extends CFRuntime
 		$opt['CacheNodeType'] = $cache_node_type;
 		$opt['Engine'] = $engine;
 		
-		// Required list (non-map)
-		$opt = array_merge($opt, CFComplexType::map(array(
-			'CacheSecurityGroupNames' => (is_array($cache_security_group_names) ? $cache_security_group_names : array($cache_security_group_names))
-		), 'member'));
+		// Optional list (non-map)
+		if (isset($opt['CacheSecurityGroupNames']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'CacheSecurityGroupNames' => (is_array($opt['CacheSecurityGroupNames']) ? $opt['CacheSecurityGroupNames'] : array($opt['CacheSecurityGroupNames']))
+			), 'member'));
+			unset($opt['CacheSecurityGroupNames']);
+		}
+		
+		// Optional list (non-map)
+		if (isset($opt['SecurityGroupIds']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'SecurityGroupIds' => (is_array($opt['SecurityGroupIds']) ? $opt['SecurityGroupIds'] : array($opt['SecurityGroupIds']))
+			), 'member'));
+			unset($opt['SecurityGroupIds']);
+		}
 
 		return $this->authenticate('CreateCacheCluster', $opt);
 	}
@@ -249,6 +264,9 @@ class AmazonElastiCache extends CFRuntime
 	/**
 	 * Creates a new Cache Security Group. Cache Security groups control access to one or more Cache
 	 * Clusters.
+	 *  
+	 * Only use cache security groups when you are creating a cluster outside of an Amazon Virtual
+	 * Private Cloud (VPC). Inside of a VPC, use VPC security groups.
 	 *
 	 * @param string $cache_security_group_name (Required) The name for the Cache Security Group. This value is stored as a lowercase string. Constraints: Must contain no more than 255 alphanumeric characters. Must not be "Default". Example: <code>mysecuritygroup</code>
 	 * @param string $description (Required) The description for the Cache Security Group.
@@ -264,6 +282,31 @@ class AmazonElastiCache extends CFRuntime
 		$opt['Description'] = $description;
 		
 		return $this->authenticate('CreateCacheSecurityGroup', $opt);
+	}
+
+	/**
+	 * Creates a new Cache Subnet Group.
+	 *
+	 * @param string $cache_subnet_group_name (Required) The name for the Cache Subnet Group. This value is stored as a lowercase string. Constraints: Must contain no more than 255 alphanumeric characters or hyphens. Example: <code>mysubnetgroup</code>
+	 * @param string $cache_subnet_group_description (Required) The description for the Cache Subnet Group.
+	 * @param string|array $subnet_ids (Required) The EC2 Subnet IDs for the Cache Subnet Group. Pass a string for a single value, or an indexed array for multiple values.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function create_cache_subnet_group($cache_subnet_group_name, $cache_subnet_group_description, $subnet_ids, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['CacheSubnetGroupName'] = $cache_subnet_group_name;
+		$opt['CacheSubnetGroupDescription'] = $cache_subnet_group_description;
+		
+		// Required list (non-map)
+		$opt = array_merge($opt, CFComplexType::map(array(
+			'SubnetIds' => (is_array($subnet_ids) ? $subnet_ids : array($subnet_ids))
+		), 'member'));
+
+		return $this->authenticate('CreateCacheSubnetGroup', $opt);
 	}
 
 	/**
@@ -326,6 +369,27 @@ class AmazonElastiCache extends CFRuntime
 	}
 
 	/**
+	 * Deletes a Cache Subnet Group.
+	 * 
+	 * <p class="note">
+	 * The specified Cache Subnet Group must not be associated with any Cache Clusters.
+	 * </p>
+	 *
+	 * @param string $cache_subnet_group_name (Required) The name of the Cache Subnet Group to delete. Constraints: Must contain no more than 255 alphanumeric characters or hyphens.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function delete_cache_subnet_group($cache_subnet_group_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['CacheSubnetGroupName'] = $cache_subnet_group_name;
+		
+		return $this->authenticate('DeleteCacheSubnetGroup', $opt);
+	}
+
+	/**
 	 * Returns information about all provisioned Cache Clusters if no Cache Cluster identifier is
 	 * specified, or about a specific Cache Cluster if a Cache Cluster identifier is supplied.
 	 *  
@@ -361,6 +425,27 @@ class AmazonElastiCache extends CFRuntime
 		if (!$opt) $opt = array();
 				
 		return $this->authenticate('DescribeCacheClusters', $opt);
+	}
+
+	/**
+	 * Returns a list of the available cache engines and their versions.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Engine</code> - <code>string</code> - Optional - The cache engine to return.</li>
+	 * 	<li><code>EngineVersion</code> - <code>string</code> - Optional - The cache engine version to return. Example: <code>1.4.14</code></li>
+	 * 	<li><code>CacheParameterGroupFamily</code> - <code>string</code> - Optional - The name of a specific Cache Parameter Group family to return details for. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul></li>
+	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of records to include in the response. If more records exist than the specified <em>MaxRecords</em> value, a marker is included in the response so that the remaining results may be retrieved.</li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - An optional marker provided in the previous DescribeCacheParameterGroups request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <em>MaxRecords</em>.</li>
+	 * 	<li><code>DefaultOnly</code> - <code>boolean</code> - Optional - Indicates that only the default version of the specified engine or engine and major version combination is returned.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_cache_engine_versions($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		return $this->authenticate('DescribeCacheEngineVersions', $opt);
 	}
 
 	/**
@@ -422,6 +507,25 @@ class AmazonElastiCache extends CFRuntime
 	}
 
 	/**
+	 * Returns a list of CacheSubnetGroup descriptions. If a CacheSubnetGroupName is specified, the
+	 * list will contain only the description of the specified Cache Subnet Group.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>CacheSubnetGroupName</code> - <code>string</code> - Optional - The name of the Cache Subnet Group to return details for.</li>
+	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results may be retrieved. Default: 100 Constraints: minimum 20, maximum 100</li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - An optional marker provided in the previous DescribeCacheSubnetGroups request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_cache_subnet_groups($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		return $this->authenticate('DescribeCacheSubnetGroups', $opt);
+	}
+
+	/**
 	 * Returns the default engine and system parameter information for the specified cache engine.
 	 *
 	 * @param string $cache_parameter_group_family (Required) The name of the Cache Parameter Group Family. <p class="note">Currently, <em>memcached1.4</em> is the only cache parameter group family supported by the service.</p>
@@ -448,7 +552,7 @@ class AmazonElastiCache extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>SourceIdentifier</code> - <code>string</code> - Optional - The identifier of the event source for which events will be returned. If not specified, then all sources are included in the response.</li>
-	 * 	<li><code>SourceType</code> - <code>string</code> - Optional - The event source to retrieve events for. If no value is specified, all events are returned. [Allowed values: <code>cache-cluster</code>, <code>cache-parameter-group</code>, <code>cache-security-group</code>]</li>
+	 * 	<li><code>SourceType</code> - <code>string</code> - Optional - The event source to retrieve events for. If no value is specified, all events are returned. [Allowed values: <code>cache-cluster</code>, <code>cache-parameter-group</code>, <code>cache-security-group</code>, <code>cache-subnet-group</code>]</li>
 	 * 	<li><code>StartTime</code> - <code>string</code> - Optional - The beginning of the time interval to retrieve events for, specified in ISO 8601 format. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
 	 * 	<li><code>EndTime</code> - <code>string</code> - Optional - The end of the time interval for which to retrieve events, specified in ISO 8601 format. May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
 	 * 	<li><code>Duration</code> - <code>integer</code> - Optional - The number of minutes to retrieve events for.</li>
@@ -531,7 +635,8 @@ class AmazonElastiCache extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>NumCacheNodes</code> - <code>integer</code> - Optional - The number of Cache Nodes the Cache Cluster should have. If NumCacheNodes is greater than the existing number of Cache Nodes, Cache Nodes will be added. If NumCacheNodes is less than the existing number of Cache Nodes, Cache Nodes will be removed. When removing Cache Nodes, the Ids of the specific Cache Nodes to be removed must be supplied using the CacheNodeIdsToRemove parameter.</li>
 	 * 	<li><code>CacheNodeIdsToRemove</code> - <code>string|array</code> - Optional - The list of Cache Node IDs to be removed. This parameter is only valid when NumCacheNodes is less than the existing number of Cache Nodes. The number of Cache Node Ids supplied in this parameter must match the difference between the existing number of Cache Nodes in the cluster and the new NumCacheNodes requested. Pass a string for a single value, or an indexed array for multiple values.</li>
-	 * 	<li><code>CacheSecurityGroupNames</code> - <code>string|array</code> - Optional - A list of Cache Security Group Names to authorize on this Cache Cluster. This change is asynchronously applied as soon as possible. Constraints: Must contain no more than 255 alphanumeric characters. Must not be "Default". Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>CacheSecurityGroupNames</code> - <code>string|array</code> - Optional - A list of Cache Security Group Names to authorize on this Cache Cluster. This change is asynchronously applied as soon as possible. This parameter can be used only with clusters that are created outside of an Amazon Virtual Private Cloud (VPC). Constraints: Must contain no more than 255 alphanumeric characters. Must not be "Default". Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>SecurityGroupIds</code> - <code>string|array</code> - Optional - Specifies the VPC Security Groups associated with the Cache Cluster. This parameter can be used only with clusters that are created in an Amazon Virtual Private Cloud (VPC). Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>PreferredMaintenanceWindow</code> - <code>string</code> - Optional - The weekly time range (in UTC) during which system maintenance can occur, which may result in an outage. This change is made immediately. If moving this window to the current time, there must be at least 120 minutes between the current time and end of the window to ensure pending changes are applied.</li>
 	 * 	<li><code>NotificationTopicArn</code> - <code>string</code> - Optional - The Amazon Resource Name (ARN) of the SNS topic to which notifications will be sent. <p class="note">The SNS topic owner must be same as the Cache Cluster owner.</p></li>
 	 * 	<li><code>CacheParameterGroupName</code> - <code>string</code> - Optional - The name of the Cache Parameter Group to apply to this Cache Cluster. This change is asynchronously applied as soon as possible for parameters when the <em>ApplyImmediately</em> parameter is specified as <em>true</em> for this request.</li>
@@ -565,6 +670,15 @@ class AmazonElastiCache extends CFRuntime
 			), 'member'));
 			unset($opt['CacheSecurityGroupNames']);
 		}
+		
+		// Optional list (non-map)
+		if (isset($opt['SecurityGroupIds']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'SecurityGroupIds' => (is_array($opt['SecurityGroupIds']) ? $opt['SecurityGroupIds'] : array($opt['SecurityGroupIds']))
+			), 'member'));
+			unset($opt['SecurityGroupIds']);
+		}
 
 		return $this->authenticate('ModifyCacheCluster', $opt);
 	}
@@ -597,6 +711,34 @@ class AmazonElastiCache extends CFRuntime
 		), 'member'));
 
 		return $this->authenticate('ModifyCacheParameterGroup', $opt);
+	}
+
+	/**
+	 * Modifies an existing Cache Subnet Group.
+	 *
+	 * @param string $cache_subnet_group_name (Required) The name for the Cache Subnet Group. This value is stored as a lowercase string. Constraints: Must contain no more than 255 alphanumeric characters or hyphens. Example: <code>mysubnetgroup</code>
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>CacheSubnetGroupDescription</code> - <code>string</code> - Optional - The description for the Cache Subnet Group.</li>
+	 * 	<li><code>SubnetIds</code> - <code>string|array</code> - Optional - The EC2 Subnet IDs for the Cache Subnet Group. Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function modify_cache_subnet_group($cache_subnet_group_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['CacheSubnetGroupName'] = $cache_subnet_group_name;
+		
+		// Optional list (non-map)
+		if (isset($opt['SubnetIds']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'SubnetIds' => (is_array($opt['SubnetIds']) ? $opt['SubnetIds'] : array($opt['SubnetIds']))
+			), 'member'));
+			unset($opt['SubnetIds']);
+		}
+
+		return $this->authenticate('ModifyCacheSubnetGroup', $opt);
 	}
 
 	/**

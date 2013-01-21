@@ -1,3 +1,53 @@
+# Changelog: 1.6.0
+
+Launched Monday, January 21, 2013.
+
+## Fixes and Enhancements
+* Updated SignatureV4 to work with Amazon SQS and endpoints containing paths in the URL.
+* Made it possible to disable config auto-discovery by defining the `AWS_DISABLE_CONFIG_AUTO_DISCOVERY` constant before requiring the SDK.
+* Updated regional support across the entire SDK. Added some missing region constants for the Asia Pacific (Sydney) Region and the US GovCloud region.
+* Made minor API documentation updates across the entire SDK.
+* Simplified and shortened the user agent string sent with requests from the SDK.
+* Updated copyright notices across the entire SDK to include 2013.
+
+## Services
+### AmazonAS
+* **BACKWARDS-INCOMPATIBLE CHANGE:** The `AvailabilityZones` parameter is no longer required for the `create_auto_scaling_group` operation.
+* **New:** Support for the `EbsOptimized` parameter on the `create_launch_configuration` operation has been added to the SDK.
+
+### AmazonEC2
+* **BACKWARDS-INCOMPATIBLE CHANGE:** The `PublicIp` parameter is no longer required for the `disassociate_address` operation.
+* **BACKWARDS-INCOMPATIBLE CHANGE:** The `AdditionalInfo` parameter has been removed from the `start_instances` operation. It was previously deprecated and unused.
+* **New:** Support for copying Amazon EBS snapshots has been added to the SDK.
+* **New:** New instance type constants for the new high memory and high storage instance types have been added to the SDK.
+* **New:** Support for pagination on the `describe_reserved_instances_offerings` operation has been added to the SDK.
+* **Deprecated:** The `AddressingType` parameter of the `request_spot_instances` operation has been marked as deprecated.
+
+### AmazonElastiCache
+* **BACKWARDS-INCOMPATIBLE CHANGE:** The `CacheSecurityGroupNames` parameter is no longer required for the `create_cache_cluster` operation.
+* **New:** Support for VPC in Amazon ElastiCache has been added to the SDK.
+
+### AmazonElasticBeanstalk
+* **New:** Requests to this service are now signed with Signature V4.
+
+### AmazonEMR
+* **New:** Support for AWS Identity and Access Management (IAM) Roles for Amazon Elastic MapReduce has been added to the SDK.
+
+### AmazonRDS
+* **New:** Support for promoting a Read Replica to a standard DB Instance has been added to the SDK.
+* **New:** Support for provisioned IOPS in Amazon RDS has been added to the SDK.
+
+### AmazonSQS
+* **New:** Requests to this service are now signed with Signature V4.
+
+### AmazonStorageGateway
+* **New:** Support for gateway-cached storage volumes has been added to the SDK.
+
+### AmazonSTS
+* **New:** Support for cross-account API access with IAM roles using the AWS Security Token Service has been added to the SDK.
+
+----
+
 # Changelog: 1.5.17.1
 
 Launched Monday, November 26, 2012.
@@ -8,6 +58,9 @@ Launched Monday, November 26, 2012.
 ## Services
 ### AmazonDynamoDB
 * **New:** Support for the South American (São Paulo) Region has been added to Amazon DynamoDB.
+* **New:** Support for archiving data to Amazon Glacier has been added to the SDK.
+
+----
 
 # Changelog: 1.5.17
 

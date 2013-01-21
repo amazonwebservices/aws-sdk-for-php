@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
  * Internet. For large data sets, AWS Import/Export is often faster than Internet transfer and
  * more cost effective than upgrading your connectivity.
  *
- * @version 2012.01.16
+ * @version 2013.01.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/importexport/ AWS Import/Export

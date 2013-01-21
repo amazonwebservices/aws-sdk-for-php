@@ -9,7 +9,7 @@ See below for complete copyright and licensing notices.
 
 <http://aws.amazon.com/php>
 
-Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License").
 You may not use this file except in compliance with the License.
@@ -421,7 +421,7 @@ Corporation. Portions created by the Initial Developer are Copyright
 <https://code.google.com/p/array-to-domdocument/>
 
 * Copyright 2010-2011 [Omer Hassan](https://code.google.com/u/113495690012051782542/)
-* Portions copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+* Portions copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@
  * information about a specific AWS product, you can find the product's technical documentation at
  * 	<a href="http://aws.amazon.com/documentation/">http://aws.amazon.com/documentation/</a>.
  *
- * @version 2012.08.22
+ * @version 2013.01.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudformation/ AWS CloudFormation
@@ -95,6 +95,16 @@ class AmazonCloudFormation extends CFRuntime
 	const REGION_SINGAPORE = self::REGION_APAC_SE1;
 
 	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_APAC_SE2 = 'cloudformation.ap-southeast-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_SYDNEY = self::REGION_APAC_SE2;
+
+	/**
 	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
 	 */
 	const REGION_APAC_NE1 = 'cloudformation.ap-northeast-1.amazonaws.com';
@@ -151,7 +161,7 @@ class AmazonCloudFormation extends CFRuntime
 	/**
 	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_NE1>, <REGION_SA_E1>.
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_SE2>, <REGION_APAC_NE1>, <REGION_SA_E1>.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)

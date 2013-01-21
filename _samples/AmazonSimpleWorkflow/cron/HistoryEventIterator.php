@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -32,10 +32,10 @@ class HistoryEventIterator implements Iterator {
         $this->event_index = 0;
         $this->next_page_token = null;
         $this->original_poll_request = $original_request;
-        
+
         $this->_process_poll_response($original_response);
     }
-    
+
     protected function _process_poll_response($response) {
         if (isset($response->body->nextPageToken)) {
             $this->next_page_token = (string) $response->body->nextPageToken;
@@ -51,7 +51,7 @@ class HistoryEventIterator implements Iterator {
         if (isset($this->next_page_token)) {
             $next_page_opts = $this->original_poll_request;
             $next_page_opts['nextPageToken'] = $this->next_page_token;
-    
+
             // Unfortunately, we need to retry this because you can be throttled if you have a lot of
             // pagination happening, and you want your decider to behave relatively predictably in
             // that case. A real application may want some sort of exponential backoff.
@@ -59,17 +59,17 @@ class HistoryEventIterator implements Iterator {
             $current_retry = 1;
             $delay_between_tries = 2;
             $response = $this->swf->poll_for_decision_task($next_page_opts);
-            
+
             while (!$response->isOK() && $current_retry < $retry_count) {
                 sleep($delay_between_tries);
                 $response = $this->swf->poll_for_decision_task($next_page_opts);
                 ++$current_retry;
             }
-    
+
             if (!$response->isOK()) {
                 throw new RuntimeException(json_encode($response->body));
             }
-    
+
             $this->_process_poll_response($response);
         }
     }

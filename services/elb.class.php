@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -19,8 +19,28 @@
  * availability and scalability of your application. It makes it easy for you to distribute
  * application loads between two or more EC2 instances. Elastic Load Balancing enables
  * availability through redundancy and supports traffic growth of your application.
+ *  
+ * This guide provides detailed information about Elastic Load Balancing actions, data types,
+ * parameters, and errors.
+ *  
+ * Query requests are HTTP or HTTPS requests that use the HTTP verb GET or POST and a Query
+ * parameter named Action or Operation. Action is used throughout this documentation, although
+ * Operation is supported for backward compatibility with other AWS Query APIs.
+ *  
+ * This reference guide is based on the current WSDL, which is available at: <a href=
+ * "elasticloadbalancing.amazonaws.com/doc/2012-06-01/ElasticLoadBalancing.wsdl">
+ *  
+ * For detailed information on constructing a query request using the actions, data types, and
+ * parameters mentioned in this guide, go to<a href=
+ * "http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/DeveloperGuide/using-query-api.html">Using
+ * the Query API</a> in the <em>Elastic Load Balancing Developer Guide</em>.
+ *  
+ * For detailed information about Elastic Load Balancing features and their associated API calls,
+ * go to <a href=
+ * "http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/DeveloperGuide/UserScenarios.html">
+ * Using Elastic Load Balancing</a> in the <em>Elastic Load Balancing Developer Guide</em>.
  *
- * @version 2012.11.12
+ * @version 2013.01.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticloadbalancing/ Elastic Load Balancing
@@ -112,6 +132,11 @@ class AmazonELB extends CFRuntime
 	const REGION_SAO_PAULO = self::REGION_SA_E1;
 
 	/**
+	 * Specify the queue URL for the United States GovCloud Region.
+	 */
+	const REGION_US_GOV1 = 'elasticloadbalancing.us-gov-west-1.amazonaws.com';
+
+	/**
 	 * Default service endpoint.
 	 */
 	const DEFAULT_URL = self::REGION_US_E1;
@@ -148,7 +173,7 @@ class AmazonELB extends CFRuntime
 	/**
 	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_SE2>, <REGION_APAC_NE1>, <REGION_SA_E1>.
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_SE2>, <REGION_APAC_NE1>, <REGION_SA_E1>, <REGION_US_GOV1>.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
@@ -352,7 +377,7 @@ class AmazonELB extends CFRuntime
 	 * 	<li><code>AvailabilityZones</code> - <code>string|array</code> - Optional - A list of Availability Zones. At least one Availability Zone must be specified. Specified Availability Zones must be in the same EC2 Region as the LoadBalancer. Traffic will be equally distributed across all zones. This list can be modified after the creation of the LoadBalancer. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>Subnets</code> - <code>string|array</code> - Optional - A list of subnet IDs in your VPC to attach to your LoadBalancer. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>SecurityGroups</code> - <code>string|array</code> - Optional - The security groups assigned to your LoadBalancer within your VPC. Pass a string for a single value, or an indexed array for multiple values.</li>
-	 * 	<li><code>Scheme</code> - <code>string</code> - Optional - Specifies the type of a load balancer, which can be internet-facing or internal. - internet-facing: (default) The load balancer will have a publicly resolvable DNS name that resolves to public IP addresses. - internal: The load balancer will have a publicly resolvable DNS name that resolves to private IP addresses This option is only available for load balancers attached to a VPC. [Allowed values: <code>internet-facing</code>, <code>internal</code>]</li>
+	 * 	<li><code>Scheme</code> - <code>string</code> - Optional - The type of a LoadBalancer. This option is only available for LoadBalancers attached to a Amazon VPC. By default, Elastic Load Balancer creates an internet-facing load balancer with publicly resolvable DNS name that resolves to public IP addresses. Specify the value <em>internal</em> for this option to create an internal load balancer with a DNS name that resolves to private IP addresses.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.

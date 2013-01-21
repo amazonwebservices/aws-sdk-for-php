@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -21,22 +21,27 @@
  * administration tasks, freeing up developers to focus on what makes their applications and
  * businesses unique.
  *  
- * Amazon RDS gives you access to the capabilities of a familiar MySQL or Oracle database server.
- * This means the code, applications, and tools you already use today with your existing MySQL or
- * Oracle databases work with Amazon RDS without modification. Amazon RDS automatically backs up
- * your database and maintains the database software that powers your DB Instance. Amazon RDS is
- * flexible: you can scale your database instance's compute resources and storage capacity to meet
- * your application's demand. As with all Amazon Web Services, there are no up-front investments,
- * and you pay only for the resources you use.
+ * Amazon RDS gives you access to the capabilities of a MySQL, Oracle, or SQL Server database
+ * server. This means the code, applications, and tools you already use today with your existing
+ * MySQL, Oracle, or SQL Server databases work with Amazon RDS without modification. Amazon RDS
+ * automatically backs up your database and maintains the database software that powers your DB
+ * Instance. Amazon RDS is flexible: you can scale your database instance's compute resources and
+ * storage capacity to meet your application's demand. As with all Amazon Web Services, there are
+ * no up-front investments, and you pay only for the resources you use.
  *  
  * This is the <em>Amazon RDS API Reference</em>. It contains a comprehensive description of all
- * Amazon RDS Query APIs and data types. To get started with Amazon RDS, go to the <a href=
+ * Amazon RDS Query APIs and data types. Note that this API is asynchronous and some actions may
+ * require polling to determine when an action has been applied. See the parameter description to
+ * determine if a change is applied immediately or on the next instance reboot or during the
+ * maintenance window.
+ *  
+ * To get started with Amazon RDS, go to the <a href=
  * "http://docs.amazonwebservices.com/AmazonRDS/latest/GettingStartedGuide/">Amazon RDS Getting
  * Started Guide</a>. For more information on Amazon RDS concepts and usage scenarios, go to the
  * 	<a href="http://docs.amazonwebservices.com/AmazonRDS/latest/UserGuide/">Amazon RDS User
  * Guide</a>.
  *
- * @version 2012.08.23
+ * @version 2013.01.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/rds/ Amazon Relational Database Service
@@ -98,6 +103,16 @@ class AmazonRDS extends CFRuntime
 	const REGION_SINGAPORE = self::REGION_APAC_SE1;
 
 	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_APAC_SE2 = 'rds.ap-southeast-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_SYDNEY = self::REGION_APAC_SE2;
+
+	/**
 	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
 	 */
 	const REGION_APAC_NE1 = 'rds.ap-northeast-1.amazonaws.com';
@@ -116,6 +131,11 @@ class AmazonRDS extends CFRuntime
 	 * Specify the queue URL for the South America (Sao Paulo) Region.
 	 */
 	const REGION_SAO_PAULO = self::REGION_SA_E1;
+
+	/**
+	 * Specify the queue URL for the United States GovCloud Region.
+	 */
+	const REGION_US_GOV1 = 'rds.us-gov-west-1.amazonaws.com';
 
 	/**
 	 * Default service endpoint.
@@ -140,7 +160,7 @@ class AmazonRDS extends CFRuntime
 	 */
 	public function __construct(array $options = array())
 	{
-		$this->api_version = '2012-07-31';
+		$this->api_version = '2012-09-17';
 		$this->hostname = self::DEFAULT_URL;
 		$this->auth_class = 'AuthV4Query';
 
@@ -154,7 +174,7 @@ class AmazonRDS extends CFRuntime
 	/**
 	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_NE1>, <REGION_SA_E1>.
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_SE2>, <REGION_APAC_NE1>, <REGION_SA_E1>, <REGION_US_GOV1>.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
@@ -260,7 +280,7 @@ class AmazonRDS extends CFRuntime
 	 *
 	 * @param string $db_instance_identifier (Required) The DB Instance identifier. This parameter is stored as a lowercase string. Constraints:<ul><li>Must contain from 1 to 63 alphanumeric characters or hyphens (1 to 15 for SQL Server).</li><li>First character must be a letter.</li><li>Cannot end with a hyphen or contain two consecutive hyphens.</li></ul>Example: <code>mydbinstance</code>
 	 * @param integer $allocated_storage (Required) The amount of storage (in gigabytes) to be initially allocated for the database instance. <strong>MySQL</strong> Constraints: Must be an integer from 5 to 1024. Type: Integer <strong>Oracle</strong> Constraints: Must be an integer from 10 to 1024. <strong>SQL Server</strong> Constraints: Must be an integer from 200 to 1024 (Standard Edition and Enterprise Edition) or from 30 to 1024 (Express Edition and Web Edition)
-	 * @param string $db_instance_class (Required) The compute and memory capacity of the DB Instance. To determine the instance classes that are available for a particular DB engine, use the <code>DescribeOrderableDBInstanceOptions</code> action. Valid Values: <code>db.t1.micro | db.m1.small | db.m1.large | db.m1.xlarge | db.m2.xlarge |db.m2.2xlarge | db.m2.4xlarge</code>  <p class="note">Amazon RDS does not support db.t1.micro instances in a virtual private cloud (VPC).</p>
+	 * @param string $db_instance_class (Required) The compute and memory capacity of the DB Instance. Valid Values: <code>db.t1.micro | db.m1.small | db.m1.medium | db.m1.large | db.m1.xlarge | db.m2.xlarge |db.m2.2xlarge | db.m2.4xlarge</code>
 	 * @param string $engine (Required) The name of the database engine to be used for this instance. Valid Values: <code>MySQL</code> | <code>oracle-se1</code> | <code>oracle-se</code> | <code>oracle-ee</code> | <code>sqlserver-ee</code> | <code>sqlserver-se</code> | <code>sqlserver-ex</code> | <code>sqlserver-web</code>
 	 * @param string $master_username (Required) The name of master user for the client DB Instance. <strong>MySQL</strong> Constraints:<ul><li>Must be 1 to 16 alphanumeric characters.</li><li>First character must be a letter.</li><li>Cannot be a reserved word for the chosen database engine.</li></ul>Type: String <strong>Oracle</strong> Constraints:<ul><li>Must be 1 to 30 alphanumeric characters.</li><li>First character must be a letter.</li><li>Cannot be a reserved word for the chosen database engine.</li></ul> <strong>SQL Server</strong> Constraints:<ul><li>Must be 1 to 128 alphanumeric characters.</li><li>First character must be a letter.</li><li>Cannot be a reserved word for the chosen database engine.</li></ul>
 	 * @param string $master_user_password (Required) The password for the master database user. <strong>MySQL</strong> Constraints: Must contain from 8 to 41 alphanumeric characters. Type: String <strong>Oracle</strong> Constraints: Must contain from 8 to 30 alphanumeric characters. <strong>SQL Server</strong> Constraints: Must contain from 8 to 128 alphanumeric characters.
@@ -274,10 +294,11 @@ class AmazonRDS extends CFRuntime
 	 * 	<li><code>BackupRetentionPeriod</code> - <code>integer</code> - Optional - The number of days for which automated backups are retained. Setting this parameter to a positive number enables backups. Setting this parameter to 0 disables automated backups. Default: 1 Constraints:<ul><li>Must be a value from 0 to 8</li><li>Cannot be set to 0 if the DB Instance is a master instance with read replicas</li></ul></li>
 	 * 	<li><code>PreferredBackupWindow</code> - <code>string</code> - Optional - The daily time range during which automated backups are created if automated backups are enabled, using the <code>BackupRetentionPeriod</code> parameter. Default: A 30-minute window selected at random from an 8-hour block of time per region. The following list shows the time blocks for each region from which the default backup windows are assigned.<ul><li> <strong>US-East (Northern Virginia) Region:</strong> 03:00-11:00 UTC</li><li> <strong>US-West (Northern California) Region:</strong> 06:00-14:00 UTC</li><li> <strong>EU (Ireland) Region:</strong> 22:00-06:00 UTC</li><li> <strong>Asia Pacific (Singapore) Region:</strong> 14:00-22:00 UTC</li><li> <strong>Asia Pacific (Tokyo) Region:</strong> 17:00-03:00 UTC</li></ul>Constraints: Must be in the format <code>hh24:mi-hh24:mi</code>. Times should be Universal Time Coordinated (UTC). Must not conflict with the preferred maintenance window. Must be at least 30 minutes.</li>
 	 * 	<li><code>Port</code> - <code>integer</code> - Optional - The port number on which the database accepts connections. <strong>MySQL</strong> Default: <code>3306</code> Valid Values: <code>1150-65535</code> Type: Integer <strong>Oracle</strong> Default: <code>1521</code> Valid Values: <code>1150-65535</code> <strong>SQL Server</strong> Default: <code>1433</code> Valid Values: <code>1150-65535</code> except for <code>1434</code> and <code>3389</code>.</li>
-	 * 	<li><code>MultiAZ</code> - <code>boolean</code> - Optional - Specifies if the DB Instance is a Multi-AZ deployment. For Microsoft SQL Server, must be set to false. You cannot set the AvailabilityZone parameter if the MultiAZ parameter is set to true.</li>
+	 * 	<li><code>MultiAZ</code> - <code>boolean</code> - Optional - Specifies if the DB Instance is a Multi-AZ deployment. You cannot set the AvailabilityZone parameter if the MultiAZ parameter is set to true.</li>
 	 * 	<li><code>EngineVersion</code> - <code>string</code> - Optional - The version number of the database engine to use. <strong>MySQL</strong> Example: <code>5.1.42</code> Type: String <strong>Oracle</strong> Example: <code>11.2.0.2.v2</code> Type: String <strong>SQL Server</strong> Example: <code>10.50.2789.0.v1</code></li>
 	 * 	<li><code>AutoMinorVersionUpgrade</code> - <code>boolean</code> - Optional - Indicates that minor engine upgrades will be applied automatically to the DB Instance during the maintenance window. Default: <code>true</code></li>
 	 * 	<li><code>LicenseModel</code> - <code>string</code> - Optional - License model information for this DB Instance. Valid values: <code>license-included</code> | <code>bring-your-own-license</code> | <code>general-public-license</code></li>
+	 * 	<li><code>Iops</code> - <code>integer</code> - Optional - The amount of Provisioned IOPS (input/output operations per second) to be initially allocated for the DB Instance. Constraints: Must be an integer greater than 1000.</li>
 	 * 	<li><code>OptionGroupName</code> - <code>string</code> - Optional - Indicates that the DB Instance should be associated with the specified option group.</li>
 	 * 	<li><code>CharacterSetName</code> - <code>string</code> - Optional - For supported engines, indicates that the DB Instance should be associated with the specified CharacterSet.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -319,10 +340,11 @@ class AmazonRDS extends CFRuntime
 	 * @param string $db_instance_identifier (Required) The DB Instance identifier of the Read Replica. This is the unique key that identifies a DB Instance. This parameter is stored as a lowercase string.
 	 * @param string $source_db_instance_identifier (Required) The identifier of the DB Instance that will act as the source for the Read Replica. Each DB Instance can have up to five Read Replicas. Constraints: Must be the identifier of an existing DB Instance that is not already a Read Replica DB Instance.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>DBInstanceClass</code> - <code>string</code> - Optional - The compute and memory capacity of the Read Replica. Valid Values: <code>db.m1.small | db.m1.large | db.m1.xlarge | db.m2.xlarge |db.m2.2xlarge | db.m2.4xlarge</code> Default: Inherits from the source DB Instance.</li>
+	 * 	<li><code>DBInstanceClass</code> - <code>string</code> - Optional - The compute and memory capacity of the Read Replica. Valid Values: <code>db.m1.small | db.m1.medium | db.m1.large | db.m1.xlarge | db.m2.xlarge |db.m2.2xlarge | db.m2.4xlarge</code> Default: Inherits from the source DB Instance.</li>
 	 * 	<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The Amazon EC2 Availability Zone that the Read Replica will be created in. Default: A random, system-chosen Availability Zone in the endpoint's region. Example: <code>us-east-1d</code></li>
 	 * 	<li><code>Port</code> - <code>integer</code> - Optional - The port number that the DB Instance uses for connections. Default: Inherits from the source DB Instance Valid Values: <code>1150-65535</code></li>
 	 * 	<li><code>AutoMinorVersionUpgrade</code> - <code>boolean</code> - Optional - Indicates that minor engine upgrades will be applied automatically to the Read Replica during the maintenance window. Default: Inherits from the source DB Instance</li>
+	 * 	<li><code>Iops</code> - <code>integer</code> - Optional - The amount of Provisioned IOPS (input/output operations per second) to be initially allocated for the DB Instance.</li>
 	 * 	<li><code>OptionGroupName</code> - <code>string</code> - Optional - </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -913,23 +935,28 @@ class AmazonRDS extends CFRuntime
 	/**
 	 * Modify settings for a DB Instance. You can change one or more database configuration parameters
 	 * by specifying these parameters and the new values in the request.
+	 *  
+	 * Some parameter changes are applied immediately while others are applied when the DB Instance is
+	 * rebooted or during the next maintenance window. See the individual parameter descriptions for
+	 * more information.
 	 *
-	 * @param string $db_instance_identifier (Required) The DB Instance identifier. This value is stored as a lowercase string. For a SQL Server DB Instance, this value cannot be changed. Constraints:<ul><li>Must be the identifier for an existing DB Instance</li><li>Must contain from 1 to 63 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>Example:<copy>mydbinstance</copy>
+	 * @param string $db_instance_identifier (Required) The DB Instance identifier. This value is stored as a lowercase string. This value cannot be changed. Constraints:<ul><li>Must be the identifier for an existing DB Instance</li><li>Must contain from 1 to 63 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>Example:<copy>mydbinstance</copy>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>AllocatedStorage</code> - <code>integer</code> - Optional - The new storage capacity of the RDS instance. This change does not result in an outage and is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is specified as <code>true</code> for this request. <strong>MySQL</strong> Default: Uses existing setting Valid Values: 5-1024 Constraints: Value supplied must be at least 10% greater than the current value. Values that are not at least 10% greater than the existing value are rounded up so that they are 10% greater than the current value. Type: Integer <strong>Oracle</strong> Default: Uses existing setting Valid Values: 10-1024 Constraints: Value supplied must be at least 10% greater than the current value. Values that are not at least 10% greater than the existing value are rounded up so that they are 10% greater than the current value. <strong>SQL Server</strong> Cannot be modified.</li>
-	 * 	<li><code>DBInstanceClass</code> - <code>string</code> - Optional - The new compute and memory capacity of the DB Instance. To determine the instance classes that are available for a particular DB engine, use the <code>DescribeOrderableDBInstanceOptions</code> action. Passing a value for this parameter causes an outage during the change and is applied during the next maintenance window, unless the <code>ApplyImmediately</code> parameter is specified as <code>true</code> for this request. Default: Uses existing setting Valid Values: <code>db.t1.micro | db.m1.small | db.m1.large | db.m1.xlarge | db.m2.xlarge | db.m2.2xlarge | db.m2.4xlarge</code>  <p class="note">Amazon RDS does not support db.t1.micro instances in a virtual private cloud (VPC).</p></li>
-	 * 	<li><code>DBSecurityGroups</code> - <code>string|array</code> - Optional - A list of DB Security Groups to authorize on this DB Instance. This change is asynchronously applied as soon as possible. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul> Pass a string for a single value, or an indexed array for multiple values.</li>
-	 * 	<li><code>ApplyImmediately</code> - <code>boolean</code> - Optional - Specifies whether or not the modifications in this request and any pending modifications are asynchronously applied as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the DB Instance. If this parameter is passed as <code>false</code>, changes to the DB Instance are applied on the next call to <code>RebootDBInstance</code>, the next maintenance reboot, or the next failure reboot, whichever occurs first. Default: <code>false</code></li>
-	 * 	<li><code>MasterUserPassword</code> - <code>string</code> - Optional - The new password for the DB Instance master user. This change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response. Default: Uses existing setting Constraints: Must be 8 to 41 alphanumeric characters (MySQL), 8 to 30 alphanumeric characters (Oracle), or 8 to 128 alphanumeric characters (SQL Server). <p class="note">Amazon RDS API actions never return the password, so this action provides a way to regain access to a master instance user if the password is lost.</p></li>
-	 * 	<li><code>DBParameterGroupName</code> - <code>string</code> - Optional - The name of the DB Parameter Group to apply to this DB Instance. This change is asynchronously applied as soon as possible for parameters when the <em>ApplyImmediately</em> parameter is specified as <code>true</code> for this request. Default: Uses existing setting Constraints: The DB Parameter Group must be in the same DB Parameter Group family as this DB Instance.</li>
-	 * 	<li><code>BackupRetentionPeriod</code> - <code>integer</code> - Optional - The number of days to retain automated backups. Setting this parameter to a positive number enables backups. Setting this parameter to 0 disables automated backups. Default: Uses existing setting Constraints:<ul><li>Must be a value from 0 to 8</li><li>Cannot be set to 0 if the DB Instance is a master instance with read replicas or of the DB Instance is a read replica</li></ul></li>
-	 * 	<li><code>PreferredBackupWindow</code> - <code>string</code> - Optional - The daily time range during which automated backups are created if automated backups are enabled, as determined by the <code>BackupRetentionPeriod</code>. Constraints:<ul><li>Must be in the format hh24:mi-hh24:mi</li><li>Times should be Universal Time Coordinated (UTC)</li><li>Must not conflict with the preferred maintenance window</li><li>Must be at least 30 minutes</li></ul></li>
-	 * 	<li><code>PreferredMaintenanceWindow</code> - <code>string</code> - Optional - The weekly time range (in UTC) during which system maintenance can occur, which may result in an outage. This change is made immediately. If moving this window to the current time, there must be at least 120 minutes between the current time and end of the window to ensure pending changes are applied. Default: Uses existing setting Format: ddd:hh24:mi-ddd:hh24:mi Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun Constraints: Must be at least 30 minutes</li>
-	 * 	<li><code>MultiAZ</code> - <code>boolean</code> - Optional - Specifies if the DB Instance is a Multi-AZ deployment. Constraints: Cannot be specified if the DB Instance is a read replica.</li>
-	 * 	<li><code>EngineVersion</code> - <code>string</code> - Optional - The version number of the database engine to upgrade to. For major version upgrades, if a nondefault DB Parameter Group is currently in use, a new DB Parameter Group in the DB Parameter Group Family for the new engine version must be specified. The new DB Parameter Group can be the default for that DB Parameter Group Family. Example: <code>5.1.42</code></li>
-	 * 	<li><code>AllowMajorVersionUpgrade</code> - <code>boolean</code> - Optional - Indicates that major version upgrades are allowed. Constraints: This parameter must be set to true when specifying a value for the EngineVersion parameter that is a different major version than the DB Instance's current version.</li>
-	 * 	<li><code>AutoMinorVersionUpgrade</code> - <code>boolean</code> - Optional - Indicates that minor version upgrades will be applied automatically to the DB Instance during the maintenance window.</li>
-	 * 	<li><code>OptionGroupName</code> - <code>string</code> - Optional - Indicates that the DB Instance should be associated with the specified option group.</li>
+	 * 	<li><code>AllocatedStorage</code> - <code>integer</code> - Optional - The new storage capacity of the RDS instance. Changing this parameter does not result in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to <code>true</code> for this request. <strong>MySQL</strong> Default: Uses existing setting Valid Values: 5-1024 Constraints: Value supplied must be at least 10% greater than the current value. Values that are not at least 10% greater than the existing value are rounded up so that they are 10% greater than the current value. Type: Integer <strong>Oracle</strong> Default: Uses existing setting Valid Values: 10-1024 Constraints: Value supplied must be at least 10% greater than the current value. Values that are not at least 10% greater than the existing value are rounded up so that they are 10% greater than the current value. <strong>SQL Server</strong> Cannot be modified.</li>
+	 * 	<li><code>DBInstanceClass</code> - <code>string</code> - Optional - The new compute and memory capacity of the DB Instance. To determine the instance classes that are available for a particular DB engine, use the <code>DescribeOrderableDBInstanceOptions</code> action. Changing this parameter results in an outage and the change is applied during the next maintenance window, unless the <code>ApplyImmediately</code> parameter is specified as <code>true</code> for this request. Default: Uses existing setting Valid Values: <code>db.t1.micro | db.m1.small | db.m1.medium | db.m1.large | db.m1.xlarge | db.m2.xlarge | db.m2.2xlarge | db.m2.4xlarge</code></li>
+	 * 	<li><code>DBSecurityGroups</code> - <code>string|array</code> - Optional - A list of DB Security Groups to authorize on this DB Instance. Changing this parameter does not result in an outage and the change is asynchronously applied as soon as possible. Constraints:<ul><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul> Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>ApplyImmediately</code> - <code>boolean</code> - Optional - Specifies whether or not the modifications in this request and any pending modifications are asynchronously applied as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the DB Instance. If this parameter is passed as <code>false</code>, changes to the DB Instance are applied on the next call to <code>RebootDBInstance</code>, the next maintenance reboot, or the next failure reboot, whichever occurs first. See each parameter to determine when a change is applied. Default: <code>false</code></li>
+	 * 	<li><code>MasterUserPassword</code> - <code>string</code> - Optional - The new password for the DB Instance master user. Changing this parameter does not result in an outage and the change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response. Default: Uses existing setting Constraints: Must be 8 to 41 alphanumeric characters (MySQL), 8 to 30 alphanumeric characters (Oracle), or 8 to 128 alphanumeric characters (SQL Server). <p class="note">Amazon RDS API actions never return the password, so this action provides a way to regain access to a master instance user if the password is lost.</p></li>
+	 * 	<li><code>DBParameterGroupName</code> - <code>string</code> - Optional - The name of the DB Parameter Group to apply to this DB Instance. Changing this parameter does not result in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to <code>true</code> for this request. Default: Uses existing setting Constraints: The DB Parameter Group must be in the same DB Parameter Group family as this DB Instance.</li>
+	 * 	<li><code>BackupRetentionPeriod</code> - <code>integer</code> - Optional - The number of days to retain automated backups. Setting this parameter to a positive number enables backups. Setting this parameter to 0 disables automated backups. Changing this parameter can result in an outage if you change from 0 to a non-zero value or from a non-zero value to 0. These changes are applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to <code>true</code> for this request. If you change the parameter from one non-zero value to another non-zero value, the change is asynchronously applied as soon as possible. Default: Uses existing setting Constraints:<ul><li>Must be a value from 0 to 8</li><li>Cannot be set to 0 if the DB Instance is a master instance with read replicas or if the DB Instance is a read replica</li></ul></li>
+	 * 	<li><code>PreferredBackupWindow</code> - <code>string</code> - Optional - The daily time range during which automated backups are created if automated backups are enabled, as determined by the <code>BackupRetentionPeriod</code>. Changing this parameter does not result in an outage and the change is asynchronously applied as soon as possible. Constraints:<ul><li>Must be in the format hh24:mi-hh24:mi</li><li>Times should be Universal Time Coordinated (UTC)</li><li>Must not conflict with the preferred maintenance window</li><li>Must be at least 30 minutes</li></ul></li>
+	 * 	<li><code>PreferredMaintenanceWindow</code> - <code>string</code> - Optional - The weekly time range (in UTC) during which system maintenance can occur, which may result in an outage. Changing this parameter does not result in an outage, except in the following situation, and the change is asynchronously applied as soon as possible. If there are pending actions that cause a reboot, and the maintenance window is changed to include the current time, then changing this parameter will cause a reboot of the DB Instance. If moving this window to the current time, there must be at least 30 minutes between the current time and end of the window to ensure pending changes are applied. Default: Uses existing setting Format: ddd:hh24:mi-ddd:hh24:mi Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun Constraints: Must be at least 30 minutes</li>
+	 * 	<li><code>MultiAZ</code> - <code>boolean</code> - Optional - Specifies if the DB Instance is a Multi-AZ deployment. Changing this parameter does not result in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to <code>true</code> for this request. Constraints: Cannot be specified if the DB Instance is a read replica.</li>
+	 * 	<li><code>EngineVersion</code> - <code>string</code> - Optional - The version number of the database engine to upgrade to. Changing this parameter results in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to <code>true</code> for this request. For major version upgrades, if a nondefault DB Parameter Group is currently in use, a new DB Parameter Group in the DB Parameter Group Family for the new engine version must be specified. The new DB Parameter Group can be the default for that DB Parameter Group Family. Example: <code>5.1.42</code></li>
+	 * 	<li><code>AllowMajorVersionUpgrade</code> - <code>boolean</code> - Optional - Indicates that major version upgrades are allowed. Changing this parameter does not result in an outage and the change is asynchronously applied as soon as possible. Constraints: This parameter must be set to true when specifying a value for the EngineVersion parameter that is a different major version than the DB Instance's current version.</li>
+	 * 	<li><code>AutoMinorVersionUpgrade</code> - <code>boolean</code> - Optional - Indicates that minor version upgrades will be applied automatically to the DB Instance during the maintenance window. Changing this parameter does not result in an outage except in the following case and the change is asynchronously applied as soon as possible. An outage will result if this parameter is set to <code>true</code> during the maintenance window, and a newer minor version is available, and RDS has enabled auto patching for that engine version.</li>
+	 * 	<li><code>Iops</code> - <code>integer</code> - Optional - The new Provisioned IOPS (I/O operations per second) value for the RDS instance. Changing this parameter does not result in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to <code>true</code> for this request. Default: Uses existing setting Constraints: Value supplied must be at least 10% greater than the current value. Values that are not at least 10% greater than the existing value are rounded up so that they are 10% greater than the current value.</li>
+	 * 	<li><code>OptionGroupName</code> - <code>string</code> - Optional - Indicates that the DB Instance should be associated with the specified option group. Changing this parameter does not result in an outage except in the following case and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to <code>true</code> for this request. If the parameter change results in an option group that enables OEM, this change can cause a brief (sub-second) period during which new connections are rejected but existing connections are not interrupted.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -1065,6 +1092,25 @@ class AmazonRDS extends CFRuntime
 	}
 
 	/**
+	 * Promotes a Read Replica DB Instance to a standalone DB Instance.
+	 *
+	 * @param string $db_instance_identifier (Required) The DB Instance identifier. This value is stored as a lowercase string. Constraints:<ul><li>Must be the identifier for an existing Read Replica DB Instance</li><li>Must contain from 1 to 63 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>Example:<copy>mydbinstance</copy>
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>BackupRetentionPeriod</code> - <code>integer</code> - Optional - The number of days to retain automated backups. Setting this parameter to a positive number enables backups. Setting this parameter to 0 disables automated backups. Default: 1 Constraints:<ul><li>Must be a value from 0 to 8</li></ul></li>
+	 * 	<li><code>PreferredBackupWindow</code> - <code>string</code> - Optional - The daily time range during which automated backups are created if automated backups are enabled, using the <code>BackupRetentionPeriod</code> parameter. Default: A 30-minute window selected at random from an 8-hour block of time per region. The following list shows the time blocks for each region from which the default backup windows are assigned.<ul><li> <strong>US-East (Northern Virginia) Region:</strong> 03:00-11:00 UTC</li><li> <strong>US-West (Northern California) Region:</strong> 06:00-14:00 UTC</li><li> <strong>EU (Ireland) Region:</strong> 22:00-06:00 UTC</li><li> <strong>Asia Pacific (Singapore) Region:</strong> 14:00-22:00 UTC</li><li> <strong>Asia Pacific (Tokyo) Region:</strong> 17:00-03:00 UTC</li></ul>Constraints: Must be in the format <code>hh24:mi-hh24:mi</code>. Times should be Universal Time Coordinated (UTC). Must not conflict with the preferred maintenance window. Must be at least 30 minutes.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function promote_read_replica($db_instance_identifier, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['DBInstanceIdentifier'] = $db_instance_identifier;
+		
+		return $this->authenticate('PromoteReadReplica', $opt);
+	}
+
+	/**
 	 * Purchases a reserved DB Instance offering.
 	 *
 	 * @param string $reserved_db_instances_offering_id (Required) The ID of the Reserved DB Instance offering to purchase. Example: 438012d3-4052-4cc7-b2e3-8d3372e0e706
@@ -1187,7 +1233,7 @@ class AmazonRDS extends CFRuntime
 	 * @param string $db_instance_identifier (Required) The identifier for the DB Snapshot to restore from. Constraints:<ul><li>Must contain from 1 to 63 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>
 	 * @param string $db_snapshot_identifier (Required) Name of the DB Instance to create from the DB Snapshot. This parameter isn't case sensitive. Constraints:<ul><li>Must contain from 1 to 255 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>Example: <code>my-snapshot-id</code>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>DBInstanceClass</code> - <code>string</code> - Optional - The compute and memory capacity of the Amazon RDS DB instance. Valid Values: <code>db.t1.micro | db.m1.small | db.m1.large | db.m1.xlarge | db.m2.2xlarge | db.m2.4xlarge</code></li>
+	 * 	<li><code>DBInstanceClass</code> - <code>string</code> - Optional - The compute and memory capacity of the Amazon RDS DB instance. Valid Values: <code>db.t1.micro | db.m1.small | db.m1.medium | db.m1.large | db.m1.xlarge | db.m2.2xlarge | db.m2.4xlarge</code></li>
 	 * 	<li><code>Port</code> - <code>integer</code> - Optional - The port number on which the database accepts connections. Default: The same port as the original DB Instance Constraints: Value must be <code>1150-65535</code></li>
 	 * 	<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The EC2 Availability Zone that the database instance will be created in. Default: A random, system-chosen Availability Zone. Constraint: You cannot specify the AvailabilityZone parameter if the MultiAZ parameter is set to <code>true</code>. Example: <code>us-east-1a</code></li>
 	 * 	<li><code>DBSubnetGroupName</code> - <code>string</code> - Optional - The DB Subnet Group name to use for the new instance.</li>
@@ -1196,6 +1242,7 @@ class AmazonRDS extends CFRuntime
 	 * 	<li><code>LicenseModel</code> - <code>string</code> - Optional - License model information for the restored DB Instance. Default: Same as source. Valid values: <code>license-included</code> | <code>bring-your-own-license</code> | <code>general-public-license</code></li>
 	 * 	<li><code>DBName</code> - <code>string</code> - Optional - The database name for the restored DB Instance. <p class="note">This parameter doesn't apply to the MySQL engine.</p></li>
 	 * 	<li><code>Engine</code> - <code>string</code> - Optional - The database engine to use for the new instance. Default: The same as source Constraint: Must be compatible with the engine of the source Example: <code>oracle-ee</code></li>
+	 * 	<li><code>Iops</code> - <code>integer</code> - Optional - The amount of Provisioned IOPS (input/output operations per second) to be initially allocated for the DB Instance. Constraints: Must be an integer greater than 1000.</li>
 	 * 	<li><code>OptionGroupName</code> - <code>string</code> - Optional - </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -1221,7 +1268,7 @@ class AmazonRDS extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>RestoreTime</code> - <code>string</code> - Optional - The date and time to restore from. Valid Values: Value must be a UTC time Constraints:<ul><li>Must be before the latest restorable time for the DB Instance</li><li>Cannot be specified if UseLatestRestorableTime parameter is true</li></ul>Example: <code>2009-09-07T23:45:00Z</code> May be passed as a number of seconds since UNIX Epoch, or any string compatible with <php:strtotime()>.</li>
 	 * 	<li><code>UseLatestRestorableTime</code> - <code>boolean</code> - Optional - Specifies whether (<code>true</code>) or not (<code>false</code>) the DB Instance is restored from the latest backup time. Default: <code>false</code> Constraints: Cannot be specified if RestoreTime parameter is provided.</li>
-	 * 	<li><code>DBInstanceClass</code> - <code>string</code> - Optional - The compute and memory capacity of the Amazon RDS DB instance. Valid Values: <code>db.t1.micro | db.m1.small | db.m1.large | db.m1.xlarge | db.m2.2xlarge | db.m2.4xlarge</code> Default: The same DBInstanceClass as the original DB Instance.</li>
+	 * 	<li><code>DBInstanceClass</code> - <code>string</code> - Optional - The compute and memory capacity of the Amazon RDS DB instance. Valid Values: <code>db.t1.micro | db.m1.small | db.m1.medium | db.m1.large | db.m1.xlarge | db.m2.2xlarge | db.m2.4xlarge</code> Default: The same DBInstanceClass as the original DB Instance.</li>
 	 * 	<li><code>Port</code> - <code>integer</code> - Optional - The port number on which the database accepts connections. Constraints: Value must be <code>1150-65535</code> Default: The same port as the original DB Instance.</li>
 	 * 	<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The EC2 Availability Zone that the database instance will be created in. Default: A random, system-chosen Availability Zone. Constraint: You cannot specify the AvailabilityZone parameter if the MultiAZ parameter is set to true. Example: <code>us-east-1a</code></li>
 	 * 	<li><code>DBSubnetGroupName</code> - <code>string</code> - Optional - The DB subnet group name to use for the new instance.</li>
@@ -1230,6 +1277,7 @@ class AmazonRDS extends CFRuntime
 	 * 	<li><code>LicenseModel</code> - <code>string</code> - Optional - License model information for the restored DB Instance. Default: Same as source. Valid values: <code>license-included</code> | <code>bring-your-own-license</code> | <code>general-public-license</code></li>
 	 * 	<li><code>DBName</code> - <code>string</code> - Optional - The database name for the restored DB Instance. <p class="note">This parameter is not used for the MySQL engine.</p></li>
 	 * 	<li><code>Engine</code> - <code>string</code> - Optional - The database engine to use for the new instance. Default: The same as source Constraint: Must be compatible with the engine of the source Example: <code>oracle-ee</code></li>
+	 * 	<li><code>Iops</code> - <code>integer</code> - Optional - The amount of Provisioned IOPS (input/output operations per second) to be initially allocated for the DB Instance. Constraints: Must be an integer greater than 1000.</li>
 	 * 	<li><code>OptionGroupName</code> - <code>string</code> - Optional - </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@
  * 	http://monitoring.amazonaws.com/doc/2010-08-01/CloudWatch.wsdl</li>
  * </ul>
  *
- * @version 2012.06.21
+ * @version 2013.01.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudwatch/ Amazon CloudWatch
@@ -107,6 +107,16 @@ class AmazonCloudWatch extends CFRuntime
 	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
 	 */
 	const REGION_SINGAPORE = self::REGION_APAC_SE1;
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_APAC_SE2 = 'monitoring.ap-southeast-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_SYDNEY = self::REGION_APAC_SE2;
 
 	/**
 	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
@@ -170,7 +180,7 @@ class AmazonCloudWatch extends CFRuntime
 	/**
 	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_NE1>, <REGION_US_GOV1>, <REGION_SA_E1>.
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_SE2>, <REGION_APAC_NE1>, <REGION_US_GOV1>, <REGION_SA_E1>.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
@@ -442,8 +452,7 @@ class AmazonCloudWatch extends CFRuntime
 	 * </p>
 	 * <p class="note">
 	 * If you create a metric with the <code>PutMetricData</code> action, allow up to fifteen minutes
-	 * for the metric to appear in calls to the <code>ListMetrics</code> action. Statistics about the
-	 * metric, however, are available sooner using <code>GetMetricStatistics</code>.
+	 * for the metric to appear in calls to the <code>ListMetrics</code> action.
 	 * </p>
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -584,7 +593,7 @@ class AmazonCloudWatch extends CFRuntime
 	 * x 10^-130) are also truncated.
 	 * </p>
 	 *
-	 * @param string $namespace (Required) The namespace for the metric data. <p class="note">You cannot specify a namespace that begins with "AWS/". Namespaces that begin with "AWS/" are reserved for other Amazon Web Services products that send metrics to Amazon CloudWatch.</p> [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[^:].*</code>]
+	 * @param string $namespace (Required) The namespace for the metric data. [Constraints: The value must be between 1 and 255 characters, and must match the following regular expression pattern: <code>[^:].*</code>]
 	 * @param array $metric_data (Required) A list of data describing the metric. <ul>
 	 * 	<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 		<li><code>MetricName</code> - <code>string</code> - Required - The name of the metric.</li>

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@
  * "http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html">Regions and
  * Endpoints</a> in the Amazon Web Services General Reference.
  *
- * @version 2012.09.18
+ * @version 2013.01.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/as/ Auto Scaling
@@ -99,6 +99,16 @@ class AmazonAS extends CFRuntime
 	const REGION_SINGAPORE = self::REGION_APAC_SE1;
 
 	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_APAC_SE2 = 'autoscaling.ap-southeast-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_SYDNEY = self::REGION_APAC_SE2;
+
+	/**
 	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
 	 */
 	const REGION_APAC_NE1 = 'autoscaling.ap-northeast-1.amazonaws.com';
@@ -117,6 +127,11 @@ class AmazonAS extends CFRuntime
 	 * Specify the queue URL for the South America (Sao Paulo) Region.
 	 */
 	const REGION_SAO_PAULO = self::REGION_SA_E1;
+
+	/**
+	 * Specify the queue URL for the United States GovCloud Region.
+	 */
+	const REGION_US_GOV1 = 'autoscaling.us-gov-west-1.amazonaws.com';
 
 	/**
 	 * Default service endpoint.
@@ -155,7 +170,7 @@ class AmazonAS extends CFRuntime
 	/**
 	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_NE1>, <REGION_SA_E1>.
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_SE2>, <REGION_APAC_NE1>, <REGION_SA_E1>, <REGION_US_GOV1>.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
@@ -183,10 +198,10 @@ class AmazonAS extends CFRuntime
 	 * @param string $launch_configuration_name (Required) The name of the launch configuration to use with the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
 	 * @param integer $min_size (Required) The minimum size of the Auto Scaling group.
 	 * @param integer $max_size (Required) The maximum size of the Auto Scaling group.
-	 * @param string|array $availability_zones (Required) A list of Availability Zones for the Auto Scaling group. Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>DesiredCapacity</code> - <code>integer</code> - Optional - The number of Amazon EC2 instances that should be running in the group.</li>
 	 * 	<li><code>DefaultCooldown</code> - <code>integer</code> - Optional - The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start.</li>
+	 * 	<li><code>AvailabilityZones</code> - <code>string|array</code> - Optional - A list of Availability Zones for the Auto Scaling group. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>LoadBalancerNames</code> - <code>string|array</code> - Optional - A list of load balancers to use. Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>HealthCheckType</code> - <code>string</code> - Optional - The service you want the health status from, Amazon EC2 or Elastic Load Balancer. Valid values are <code>EC2</code> or <code>ELB</code>. [Constraints: The value must be between 1 and 32 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>HealthCheckGracePeriod</code> - <code>integer</code> - Optional - Length of time in seconds after a new Amazon EC2 instance comes into service that Auto Scaling starts checking its health.</li>
@@ -206,7 +221,7 @@ class AmazonAS extends CFRuntime
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function create_auto_scaling_group($auto_scaling_group_name, $launch_configuration_name, $min_size, $max_size, $availability_zones, $opt = null)
+	public function create_auto_scaling_group($auto_scaling_group_name, $launch_configuration_name, $min_size, $max_size, $opt = null)
 	{
 		if (!$opt) $opt = array();
 		$opt['AutoScalingGroupName'] = $auto_scaling_group_name;
@@ -214,11 +229,15 @@ class AmazonAS extends CFRuntime
 		$opt['MinSize'] = $min_size;
 		$opt['MaxSize'] = $max_size;
 		
-		// Required list (non-map)
-		$opt = array_merge($opt, CFComplexType::map(array(
-			'AvailabilityZones' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
-		), 'member'));
-
+		// Optional list (non-map)
+		if (isset($opt['AvailabilityZones']))
+		{
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'AvailabilityZones' => (is_array($opt['AvailabilityZones']) ? $opt['AvailabilityZones'] : array($opt['AvailabilityZones']))
+			), 'member'));
+			unset($opt['AvailabilityZones']);
+		}
+		
 		// Optional list (non-map)
 		if (isset($opt['LoadBalancerNames']))
 		{
@@ -292,6 +311,7 @@ class AmazonAS extends CFRuntime
 	 * 	</ul></li>
 	 * 	<li><code>SpotPrice</code> - <code>string</code> - Optional - The maximum hourly price to be paid for any Spot Instance launched to fulfill the request. Spot Instances are launched when the price you specify exceeds the current Spot market price. For more information on launching Spot Instances, go to <a href="http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/US-SpotInstances.html">Using Auto Scaling to Launch Spot Instances</a> in the <em>Auto Scaling Developer Guide</em>.</li>
 	 * 	<li><code>IamInstanceProfile</code> - <code>string</code> - Optional - The name or the Amazon Resource Name (ARN) of the instance profile associated with the IAM role for the instance. For information on launching EC2 instances with an IAM role, go to <a href="http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/us-iam-role.html">Launching Auto Scaling Instances With an IAM Role</a> in the <em>Auto Scaling Developer Guide</em>. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 	<li><code>EbsOptimized</code> - <code>boolean</code> - Optional - </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.

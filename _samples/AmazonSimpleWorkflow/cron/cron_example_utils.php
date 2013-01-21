@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ function register_workflow_type(AmazonSWF $swf, $domain, $name, $version, $descr
         'version' => $version,
         'description' => $description
     );
-    
+
     $response = $swf->registerWorkflowType($opts);
 
     if ($response->isOK()) {
@@ -59,7 +59,7 @@ function register_activity_type(AmazonSWF $swf, $domain, $name, $version, $descr
         'version' => $version,
         'description' => $description
     );
-    
+
     $response = $swf->registerActivityType($opts);
 
     if ($response->isOK()) {

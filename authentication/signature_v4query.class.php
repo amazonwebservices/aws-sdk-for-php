@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -28,6 +28,25 @@
  */
 class AuthV4Query extends Signer implements Signable
 {
+	/**
+	 * @var array Map of endpoints to services and regions for non-standard SignatureV4 endpoints
+	 */
+	protected static $endpoint_map = array(
+		// Amazon Simple Email Service (SES)
+		'email.us-east-1.amazonaws.com'      => array('service' => 'ses', 'region' => 'us-east-1'),
+
+		// Amazon Simple Queue Service (SQS)
+		'queue.amazonaws.com'                => array('service' => 'sqs', 'region' => 'us-east-1'),
+		'us-west-1.queue.amazonaws.com'      => array('service' => 'sqs', 'region' => 'us-west-1'),
+		'us-west-2.queue.amazonaws.com'      => array('service' => 'sqs', 'region' => 'us-west-2'),
+		'eu-west-1.queue.amazonaws.com'      => array('service' => 'sqs', 'region' => 'eu-west-1'),
+		'ap-southeast-1.queue.amazonaws.com' => array('service' => 'sqs', 'region' => 'ap-southeast-1'),
+		'ap-southeast-2.queue.amazonaws.com' => array('service' => 'sqs', 'region' => 'ap-southeast-2'),
+		'ap-northeast-1.queue.amazonaws.com' => array('service' => 'sqs', 'region' => 'ap-northeast-1'),
+		'sa-east-1.queue.amazonaws.com'      => array('service' => 'sqs', 'region' => 'sa-east-1'),
+		'us-gov-west-1.queue.amazonaws.com'  => array('service' => 'sqs', 'region' => 'us-gov-west-1'),
+	);
+
 	/**
 	 * Constructs a new instance of the <AuthV4Query> class.
 	 *
@@ -263,9 +282,15 @@ class AuthV4Query extends Signer implements Signable
 	 */
 	protected function region()
 	{
-		$pieces = explode('.', $this->endpoint);
+		$endpoint = str_replace(array('http://', 'https://'), '', $this->endpoint);
 
-		// Handle cases with single/no region (i.e. service.region.amazonaws.com vs. service.amazonaws.com)
+		if (isset(self::$endpoint_map[$endpoint])) {
+			return self::$endpoint_map[$endpoint]['region'];
+		}
+
+		$pieces = explode('.', $endpoint);
+
+		// Handle cases with single/no region (i.e., service.amazonaws.com vs. service.region.amazonaws.com)
 		if (count($pieces) < 4)
 		{
 			return 'us-east-1';
@@ -281,8 +306,14 @@ class AuthV4Query extends Signer implements Signable
 	 */
 	protected function service()
 	{
-		$pieces = explode('.', $this->endpoint);
-		return ($pieces[0] === 'email') ? 'ses' : $pieces[0];
+		$endpoint = str_replace(array('http://', 'https://'), '', $this->endpoint);
+
+		if (isset(self::$endpoint_map[$endpoint])) {
+			return self::$endpoint_map[$endpoint]['service'];
+		}
+
+		$pieces = explode('.', $endpoint);
+		return $pieces[0];
 	}
 
 	/**
@@ -292,7 +323,11 @@ class AuthV4Query extends Signer implements Signable
 	 */
 	protected function canonical_uri()
 	{
-		return '/';
+		$endpoint = str_replace(array('http://', 'https://'), '', $this->endpoint);
+
+		$parsed_url = parse_url('http://' . $endpoint);
+
+		return isset($parsed_url['path']) ? $parsed_url['path'] : '/';
 	}
 
 	/**

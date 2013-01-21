@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
  * tasks such as web indexing, data mining, log file analysis, machine learning, scientific
  * simulation, and data warehousing.
  *
- * @version 2012.11.12
+ * @version 2013.01.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticmapreduce/ Amazon Elastic MapReduce
@@ -207,8 +207,8 @@ class AmazonEMR extends CFRuntime
 	 * ways, including using the SSH shell to connect to the master node and submitting queries
 	 * directly to the software running on the master node, such as Hive and Hadoop. For more
 	 * information on how to do this, go to <a href=
-	 * "http://docs.amazonwebservices.com/ElasticMapReduce/latest/DeveloperGuide/AddMoreThan256Steps.html">
-	 * Add More than 256 Steps to a Job Flow</a> in the <em>Amazon Elastic MapReduce Developer's
+	 * "http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/AddMoreThan256Steps.html">Add
+	 * More than 256 Steps to a Job Flow</a> in the <em>Amazon Elastic MapReduce Developer's
 	 * Guide</em>.
 	 *  
 	 * A step specifies the location of a JAR file stored either on the master node of the job flow or
@@ -378,8 +378,8 @@ class AmazonEMR extends CFRuntime
 	 * ways, including using the SSH shell to connect to the master node and submitting queries
 	 * directly to the software running on the master node, such as Hive and Hadoop. For more
 	 * information on how to do this, go to <a href=
-	 * "http://docs.amazonwebservices.com/ElasticMapReduce/latest/DeveloperGuide/AddMoreThan256Steps.html">
-	 * Add More than 256 Steps to a Job Flow</a> in the <em>Amazon Elastic MapReduce Developer's
+	 * "http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/AddMoreThan256Steps.html">Add
+	 * More than 256 Steps to a Job Flow</a> in the <em>Amazon Elastic MapReduce Developer's
 	 * Guide</em>.
 	 *  
 	 * For long running job flows, we recommend that you periodically store your results.
@@ -415,7 +415,7 @@ class AmazonEMR extends CFRuntime
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>LogUri</code> - <code>string</code> - Optional - Specifies the location in Amazon S3 to write the log files of the job flow. If a value is not provided, logs are not created. [Constraints: The value must be between 0 and 10280 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>AdditionalInfo</code> - <code>string</code> - Optional - A JSON string for selecting additional features. [Constraints: The value must be between 0 and 10280 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
-	 * 	<li><code>AmiVersion</code> - <code>string</code> - Optional - The version of the Amazon Machine Image (AMI) to use when launching Amazon EC2 instances in the job flow. The following values ane valid:<ul><li>"latest" (latest AMI version; currently AMI 2.0, Hadoop 0.20.205)</li><li>"2.0" (AMI 2.0, Hadoop 0.20.205)</li><li>"1.0" (AMI 1.0, Hadoop 0.18)</li></ul>If this value is not specified, the job flow uses the default of (AMI 1.0, Hadoop 0.18). If the AMI supports multiple versions of Hadoop (for example, AMI 1.0 supports both Hadoop 0.18 and 0.20) you can use the <code>JobFlowInstancesConfig</code> <code>HadoopVersion</code> parameter to modify the version of Hadoop from the defaults shown above. For details about the AMI versions currently supported by Amazon ElasticMapReduce, go to <a href="http://docs.amazonwebservices.com/ElasticMapReduce/latest/DeveloperGuide/EnvironmentConfig_AMIVersion.html#ami-versions-supported">AMI Versions Supported in Elastic MapReduce</a> in the <em>Amazon Elastic MapReduce Developer's Guide.</em> [Constraints: The value must be between 0 and 256 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
+	 * 	<li><code>AmiVersion</code> - <code>string</code> - Optional - The version of the Amazon Machine Image (AMI) to use when launching Amazon EC2 instances in the job flow. The following values are valid:<ul><li>"latest" (uses the latest AMI)</li><li>The version number of the AMI to use, for example, "2.0"</li></ul>If this value is not specified, the job flow uses the default of (AMI 1.0, Hadoop 0.18). If the AMI supports multiple versions of Hadoop (for example, AMI 1.0 supports both Hadoop 0.18 and 0.20) you can use the <code>JobFlowInstancesConfig</code> <code>HadoopVersion</code> parameter to modify the version of Hadoop from the defaults shown above. For details about the AMI versions currently supported by Amazon ElasticMapReduce, go to <a href="http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/EnvironmentConfig_AMIVersion.html#ami-versions-supported">AMI Versions Supported in Elastic MapReduce</a> in the <em>Amazon Elastic MapReduce Developer's Guide.</em> [Constraints: The value must be between 0 and 256 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>Steps</code> - <code>array</code> - Optional - A list of steps to be executed by the job flow. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 			<li><code>Name</code> - <code>string</code> - Required - The name of the job flow step. [Constraints: The value must be between 0 and 256 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
@@ -446,7 +446,9 @@ class AmazonEMR extends CFRuntime
 	 * 			</ul></li>
 	 * 		</ul></li>
 	 * 	</ul></li>
-	 * 	<li><code>SupportedProducts</code> - <code>string|array</code> - Optional - A list of strings used by third-party software to tag the job flow. Currently the only valid value is "karmasphere-enterprise-utility", which tags the job flow for management by <a href="http://aws.amazon.com/elasticmapreduce/karmasphere/">Karmasphere.</a> Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>SupportedProducts</code> - <code>string|array</code> - Optional - A list of strings that indicates third-party software to use with the job flow. For more information, go to <a href="http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-supported-products.html">Use Third Party Applications with Amazon EMR</a>. Currently supported values are:<ul><li>"karmasphere-enterprise-utility" - tag the job flow for management by <a href="http://aws.amazon.com/elasticmapreduce/karmasphere/">Karmasphere.</a> </li><li>"mapr-m3" - launch the job flow using MapR M3 Edition.</li><li>"mapr-m5" - launch the job flow using MapR M5 Edition.</li></ul> Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 	<li><code>VisibleToAllUsers</code> - <code>boolean</code> - Optional - Whether the job flow is visible to all IAM users of the AWS account associated with the job flow. If this value is set to <code>true</code>, all IAM users of that AWS account can view and (if they have the proper policy permissions set) manage the job flow. If it is set to <code>false</code>, only the IAM user that created the job flow can view and manage it.</li>
+	 * 	<li><code>JobFlowRole</code> - <code>string</code> - Optional - An IAM role for the job flow. The EC2 instances of the job flow assume this role. The default role is <code>EMRJobflowDefault</code>. In order to use the default role, you must have already created it using the CLI. [Constraints: The value must be between 0 and 10280 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -507,7 +509,7 @@ class AmazonEMR extends CFRuntime
 	 * SetTerminationProtection in which you set the value to <code>false</code>.
 	 *  
 	 * For more information, go to <a href=
-	 * "http://docs.amazonwebservices.com/ElasticMapReduce/latest/DeveloperGuide/UsingEMR_TerminationProtection.html">
+	 * "http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/UsingEMR_TerminationProtection.html">
 	 * Protecting a Job Flow from Termination</a> in the <em>Amazon Elastic MapReduce Developer's
 	 * Guide.</em>
 	 *
@@ -532,10 +534,41 @@ class AmazonEMR extends CFRuntime
 	}
 
 	/**
+	 * Sets whether all AWS Identity and Access Management (IAM) users under your account can access
+	 * the specifed job flows. This action works on running job flows. You can also set the visibility
+	 * of a job flow when you launch it using the <code>VisibleToAllUsers</code> parameter of
+	 * <code>RunJobFlow</code>. The SetVisibleToAllUsers action can be called only by an IAM user who
+	 * created the job flow or the AWS account that owns the job flow.
+	 *
+	 * @param string|array $job_flow_ids (Required) Identifiers of the job flows to receive the new visibility setting. Pass a string for a single value, or an indexed array for multiple values.
+	 * @param boolean $visible_to_all_users (Required) Whether the specified job flows are visible to all IAM users of the AWS account associated with the job flow. If this value is set to True, all IAM users of that AWS account can view and, if they have the proper IAM policy permissions set, manage the job flows. If it is set to False, only the IAM user that created a job flow can view and manage it.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function set_visible_to_all_users($job_flow_ids, $visible_to_all_users, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['VisibleToAllUsers'] = $visible_to_all_users;
+		
+		// Required list (non-map)
+		$opt = array_merge($opt, CFComplexType::map(array(
+			'JobFlowIds' => (is_array($job_flow_ids) ? $job_flow_ids : array($job_flow_ids))
+		), 'member'));
+
+		return $this->authenticate('SetVisibleToAllUsers', $opt);
+	}
+
+	/**
 	 * TerminateJobFlows shuts a list of job flows down. When a job flow is shut down, any step not
 	 * yet completed is canceled and the EC2 instances on which the job flow is running are stopped.
 	 * Any log files not already saved are uploaded to Amazon S3 if a LogUri was specified when the
 	 * job flow was created.
+	 *  
+	 * The call to TerminateJobFlows is asynchronous. Depending on the configuration of the job flow,
+	 * it may take up to 5-20 minutes for the job flow to completely terminate and release allocated
+	 * resources, such as Amazon EC2 instances.
 	 *
 	 * @param string|array $job_flow_ids (Required) A list of job flows to be shutdown. Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>

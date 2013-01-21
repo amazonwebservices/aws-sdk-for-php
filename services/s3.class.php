@@ -2363,7 +2363,7 @@ class AmazonS3 extends CFRuntime
 	 * @param string $bucket (Required) The name of the bucket to use.
 	 * @param string $filename (Required) The file name for the object.
 	 * @param boolean $friendly_format (Optional) A value of <code>true</code> will format the return value to 2 decimal points using the largest possible unit (i.e., 3.42 GB). A value of <code>false</code> will format the return value as the raw number of bytes.
-	 * @return integer|string The number of bytes as an integer, or the friendly format as a string.
+	 * @return integer|string|boolean The number of bytes as an integer, or the friendly format as a string. Returns false if the request failed.
 	 */
 	public function get_object_filesize($bucket, $filename, $friendly_format = false)
 	{
@@ -2372,12 +2372,12 @@ class AmazonS3 extends CFRuntime
 			throw new S3_Exception(__FUNCTION__ . '() cannot be batch requested');
 		}
 
-		$object = $this->get_object_headers($bucket, $filename);
-        if ($object->isOK()) {
-		    $filesize = (integer) $object->header['content-length'];
-		} else {
-		    $filesize = 0;
+		$response = $this->get_object_headers($bucket, $filename);
+		if (!$response->isOK()) {
+			return false;
 		}
+
+		$filesize = (integer) $response->header['content-length'];
 
 		if ($friendly_format)
 		{

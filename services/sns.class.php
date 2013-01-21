@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@
  * 	http://sns.us-east-1.amazonaws.com/doc/2010-03-31/SimpleNotificationService.wsdl</li>
  * </ul>
  *
- * @version 2012.01.16
+ * @version 2013.01.15
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/sns/ Amazon Simple Notification Service
@@ -108,6 +108,16 @@ class AmazonSNS extends CFRuntime
 	const REGION_SINGAPORE = self::REGION_APAC_SE1;
 
 	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_APAC_SE2 = 'sns.ap-southeast-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the Asia Pacific Southeast (Singapore) Region.
+	 */
+	const REGION_SYDNEY = self::REGION_APAC_SE2;
+
+	/**
 	 * Specify the queue URL for the Asia Pacific Northeast (Tokyo) Region.
 	 */
 	const REGION_APAC_NE1 = 'sns.ap-northeast-1.amazonaws.com';
@@ -126,6 +136,11 @@ class AmazonSNS extends CFRuntime
 	 * Specify the queue URL for the South America (Sao Paulo) Region.
 	 */
 	const REGION_SAO_PAULO = self::REGION_SA_E1;
+
+	/**
+	 * Specify the queue URL for the United States GovCloud Region.
+	 */
+	const REGION_US_GOV1 = 'sns.us-gov-west-1.amazonaws.com';
 
 	/**
 	 * Default service endpoint.
@@ -164,7 +179,7 @@ class AmazonSNS extends CFRuntime
 	/**
 	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_NE1>, <REGION_SA_E1>.
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_SE2>, <REGION_APAC_NE1>, <REGION_SA_E1>, <REGION_US_GOV1>.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
@@ -215,7 +230,7 @@ class AmazonSNS extends CFRuntime
 	 * @param string $topic_arn (Required) The ARN of the topic whose access control policy you wish to modify.
 	 * @param string $label (Required) A unique identifier for the new policy statement.
 	 * @param string|array $aws_account_id (Required) The AWS account IDs of the users (principals) who will be given access to the specified actions. The users must have AWS accounts, but do not need to be signed up for this service. Pass a string for a single value, or an indexed array for multiple values.
-	 * @param string|array $action_name (Required) The action you want to allow for the specified principal(s). Valid values: any Amazon SNS action name. Pass a string for a single value, or an indexed array for multiple values.
+	 * @param string|array $action_name (Required) The action you want to allow for the specified principal(s). Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -249,7 +264,7 @@ class AmazonSNS extends CFRuntime
 	 * @param string $topic_arn (Required) The ARN of the topic for which you wish to confirm a subscription.
 	 * @param string $token (Required) Short-lived token sent to an endpoint during the Subscribe action.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>AuthenticateOnUnsubscribe</code> - <code>string</code> - Optional - Disallows unauthenticated unsubscribes of the subscription. If the value of this parameter is <code>true</code> and the request has an AWS signature, then only the topic owner and the subscription owner can unsubscribe the endpoint. The unsubscribe action will require AWS authentication.</li>
+	 * 	<li><code>AuthenticateOnUnsubscribe</code> - <code>string</code> - Optional - Indicates that you want to disallow unauthenticated unsubscribes of the subscription. If value of this parameter is "true" and the request has an AWS signature then only the topic owner and the subscription owner will be permitted to unsubscribe the endpoint. The unsubscribe action will require AWS authentication.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -488,8 +503,8 @@ class AmazonSNS extends CFRuntime
 	 * are valid for three days.
 	 *
 	 * @param string $topic_arn (Required) The ARN of topic you want to subscribe to.
-	 * @param string $protocol (Required) The protocol you want to use. Supported protocols include:<ul><li>http -- delivery of JSON-encoded message via HTTP POST</li><li>https -- delivery of JSON-encoded message via HTTPS POST</li><li>email -- delivery of message via SMTP</li><li>email-json -- delivery of JSON-encoded message via SMTP</li><li>sms -- delivery of message via SMS</li><li>sqs -- delivery of JSON-encoded message to an Amazon SQS queue</li></ul>
-	 * @param string $endpoint (Required) The endpoint that you want to receive notifications. Endpoints vary by protocol:<ul><li>For the http protocol, the endpoint is an URL beginning with "http://"</li><li>For the https protocol, the endpoint is a URL beginning with "https://"</li><li>For the email protocol, the endpoint is an e-mail address</li><li>For the email-json protocol, the endpoint is an e-mail address</li><li>For the sms protocol, the endpoint is a phone number of an SMS-enabled device</li><li>For the sqs protocol, the endpoint is the ARN of an Amazon SQS queue</li></ul>
+	 * @param string $protocol (Required) The protocol you want to use. Supported protocols include:<ul><li>http -- delivery of JSON-encoded message via HTTP POST</li><li>https -- delivery of JSON-encoded message via HTTPS POST</li><li>email -- delivery of message via SMTP</li><li>email-json -- delivery of JSON-encoded message via SMTP</li><li>sqs -- delivery of JSON-encoded message to an Amazon SQS queue</li></ul>
+	 * @param string $endpoint (Required) The endpoint that you want to receive notifications. Endpoints vary by protocol:<ul><li>For the http protocol, the endpoint is an URL beginning with "http://"</li><li>For the https protocol, the endpoint is a URL beginning with "https://"</li><li>For the email protocol, the endpoint is an e-mail address</li><li>For the email-json protocol, the endpoint is an e-mail address</li><li>For the sqs protocol, the endpoint is the ARN of an Amazon SQS queue</li></ul>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>

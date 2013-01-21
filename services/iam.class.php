@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@
  * "http://aws.amazon.com/documentation/" target=
  * "_blank">http://aws.amazon.com/documentation/</a>.
  *
- * @version 2012.05.31
+ * @version 2013.01.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/iam/ AWS Identity and Access Management
@@ -119,7 +119,12 @@ class AmazonIAM extends CFRuntime
 	// SERVICE METHODS
 
 	/**
-	 * Adds the specified role to the specified instance profile.
+	 * Adds the specified role to the specified instance profile. For more information about roles, go
+	 * to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
+	 * Roles</a>. For more information about instance profiles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html">About
+	 * Instance Profiles</a>.
 	 *
 	 * @param string $instance_profile_name (Required) Name of the instance profile to update. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param string $role_name (Required) Name of the role to add. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
@@ -256,7 +261,9 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Creates a new instance profile.
+	 * Creates a new instance profile. For information about instance profiles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html">About
+	 * Instance Profiles</a>.
 	 *  
 	 * For information about the number of instance profiles you can create, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
@@ -301,15 +308,21 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Creates a new role for your AWS account.
-	 *  
-	 * For information about limitations on the number of roles you can create, see <a href=
+	 * Creates a new role for your AWS account. For more information about roles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
+	 * Roles</a>. For information about limitations on role names and the number of roles you can
+	 * create, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
 	 * Management</em>.
+	 *  
+	 * The policy grants permission to an EC2 instance to assume the role. The policy is URL-encoded
+	 * according to RFC 3986. For more information about RFC 3986, go to <a href=
+	 * "http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>. Currently,
+	 * only EC2 instances can assume roles.
 	 *
 	 * @param string $role_name (Required) Name of the role to create. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
-	 * @param string $assume_role_policy_document (Required) The policy govering by who and under what conditions the role can be assumed. [Constraints: The value must be between 1 and 131072 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
+	 * @param string $assume_role_policy_document (Required) The policy that grants an entity permission to assume the role. [Constraints: The value must be between 1 and 131072 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>Path</code> - <code>string</code> - Optional - The path to the role. For more information about paths, see <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_Identifiers.html" target="_blank">Identifiers for IAM Entities</a> in <em>Using AWS Identity and Access Management</em>. This parameter is optional. If it is not included, it defaults to a slash (/). [Constraints: The value must be between 1 and 512 characters, and must match the following regular expression pattern: <code>(\u002F)|(\u002F[\u0021-\u007F]+\u002F)</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -500,7 +513,16 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Deletes the specified instance profile. The instance profile must have an associated role.
+	 * Deletes the specified instance profile. The instance profile must not have an associated role.
+	 * 
+	 * <p class="important">
+	 * Make sure you do not have any Amazon EC2 instances running with the instance profile you are
+	 * about to delete. Deleting a role or instance profile that is associated with a running instance
+	 * will break any applications running on the instance.
+	 * </p> 
+	 * For more information about instance profiles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html">About
+	 * Instance Profiles</a>.
 	 *
 	 * @param string $instance_profile_name (Required) Name of the instance profile to delete. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -542,7 +564,16 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Deletes the specified role. The role must not have any attached policies.
+	 * Deletes the specified role. The role must not have any policies attached. For more information
+	 * about roles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
+	 * Roles</a>.
+	 * 
+	 * <p class="important">
+	 * Make sure you do not have any Amazon EC2 instances running with the role you are about to
+	 * delete. Deleting a role or instance profile that is associated with a running instance will
+	 * break any applications running on the instance.
+	 * </p>
 	 *
 	 * @param string $role_name (Required) Name of the role to delete. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -561,7 +592,7 @@ class AmazonIAM extends CFRuntime
 	/**
 	 * Deletes the specified policy associated with the specified role.
 	 *
-	 * @param string $role_name (Required) Name of the role the policy is associated with. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $role_name (Required) Name of the role the associated with the policy. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param string $policy_name (Required) Name of the policy document to delete. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -795,7 +826,11 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 * Retrieves information about the specified instance profile, including the instance profile's
-	 * path, GUID, ARN, and role.
+	 * path, GUID, ARN, and role. For more information about instance profiles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html">About
+	 * Instance Profiles</a>. For more information about ARNs, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_Identifiers.html#Identifiers_ARNs">
+	 * ARNs</a>.
 	 *
 	 * @param string $instance_profile_name (Required) Name of the instance profile to get information about. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -830,7 +865,16 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 * Retrieves information about the specified role, including the role's path, GUID, ARN, and the
-	 * assume role policy.
+	 * policy granting permission to EC2 to assume the role. For more information about ARNs, go to
+	 * 	<a href=
+	 * "%20http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_Identifiers.html#Identifiers_ARNs">
+	 * ARNs</a>. For more information about roles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
+	 * Roles</a>.
+	 *  
+	 * The returned policy is URL-encoded according to RFC 3986. For more information about RFC 3986,
+	 * go to <a href=
+	 * "http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
 	 *
 	 * @param string $role_name (Required) Name of the role to get information about. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -847,11 +891,16 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Retrieves the specified policy document for the specified role. The returned policy is
-	 * URL-encoded according to RFC 3986. For more information about RFC 3986, go to <a href=
+	 * Retrieves the specified policy document for the specified role. For more information about
+	 * roles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
+	 * Roles</a>.
+	 *  
+	 * The returned policy is URL-encoded according to RFC 3986. For more information about RFC 3986,
+	 * go to <a href=
 	 * "http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
 	 *
-	 * @param string $role_name (Required) Name of the role who the policy is associated with. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
+	 * @param string $role_name (Required) Name of the role associated with the policy. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param string $policy_name (Required) Name of the policy document to get. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
@@ -1048,7 +1097,9 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 * Lists the instance profiles that have the specified path prefix. If there are none, the action
-	 * returns an empty list.
+	 * returns an empty list. For more information about instance profiles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html">About
+	 * Instance Profiles</a>.
 	 *  
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
@@ -1070,7 +1121,9 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 * Lists the instance profiles that have the specified associated role. If there are none, the
-	 * action returns an empty list.
+	 * action returns an empty list. For more information about instance profiles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html">About
+	 * Instance Profiles</a>.
 	 *  
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
@@ -1138,11 +1191,17 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Lists the roles have the specified path prefix. If there are none, the action returns an empty
-	 * list.
+	 * Lists the roles that have the specified path prefix. If there are none, the action returns an
+	 * empty list. For more information about roles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
+	 * Roles</a>.
 	 *  
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
+	 *  
+	 * The returned policy is URL-encoded according to RFC 3986. For more information about RFC 3986,
+	 * go to <a href=
+	 * "http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>PathPrefix</code> - <code>string</code> - Optional - The path prefix for filtering the results. For example: <code>/application_abc/component_xyz/</code>, which would get all roles whose path starts with <code>/application_abc/component_xyz/</code>. This parameter is optional. If it is not included, it defaults to a slash (/), listing all roles. [Constraints: The value must be between 1 and 512 characters, and must match the following regular expression pattern: <code>\u002F[\u0021-\u007F]*</code>]</li>
@@ -1319,12 +1378,11 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 * Adds (or updates) a policy document associated with the specified role. For information about
-	 * policies, refer to <a href=
+	 * policies, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html"
 	 * target="_blank">Overview of Policies</a> in <em>Using AWS Identity and Access Management</em>.
 	 *  
-	 * For information about limits on the number of policies you can associate with a role, see
-	 * 	<a href=
+	 * For information about limits on the policies you can associate with a role, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
 	 * Management</em>.
@@ -1401,6 +1459,17 @@ class AmazonIAM extends CFRuntime
 
 	/**
 	 * Removes the specified role from the specified instance profile.
+	 * 
+	 * <p class="important">
+	 * Make sure you do not have any Amazon EC2 instances running with the role you are about to
+	 * remove from the instance profile. Removing a role from an instance profile that is associated
+	 * with a running instance will break any applications running on the instance.
+	 * </p> 
+	 * For more information about roles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
+	 * Roles</a>. For more information about instance profiles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html">About
+	 * Instance Profiles</a>.
 	 *
 	 * @param string $instance_profile_name (Required) Name of the instance profile to update. [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
 	 * @param string $role_name (Required) Name of the role to remove. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
@@ -1516,10 +1585,13 @@ class AmazonIAM extends CFRuntime
 	}
 
 	/**
-	 * Updates the policy governing how the given role can be assumed.
+	 * Updates the policy that grants an entity permission to assume a role. Currently, only an Amazon
+	 * EC2 instance can assume a role. For more information about roles, go to <a href=
+	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
+	 * Roles</a>.
 	 *
 	 * @param string $role_name (Required) Name of the role to update. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[\w+=,.@-]*</code>]
-	 * @param string $policy_document (Required) The policy govering by who and under what conditions the role can be assumed. [Constraints: The value must be between 1 and 131072 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
+	 * @param string $policy_document (Required) The policy that grants an entity permission to assume the role. [Constraints: The value must be between 1 and 131072 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>

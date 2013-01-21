@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
  * CloudSearch configuration requests are submitted to
  * <code>cloudsearch.us-east-1.amazonaws.com</code> using the AWS Query protocol.
  *
- * @version 2012.05.31
+ * @version 2013.01.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudsearch/ Amazon CloudSearch
@@ -121,22 +121,22 @@ class AmazonCloudSearch extends CFRuntime
 	 * 		<li><code>IndexFieldType</code> - <code>string</code> - Required - The type of field. Based on this type, exactly one of the <code>UIntOptions</code>, <code>LiteralOptions</code> or <code>TextOptions</code> must be present. [Allowed values: <code>uint</code>, <code>literal</code>, <code>text</code>]</li>
 	 * 		<li><code>UIntOptions</code> - <code>array</code> - Optional - Options for an unsigned integer field. Present if <code>IndexFieldType</code> specifies the field is of type unsigned integer. <ul>
 	 * 			<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
-	 * 				<li><code>DefaultValue</code> - <code>integer</code> - Optional - The default value for an unsigned integer field. Optional.</li>
+	 * 				<li><code>DefaultValue</code> - <code>integer</code> - Optional - The default value for an unsigned integer field.</li>
 	 * 			</ul></li>
 	 * 		</ul></li>
 	 * 		<li><code>LiteralOptions</code> - <code>array</code> - Optional - Options for literal field. Present if <code>IndexFieldType</code> specifies the field is of type literal. <ul>
 	 * 			<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
-	 * 				<li><code>DefaultValue</code> - <code>string</code> - Optional - The default value for a literal field. Optional.</li>
-	 * 				<li><code>SearchEnabled</code> - <code>boolean</code> - Optional - Specifies whether search is enabled for this field. Default: False.</li>
-	 * 				<li><code>FacetEnabled</code> - <code>boolean</code> - Optional - Specifies whether facets are enabled for this field. Default: False.</li>
-	 * 				<li><code>ResultEnabled</code> - <code>boolean</code> - Optional - Specifies whether values of this field can be returned in search results and used for ranking. Default: False.</li>
+	 * 				<li><code>DefaultValue</code> - <code>string</code> - Optional - The default value for a literal field.</li>
+	 * 				<li><code>SearchEnabled</code> - <code>boolean</code> - Optional - Specifies whether search is enabled for this field.</li>
+	 * 				<li><code>FacetEnabled</code> - <code>boolean</code> - Optional - Specifies whether facets are enabled for this field.</li>
+	 * 				<li><code>ResultEnabled</code> - <code>boolean</code> - Optional - Specifies whether values of this field can be returned in search results and used for ranking.</li>
 	 * 			</ul></li>
 	 * 		</ul></li>
 	 * 		<li><code>TextOptions</code> - <code>array</code> - Optional - Options for text field. Present if <code>IndexFieldType</code> specifies the field is of type text. <ul>
 	 * 			<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
-	 * 				<li><code>DefaultValue</code> - <code>string</code> - Optional - The default value for a text field. Optional.</li>
-	 * 				<li><code>FacetEnabled</code> - <code>boolean</code> - Optional - Specifies whether facets are enabled for this field. Default: False.</li>
-	 * 				<li><code>ResultEnabled</code> - <code>boolean</code> - Optional - Specifies whether values of this field can be returned in search results and used for ranking. Default: False.</li>
+	 * 				<li><code>DefaultValue</code> - <code>string</code> - Optional - The default value for a text field.</li>
+	 * 				<li><code>FacetEnabled</code> - <code>boolean</code> - Optional - Specifies whether facets are enabled for this field.</li>
+	 * 				<li><code>ResultEnabled</code> - <code>boolean</code> - Optional - Specifies whether values of this field can be returned in search results and used for ranking.</li>
 	 * 			</ul></li>
 	 * 		</ul></li>
 	 * 		<li><code>SourceAttributes</code> - <code>array</code> - Optional - An optional list of source attributes that provide data for this index field. If not specified, the data is pulled from a source attribute with the same name as this <code>IndexField</code>. When one or more source attributes are specified, an optional data transformation can be applied to the source data when populating the index field. You can configure a maximum of 20 sources for an <code>IndexField</code>. <ul>
@@ -145,13 +145,13 @@ class AmazonCloudSearch extends CFRuntime
 	 * 				<li><code>SourceDataCopy</code> - <code>array</code> - Optional - Copies data from a source document attribute to an <code>IndexField</code>. <ul>
 	 * 					<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 						<li><code>SourceName</code> - <code>string</code> - Required - The name of the document source field to add to this <code>IndexField</code>. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[a-z][a-z0-9_]*</code>]</li>
-	 * 						<li><code>DefaultValue</code> - <code>string</code> - Optional - The default value to use if the source attribute is not specified in a document. Optional.</li>
+	 * 						<li><code>DefaultValue</code> - <code>string</code> - Optional - The value of a field or source document attribute.</li>
 	 * 					</ul></li>
 	 * 				</ul></li>
 	 * 				<li><code>SourceDataTrimTitle</code> - <code>array</code> - Optional - Trims common title words from a source document attribute when populating an <code>IndexField</code>. This can be used to create an <code>IndexField</code> you can use for sorting. <ul>
 	 * 					<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 						<li><code>SourceName</code> - <code>string</code> - Required - The name of the document source field to add to this <code>IndexField</code>. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[a-z][a-z0-9_]*</code>]</li>
-	 * 						<li><code>DefaultValue</code> - <code>string</code> - Optional - The default value to use if the source attribute is not specified in a document. Optional.</li>
+	 * 						<li><code>DefaultValue</code> - <code>string</code> - Optional - The value of a field or source document attribute.</li>
 	 * 						<li><code>Separator</code> - <code>string</code> - Optional - The separator that follows the text to trim.</li>
 	 * 						<li><code>Language</code> - <code>string</code> - Optional - An <a href="http://tools.ietf.org/html/rfc4646">IETF RFC 4646</a> language code. Only the primary language is considered. English (en) is currently the only supported language. [Constraints: The value must match the following regular expression pattern: <code>[a-zA-Z]{2,8}(?:-[a-zA-Z]{2,8})*</code>]</li>
 	 * 					</ul></li>
@@ -159,7 +159,7 @@ class AmazonCloudSearch extends CFRuntime
 	 * 				<li><code>SourceDataMap</code> - <code>array</code> - Optional - Maps source document attribute values to new values when populating the <code>IndexField</code>. <ul>
 	 * 					<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 						<li><code>SourceName</code> - <code>string</code> - Required - The name of the document source field to add to this <code>IndexField</code>. [Constraints: The value must be between 1 and 64 characters, and must match the following regular expression pattern: <code>[a-z][a-z0-9_]*</code>]</li>
-	 * 						<li><code>DefaultValue</code> - <code>string</code> - Optional - The default value to use if the source attribute is not specified in a document. Optional.</li>
+	 * 						<li><code>DefaultValue</code> - <code>string</code> - Optional - The value of a field or source document attribute.</li>
 	 * 						<li><code>Cases</code> - <code>array</code> - Optional - A map that translates source field values to custom values. <ul>
 	 * 							<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 								<li><code>[custom-key]</code> - <code>string</code> - Optional - The value of a field or source document attribute.</li>
@@ -485,10 +485,10 @@ class AmazonCloudSearch extends CFRuntime
 
 	/**
 	 * Configures the policies that control access to the domain's document and search services. The
-	 * maximum size of an access policy document is 100 KB.
+	 * maximum size of an access policy document is 100KB.
 	 *
 	 * @param string $domain_name (Required) A string that represents the name of a domain. Domain names must be unique across the domains owned by an account within an AWS region. Domain names must start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen). Uppercase letters and underscores are not allowed. [Constraints: The value must be between 3 and 28 characters, and must match the following regular expression pattern: <code>[a-z][a-z0-9\-]+</code>]
-	 * @param string $access_policies (Required) An IAM access policy as described in <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?AccessPolicyLanguage.html" target="_blank">The Access Policy Language</a> in <em>Using AWS Identity and Access Management</em>. The maximum size of an access policy document is 100 KB. Example: <code>{"Statement": [{"Effect":"Allow", "Action": "*", "Resource": "arn:aws:cs:us-east-1:1234567890:search/movies", "Condition": { "IpAddress": { aws:SourceIp": ["203.0.113.1/32"] } }}, {"Effect":"Allow", "Action": "*", "Resource": "arn:aws:cs:us-east-1:1234567890:documents/movies", "Condition": { "IpAddress": { aws:SourceIp": ["203.0.113.1/32"] } }} ]}</code>
+	 * @param string $access_policies (Required) An IAM access policy as described in <a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?AccessPolicyLanguage.html" target="_blank">The Access Policy Language</a> in <em>Using AWS Identity and Access Management</em>. The maximum size of an access policy document is 100KB. Example: <code>{"Statement": [{"Effect":"Allow", "Action": "*", "Resource": "arn:aws:cs:us-east-1:1234567890:search/movies", "Condition": { "IpAddress": { aws:SourceIp": ["203.0.113.1/32"] } }}, {"Effect":"Allow", "Action": "*", "Resource": "arn:aws:cs:us-east-1:1234567890:documents/movies", "Condition": { "IpAddress": { aws:SourceIp": ["203.0.113.1/32"] } }} ]}</code>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -506,10 +506,10 @@ class AmazonCloudSearch extends CFRuntime
 	/**
 	 * Configures a stemming dictionary for the search domain. The stemming dictionary is used during
 	 * indexing and when processing search requests. The maximum size of the stemming dictionary is
-	 * 500 KB.
+	 * 500KB.
 	 *
 	 * @param string $domain_name (Required) A string that represents the name of a domain. Domain names must be unique across the domains owned by an account within an AWS region. Domain names must start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen). Uppercase letters and underscores are not allowed. [Constraints: The value must be between 3 and 28 characters, and must match the following regular expression pattern: <code>[a-z][a-z0-9\-]+</code>]
-	 * @param string $stems (Required) Maps terms to their stems, serialized as a JSON document. The document has a single object with one property "stems" whose value is an object mapping terms to their stems. The maximum size of a stemming document is 500 KB. Example: <code>{ "stems": {"people": "person", "walking": "walk"} }</code>
+	 * @param string $stems (Required) Maps terms to their stems, serialized as a JSON document. The document has a single object with one property "stems" whose value is an object mapping terms to their stems. The maximum size of a stemming document is 500KB. Example: <code>{ "stems": {"people": "person", "walking": "walk"} }</code>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -526,10 +526,10 @@ class AmazonCloudSearch extends CFRuntime
 
 	/**
 	 * Configures stopwords for the search domain. Stopwords are used during indexing and when
-	 * processing search requests. The maximum size of the stopwords dictionary is 10 KB.
+	 * processing search requests. The maximum size of the stopwords dictionary is 10KB.
 	 *
 	 * @param string $domain_name (Required) A string that represents the name of a domain. Domain names must be unique across the domains owned by an account within an AWS region. Domain names must start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen). Uppercase letters and underscores are not allowed. [Constraints: The value must be between 3 and 28 characters, and must match the following regular expression pattern: <code>[a-z][a-z0-9\-]+</code>]
-	 * @param string $stopwords (Required) Lists stopwords serialized as a JSON document. The document has a single object with one property "stopwords" whose value is an array of strings. The maximum size of a stopwords document is 10 KB. Example: <code>{ "stopwords": ["a", "an", "the", "of"] }</code>
+	 * @param string $stopwords (Required) Lists stopwords serialized as a JSON document. The document has a single object with one property "stopwords" whose value is an array of strings. The maximum size of a stopwords document is 10KB. Example: <code>{ "stopwords": ["a", "an", "the", "of"] }</code>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -547,10 +547,10 @@ class AmazonCloudSearch extends CFRuntime
 	/**
 	 * Configures a synonym dictionary for the search domain. The synonym dictionary is used during
 	 * indexing to configure mappings for terms that occur in text fields. The maximum size of the
-	 * synonym dictionary is 100 KB.
+	 * synonym dictionary is 100KB.
 	 *
 	 * @param string $domain_name (Required) A string that represents the name of a domain. Domain names must be unique across the domains owned by an account within an AWS region. Domain names must start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen). Uppercase letters and underscores are not allowed. [Constraints: The value must be between 3 and 28 characters, and must match the following regular expression pattern: <code>[a-z][a-z0-9\-]+</code>]
-	 * @param string $synonyms (Required) Maps terms to their synonyms, serialized as a JSON document. The document has a single object with one property "synonyms" whose value is an object mapping terms to their synonyms. Each synonym is a simple string or an array of strings. The maximum size of a stopwords document is 100 KB. Example: <code>{ "synonyms": {"cat": ["feline", "kitten"], "puppy": "dog"} }</code>
+	 * @param string $synonyms (Required) Maps terms to their synonyms, serialized as a JSON document. The document has a single object with one property "synonyms" whose value is an object mapping terms to their synonyms. Each synonym is a simple string or an array of strings. The maximum size of a stopwords document is 100KB. Example: <code>{ "synonyms": {"cat": ["feline", "kitten"], "puppy": "dog"} }</code>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>

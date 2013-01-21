@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
  *  
  * Visit <a href="http://aws.amazon.com/ec2/">http://aws.amazon.com/ec2/</a> for more information.
  *
- * @version 2012.11.12
+ * @version 2013.01.18
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ec2/ Amazon EC2
@@ -148,7 +148,7 @@ class AmazonEC2 extends CFRuntime
 	 */
 	public function __construct(array $options = array())
 	{
-		$this->api_version = '2012-08-15';
+		$this->api_version = '2012-12-01';
 		$this->hostname = self::DEFAULT_URL;
 		$this->auth_class = 'AuthV2Query';
 
@@ -181,6 +181,8 @@ class AmazonEC2 extends CFRuntime
 	const INSTANCE_HIGH_MEM_XLARGE = 'm2.xlarge';
 	const INSTANCE_HIGH_MEM_2XLARGE = 'm2.2xlarge';
 	const INSTANCE_HIGH_MEM_4XLARGE = 'm2.4xlarge';
+	const INSTANCE_M3_XLARGE = 'm3.xlarge';
+	const INSTANCE_M3_4XLARGE = 'm3.4xlarge';
 
 	// High CPU
 	const INSTANCE_HIGH_CPU_MEDIUM = 'c1.medium';
@@ -193,6 +195,9 @@ class AmazonEC2 extends CFRuntime
 
 	// High I/O
 	const INSTANCE_HIGH_IO_4XLARGE = 'hi1.4xlarge';
+
+	// High Storage
+	const INSTANCE_STORAGE_8XLARGE = 'hs1.8xlarge';
 
 
 	/*%******************************************************************************************%*/
@@ -706,6 +711,26 @@ class AmazonEC2 extends CFRuntime
 		$opt['InstanceId'] = $instance_id;
 		
 		return $this->authenticate('ConfirmProductInstance', $opt);
+	}
+
+	/**
+	 * 
+	 *
+	 * @param string $source_region (Required) 
+	 * @param string $source_snapshot_id (Required) 
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>Description</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function copy_snapshot($source_region, $source_snapshot_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['SourceRegion'] = $source_region;
+		$opt['SourceSnapshotId'] = $source_snapshot_id;
+		
+		return $this->authenticate('CopySnapshot', $opt);
 	}
 
 	/**
@@ -2852,7 +2877,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>ReservedInstancesOfferingId</code> - <code>string|array</code> - Optional - An optional list of the unique IDs of the Reserved Instance offerings to describe. Pass a string for a single value, or an indexed array for multiple values.</li>
-	 * 	<li><code>InstanceType</code> - <code>string</code> - Optional - The instance type on which the Reserved Instance can be used. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.medium</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>hi1.4xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
+	 * 	<li><code>InstanceType</code> - <code>string</code> - Optional - The instance type on which the Reserved Instance can be used. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.medium</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>m3.xlarge</code>, <code>m3.2xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>hi1.4xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
 	 * 	<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The Availability Zone in which the Reserved Instance can be used.</li>
 	 * 	<li><code>ProductDescription</code> - <code>string</code> - Optional - The Reserved Instance product description.</li>
 	 * 	<li><code>Filter</code> - <code>array</code> - Optional - A list of filters used to match properties for ReservedInstancesOfferings. For a complete reference to the available filter keys for this operation, see the <a href="http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/">Amazon EC2 API reference</a>. <ul>
@@ -2863,6 +2888,8 @@ class AmazonEC2 extends CFRuntime
 	 * 	</ul></li>
 	 * 	<li><code>InstanceTenancy</code> - <code>string</code> - Optional - The tenancy of the Reserved Instance offering. A Reserved Instance with tenancy of dedicated will run on single-tenant hardware and can only be launched within a VPC.</li>
 	 * 	<li><code>OfferingType</code> - <code>string</code> - Optional - The Reserved Instance offering type.</li>
+	 * 	<li><code>NextToken</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>MaxResults</code> - <code>integer</code> - Optional - </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -3685,18 +3712,17 @@ class AmazonEC2 extends CFRuntime
 	 * instance to which it is assigned. This is an idempotent operation. If you enter it more than
 	 * once, Amazon EC2 does not return an error.
 	 *
-	 * @param string $public_ip (Required) The elastic IP address that you are disassociating from the instance.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>PublicIp</code> - <code>string</code> - Optional - The elastic IP address that you are disassociating from the instance.</li>
 	 * 	<li><code>AssociationId</code> - <code>string</code> - Optional - Association ID corresponding to the VPC elastic IP address you want to disassociate.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function disassociate_address($public_ip, $opt = null)
+	public function disassociate_address($opt = null)
 	{
 		if (!$opt) $opt = array();
-		$opt['PublicIp'] = $public_ip;
-		
+				
 		return $this->authenticate('DisassociateAddress', $opt);
 	}
 
@@ -3851,7 +3877,7 @@ class AmazonEC2 extends CFRuntime
 	 * 			<li><code>SecurityGroup</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>AdditionalInfo</code> - <code>string</code> - Optional - </li>
 	 * 			<li><code>UserData</code> - <code>string</code> - Optional - </li>
-	 * 			<li><code>InstanceType</code> - <code>string</code> - Optional -  [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.medium</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>hi1.4xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
+	 * 			<li><code>InstanceType</code> - <code>string</code> - Optional -  [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.medium</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>m3.xlarge</code>, <code>m3.2xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>hi1.4xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
 	 * 			<li><code>Placement</code> - <code>array</code> - Optional - Describes where an Amazon EC2 instance is running within an Amazon EC2 region. <ul>
 	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 					<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The availability zone in which an Amazon EC2 instance runs.</li>
@@ -4651,8 +4677,8 @@ class AmazonEC2 extends CFRuntime
 	 * 			</ul></li>
 	 * 			<li><code>SecurityGroup</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 			<li><code>UserData</code> - <code>string</code> - Optional - Optional data, specific to a user's application, to provide in the launch request. All instances that collectively comprise the launch request have access to this data. User data is never returned through API responses.</li>
-	 * 			<li><code>AddressingType</code> - <code>string</code> - Optional - </li>
-	 * 			<li><code>InstanceType</code> - <code>string</code> - Optional - Specifies the instance type. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.medium</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>hi1.4xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
+	 * 			<li><code>AddressingType</code> - <code>string</code> - Optional - Deprecated.</li>
+	 * 			<li><code>InstanceType</code> - <code>string</code> - Optional - Specifies the instance type. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.medium</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>m3.xlarge</code>, <code>m3.2xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>hi1.4xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
 	 * 			<li><code>Placement</code> - <code>array</code> - Optional - Defines a placement item. <ul>
 	 * 				<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 					<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The availability zone in which an Amazon EC2 instance runs.</li>
@@ -4974,7 +5000,7 @@ class AmazonEC2 extends CFRuntime
 	 * 	<li><code>SecurityGroupId</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 	<li><code>UserData</code> - <code>string</code> - Optional - Specifies additional information to make available to the instance(s).</li>
 	 * 	<li><code>AddressingType</code> - <code>string</code> - Optional - </li>
-	 * 	<li><code>InstanceType</code> - <code>string</code> - Optional - Specifies the instance type for the launched instances. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.medium</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>hi1.4xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
+	 * 	<li><code>InstanceType</code> - <code>string</code> - Optional - Specifies the instance type for the launched instances. [Allowed values: <code>t1.micro</code>, <code>m1.small</code>, <code>m1.medium</code>, <code>m1.large</code>, <code>m1.xlarge</code>, <code>m2.xlarge</code>, <code>m2.2xlarge</code>, <code>m2.4xlarge</code>, <code>m3.xlarge</code>, <code>m3.2xlarge</code>, <code>c1.medium</code>, <code>c1.xlarge</code>, <code>hi1.4xlarge</code>, <code>cc1.4xlarge</code>, <code>cc2.8xlarge</code>, <code>cg1.4xlarge</code>]</li>
 	 * 	<li><code>Placement</code> - <code>array</code> - Optional - Specifies the placement constraints (Availability Zones) for launching the instances. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 			<li><code>AvailabilityZone</code> - <code>string</code> - Optional - The availability zone in which an Amazon EC2 instance runs.</li>
@@ -5126,7 +5152,6 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * @param string|array $instance_id (Required) The list of Amazon EC2 instances to start. Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>AdditionalInfo</code> - <code>string</code> - Optional - </li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.

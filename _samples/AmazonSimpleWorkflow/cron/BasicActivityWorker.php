@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -27,17 +27,17 @@ class BasicActivityWorker {
     protected $swf;
     protected $domain;
     protected $task_list;
-    
+
     public function __construct(AmazonSWF $swf_service, $domain, $task_list) {
         $this->domain = $domain;
         $this->task_list = $task_list;
         $this->swf = $swf_service;
     }
-    
+
     public function start() {
         $this->_poll();
     }
-    
+
     protected function _poll() {
         while (true) {
             $response = $this->swf->poll_for_activity_task(array(
@@ -46,25 +46,25 @@ class BasicActivityWorker {
                     'name' => $this->task_list
                 )
             ));
-            
+
             if (self::DEBUG) {
                 print_r($response->body);
             }
-                       
+
             if ($response->isOK()) {
                 $task_token = (string) $response->body->taskToken;
-                
-                if (!empty($task_token)) {                    
+
+                if (!empty($task_token)) {
                     $activity_input = (string) $response->body->input;
                     $activity_output = $this->_execute_task($activity_input);
-                    
+
                     $complete_opt = array(
                         'taskToken' => $task_token,
                         'result' => $activity_output
                     );
-                    
+
                     $complete_response = $this->swf->respond_activity_task_completed($complete_opt);
-                    
+
                     if ($complete_response->isOK()) {
                         echo "RespondActivityTaskCompleted SUCCESS\n";
                     } else {
@@ -81,12 +81,12 @@ class BasicActivityWorker {
             } else {
                 echo 'ERROR: ';
                 print_r($response->body);
-                
+
                 sleep(2);
             }
-        }        
+        }
     }
-    
+
     protected function _execute_task($input) {
         $output = "Hello $input!";
         return $output;

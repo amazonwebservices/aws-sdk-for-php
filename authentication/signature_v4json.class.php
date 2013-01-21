@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2010-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -270,7 +270,7 @@ class AuthV4JSON extends Signer implements Signable
 	{
 		$pieces = explode('.', $this->endpoint);
 
-		// Handle cases with single/no region (i.e. service.region.amazonaws.com vs. service.amazonaws.com)
+		// Handle cases with single/no region (i.e., service.amazonaws.com vs. service.region.amazonaws.com)
 		if (count($pieces) < 4)
 		{
 			return 'us-east-1';
