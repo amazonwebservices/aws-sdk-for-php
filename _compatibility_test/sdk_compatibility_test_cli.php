@@ -94,14 +94,14 @@ echo PHP_EOL;
 if ($compatiblity >= REQUIREMENTS_MIN_MET)
 {
 	echo success('Your environment meets the minimum requirements for using the AWS SDK for PHP!') . PHP_EOL . PHP_EOL;
-	if (version_compare(PHP_VERSION, '5.3.0') < 0) { echo '* You\'re still running PHP ' . PHP_VERSION . '. The PHP 5.2 family is no longer supported' . PHP_EOL . '  by the PHP team, and future versions of the AWS SDK for PHP will *require*' . PHP_EOL . '  PHP 5.3 or newer.' . PHP_EOL . PHP_EOL; }
-	if ($openssl_ok) { echo '* The OpenSSL extension is installed. This will allow you to use CloudFront' . PHP_EOL . '  Private URLs and decrypt Windows instance passwords.' . PHP_EOL . PHP_EOL; }
-	if ($zlib_ok) {    echo '* The Zlib extension is installed. The SDK will request gzipped data' . PHP_EOL . '  whenever possible.' . PHP_EOL . PHP_EOL; }
-	if (!$int64_ok) {  echo '* You\'re running on a 32-bit system. This means that PHP does not correctly' . PHP_EOL . '  handle files larger than 2GB (this is a well-known PHP issue).' . PHP_EOL . PHP_EOL; }
-	if (!$int64_ok && is_windows()) {  echo '* Note that PHP on Microsoft(R) Windows(R) does not support 64-bit integers' . PHP_EOL . '  at all, even if both the hardware and PHP are 64-bit. http://j.mp/php64win' . PHP_EOL . PHP_EOL; }
+	if (version_compare(PHP_VERSION, '5.3.0') < 0) { echo '* You\'re still running PHP ' . PHP_VERSION . '. The PHP 5.2 family is no longer supported' . PHP_EOL . '	by the PHP team, and future versions of the AWS SDK for PHP will *require*' . PHP_EOL . '	PHP 5.3 or newer.' . PHP_EOL . PHP_EOL; }
+	if ($openssl_ok) { echo '* The OpenSSL extension is installed. This will allow you to use CloudFront' . PHP_EOL . '	Private URLs and decrypt Windows instance passwords.' . PHP_EOL . PHP_EOL; }
+	if ($zlib_ok) {		echo '* The Zlib extension is installed. The SDK will request gzipped data' . PHP_EOL . '	whenever possible.' . PHP_EOL . PHP_EOL; }
+	if (!$int64_ok) {	echo '* You\'re running on a 32-bit system. This means that PHP does not correctly' . PHP_EOL . '	handle files larger than 2GB (this is a well-known PHP issue).' . PHP_EOL . PHP_EOL; }
+	if (!$int64_ok && is_windows()) {	echo '* Note that PHP on Microsoft(R) Windows(R) does not support 64-bit integers' . PHP_EOL . '	at all, even if both the hardware and PHP are 64-bit. http://j.mp/php64win' . PHP_EOL . PHP_EOL; }
 
-	if ($ini_open_basedir || $ini_safe_mode) { echo '* You have open_basedir or safe_mode enabled in your php.ini file. Sometimes' . PHP_EOL . '  PHP behaves strangely when these settings are enabled. Disable them if you can.' . PHP_EOL . PHP_EOL; }
-	if (!$ini_zend_enable_gc) { echo '* The PHP garbage collector (available in PHP 5.3+) is not enabled in your' . PHP_EOL . '  php.ini file. Enabling zend.enable_gc will provide better memory management' . PHP_EOL . '  in the PHP core.' . PHP_EOL . PHP_EOL; }
+	if ($ini_open_basedir || $ini_safe_mode) { echo '* You have open_basedir or safe_mode enabled in your php.ini file. Sometimes' . PHP_EOL . '	PHP behaves strangely when these settings are enabled. Disable them if you can.' . PHP_EOL . PHP_EOL; }
+	if (!$ini_zend_enable_gc) { echo '* The PHP garbage collector (available in PHP 5.3+) is not enabled in your' . PHP_EOL . '	php.ini file. Enabling zend.enable_gc will provide better memory management' . PHP_EOL . '	in the PHP core.' . PHP_EOL . PHP_EOL; }
 
 	$storage_types = array();
 	if ($file_ok) { $storage_types[] = 'The file system'; }
@@ -111,21 +111,21 @@ if ($compatiblity >= REQUIREMENTS_MIN_MET)
 	elseif ($sqlite_ok && $sqlite2_ok) { $storage_types[] = 'SQLite 2'; }
 	if ($memcached_ok) { $storage_types[] = 'Memcached'; }
 	elseif ($memcache_ok) { $storage_types[] = 'Memcache'; }
-	echo '* Storage types available for response caching:' . PHP_EOL . '  ' . implode(', ', $storage_types) . PHP_EOL . PHP_EOL;
+	echo '* Storage types available for response caching:' . PHP_EOL . '	' . implode(', ', $storage_types) . PHP_EOL . PHP_EOL;
 
-	if (!$openssl_ok) { echo '* You\'re missing the OpenSSL extension, which means that you won\'t be able' . PHP_EOL . '  to take advantage of CloudFront Private URLs or Windows password decryption.' . PHP_EOL . PHP_EOL; }
-	if (!$zlib_ok) {    echo '* You\'re missing the Zlib extension, which means that the SDK will be unable' . PHP_EOL . '  to request gzipped data from Amazon and you won\'t be able to take advantage' . PHP_EOL . '  of compression with the response caching feature.' . PHP_EOL . PHP_EOL; }
+	if (!$openssl_ok) { echo '* You\'re missing the OpenSSL extension, which means that you won\'t be able' . PHP_EOL . '	to take advantage of CloudFront Private URLs or Windows password decryption.' . PHP_EOL . PHP_EOL; }
+	if (!$zlib_ok) {		echo '* You\'re missing the Zlib extension, which means that the SDK will be unable' . PHP_EOL . '	to request gzipped data from Amazon and you won\'t be able to take advantage' . PHP_EOL . '	of compression with the response caching feature.' . PHP_EOL . PHP_EOL; }
 }
 else
 {
-	if (!$php_ok) {       echo '* ' . failure('PHP:') . ' You are running an unsupported version of PHP.' . PHP_EOL . PHP_EOL; }
-	if (!$curl_ok) {      echo '* ' . failure('cURL:') . ' The cURL extension is not available. Without cURL, the SDK cannot' . PHP_EOL . '  connect to -- or authenticate with -- Amazon\'s services.' . PHP_EOL . PHP_EOL; }
-	if (!$simplexml_ok) { echo '* ' . failure('SimpleXML:') . ': The SimpleXML extension is not available. Without SimpleXML,' . PHP_EOL . '  the SDK cannot parse the XML responses from Amazon\'s services.' . PHP_EOL . PHP_EOL; }
-	if (!$dom_ok) {       echo '* ' . failure('DOM:') . ': The DOM extension is not available. Without DOM, the SDK' . PHP_EOL . '  Without DOM, the SDK cannot transliterate JSON responses from Amazon\'s' . PHP_EOL . '  services into the common SimpleXML-based pattern used throughout the SDK.' . PHP_EOL . PHP_EOL; }
-	if (!$spl_ok) {       echo '* ' . failure('SPL:') . ' Standard PHP Library support is not available. Without SPL support,' . PHP_EOL . '  the SDK cannot autoload the required PHP classes.' . PHP_EOL . PHP_EOL; }
-	if (!$json_ok) {      echo '* ' . failure('JSON:') . ' JSON support is not available. AWS leverages JSON heavily in many' . PHP_EOL . '  of its services.' . PHP_EOL . PHP_EOL; }
-	if (!$pcre_ok) {      echo '* ' . failure('PCRE:') . ' Your PHP installation doesn\'t support Perl-Compatible Regular' . PHP_EOL . '  Expressions (PCRE). Without PCRE, the SDK cannot do any filtering via' . PHP_EOL . '  regular expressions.' . PHP_EOL . PHP_EOL; }
-	if (!$file_ok) {      echo '* ' . failure('File System Read/Write:') . ' The file_get_contents() and/or file_put_contents()' . PHP_EOL . '  functions have been disabled. Without them, the SDK cannot read from,' . PHP_EOL . '  or write to, the file system.' . PHP_EOL . PHP_EOL; }
+	if (!$php_ok) {			 echo '* ' . failure('PHP:') . ' You are running an unsupported version of PHP.' . PHP_EOL . PHP_EOL; }
+	if (!$curl_ok) {			echo '* ' . failure('cURL:') . ' The cURL extension is not available. Without cURL, the SDK cannot' . PHP_EOL . '	connect to -- or authenticate with -- Amazon\'s services.' . PHP_EOL . PHP_EOL; }
+	if (!$simplexml_ok) { echo '* ' . failure('SimpleXML:') . ': The SimpleXML extension is not available. Without SimpleXML,' . PHP_EOL . '	the SDK cannot parse the XML responses from Amazon\'s services.' . PHP_EOL . PHP_EOL; }
+	if (!$dom_ok) {			 echo '* ' . failure('DOM:') . ': The DOM extension is not available. Without DOM, the SDK' . PHP_EOL . '	Without DOM, the SDK cannot transliterate JSON responses from Amazon\'s' . PHP_EOL . '	services into the common SimpleXML-based pattern used throughout the SDK.' . PHP_EOL . PHP_EOL; }
+	if (!$spl_ok) {			 echo '* ' . failure('SPL:') . ' Standard PHP Library support is not available. Without SPL support,' . PHP_EOL . '	the SDK cannot autoload the required PHP classes.' . PHP_EOL . PHP_EOL; }
+	if (!$json_ok) {			echo '* ' . failure('JSON:') . ' JSON support is not available. AWS leverages JSON heavily in many' . PHP_EOL . '	of its services.' . PHP_EOL . PHP_EOL; }
+	if (!$pcre_ok) {			echo '* ' . failure('PCRE:') . ' Your PHP installation doesn\'t support Perl-Compatible Regular' . PHP_EOL . '	Expressions (PCRE). Without PCRE, the SDK cannot do any filtering via' . PHP_EOL . '	regular expressions.' . PHP_EOL . PHP_EOL; }
+	if (!$file_ok) {			echo '* ' . failure('File System Read/Write:') . ' The file_get_contents() and/or file_put_contents()' . PHP_EOL . '	functions have been disabled. Without them, the SDK cannot read from,' . PHP_EOL . '	or write to, the file system.' . PHP_EOL . PHP_EOL; }
 }
 
 echo '----------------------------------------' . PHP_EOL;
@@ -142,16 +142,16 @@ if ($compatiblity === REQUIREMENTS_ALL_MET)
 	echo PHP_EOL;
 
 	echo "CFCredentials::set(array(" . PHP_EOL;
-	echo "    '@default' => array(" . PHP_EOL;
-	echo "        'key' => 'aws-key'," . PHP_EOL;
-	echo "        'secret' => 'aws-secret'," . PHP_EOL;
-	echo "        'default_cache_config' => ";
+	echo "		'@default' => array(" . PHP_EOL;
+	echo "				'key' => 'aws-key'," . PHP_EOL;
+	echo "				'secret' => 'aws-secret'," . PHP_EOL;
+	echo "				'default_cache_config' => ";
 	if ($apc_ok) echo success('\'apc\'');
 	elseif ($xcache_ok) echo success('\'xcache\'');
 	elseif ($file_ok) echo success('\'/path/to/cache/folder\'');
 	echo "," . PHP_EOL;
-	echo "        'certificate_authority' => " . success($ssl_result ? 'true' : 'false') . PHP_EOL;
-	echo "    )" . PHP_EOL;
+	echo "				'certificate_authority' => " . success($ssl_result ? 'true' : 'false') . PHP_EOL;
+	echo "		)" . PHP_EOL;
 	echo "));" . PHP_EOL;
 }
 elseif ($compatiblity === REQUIREMENTS_MIN_MET)
@@ -165,16 +165,16 @@ elseif ($compatiblity === REQUIREMENTS_MIN_MET)
 	echo PHP_EOL;
 
 	echo "CFCredentials::set(array(" . PHP_EOL;
-	echo "    '@default' => array(" . PHP_EOL;
-	echo "        'key' => 'aws-key'," . PHP_EOL;
-	echo "        'secret' => 'aws-secret'," . PHP_EOL;
-	echo "        'default_cache_config' => ";
+	echo "		'@default' => array(" . PHP_EOL;
+	echo "				'key' => 'aws-key'," . PHP_EOL;
+	echo "				'secret' => 'aws-secret'," . PHP_EOL;
+	echo "				'default_cache_config' => ";
 	if ($apc_ok) echo success('\'apc\'');
 	elseif ($xcache_ok) echo success('\'xcache\'');
 	elseif ($file_ok) echo success('\'/path/to/cache/folder\'');
 	echo "," . PHP_EOL;
-	echo "        'certificate_authority' => " . ($ssl_result ? 'false' : 'true') . PHP_EOL;
-	echo "    )" . PHP_EOL;
+	echo "				'certificate_authority' => " . ($ssl_result ? 'false' : 'true') . PHP_EOL;
+	echo "		)" . PHP_EOL;
 	echo "));" . PHP_EOL;
 }
 else

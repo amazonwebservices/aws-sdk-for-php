@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -17,17 +17,17 @@
 /**
  * The Amazon Simple Workflow Service API Reference is intended for programmers who need detailed
  * information about the Amazon SWF actions and data types.
- *  
+ *
  * For an broader overview of the Amazon SWF programming model, please go to the <a href=
  * "http://docs.amazonwebservices.com/amazonswf/latest/developerguide/">Amazon SWF Developer
  * Guide</a>.
- *  
+ *
  * This section provides an overview of Amazon SWF actions.
- *  
+ *
  * <strong>Action Categories</strong>
- *  
+ *
  * The Amazon SWF actions can be grouped into the following major categories.
- * 
+ *
  * <ul>
  * 	<li>Actions related to Activities</li>
  * 	<li>Actions related to Deciders</li>
@@ -35,11 +35,11 @@
  * 	<li>Actions related to Administration</li>
  * 	<li>Actions related to Visibility</li>
  * </ul>
- * 
+ *
  * <strong>Actions related to Activities</strong>
- *  
+ *
  * The following are actions that are performed by activity workers:
- * 
+ *
  * <ul>
  * 	<li><a href="API_PollForActivityTask.html" title=
  * 		"PollForActivityTask">PollForActivityTask</a></li>
@@ -52,7 +52,7 @@
  * 	<li><a href="API_RecordActivityTaskHeartbeat.html" title=
  * 		"RecordActivityTaskHeartbeat">RecordActivityTaskHeartbeat</a></li>
  * </ul>
- * 
+ *
  * Activity workers use the <a href="API_PollForActivityTask.html" title=
  * "PollForActivityTask">PollForActivityTask</a> to get new activity tasks. After a worker
  * receives an activity task from Amazon SWF, it performs the task and responds using <a href=
@@ -60,29 +60,29 @@
  * "RespondActivityTaskCompleted">RespondActivityTaskCompleted</a> if successful or <a href=
  * "API_RespondActivityTaskFailed.html" title=
  * "RespondActivityTaskFailed">RespondActivityTaskFailed</a> if unsuccessful.
- *  
+ *
  * <strong>Actions related to Deciders</strong>
- *  
+ *
  * The following are actions that are performed by deciders:
- * 
+ *
  * <ul>
  * 	<li><a href="API_PollForDecisionTask.html" title=
  * 		"PollForDecisionTask">PollForDecisionTask</a></li>
  * 	<li><a href="API_RespondDecisionTaskCompleted.html" title=
  * 		"RespondDecisionTaskCompleted">RespondDecisionTaskCompleted</a></li>
  * </ul>
- * 
+ *
  * Deciders use <a href="API_PollForDecisionTask.html" title=
  * "PollForDecisionTask">PollForDecisionTask</a> to get decision tasks. After a decider receives a
  * decision task from Amazon SWF, it examines its workflow execution history and decides what to
  * do next. It calls <a href="API_RespondDecisionTaskCompleted.html" title=
  * "RespondDecisionTaskCompleted">RespondDecisionTaskCompleted</a> to complete the decision task
  * and provide zero or more next decisions.
- *  
+ *
  * <strong>Actions related to Workflow Executions</strong>
- *  
+ *
  * The following actions operate on a workflow execution:
- * 
+ *
  * <ul>
  * 	<li><a href="API_RequestCancelWorkflowExecution.html" title=
  * 		"RequestCancelWorkflowExecution">RequestCancelWorkflowExecution</a></li>
@@ -93,69 +93,69 @@
  * 	<li><a href="API_TerminateWorkflowExecution.html" title=
  * 		"TerminateWorkflowExecution">TerminateWorkflowExecution</a></li>
  * </ul>
- * 
+ *
  * <strong>Actions related to Administration</strong>
- *  
+ *
  * Although you can perform administrative tasks from the Amazon SWF console, you can use the
  * actions in this section to automate functions or build your own administrative tools.
- *  
+ *
  * <strong>Activity Management</strong>
- * 
+ *
  * <ul>
  * 	<li><a href="API_RegisterActivityType.html" title=
  * 		"RegisterActivityType">RegisterActivityType</a></li>
  * 	<li><a href="API_DeprecateActivityType.html" title=
  * 		"DeprecateActivityType">DeprecateActivityType</a></li>
  * </ul>
- * 
+ *
  * <strong>Workflow Management</strong>
- * 
+ *
  * <ul>
  * 	<li><a href="API_RegisterWorkflowType.html" title=
  * 		"RegisterWorkflowType">RegisterWorkflowType</a></li>
  * 	<li><a href="API_DeprecateWorkflowType.html" title=
  * 		"DeprecateWorkflowType">DeprecateWorkflowType</a></li>
  * </ul>
- * 
+ *
  * <strong>Domain Management</strong>
- * 
+ *
  * <ul>
  * 	<li><a href="API_RegisterDomain.html" title="RegisterDomain">RegisterDomain</a></li>
  * 	<li><a href="API_DeprecateDomain.html" title="DeprecateDomain">DeprecateDomain</a></li>
  * </ul>
- * 
+ *
  * <strong>Workflow Execution Management</strong>
- * 
+ *
  * <ul>
  * 	<li><a href="API_RequestCancelWorkflowExecution.html" title=
  * 		"RequestCancelWorkflowExecution">RequestCancelWorkflowExecution</a></li>
  * 	<li><a href="API_TerminateWorkflowExecution.html" title=
  * 		"TerminateWorkflowExecution">TerminateWorkflowExecution</a></li>
  * </ul>
- * 
+ *
  * <strong>Visibility Actions</strong>
- *  
+ *
  * Although you can perform visibility actions from the Amazon SWF console, you can use the
  * actions in this section to build your own console or administrative tools.
- *  
+ *
  * <strong>Activity Visibility</strong>
- * 
+ *
  * <ul>
  * 	<li><a href="API_ListActivityTypes.html" title="ListActivities">ListActivityTypes</a></li>
  * 	<li><a href="API_DescribeActivityType.html" title=
  * 		"DescribeActivityType">DescribeActivity</a></li>
  * </ul>
- * 
+ *
  * <strong>Workflow Visibility</strong>
- * 
+ *
  * <ul>
  * 	<li><a href="API_ListWorkflowTypes.html" title="ListWorkflowTypes">ListWorkflowTypes</a></li>
  * 	<li><a href="API_DescribeWorkflowType.html" title=
  * 		"DescribeWorkflowType">DescribeWorkflowType</a></li>
  * </ul>
- * 
+ *
  * <strong>Workflow Execution Visibility</strong>
- * 
+ *
  * <ul>
  * 	<li><a href="API_DescribeWorkflowExecution.html" title=
  * 		"DescribeWorkflowExecution">DescribeWorkflowExecution</a></li>
@@ -170,16 +170,16 @@
  * 	<li><a href="API_GetWorkflowExecutionHistory.html" title=
  * 		"GetWorkflowExecutionHistory">GetWorkflowExecutionHistory</a></li>
  * </ul>
- * 
+ *
  * <strong>Domain Visibility</strong>
- * 
+ *
  * <ul>
  * 	<li><a href="API_ListDomains.html" title="ListDomains">ListDomains</a></li>
  * 	<li><a href="API_DescribeDomain.html" title="DescribeDomain">DescribeDomain</a></li>
  * </ul>
- * 
+ *
  * <strong>Task List Visibility</strong>
- * 
+ *
  * <ul>
  * 	<li><a href="API_CountPendingActivityTasks.html" title=
  * 		"CountPendingActivityTasks">CountPendingActivityTasks</a></li>
@@ -297,7 +297,7 @@ class AmazonSWF extends CFRuntime
 	/**
 	 * Returns the number of closed workflow executions within the given domain that meet the
 	 * specified filtering criteria.
-	 * 
+	 *
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
@@ -333,14 +333,14 @@ class AmazonSWF extends CFRuntime
 	public function count_closed_workflow_executions($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('CountClosedWorkflowExecutions', $opt);
 	}
 
 	/**
 	 * Returns the number of open workflow executions within the given domain that meet the specified
 	 * filtering criteria.
-	 * 
+	 *
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
@@ -369,7 +369,7 @@ class AmazonSWF extends CFRuntime
 	public function count_open_workflow_executions($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('CountOpenWorkflowExecutions', $opt);
 	}
 
@@ -390,7 +390,7 @@ class AmazonSWF extends CFRuntime
 	public function count_pending_activity_tasks($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('CountPendingActivityTasks', $opt);
 	}
 
@@ -411,7 +411,7 @@ class AmazonSWF extends CFRuntime
 	public function count_pending_decision_tasks($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('CountPendingDecisionTasks', $opt);
 	}
 
@@ -419,7 +419,7 @@ class AmazonSWF extends CFRuntime
 	 * Deprecates the specified <em>activity type</em>. After an activity type has been deprecated,
 	 * you cannot create new tasks of that activity type. Tasks of this type that were scheduled
 	 * before the type was deprecated will continue to run.
-	 * 
+	 *
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
@@ -438,7 +438,7 @@ class AmazonSWF extends CFRuntime
 	public function deprecate_activity_type($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DeprecateActivityType', $opt);
 	}
 
@@ -447,7 +447,7 @@ class AmazonSWF extends CFRuntime
 	 * new workflow executions or register new types. However, you can still use visibility actions on
 	 * this domain. Deprecating a domain also deprecates all activity and workflow types registered in
 	 * the domain. Executions that were started before the domain was deprecated will continue to run.
-	 * 
+	 *
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
@@ -462,7 +462,7 @@ class AmazonSWF extends CFRuntime
 	public function deprecate_domain($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DeprecateDomain', $opt);
 	}
 
@@ -471,7 +471,7 @@ class AmazonSWF extends CFRuntime
 	 * cannot create new executions of that type. Executions that were started before the type was
 	 * deprecated will continue to run. A deprecated workflow type may still be used when calling
 	 * visibility actions.
-	 * 
+	 *
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
@@ -490,7 +490,7 @@ class AmazonSWF extends CFRuntime
 	public function deprecate_workflow_type($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DeprecateWorkflowType', $opt);
 	}
 
@@ -511,7 +511,7 @@ class AmazonSWF extends CFRuntime
 	public function describe_activity_type($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DescribeActivityType', $opt);
 	}
 
@@ -527,14 +527,14 @@ class AmazonSWF extends CFRuntime
 	public function describe_domain($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DescribeDomain', $opt);
 	}
 
 	/**
 	 * Returns information about the specified workflow execution including its type and some
 	 * statistics.
-	 * 
+	 *
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
@@ -553,7 +553,7 @@ class AmazonSWF extends CFRuntime
 	public function describe_workflow_execution($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DescribeWorkflowExecution', $opt);
 	}
 
@@ -575,7 +575,7 @@ class AmazonSWF extends CFRuntime
 	public function describe_workflow_type($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DescribeWorkflowType', $opt);
 	}
 
@@ -583,7 +583,7 @@ class AmazonSWF extends CFRuntime
 	 * Returns the history of the specified workflow execution. The results may be split into multiple
 	 * pages. To retrieve subsequent pages, make the call again using the <code>nextPageToken</code>
 	 * returned by the initial call.
-	 * 
+	 *
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
@@ -605,7 +605,7 @@ class AmazonSWF extends CFRuntime
 	public function get_workflow_execution_history($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('GetWorkflowExecutionHistory', $opt);
 	}
 
@@ -630,7 +630,7 @@ class AmazonSWF extends CFRuntime
 	public function list_activity_types($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('ListActivityTypes', $opt);
 	}
 
@@ -638,7 +638,7 @@ class AmazonSWF extends CFRuntime
 	 * Returns a list of closed workflow executions in the specified domain that meet the filtering
 	 * criteria. The results may be split into multiple pages. To retrieve subsequent pages, make the
 	 * call again using the nextPageToken returned by the initial call.
-	 * 
+	 *
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
@@ -677,7 +677,7 @@ class AmazonSWF extends CFRuntime
 	public function list_closed_workflow_executions($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('ListClosedWorkflowExecutions', $opt);
 	}
 
@@ -685,7 +685,7 @@ class AmazonSWF extends CFRuntime
 	 * Returns the list of domains registered in the account. The results may be split into multiple
 	 * pages. To retrieve subsequent pages, make the call again using the nextPageToken returned by
 	 * the initial call.
-	 * 
+	 *
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
@@ -703,7 +703,7 @@ class AmazonSWF extends CFRuntime
 	public function list_domains($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('ListDomains', $opt);
 	}
 
@@ -711,7 +711,7 @@ class AmazonSWF extends CFRuntime
 	 * Returns a list of open workflow executions in the specified domain that meet the filtering
 	 * criteria. The results may be split into multiple pages. To retrieve subsequent pages, make the
 	 * call again using the nextPageToken returned by the initial call.
-	 * 
+	 *
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
@@ -743,7 +743,7 @@ class AmazonSWF extends CFRuntime
 	public function list_open_workflow_executions($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('ListOpenWorkflowExecutions', $opt);
 	}
 
@@ -765,7 +765,7 @@ class AmazonSWF extends CFRuntime
 	public function list_workflow_types($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('ListWorkflowTypes', $opt);
 	}
 
@@ -777,7 +777,7 @@ class AmazonSWF extends CFRuntime
 	 * poll will return an empty result. An empty result, in this context, means that an ActivityTask
 	 * is returned, but that the value of taskToken is an empty string. If a task is returned, the
 	 * worker should use its type to identify and process it correctly.
-	 * 
+	 *
 	 * <p class="important">
 	 * Workers should set their client side socket timeout to at least 70 seconds (10 seconds higher
 	 * than the maximum time service may hold the poll request).
@@ -796,7 +796,7 @@ class AmazonSWF extends CFRuntime
 	public function poll_for_activity_task($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('PollForActivityTask', $opt);
 	}
 
@@ -806,13 +806,13 @@ class AmazonSWF extends CFRuntime
 	 * using the specified task list. The task includes a paginated view of the history of the
 	 * workflow execution. The decider should use the workflow type and the history to determine how
 	 * to properly handle the task.
-	 *  
+	 *
 	 * This action initiates a long poll, where the service holds the HTTP connection open and
 	 * responds as soon a task becomes available. If no decision task is available in the specified
 	 * task list before the timeout of 60 seconds expires, an empty result is returned. An empty
 	 * result, in this context, means that a DecisionTask is returned, but that the value of taskToken
 	 * is an empty string.
-	 * 
+	 *
 	 * <p class="important">
 	 * Deciders should set their client side socket timeout to at least 70 seconds (10 seconds higher
 	 * than the timeout).
@@ -842,7 +842,7 @@ class AmazonSWF extends CFRuntime
 	public function poll_for_decision_task($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('PollForDecisionTask', $opt);
 	}
 
@@ -854,15 +854,15 @@ class AmazonSWF extends CFRuntime
 	 * check if cancellation is being requested for the activity task. If a cancellation is being
 	 * attempted for the specified task, then the boolean <code>cancelRequested</code> flag returned
 	 * by the service is set to <code>true</code>.
-	 *  
+	 *
 	 * This action resets the <code>taskHeartbeatTimeout</code> clock. The
 	 * <code>taskHeartbeatTimeout</code> is specified in <code>RegisterActivityType</code>.
-	 *  
+	 *
 	 * This action does not in itself create an event in the workflow execution history. However, if
 	 * the task times out, the workflow execution history will contain a
 	 * <code>ActivityTaskTimedOut</code> event that contains the information from the last heartbeat
 	 * generated by the activity worker.
-	 * 
+	 *
 	 * <p class="note">
 	 * The <code>taskStartToCloseTimeout</code> of an activity type is the maximum duration of an
 	 * activity task, regardless of the number of <code>RecordActivityTaskHeartbeat</code> requests
@@ -889,14 +889,14 @@ class AmazonSWF extends CFRuntime
 	public function record_activity_task_heartbeat($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('RecordActivityTaskHeartbeat', $opt);
 	}
 
 	/**
 	 * Registers a new <em>activity type</em> along with its configuration settings in the specified
 	 * domain.
-	 * 
+	 *
 	 * <p class="important">
 	 * A <code>TypeAlreadyExists</code> fault is returned if the type already exists in the domain.
 	 * You cannot change any configuration settings of the type after its registration, and it must be
@@ -922,7 +922,7 @@ class AmazonSWF extends CFRuntime
 	public function register_activity_type($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('RegisterActivityType', $opt);
 	}
 
@@ -940,13 +940,13 @@ class AmazonSWF extends CFRuntime
 	public function register_domain($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('RegisterDomain', $opt);
 	}
 
 	/**
 	 * Registers a new <em>workflow type</em> and its configuration settings in the specified domain.
-	 * 
+	 *
 	 * <p class="important">
 	 * If the type already exists, then a <code>TypeAlreadyExists</code> fault is returned. You cannot
 	 * change the configuration settings of a workflow type once it is registered and it must be
@@ -971,7 +971,7 @@ class AmazonSWF extends CFRuntime
 	public function register_workflow_type($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('RegisterWorkflowType', $opt);
 	}
 
@@ -980,7 +980,7 @@ class AmazonSWF extends CFRuntime
 	 * execution identified by the given domain, workflowId, and runId. This logically requests the
 	 * cancellation of the workflow execution as a whole. It is up to the decider to take appropriate
 	 * actions when it receives an execution history with this event.
-	 * 
+	 *
 	 * <p class="note">
 	 * If the runId is not specified, the <code>WorkflowExecutionCancelRequested</code> event is
 	 * recorded in the history of the current open workflow execution with the specified workflowId in
@@ -1002,7 +1002,7 @@ class AmazonSWF extends CFRuntime
 	public function request_cancel_workflow_execution($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('RequestCancelWorkflowExecution', $opt);
 	}
 
@@ -1010,10 +1010,10 @@ class AmazonSWF extends CFRuntime
 	 * Used by workers to tell the service that the <code>ActivityTask</code> identified by the
 	 * <code>taskToken</code> was successfully canceled. Additional <code>details</code> can be
 	 * optionally provided using the <code>details</code> argument.
-	 *  
+	 *
 	 * These <code>details</code> (if provided) appear in the <code>ActivityTaskCanceled</code> event
 	 * added to the workflow history.
-	 * 
+	 *
 	 * <p class="important">
 	 * Only use this operation if the <code>canceled</code> flag of a
 	 * <code>RecordActivityTaskHeartbeat</code> request returns <code>true</code> and if the activity
@@ -1030,17 +1030,17 @@ class AmazonSWF extends CFRuntime
 	public function respond_activity_task_canceled($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('RespondActivityTaskCanceled', $opt);
 	}
 
 	/**
 	 * Used by workers to tell the service that the <code>ActivityTask</code> identified by the
 	 * <code>taskToken</code> completed successfully with a <code>result</code> (if provided).
-	 *  
+	 *
 	 * The <code>result</code> appears in the <code>ActivityTaskCompleted</code> event in the workflow
 	 * history.
-	 * 
+	 *
 	 * <p class="important">
 	 * If the requested task does not complete successfully, use
 	 * <code>RespondActivityTaskFailed</code> instead. If the worker finds that the task is canceled
@@ -1058,14 +1058,14 @@ class AmazonSWF extends CFRuntime
 	public function respond_activity_task_completed($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('RespondActivityTaskCompleted', $opt);
 	}
 
 	/**
 	 * Used by workers to tell the service that the <code>ActivityTask</code> identified by the
 	 * <code>taskToken</code> has failed with <code>reason</code> (if specified).
-	 *  
+	 *
 	 * The <code>reason</code> and <code>details</code> appear in the <code>ActivityTaskFailed</code>
 	 * event added to the workflow history.
 	 *
@@ -1080,7 +1080,7 @@ class AmazonSWF extends CFRuntime
 	public function respond_activity_task_failed($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('RespondActivityTaskFailed', $opt);
 	}
 
@@ -1088,7 +1088,7 @@ class AmazonSWF extends CFRuntime
 	 * Used by deciders to tell the service that the <code>DecisionTask</code> identified by the
 	 * <code>taskToken</code> has successfully completed. The <code>decisions</code> argument
 	 * specifies the list of decisions made while processing the task.
-	 *  
+	 *
 	 * A <code>DecisionTaskCompleted</code> event is added to the workflow history. The
 	 * <code>executionContext</code> specified is attached to the event in the workflow execution
 	 * history.
@@ -1188,7 +1188,7 @@ class AmazonSWF extends CFRuntime
 	public function respond_decision_task_completed($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		// List (non-map)
 		if (isset($opt['decisions']))
 		{
@@ -1203,7 +1203,7 @@ class AmazonSWF extends CFRuntime
 	 * creates a decision task for the workflow execution identified by the given domain, workflowId
 	 * and runId. The event is recorded with the specified user defined signalName and input (if
 	 * provided).
-	 * 
+	 *
 	 * <p class="note">
 	 * If a runId is not specified, then the <code>WorkflowExecutionSignaled</code> event is recorded
 	 * in the history of the current open workflow with the matching workflowId in the domain.
@@ -1226,14 +1226,14 @@ class AmazonSWF extends CFRuntime
 	public function signal_workflow_execution($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('SignalWorkflowExecution', $opt);
 	}
 
 	/**
 	 * Starts an execution of the workflow type in the specified domain using the provided
 	 * <code>workflowId</code> and input data.
-	 *  
+	 *
 	 * This action returns the newly started workflow execution.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -1258,7 +1258,7 @@ class AmazonSWF extends CFRuntime
 	public function start_workflow_execution($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		// List (non-map)
 		if (isset($opt['tagList']))
 		{
@@ -1273,7 +1273,7 @@ class AmazonSWF extends CFRuntime
 	 * execution identified by the given domain, runId, and workflowId. The child policy, registered
 	 * with the workflow type or specified when starting this execution, is applied to any open child
 	 * workflow executions of this workflow execution.
-	 * 
+	 *
 	 * <p class="important">
 	 * If the identified workflow execution was in progress, it is terminated immediately.
 	 * </p>
@@ -1301,7 +1301,7 @@ class AmazonSWF extends CFRuntime
 	public function terminate_workflow_execution($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('TerminateWorkflowExecution', $opt);
 	}
 }

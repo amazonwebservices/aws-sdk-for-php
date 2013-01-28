@@ -9,12 +9,12 @@ can get started in minutes with a single, downloadable package.
 The SDK features:
 
 * **AWS PHP Libraries:** Build PHP applications on top of APIs that take the complexity out of coding directly
-  against a web service interface. The toolkit provides APIs that hide much of the lower-level implementation.
+	against a web service interface. The toolkit provides APIs that hide much of the lower-level implementation.
 * **Code Samples:** Practical examples for how to use the toolkit to build applications.
 * **Documentation:** Complete SDK reference documentation with samples demonstrating how to use the SDK.
 * **PEAR package:** The ability to install the AWS SDK for PHP as a PEAR package.
 * **SDK Compatibility Test:** Includes both an HTML-based and a CLI-based SDK Compatibility Test that you can
-  run on your server to determine whether or not your PHP environment meets the minimum requirements.
+	run on your server to determine whether or not your PHP environment meets the minimum requirements.
 
 For more information about the AWS SDK for PHP, including a complete list of supported services, see
 [aws.amazon.com/sdkforphp](http://aws.amazon.com/sdkforphp).
@@ -49,21 +49,21 @@ You can get the latest version of the SDK via:
 The source tree for includes the following files and directories:
 
 * `_compatibility_test` -- Includes both an HTML-based and a CLI-based SDK Compatibility Test that you can
-  run on your server to determine whether or not your PHP environment meets the minimum requirements.
+	run on your server to determine whether or not your PHP environment meets the minimum requirements.
 * `_docs` -- Informational documents, the contents of which should be fairly self-explanatory.
 * `_samples` -- Code samples that you can run out of the box.
 * `extensions` -- Extra code that can be used to enhance usage of the SDK, but isn't a service class or a
-  third-party library.
+	third-party library.
 * `lib` -- Contains any third-party libraries that the SDK depends on. The licenses for these projects will
-  always be Apache 2.0-compatible.
+	always be Apache 2.0-compatible.
 * `services` -- Contains the service-specific classes that communicate with AWS. These classes are always
-  prefixed with `Amazon`.
+	prefixed with `Amazon`.
 * `utilities` -- Contains any utility-type methods that the SDK uses. Includes extensions to built-in PHP
-  classes, as well as new functionality that is entirely custom. These classes are always prefixed with `CF`.
+	classes, as well as new functionality that is entirely custom. These classes are always prefixed with `CF`.
 * `README` -- The document you're reading right now.
 * `config-sample.inc.php` -- A sample configuration file that should be filled out and renamed to `config.inc.php`.
 * `sdk.class.php` -- The SDK loader that you would include in your projects. Contains the base functionality
-  that the rest of the SDK depends on.
+	that the rest of the SDK depends on.
 
 
 ## Minimum Requirements in a nutshell
@@ -94,18 +94,18 @@ and [Linux](http://help.github.com/linux-git-installation/). If you're unfamilia
 of resources on the net that will help you learn more:
 
 * [Git Immersion](http://gitimmersion.com) is a guided tour that walks through the fundamentals of Git, inspired
-  by the premise that to know a thing is to do it.
+	by the premise that to know a thing is to do it.
 * The [PeepCode screencast on Git](https://peepcode.com/products/git) ($12) will teach you how to install and
-  use Git. You'll learn how to create a repository, use branches, and work with remote repositories.
+	use Git. You'll learn how to create a repository, use branches, and work with remote repositories.
 * [Git Reference](http://gitref.org) is meant to be a quick reference for learning and remembering the most
-  important and commonly used Git commands.
+	important and commonly used Git commands.
 * [Git Ready](http://gitready.com) provides a collection of Git tips and tricks.
 * If you want to dig even further, I've [bookmarked other Git references](http://pinboard.in/u:skyzyx/t:git).
 
 If you're comfortable working with Git and/or GitHub, you can pull down the source code as follows:
 
-    git clone git://github.com/amazonwebservices/aws-sdk-for-php.git AWSSDKforPHP
-    cd ./AWSSDKforPHP
+		git clone git://github.com/amazonwebservices/aws-sdk-for-php.git AWSSDKforPHP
+		cd ./AWSSDKforPHP
 
 ### Via PEAR
 
@@ -122,8 +122,8 @@ installed on.
 
 From the command-line, you can install the SDK with PEAR as follows:
 
-    pear channel-discover pear.amazonwebservices.com
-    pear install aws/sdk
+		pear channel-discover pear.amazonwebservices.com
+		pear install aws/sdk
 
 You may need to use `sudo` for the above commands. Once the SDK has been installed via PEAR, you can load it into
 your project with:
@@ -138,37 +138,37 @@ In order to use the AWS SDK for PHP via Composer, you must do the following:
 
 1. Add ``amazonwebservices/aws-sdk-for-php`` as a dependency in your project's ``composer.json`` file:
 
-        {
-            "require": {
-                "amazonwebservices/aws-sdk-for-php": "*"
-            }
-        }
+				{
+						"require": {
+								"amazonwebservices/aws-sdk-for-php": "*"
+						}
+				}
 
-    Consider tightening your dependencies to a known version when deploying mission critical applications (e.g. ``1.5.*``).
+		Consider tightening your dependencies to a known version when deploying mission critical applications (e.g. ``1.5.*``).
 
 2. Download and install Composer:
 
-    curl -s http://getcomposer.org/installer | php
+		curl -s http://getcomposer.org/installer | php
 
 3. Install your dependencies:
 
-    php composer.phar install
+		php composer.phar install
 
 4. Require Composer's autoloader
 
-    Composer also prepares an autoload file that's capable of autoloading all of the classes in any of the libraries that it downloads. To use it, just add the following line to your code's bootstrap process:
+		Composer also prepares an autoload file that's capable of autoloading all of the classes in any of the libraries that it downloads. To use it, just add the following line to your code's bootstrap process:
 
-    require 'vendor/autoload.php';
+		require 'vendor/autoload.php';
 
 You can find out more on how to install Composer, configure autoloading, and other best-practices for defining dependencies at [getcomposer.org](http://getcomposer.org).
 
 ## Configuration
 
 1. Copy the contents of [config-sample.inc.php](https://github.com/amazonwebservices/aws-sdk-for-php/raw/master/config-sample.inc.php)
-   and add your credentials as instructed in the file.
+	 and add your credentials as instructed in the file.
 2. Move your file to `~/.aws/sdk/config.inc.php`.
 3. Make sure that `getenv('HOME')` points to your user directory. If not you'll need to set
-   `putenv('HOME=<your-user-directory>')`.
+	 `putenv('HOME=<your-user-directory>')`.
 
 This is because PHP will attempt to load the file from your user directory (e.g., `~/.aws/sdk/config.inc.php`).
 If PHP doesn't happen to know where your user directory is, you'll need to tell PHP where it is with the `putenv()`

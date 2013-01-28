@@ -24,18 +24,18 @@
 	* You can define one or more credential sets.
 
 	* Credential sets can be named anything that PHP allows for an associative array key;
-	  "production", "staging", etc., are just sample values. Feel free to rename them.
+		"production", "staging", etc., are just sample values. Feel free to rename them.
 
 	* A credential set only has four required entries: key, secret, default_cache_config and
-	  certificate_authority. Aside from these, you can add any additional bits of information
-	  you'd like to keep easily accessible (e.g., multi-factor authentication device key, your
-	  AWS Account ID, your canonical identifiers).
+		certificate_authority. Aside from these, you can add any additional bits of information
+		you'd like to keep easily accessible (e.g., multi-factor authentication device key, your
+		AWS Account ID, your canonical identifiers).
 
 	* Additional credential sets can inherit the properties of another credential set using the
-	  @inherit keyword.
+		@inherit keyword.
 
 	* If more than one credential set is provided, a default credential set must be specified
-	  using the @default keyword.
+		using the @default keyword.
 
 	* If you only have one credential set, you can set it to the @default keyword.
 

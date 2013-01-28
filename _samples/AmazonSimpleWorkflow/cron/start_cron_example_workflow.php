@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -26,39 +26,39 @@ register_workflow_type($swf, $domain, BasicWorkflowWorker::WORKFLOW_NAME, BasicW
 $activity_task_list = 'activityTaskList';
 
 $workflow_input = json_encode(array(
-    BasicWorkflowWorker::ACTIVITY_NAME_KEY => BasicActivityWorker::ACTIVITY_NAME,
-    BasicWorkflowWorker::ACTIVITY_VERSION_KEY => BasicActivityWorker::ACTIVITY_VERSION,
-    BasicWorkflowWorker::ACTIVITY_TASK_LIST_KEY => $activity_task_list,
-    BasicWorkflowWorker::ACTIVITY_INPUT_KEY => 'World',
-    BasicWorkflowWorker::TIMER_DURATION_KEY => '5'
+		BasicWorkflowWorker::ACTIVITY_NAME_KEY => BasicActivityWorker::ACTIVITY_NAME,
+		BasicWorkflowWorker::ACTIVITY_VERSION_KEY => BasicActivityWorker::ACTIVITY_VERSION,
+		BasicWorkflowWorker::ACTIVITY_TASK_LIST_KEY => $activity_task_list,
+		BasicWorkflowWorker::ACTIVITY_INPUT_KEY => 'World',
+		BasicWorkflowWorker::TIMER_DURATION_KEY => '5'
 ));
 
 $decider_task_list = 'deciderTaskList';
 
 $opts = array(
-    'domain' => $domain,
-    'workflowId' => 'myWorkflowId-' . time(),
-    'workflowType' => array(
-        'name' => BasicWorkflowWorker::WORKFLOW_NAME,
-        'version' => BasicWorkflowWorker::WORKFLOW_VERSION
-    ),
-    'input' => $workflow_input,
-    'childPolicy' => 'TERMINATE',
-    // This is what specifying a task list at scheduling time looks like.
-    // You can also register a type with a default task list and not specify one at scheduling time.
-    // The value provided at scheduling time always takes precedence.
-    'taskList' => array('name' => $decider_task_list),
-    // This is what specifying timeouts at scheduling time looks like.
-    // You can also register types with default timeouts and not specify them at scheduling time.
-    // The value provided at scheduling time always takes precedence.
-    'taskStartToCloseTimeout' => '10',
-    'executionStartToCloseTimeout' => '300'
+		'domain' => $domain,
+		'workflowId' => 'myWorkflowId-' . time(),
+		'workflowType' => array(
+				'name' => BasicWorkflowWorker::WORKFLOW_NAME,
+				'version' => BasicWorkflowWorker::WORKFLOW_VERSION
+		),
+		'input' => $workflow_input,
+		'childPolicy' => 'TERMINATE',
+		// This is what specifying a task list at scheduling time looks like.
+		// You can also register a type with a default task list and not specify one at scheduling time.
+		// The value provided at scheduling time always takes precedence.
+		'taskList' => array('name' => $decider_task_list),
+		// This is what specifying timeouts at scheduling time looks like.
+		// You can also register types with default timeouts and not specify them at scheduling time.
+		// The value provided at scheduling time always takes precedence.
+		'taskStartToCloseTimeout' => '10',
+		'executionStartToCloseTimeout' => '300'
 );
 
 $response = $swf->startWorkflowExecution($opts);
 
 if ($response->isOK()) {
-    echo 'Workflow started: ' . json_encode($opts) . ' - runId: ' . $response->body->runId . "\n";
+		echo 'Workflow started: ' . json_encode($opts) . ' - runId: ' . $response->body->runId . "\n";
 } else {
-    print_r($response->body);
+		print_r($response->body);
 }

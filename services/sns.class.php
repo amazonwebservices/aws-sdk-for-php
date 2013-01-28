@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -20,15 +20,15 @@
  * detailed information about Amazon SNS features and their associated API calls, go to the
  * 	<a href="http://docs.amazonwebservices.com/sns/latest/gsg/">Amazon SNS Getting Started
  * Guide</a>.
- *  
+ *
  * Amazon Simple Notification Service is a web service that enables you to build distributed
  * web-enabled applications. Applications can use Amazon SNS to easily push real-time notification
  * messages to interested subscribers over multiple delivery protocols. For more information about
  * this product go to <a href="http://aws.amazon.com/sns/">http://aws.amazon.com/sns</a>.
- *  
+ *
  * Use the following links to get started using the <em>Amazon Simple Notification Service API
  * Reference</em>:
- * 
+ *
  * <ul>
  * 	<li><a href="http://docs.amazonwebservices.com/sns/latest/api/API_Operations.html">Actions</a>:
  * 	An alphabetical list of all Amazon SNS actions.</li>
@@ -241,12 +241,12 @@ class AmazonSNS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['TopicArn'] = $topic_arn;
 		$opt['Label'] = $label;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'AWSAccountId' => (is_array($aws_account_id) ? $aws_account_id : array($aws_account_id))
 		), 'member'));
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'ActionName' => (is_array($action_name) ? $action_name : array($action_name))
@@ -274,7 +274,7 @@ class AmazonSNS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['TopicArn'] = $topic_arn;
 		$opt['Token'] = $token;
-		
+
 		return $this->authenticate('ConfirmSubscription', $opt);
 	}
 
@@ -293,7 +293,7 @@ class AmazonSNS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['Name'] = $name;
-		
+
 		return $this->authenticate('CreateTopic', $opt);
 	}
 
@@ -312,7 +312,7 @@ class AmazonSNS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['TopicArn'] = $topic_arn;
-		
+
 		return $this->authenticate('DeleteTopic', $opt);
 	}
 
@@ -329,7 +329,7 @@ class AmazonSNS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['SubscriptionArn'] = $subscription_arn;
-		
+
 		return $this->authenticate('GetSubscriptionAttributes', $opt);
 	}
 
@@ -347,7 +347,7 @@ class AmazonSNS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['TopicArn'] = $topic_arn;
-		
+
 		return $this->authenticate('GetTopicAttributes', $opt);
 	}
 
@@ -366,7 +366,7 @@ class AmazonSNS extends CFRuntime
 	public function list_subscriptions($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListSubscriptions', $opt);
 	}
 
@@ -387,7 +387,7 @@ class AmazonSNS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['TopicArn'] = $topic_arn;
-		
+
 		return $this->authenticate('ListSubscriptionsByTopic', $opt);
 	}
 
@@ -405,7 +405,7 @@ class AmazonSNS extends CFRuntime
 	public function list_topics($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListTopics', $opt);
 	}
 
@@ -429,7 +429,7 @@ class AmazonSNS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['TopicArn'] = $topic_arn;
 		$opt['Message'] = $message;
-		
+
 		return $this->authenticate('Publish', $opt);
 	}
 
@@ -448,7 +448,7 @@ class AmazonSNS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['TopicArn'] = $topic_arn;
 		$opt['Label'] = $label;
-		
+
 		return $this->authenticate('RemovePermission', $opt);
 	}
 
@@ -470,7 +470,7 @@ class AmazonSNS extends CFRuntime
 		$opt['SubscriptionArn'] = $subscription_arn;
 		$opt['AttributeName'] = $attribute_name;
 		$opt['AttributeValue'] = $attribute_value;
-		
+
 		return $this->authenticate('SetSubscriptionAttributes', $opt);
 	}
 
@@ -492,7 +492,7 @@ class AmazonSNS extends CFRuntime
 		$opt['TopicArn'] = $topic_arn;
 		$opt['AttributeName'] = $attribute_name;
 		$opt['AttributeValue'] = $attribute_value;
-		
+
 		return $this->authenticate('SetTopicAttributes', $opt);
 	}
 
@@ -516,7 +516,7 @@ class AmazonSNS extends CFRuntime
 		$opt['TopicArn'] = $topic_arn;
 		$opt['Protocol'] = $protocol;
 		$opt['Endpoint'] = $endpoint;
-		
+
 		return $this->authenticate('Subscribe', $opt);
 	}
 
@@ -538,7 +538,7 @@ class AmazonSNS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['SubscriptionArn'] = $subscription_arn;
-		
+
 		return $this->authenticate('Unsubscribe', $opt);
 	}
 }

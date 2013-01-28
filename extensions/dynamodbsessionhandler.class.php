@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -94,12 +94,12 @@ class DynamoDBSessionHandler
 	 * @var array Type for casting the configuration options.
 	 */
 	protected static $_option_types = array(
-		'table_name'           => 'string',
-		'hash_key'             => 'string',
-		'session_lifetime'     => 'integer',
-		'consistent_reads'     => 'boolean',
-		'session_locking'      => 'boolean',
-		'max_lock_wait_time'   => 'integer',
+		'table_name'					 => 'string',
+		'hash_key'						 => 'string',
+		'session_lifetime'		 => 'integer',
+		'consistent_reads'		 => 'boolean',
+		'session_locking'			=> 'boolean',
+		'max_lock_wait_time'	 => 'integer',
 		'min_lock_retry_utime' => 'integer',
 		'max_lock_retry_utime' => 'integer',
 	);
@@ -224,7 +224,7 @@ class DynamoDBSessionHandler
 	 */
 	public function open($save_path, $session_name)
 	{
-		$this->_save_path    = $save_path;
+		$this->_save_path		= $save_path;
 		$this->_session_name = $session_name;
 		$this->_open_session = session_id();
 
@@ -245,11 +245,11 @@ class DynamoDBSessionHandler
 			// Ensure that the session is unlocked even if the write did not happen
 			$id = $this->_open_session;
 			$response = $this->_dynamodb->update_item(array(
-				'TableName'        => $this->_table_name,
-				'Key'              => array('HashKeyElement' => $this->_dynamodb->attribute($this->_id($id))),
+				'TableName'				=> $this->_table_name,
+				'Key'							=> array('HashKeyElement' => $this->_dynamodb->attribute($this->_id($id))),
 				'AttributeUpdates' => array(
-					'expires'  => $this->_dynamodb->attribute(time() + $this->_session_lifetime, 'update'),
-					'lock'     => array('Action' => AmazonDynamoDB::ACTION_DELETE)
+					'expires'	=> $this->_dynamodb->attribute(time() + $this->_session_lifetime, 'update'),
+					'lock'		 => array('Action' => AmazonDynamoDB::ACTION_DELETE)
 				),
 			));
 
@@ -282,8 +282,8 @@ class DynamoDBSessionHandler
 		else
 		{
 			$response = $this->_dynamodb->get_item(array(
-				'TableName'      => $this->_table_name,
-				'Key'            => array('HashKeyElement' => $this->_dynamodb->attribute($this->_id($id))),
+				'TableName'			=> $this->_table_name,
+				'Key'						=> array('HashKeyElement' => $this->_dynamodb->attribute($this->_id($id))),
 				'ConsistentRead' => $this->_consistent_reads,
 			));
 			$node_name = 'Item';
@@ -334,10 +334,10 @@ class DynamoDBSessionHandler
 		// Write the session data to DynamoDB
 		$response = $this->_dynamodb->put_item(array(
 			'TableName' => $this->_table_name,
-			'Item'      => $this->_dynamodb->attributes(array(
+			'Item'			=> $this->_dynamodb->attributes(array(
 				$this->_hash_key => $this->_id($id),
-				'expires'        => time() + $this->_session_lifetime,
-				'data'           => $data,
+				'expires'				=> time() + $this->_session_lifetime,
+				'data'					 => $data,
 			)),
 		));
 
@@ -365,7 +365,7 @@ class DynamoDBSessionHandler
 
 		$delete_options = array(
 			'TableName' => $this->_table_name,
-			'Key'       => array('HashKeyElement' => $this->_dynamodb->attribute($id)),
+			'Key'			 => array('HashKeyElement' => $this->_dynamodb->attribute($id)),
 		);
 
 		// Make sure not to garbage collect locked sessions
@@ -394,7 +394,7 @@ class DynamoDBSessionHandler
 	{
 		// Send a search request to DynamoDB looking for expired sessions
 		$response = $this->_dynamodb->scan(array(
-			'TableName'  => $this->_table_name,
+			'TableName'	=> $this->_table_name,
 			'ScanFilter' => array('expires' => array(
 				'AttributeValueList' => array($this->_dynamodb->attribute(time())),
 				'ComparisonOperator' => AmazonDynamoDB::CONDITION_LESS_THAN,
@@ -490,11 +490,11 @@ class DynamoDBSessionHandler
 		{
 			// Acquire the lock
 			$response = $this->_dynamodb->update_item(array(
-				'TableName'        => $this->_table_name,
-				'Key'              => array('HashKeyElement' => $this->_dynamodb->attribute($this->_id($id))),
+				'TableName'				=> $this->_table_name,
+				'Key'							=> array('HashKeyElement' => $this->_dynamodb->attribute($this->_id($id))),
 				'AttributeUpdates' => array('lock' => $this->_dynamodb->attribute(1, 'update')),
-				'Expected'         => array('lock' => array('Exists' => false)),
-				'ReturnValues'     => 'ALL_NEW',
+				'Expected'				 => array('lock' => array('Exists' => false)),
+				'ReturnValues'		 => 'ALL_NEW',
 			));
 
 			// If lock succeeds (or times out), exit the loop, otherwise sleep and try again

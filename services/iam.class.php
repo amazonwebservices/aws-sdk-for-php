@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -18,7 +18,7 @@
  * This guide provides descriptions of the Identity and Access Management (IAM) API as well as
  * links to related content in the guide, <a href=
  * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/" target="_blank">Using IAM</a>.
- *  
+ *
  * IAM is a web service that enables AWS customers to manage users and user permissions under
  * their AWS account. For more information about this product go to <a href=
  * "http://aws.amazon.com/iam/" target="_blank">AWS Identity and Access Management (IAM)</a>. For
@@ -28,7 +28,7 @@
  * information about using the Query API with IAM, go to <a href=
  * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html" target=
  * "_blank">Making Query Requests</a> in <em>Using IAM</em>.
- *  
+ *
  * If you're new to AWS and need additional technical information about a specific AWS product,
  * you can find the product'stechnical documentation at <a href=
  * "http://aws.amazon.com/documentation/" target=
@@ -138,7 +138,7 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['InstanceProfileName'] = $instance_profile_name;
 		$opt['RoleName'] = $role_name;
-		
+
 		return $this->authenticate('AddRoleToInstanceProfile', $opt);
 	}
 
@@ -157,7 +157,7 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['GroupName'] = $group_name;
 		$opt['UserName'] = $user_name;
-		
+
 		return $this->authenticate('AddUserToGroup', $opt);
 	}
 
@@ -167,8 +167,8 @@ class AmazonIAM extends CFRuntime
 	 * 	<a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_ManagingLogins.html"
 	 * target="_blank">Managing Passwords</a>.
 	 *
-	 * @param string $old_password (Required)  [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
-	 * @param string $new_password (Required)  [Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
+	 * @param string $old_password (Required)	[Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
+	 * @param string $new_password (Required)	[Constraints: The value must be between 1 and 128 characters, and must match the following regular expression pattern: <code>[\u0009\u000A\u000D\u0020-\u00FF]+</code>]
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -179,24 +179,24 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['OldPassword'] = $old_password;
 		$opt['NewPassword'] = $new_password;
-		
+
 		return $this->authenticate('ChangePassword', $opt);
 	}
 
 	/**
 	 * Creates a new AWS Secret Access Key and corresponding AWS Access Key ID for the specified user.
 	 * The default status for new keys is <code>Active</code>.
-	 *  
+	 *
 	 * If you do not specify a user name, IAM determines the user name implicitly based on the AWS
 	 * Access Key ID signing the request. Because this action works for access keys under the AWS
 	 * account, you can use this API to manage root credentials even if the AWS account has no
 	 * associated users.
-	 *  
+	 *
 	 * For information about limits on the number of keys you can create, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
 	 * Management</em>.
-	 * 
+	 *
 	 * <p class="important">
 	 * To ensure the security of your AWS account, the Secret Access Key is accessible only during key
 	 * and user creation. You must save the key (for example, in a text file) if you want to be able
@@ -213,7 +213,7 @@ class AmazonIAM extends CFRuntime
 	public function create_access_key($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('CreateAccessKey', $opt);
 	}
 
@@ -233,13 +233,13 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['AccountAlias'] = $account_alias;
-		
+
 		return $this->authenticate('CreateAccountAlias', $opt);
 	}
 
 	/**
 	 * Creates a new group.
-	 *  
+	 *
 	 * For information about the number of groups you can create, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
@@ -256,7 +256,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['GroupName'] = $group_name;
-		
+
 		return $this->authenticate('CreateGroup', $opt);
 	}
 
@@ -264,7 +264,7 @@ class AmazonIAM extends CFRuntime
 	 * Creates a new instance profile. For information about instance profiles, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html">About
 	 * Instance Profiles</a>.
-	 *  
+	 *
 	 * For information about the number of instance profiles you can create, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
@@ -281,7 +281,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['InstanceProfileName'] = $instance_profile_name;
-		
+
 		return $this->authenticate('CreateInstanceProfile', $opt);
 	}
 
@@ -303,7 +303,7 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['UserName'] = $user_name;
 		$opt['Password'] = $password;
-		
+
 		return $this->authenticate('CreateLoginProfile', $opt);
 	}
 
@@ -315,7 +315,7 @@ class AmazonIAM extends CFRuntime
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
 	 * Management</em>.
-	 *  
+	 *
 	 * The policy grants permission to an EC2 instance to assume the role. The policy is URL-encoded
 	 * according to RFC 3986. For more information about RFC 3986, go to <a href=
 	 * "http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>. Currently,
@@ -334,13 +334,13 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['RoleName'] = $role_name;
 		$opt['AssumeRolePolicyDocument'] = $assume_role_policy_document;
-		
+
 		return $this->authenticate('CreateRole', $opt);
 	}
 
 	/**
 	 * Creates a new user for your AWS account.
-	 *  
+	 *
 	 * For information about limitations on the number of users you can create, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
@@ -357,7 +357,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['UserName'] = $user_name;
-		
+
 		return $this->authenticate('CreateUser', $opt);
 	}
 
@@ -369,12 +369,12 @@ class AmazonIAM extends CFRuntime
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_VirtualMFA.html"
 	 * target="_blank">Using a Virtual MFA Device</a> in <em>Using AWS Identity and Access
 	 * Management</em>.
-	 *  
+	 *
 	 * For information about limits on the number of MFA devices you can create, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on Entities</a> in <em>Using AWS Identity and Access
 	 * Management</em>.
-	 * 
+	 *
 	 * <p class="important">
 	 * The seed information contained in the QR code and the Base32 string should be treated like any
 	 * other secret access information, such as your AWS access keys or your passwords. After you
@@ -393,7 +393,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['VirtualMFADeviceName'] = $virtual_mfa_device_name;
-		
+
 		return $this->authenticate('CreateVirtualMFADevice', $opt);
 	}
 
@@ -413,13 +413,13 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['UserName'] = $user_name;
 		$opt['SerialNumber'] = $serial_number;
-		
+
 		return $this->authenticate('DeactivateMFADevice', $opt);
 	}
 
 	/**
 	 * Deletes the access key associated with the specified user.
-	 *  
+	 *
 	 * If you do not specify a user name, IAM determines the user name implicitly based on the AWS
 	 * Access Key ID signing the request. Because this action works for access keys under the AWS
 	 * account, you can use this API to manage root credentials even if the AWS account has no
@@ -436,7 +436,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['AccessKeyId'] = $access_key_id;
-		
+
 		return $this->authenticate('DeleteAccessKey', $opt);
 	}
 
@@ -456,7 +456,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['AccountAlias'] = $account_alias;
-		
+
 		return $this->authenticate('DeleteAccountAlias', $opt);
 	}
 
@@ -471,7 +471,7 @@ class AmazonIAM extends CFRuntime
 	public function delete_account_password_policy($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DeleteAccountPasswordPolicy', $opt);
 	}
 
@@ -489,7 +489,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['GroupName'] = $group_name;
-		
+
 		return $this->authenticate('DeleteGroup', $opt);
 	}
 
@@ -508,18 +508,18 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['GroupName'] = $group_name;
 		$opt['PolicyName'] = $policy_name;
-		
+
 		return $this->authenticate('DeleteGroupPolicy', $opt);
 	}
 
 	/**
 	 * Deletes the specified instance profile. The instance profile must not have an associated role.
-	 * 
+	 *
 	 * <p class="important">
 	 * Make sure you do not have any Amazon EC2 instances running with the instance profile you are
 	 * about to delete. Deleting a role or instance profile that is associated with a running instance
 	 * will break any applications running on the instance.
-	 * </p> 
+	 * </p>
 	 * For more information about instance profiles, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html">About
 	 * Instance Profiles</a>.
@@ -534,14 +534,14 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['InstanceProfileName'] = $instance_profile_name;
-		
+
 		return $this->authenticate('DeleteInstanceProfile', $opt);
 	}
 
 	/**
 	 * Deletes the password for the specified user, which terminates the user's ability to access AWS
 	 * services through the AWS Management Console.
-	 * 
+	 *
 	 * <p class="important">
 	 * Deleting a user's password does not prevent a user from accessing IAM through the command line
 	 * interface or the API. To prevent all user access you must also either make the access key
@@ -559,7 +559,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['UserName'] = $user_name;
-		
+
 		return $this->authenticate('DeleteLoginProfile', $opt);
 	}
 
@@ -568,7 +568,7 @@ class AmazonIAM extends CFRuntime
 	 * about roles, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
 	 * Roles</a>.
-	 * 
+	 *
 	 * <p class="important">
 	 * Make sure you do not have any Amazon EC2 instances running with the role you are about to
 	 * delete. Deleting a role or instance profile that is associated with a running instance will
@@ -585,7 +585,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['RoleName'] = $role_name;
-		
+
 		return $this->authenticate('DeleteRole', $opt);
 	}
 
@@ -604,13 +604,13 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['RoleName'] = $role_name;
 		$opt['PolicyName'] = $policy_name;
-		
+
 		return $this->authenticate('DeleteRolePolicy', $opt);
 	}
 
 	/**
 	 * Deletes the specified server certificate.
-	 * 
+	 *
 	 * <p class="important">
 	 * If you are using a server certificate with Elastic Load Balancing, deleting the certificate
 	 * could have implications for your application. If Elastic Load Balancing doesn't detect the
@@ -633,13 +633,13 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ServerCertificateName'] = $server_certificate_name;
-		
+
 		return $this->authenticate('DeleteServerCertificate', $opt);
 	}
 
 	/**
 	 * Deletes the specified signing certificate associated with the specified user.
-	 *  
+	 *
 	 * If you do not specify a user name, IAM determines the user name implicitly based on the AWS
 	 * Access Key ID signing the request. Because this action works for access keys under the AWS
 	 * account, you can use this API to manage root credentials even if the AWS account has no
@@ -656,7 +656,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CertificateId'] = $certificate_id;
-		
+
 		return $this->authenticate('DeleteSigningCertificate', $opt);
 	}
 
@@ -674,7 +674,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['UserName'] = $user_name;
-		
+
 		return $this->authenticate('DeleteUser', $opt);
 	}
 
@@ -693,13 +693,13 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['UserName'] = $user_name;
 		$opt['PolicyName'] = $policy_name;
-		
+
 		return $this->authenticate('DeleteUserPolicy', $opt);
 	}
 
 	/**
 	 * Deletes a virtual MFA device.
-	 * 
+	 *
 	 * <p class="note">
 	 * You must deactivate a user's virtual MFA device before you can delete it. For information about
 	 * deactivating MFA devices, see <a href=
@@ -716,7 +716,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['SerialNumber'] = $serial_number;
-		
+
 		return $this->authenticate('DeleteVirtualMFADevice', $opt);
 	}
 
@@ -741,7 +741,7 @@ class AmazonIAM extends CFRuntime
 		$opt['SerialNumber'] = $serial_number;
 		$opt['AuthenticationCode1'] = $authentication_code1;
 		$opt['AuthenticationCode2'] = $authentication_code2;
-		
+
 		return $this->authenticate('EnableMFADevice', $opt);
 	}
 
@@ -759,13 +759,13 @@ class AmazonIAM extends CFRuntime
 	public function get_account_password_policy($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('GetAccountPasswordPolicy', $opt);
 	}
 
 	/**
 	 * Retrieves account level information about account entity usage and IAM quotas.
-	 *  
+	 *
 	 * For information about limitations on IAM entities, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
@@ -779,7 +779,7 @@ class AmazonIAM extends CFRuntime
 	public function get_account_summary($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('GetAccountSummary', $opt);
 	}
 
@@ -799,7 +799,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['GroupName'] = $group_name;
-		
+
 		return $this->authenticate('GetGroup', $opt);
 	}
 
@@ -820,7 +820,7 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['GroupName'] = $group_name;
 		$opt['PolicyName'] = $policy_name;
-		
+
 		return $this->authenticate('GetGroupPolicy', $opt);
 	}
 
@@ -842,7 +842,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['InstanceProfileName'] = $instance_profile_name;
-		
+
 		return $this->authenticate('GetInstanceProfile', $opt);
 	}
 
@@ -859,7 +859,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['UserName'] = $user_name;
-		
+
 		return $this->authenticate('GetLoginProfile', $opt);
 	}
 
@@ -871,7 +871,7 @@ class AmazonIAM extends CFRuntime
 	 * ARNs</a>. For more information about roles, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
 	 * Roles</a>.
-	 *  
+	 *
 	 * The returned policy is URL-encoded according to RFC 3986. For more information about RFC 3986,
 	 * go to <a href=
 	 * "http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
@@ -886,7 +886,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['RoleName'] = $role_name;
-		
+
 		return $this->authenticate('GetRole', $opt);
 	}
 
@@ -895,7 +895,7 @@ class AmazonIAM extends CFRuntime
 	 * roles, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
 	 * Roles</a>.
-	 *  
+	 *
 	 * The returned policy is URL-encoded according to RFC 3986. For more information about RFC 3986,
 	 * go to <a href=
 	 * "http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
@@ -912,7 +912,7 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['RoleName'] = $role_name;
 		$opt['PolicyName'] = $policy_name;
-		
+
 		return $this->authenticate('GetRolePolicy', $opt);
 	}
 
@@ -929,13 +929,13 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ServerCertificateName'] = $server_certificate_name;
-		
+
 		return $this->authenticate('GetServerCertificate', $opt);
 	}
 
 	/**
 	 * Retrieves information about the specified user, including the user's path, GUID, and ARN.
-	 *  
+	 *
 	 * If you do not specify a user name, IAM determines the user name implicitly based on the AWS
 	 * Access Key ID signing the request.
 	 *
@@ -948,7 +948,7 @@ class AmazonIAM extends CFRuntime
 	public function get_user($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('GetUser', $opt);
 	}
 
@@ -969,22 +969,22 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['UserName'] = $user_name;
 		$opt['PolicyName'] = $policy_name;
-		
+
 		return $this->authenticate('GetUserPolicy', $opt);
 	}
 
 	/**
 	 * Returns information about the Access Key IDs associated with the specified user. If there are
 	 * none, the action returns an empty list.
-	 *  
+	 *
 	 * Although each user is limited to a small number of keys, you can still paginate the results
 	 * using the <code>MaxItems</code> and <code>Marker</code> parameters.
-	 *  
+	 *
 	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly
 	 * based on the AWS Access Key ID used to sign the request. Because this action works for access
 	 * keys under the AWS account, this API can be used to manage root credentials even if the AWS
 	 * account has no associated users.
-	 * 
+	 *
 	 * <p class="note">
 	 * To ensure the security of your AWS account, the secret access key is accessible only during key
 	 * and user creation.
@@ -1001,7 +1001,7 @@ class AmazonIAM extends CFRuntime
 	public function list_access_keys($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListAccessKeys', $opt);
 	}
 
@@ -1011,7 +1011,7 @@ class AmazonIAM extends CFRuntime
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html" target=
 	 * "_blank">Using an Alias for Your AWS Account ID</a> in <em>Using AWS Identity and Access
 	 * Management</em>.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
@@ -1025,14 +1025,14 @@ class AmazonIAM extends CFRuntime
 	public function list_account_aliases($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListAccountAliases', $opt);
 	}
 
 	/**
 	 * Lists the names of the policies associated with the specified group. If there are none, the
 	 * action returns an empty list.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
@@ -1048,13 +1048,13 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['GroupName'] = $group_name;
-		
+
 		return $this->authenticate('ListGroupPolicies', $opt);
 	}
 
 	/**
 	 * Lists the groups that have the specified path prefix.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
@@ -1069,13 +1069,13 @@ class AmazonIAM extends CFRuntime
 	public function list_groups($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListGroups', $opt);
 	}
 
 	/**
 	 * Lists the groups the specified user belongs to.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
@@ -1091,7 +1091,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['UserName'] = $user_name;
-		
+
 		return $this->authenticate('ListGroupsForUser', $opt);
 	}
 
@@ -1100,7 +1100,7 @@ class AmazonIAM extends CFRuntime
 	 * returns an empty list. For more information about instance profiles, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html">About
 	 * Instance Profiles</a>.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
@@ -1115,7 +1115,7 @@ class AmazonIAM extends CFRuntime
 	public function list_instance_profiles($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListInstanceProfiles', $opt);
 	}
 
@@ -1124,7 +1124,7 @@ class AmazonIAM extends CFRuntime
 	 * action returns an empty list. For more information about instance profiles, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html">About
 	 * Instance Profiles</a>.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
@@ -1140,7 +1140,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['RoleName'] = $role_name;
-		
+
 		return $this->authenticate('ListInstanceProfilesForRole', $opt);
 	}
 
@@ -1148,7 +1148,7 @@ class AmazonIAM extends CFRuntime
 	 * Lists the MFA devices. If the request includes the user name, then this action lists all the
 	 * MFA devices associated with the specified user name. If you do not specify a user name, IAM
 	 * determines the user name implicitly based on the AWS Access Key ID signing the request.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
@@ -1163,14 +1163,14 @@ class AmazonIAM extends CFRuntime
 	public function list_mfa_devices($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListMFADevices', $opt);
 	}
 
 	/**
 	 * Lists the names of the policies associated with the specified role. If there are none, the
 	 * action returns an empty list.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
@@ -1186,7 +1186,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['RoleName'] = $role_name;
-		
+
 		return $this->authenticate('ListRolePolicies', $opt);
 	}
 
@@ -1195,10 +1195,10 @@ class AmazonIAM extends CFRuntime
 	 * empty list. For more information about roles, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
 	 * Roles</a>.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
-	 *  
+	 *
 	 * The returned policy is URL-encoded according to RFC 3986. For more information about RFC 3986,
 	 * go to <a href=
 	 * "http://www.faqs.org/rfcs/rfc3986.html">http://www.faqs.org/rfcs/rfc3986.html</a>.
@@ -1214,14 +1214,14 @@ class AmazonIAM extends CFRuntime
 	public function list_roles($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListRoles', $opt);
 	}
 
 	/**
 	 * Lists the server certificates that have the specified path prefix. If none exist, the action
 	 * returns an empty list.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
@@ -1236,17 +1236,17 @@ class AmazonIAM extends CFRuntime
 	public function list_server_certificates($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListServerCertificates', $opt);
 	}
 
 	/**
 	 * Returns information about the signing certificates associated with the specified user. If there
 	 * are none, the action returns an empty list.
-	 *  
+	 *
 	 * Although each user is limited to a small number of signing certificates, you can still paginate
 	 * the results using the <code>MaxItems</code> and <code>Marker</code> parameters.
-	 *  
+	 *
 	 * If the <code>UserName</code> field is not specified, the user name is determined implicitly
 	 * based on the AWS Access Key ID used to sign the request. Because this action works for access
 	 * keys under the AWS account, this API can be used to manage root credentials even if the AWS
@@ -1263,14 +1263,14 @@ class AmazonIAM extends CFRuntime
 	public function list_signing_certificates($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListSigningCertificates', $opt);
 	}
 
 	/**
 	 * Lists the names of the policies associated with the specified user. If there are none, the
 	 * action returns an empty list.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
@@ -1286,14 +1286,14 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['UserName'] = $user_name;
-		
+
 		return $this->authenticate('ListUserPolicies', $opt);
 	}
 
 	/**
 	 * Lists the users that have the specified path prefix. If there are none, the action returns an
 	 * empty list.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
@@ -1308,7 +1308,7 @@ class AmazonIAM extends CFRuntime
 	public function list_users($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListUsers', $opt);
 	}
 
@@ -1316,7 +1316,7 @@ class AmazonIAM extends CFRuntime
 	 * Lists the virtual MFA devices under the AWS account by assignment status. If you do not specify
 	 * an assignment status, the action returns a list of all virtual MFA devices. Assignment status
 	 * can be <code>Assigned</code>, <code>Unassigned</code>, or <code>Any</code>.
-	 *  
+	 *
 	 * You can paginate the results using the <code>MaxItems</code> and <code>Marker</code>
 	 * parameters.
 	 *
@@ -1331,7 +1331,7 @@ class AmazonIAM extends CFRuntime
 	public function list_virtual_mfa_devices($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListVirtualMFADevices', $opt);
 	}
 
@@ -1340,13 +1340,13 @@ class AmazonIAM extends CFRuntime
 	 * policies, refer to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html"
 	 * target="_blank">Overview of Policies</a> in <em>Using AWS Identity and Access Management</em>.
-	 *  
+	 *
 	 * For information about limits on the number of policies you can associate with a group, see
 	 * 	<a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
 	 * Management</em>.
-	 * 
+	 *
 	 * <p class="note">
 	 * Because policy documents can be large, you should use POST rather than GET when calling
 	 * <code>PutGroupPolicy</code>. For information about setting up signatures and authorization
@@ -1372,7 +1372,7 @@ class AmazonIAM extends CFRuntime
 		$opt['GroupName'] = $group_name;
 		$opt['PolicyName'] = $policy_name;
 		$opt['PolicyDocument'] = $policy_document;
-		
+
 		return $this->authenticate('PutGroupPolicy', $opt);
 	}
 
@@ -1381,12 +1381,12 @@ class AmazonIAM extends CFRuntime
 	 * policies, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html"
 	 * target="_blank">Overview of Policies</a> in <em>Using AWS Identity and Access Management</em>.
-	 *  
+	 *
 	 * For information about limits on the policies you can associate with a role, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
 	 * Management</em>.
-	 * 
+	 *
 	 * <p class="note">
 	 * Because policy documents can be large, you should use POST rather than GET when calling
 	 * <code>PutRolePolicy</code>. For information about setting up signatures and authorization
@@ -1412,7 +1412,7 @@ class AmazonIAM extends CFRuntime
 		$opt['RoleName'] = $role_name;
 		$opt['PolicyName'] = $policy_name;
 		$opt['PolicyDocument'] = $policy_document;
-		
+
 		return $this->authenticate('PutRolePolicy', $opt);
 	}
 
@@ -1421,13 +1421,13 @@ class AmazonIAM extends CFRuntime
 	 * policies, refer to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html"
 	 * target="_blank">Overview of Policies</a> in <em>Using AWS Identity and Access Management</em>.
-	 *  
+	 *
 	 * For information about limits on the number of policies you can associate with a user, see
 	 * 	<a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
 	 * Management</em>.
-	 * 
+	 *
 	 * <p class="note">
 	 * Because policy documents can be large, you should use POST rather than GET when calling
 	 * <code>PutUserPolicy</code>. For information about setting up signatures and authorization
@@ -1453,18 +1453,18 @@ class AmazonIAM extends CFRuntime
 		$opt['UserName'] = $user_name;
 		$opt['PolicyName'] = $policy_name;
 		$opt['PolicyDocument'] = $policy_document;
-		
+
 		return $this->authenticate('PutUserPolicy', $opt);
 	}
 
 	/**
 	 * Removes the specified role from the specified instance profile.
-	 * 
+	 *
 	 * <p class="important">
 	 * Make sure you do not have any Amazon EC2 instances running with the role you are about to
 	 * remove from the instance profile. Removing a role from an instance profile that is associated
 	 * with a running instance will break any applications running on the instance.
-	 * </p> 
+	 * </p>
 	 * For more information about roles, go to <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html">Working with
 	 * Roles</a>. For more information about instance profiles, go to <a href=
@@ -1483,7 +1483,7 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['InstanceProfileName'] = $instance_profile_name;
 		$opt['RoleName'] = $role_name;
-		
+
 		return $this->authenticate('RemoveRoleFromInstanceProfile', $opt);
 	}
 
@@ -1502,7 +1502,7 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['GroupName'] = $group_name;
 		$opt['UserName'] = $user_name;
-		
+
 		return $this->authenticate('RemoveUserFromGroup', $opt);
 	}
 
@@ -1525,19 +1525,19 @@ class AmazonIAM extends CFRuntime
 		$opt['SerialNumber'] = $serial_number;
 		$opt['AuthenticationCode1'] = $authentication_code1;
 		$opt['AuthenticationCode2'] = $authentication_code2;
-		
+
 		return $this->authenticate('ResyncMFADevice', $opt);
 	}
 
 	/**
 	 * Changes the status of the specified access key from Active to Inactive, or vice versa. This
 	 * action can be used to disable a user's key as part of a key rotation work flow.
-	 *  
+	 *
 	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly
 	 * based on the AWS Access Key ID used to sign the request. Because this action works for access
 	 * keys under the AWS account, this API can be used to manage root credentials even if the AWS
 	 * account has no associated users.
-	 *  
+	 *
 	 * For information about rotating keys, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?ManagingCredentials.html"
 	 * target="_blank">Managing Keys and Certificates</a> in <em>Using AWS Identity and Access
@@ -1556,7 +1556,7 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['AccessKeyId'] = $access_key_id;
 		$opt['Status'] = $status;
-		
+
 		return $this->authenticate('UpdateAccessKey', $opt);
 	}
 
@@ -1580,7 +1580,7 @@ class AmazonIAM extends CFRuntime
 	public function update_account_password_policy($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('UpdateAccountPasswordPolicy', $opt);
 	}
 
@@ -1602,13 +1602,13 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['RoleName'] = $role_name;
 		$opt['PolicyDocument'] = $policy_document;
-		
+
 		return $this->authenticate('UpdateAssumeRolePolicy', $opt);
 	}
 
 	/**
 	 * Updates the name and/or the path of the specified group.
-	 * 
+	 *
 	 * <p class="important">
 	 * You should understand the implications of changing a group's path or name. For more
 	 * information, see <a href=
@@ -1636,7 +1636,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['GroupName'] = $group_name;
-		
+
 		return $this->authenticate('UpdateGroup', $opt);
 	}
 
@@ -1654,13 +1654,13 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['UserName'] = $user_name;
-		
+
 		return $this->authenticate('UpdateLoginProfile', $opt);
 	}
 
 	/**
 	 * Updates the name and/or the path of the specified server certificate.
-	 * 
+	 *
 	 * <p class="important">
 	 * You should understand the implications of changing a server certificate's path or name. For
 	 * more information, see <a href=
@@ -1688,7 +1688,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ServerCertificateName'] = $server_certificate_name;
-		
+
 		return $this->authenticate('UpdateServerCertificate', $opt);
 	}
 
@@ -1696,12 +1696,12 @@ class AmazonIAM extends CFRuntime
 	 * Changes the status of the specified signing certificate from active to disabled, or vice versa.
 	 * This action can be used to disable a user's signing certificate as part of a certificate
 	 * rotation work flow.
-	 *  
+	 *
 	 * If the <code>UserName</code> field is not specified, the UserName is determined implicitly
 	 * based on the AWS Access Key ID used to sign the request. Because this action works for access
 	 * keys under the AWS account, this API can be used to manage root credentials even if the AWS
 	 * account has no associated users.
-	 *  
+	 *
 	 * For information about rotating certificates, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?ManagingCredentials.html"
 	 * target="_blank">Managing Keys and Certificates</a> in <em>Using AWS Identity and Access
@@ -1720,13 +1720,13 @@ class AmazonIAM extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['CertificateId'] = $certificate_id;
 		$opt['Status'] = $status;
-		
+
 		return $this->authenticate('UpdateSigningCertificate', $opt);
 	}
 
 	/**
 	 * Updates the name and/or the path of the specified user.
-	 * 
+	 *
 	 * <p class="important">
 	 * You should understand the implications of changing a user's path or name. For more information,
 	 * see <a href=
@@ -1754,7 +1754,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['UserName'] = $user_name;
-		
+
 		return $this->authenticate('UpdateUser', $opt);
 	}
 
@@ -1762,12 +1762,12 @@ class AmazonIAM extends CFRuntime
 	 * Uploads a server certificate entity for the AWS account. The server certificate entity includes
 	 * a public key certificate, a private key, and an optional certificate chain, which should all be
 	 * PEM-encoded.
-	 *  
+	 *
 	 * For information about the number of server certificates you can upload, see <a href=
 	 * "http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html"
 	 * target="_blank">Limitations on IAM Entities</a> in <em>Using AWS Identity and Access
 	 * Management</em>.
-	 * 
+	 *
 	 * <p class="note">
 	 * Because the body of the public key certificate, private key, and the certificate chain can be
 	 * large, you should use POST rather than GET when calling <code>UploadServerCertificate</code>.
@@ -1795,7 +1795,7 @@ class AmazonIAM extends CFRuntime
 		$opt['ServerCertificateName'] = $server_certificate_name;
 		$opt['CertificateBody'] = $certificate_body;
 		$opt['PrivateKey'] = $private_key;
-		
+
 		return $this->authenticate('UploadServerCertificate', $opt);
 	}
 
@@ -1804,12 +1804,12 @@ class AmazonIAM extends CFRuntime
 	 * services use X.509 signing certificates to validate requests that are signed with a
 	 * corresponding private key. When you upload the certificate, its default status is
 	 * <code>Active</code>.
-	 *  
+	 *
 	 * If the <code>UserName</code> field is not specified, the user name is determined implicitly
 	 * based on the AWS Access Key ID used to sign the request. Because this action works for access
 	 * keys under the AWS account, this API can be used to manage root credentials even if the AWS
 	 * account has no associated users.
-	 * 
+	 *
 	 * <p class="note">
 	 * Because the body of a X.509 certificate can be large, you should use POST rather than GET when
 	 * calling <code>UploadSigningCertificate</code>. For information about setting up signatures and
@@ -1832,7 +1832,7 @@ class AmazonIAM extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CertificateBody'] = $certificate_body;
-		
+
 		return $this->authenticate('UploadSigningCertificate', $opt);
 	}
 }

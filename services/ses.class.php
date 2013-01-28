@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -18,10 +18,10 @@
  * This is the API Reference for Amazon Simple Email Service (Amazon SES). This documentation is
  * intended to be used in conjunction with the Amazon SES Getting Started Guide and the Amazon SES
  * Developer Guide.
- *  
+ *
  * For specific details on how to construct a service request, please consult the <a href=
  * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
- * 
+ *
  * <p class="note">
  * The endpoint for Amazon SES is located at: <code>https://email.us-east-1.amazonaws.com</code>
  * </p>
@@ -126,13 +126,13 @@ class AmazonSES extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['Identity'] = $identity;
-		
+
 		return $this->authenticate('DeleteIdentity', $opt);
 	}
 
 	/**
 	 * Deletes the specified email address from the list of verified addresses.
-	 * 
+	 *
 	 * <p class="important">
 	 * The DeleteVerifiedEmailAddress action is deprecated as of the May 15, 2012 release of Domain
 	 * Verification. The DeleteIdentity action is now preferred.
@@ -148,17 +148,17 @@ class AmazonSES extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['EmailAddress'] = $email_address;
-		
+
 		return $this->authenticate('DeleteVerifiedEmailAddress', $opt);
 	}
 
 	/**
 	 * Returns the DNS records, or <em>tokens</em>, that must be present in order for Easy DKIM to
 	 * sign outgoing email messages.
-	 *  
+	 *
 	 * This action takes a list of verified identities as input. It then returns the following
 	 * information for each identity:
-	 * 
+	 *
 	 * <ul>
 	 * 	<li>Whether Easy DKIM signing is enabled or disabled.</li>
 	 * 	<li>The set of tokens that are required for Easy DKIM signing. These tokens must be published
@@ -168,7 +168,7 @@ class AmazonSES extends CFRuntime
 	 * 	<li>Whether Amazon SES has successfully verified the DKIM tokens published in the domain name's
 	 * DNS. (This information is only returned for domain name identities, not for email addresses.)</li>
 	 * </ul>
-	 * 
+	 *
 	 * For more information about Easy DKIM signing, go to the <a href=
 	 * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
 	 *
@@ -181,7 +181,7 @@ class AmazonSES extends CFRuntime
 	public function get_identity_dkim_attributes($identities, $opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Identities' => (is_array($identities) ? $identities : array($identities))
@@ -205,7 +205,7 @@ class AmazonSES extends CFRuntime
 	public function get_identity_notification_attributes($identities, $opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Identities' => (is_array($identities) ? $identities : array($identities))
@@ -227,7 +227,7 @@ class AmazonSES extends CFRuntime
 	public function get_identity_verification_attributes($identities, $opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Identities' => (is_array($identities) ? $identities : array($identities))
@@ -247,14 +247,14 @@ class AmazonSES extends CFRuntime
 	public function get_send_quota($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('GetSendQuota', $opt);
 	}
 
 	/**
 	 * Returns the user's sending statistics. The result is a list of data points, representing the
 	 * last two weeks of sending activity.
-	 *  
+	 *
 	 * Each data point in the list contains statistics for a 15-minute interval.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -265,7 +265,7 @@ class AmazonSES extends CFRuntime
 	public function get_send_statistics($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('GetSendStatistics', $opt);
 	}
 
@@ -284,13 +284,13 @@ class AmazonSES extends CFRuntime
 	public function list_identities($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListIdentities', $opt);
 	}
 
 	/**
 	 * Returns a list containing all of the email addresses that have been verified.
-	 * 
+	 *
 	 * <p class="important">
 	 * The ListVerifiedEmailAddresses action is deprecated as of the May 15, 2012 release of Domain
 	 * Verification. The ListIdentities action is now preferred.
@@ -304,27 +304,27 @@ class AmazonSES extends CFRuntime
 	public function list_verified_email_addresses($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListVerifiedEmailAddresses', $opt);
 	}
 
 	/**
 	 * Composes an email message based on input data, and then immediately queues the message for
 	 * sending.
-	 * 
+	 *
 	 * <p class="important">
 	 * If you have not yet requested production access to Amazon SES, then you will only be able to
 	 * send email to and from verified email addresses and domains. For more information, go to the
 	 * 	<a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer
 	 * Guide</a>.
-	 * </p> 
+	 * </p>
 	 * The total size of the message cannot exceed 10 MB.
-	 *  
+	 *
 	 * Amazon SES has a limit on the total number of recipients per message: The combined number of
 	 * To:, CC: and BCC: email addresses cannot exceed 50. If you need to send an email message to a
 	 * larger audience, you can divide your recipient list into groups of 50 or fewer, and then call
 	 * Amazon SES repeatedly to send the message to each group.
-	 *  
+	 *
 	 * For every message that you send, the total number of recipients (To:, CC: and BCC:) is counted
 	 * against your <em>sending quota</em> - the maximum number of emails you can send in a 24-hour
 	 * period. For information about your sending quota, go to the "Managing Your Sending Activity"
@@ -376,12 +376,12 @@ class AmazonSES extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['Source'] = $source;
-		
+
 		// Required map (non-list)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Destination' => (is_array($destination) ? $destination : array($destination))
 		), 'member'));
-		
+
 		// Required map (non-list)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Message' => (is_array($message) ? $message : array($message))
@@ -403,21 +403,21 @@ class AmazonSES extends CFRuntime
 	 * Sends an email message, with header and content specified by the client. The
 	 * <code>SendRawEmail</code> action is useful for sending multipart MIME emails. The raw text of
 	 * the message must comply with Internet email standards; otherwise, the message cannot be sent.
-	 * 
+	 *
 	 * <p class="important">
 	 * If you have not yet requested production access to Amazon SES, then you will only be able to
 	 * send email to and from verified email addresses and domains. For more information, go to the
 	 * 	<a href="http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer
 	 * Guide</a>.
-	 * </p> 
+	 * </p>
 	 * The total size of the message cannot exceed 10 MB. This includes any attachments that are part
 	 * of the message.
-	 *  
+	 *
 	 * Amazon SES has a limit on the total number of recipients per message: The combined number of
 	 * To:, CC: and BCC: email addresses cannot exceed 50. If you need to send an email message to a
 	 * larger audience, you can divide your recipient list into groups of 50 or fewer, and then call
 	 * Amazon SES repeatedly to send the message to each group.
-	 *  
+	 *
 	 * For every message that you send, the total number of recipients (To:, CC: and BCC:) is counted
 	 * against your <em>sending quota</em> - the maximum number of emails you can send in a 24-hour
 	 * period. For information about your sending quota, go to the "Managing Your Sending Activity"
@@ -439,7 +439,7 @@ class AmazonSES extends CFRuntime
 	public function send_raw_email($raw_message, $opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Required map (non-list)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'RawMessage' => (is_array($raw_message) ? $raw_message : array($raw_message))
@@ -459,7 +459,7 @@ class AmazonSES extends CFRuntime
 
 	/**
 	 * Enables or disables Easy DKIM signing of email sent from an identity:
-	 * 
+	 *
 	 * <ul>
 	 * 	<li>If Easy DKIM signing is enabled for a domain name identity (e.g.,
 	 * <code>example.com</code>), then Amazon SES will DKIM-sign all email sent by addresses under
@@ -467,11 +467,11 @@ class AmazonSES extends CFRuntime
 	 * 	<li>If Easy DKIM signing is enabled for an email address, then Amazon SES will DKIM-sign all
 	 * email sent by that email address.</li>
 	 * </ul>
-	 * 
+	 *
 	 * For email addresses (e.g., <code>user@example.com</code>), you can only enable Easy DKIM
 	 * signing if the corresponding domain (e.g., <code>example.com</code>) has been set up for Easy
 	 * DKIM using the AWS Console or the <code>VerifyDomainDkim</code> action.
-	 *  
+	 *
 	 * For more information about Easy DKIM signing, go to the <a href=
 	 * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
 	 *
@@ -487,7 +487,7 @@ class AmazonSES extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['Identity'] = $identity;
 		$opt['DkimEnabled'] = $dkim_enabled;
-		
+
 		return $this->authenticate('SetIdentityDkimEnabled', $opt);
 	}
 
@@ -509,7 +509,7 @@ class AmazonSES extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['Identity'] = $identity;
 		$opt['ForwardingEnabled'] = $forwarding_enabled;
-		
+
 		return $this->authenticate('SetIdentityFeedbackForwardingEnabled', $opt);
 	}
 
@@ -533,7 +533,7 @@ class AmazonSES extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['Identity'] = $identity;
 		$opt['NotificationType'] = $notification_type;
-		
+
 		return $this->authenticate('SetIdentityNotificationTopic', $opt);
 	}
 
@@ -543,11 +543,11 @@ class AmazonSES extends CFRuntime
 	 * that point to DKIM public keys hosted by Amazon SES. To complete the DKIM verification process,
 	 * these tokens must be published in the domain's DNS. The tokens must remain published in order
 	 * for Easy DKIM signing to function correctly.
-	 *  
+	 *
 	 * After the tokens are added to the domain's DNS, Amazon SES will be able to DKIM-sign email
 	 * originating from that domain. To enable or disable Easy DKIM signing for a domain, use the
 	 * <code>SetIdentityDkimEnabled</code> action.
-	 *  
+	 *
 	 * For more information about Easy DKIM, go to the <a href=
 	 * "http://docs.amazonwebservices.com/ses/latest/DeveloperGuide">Amazon SES Developer Guide</a>.
 	 *
@@ -561,7 +561,7 @@ class AmazonSES extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['Domain'] = $domain;
-		
+
 		return $this->authenticate('VerifyDomainDkim', $opt);
 	}
 
@@ -578,14 +578,14 @@ class AmazonSES extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['Domain'] = $domain;
-		
+
 		return $this->authenticate('VerifyDomainIdentity', $opt);
 	}
 
 	/**
 	 * Verifies an email address. This action causes a confirmation email message to be sent to the
 	 * specified address.
-	 * 
+	 *
 	 * <p class="important">
 	 * The VerifyEmailAddress action is deprecated as of the May 15, 2012 release of Domain
 	 * Verification. The VerifyEmailIdentity action is now preferred.
@@ -601,7 +601,7 @@ class AmazonSES extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['EmailAddress'] = $email_address;
-		
+
 		return $this->authenticate('VerifyEmailAddress', $opt);
 	}
 
@@ -619,7 +619,7 @@ class AmazonSES extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['EmailAddress'] = $email_address;
-		
+
 		return $this->authenticate('VerifyEmailIdentity', $opt);
 	}
 }

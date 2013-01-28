@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -21,13 +21,13 @@
  * without losing messages or requiring each component to be always available. Amazon SQS makes it
  * easy to build an automated workflow, working in close conjunction with the Amazon Elastic
  * Compute Cloud (Amazon EC2) and the other AWS infrastructure web services.
- *  
+ *
  * Amazon SQS works by exposing Amazon's web-scale messaging infrastructure as a web service. Any
  * computer on the Internet can add or read messages without any installed software or special
  * firewall configurations. Components of applications using Amazon SQS can run independently, and
  * do not need to be on the same network, developed with the same technologies, or running at the
  * same time.
- *  
+ *
  * Visit <a href="http://aws.amazon.com/sqs/">http://aws.amazon.com/sqs/</a> for more information.
  *
  * @version 2013.01.14
@@ -187,8 +187,8 @@ class AmazonSQS extends CFRuntime
 	function get_queue_arn($queue_url)
 	{
 		return str_replace(
-			array('http://',  'https://', '.amazonaws.com', '/', '.'),
-			array('arn:aws:', 'arn:aws:', '',               ':', ':'),
+			array('http://',	'https://', '.amazonaws.com', '/', '.'),
+			array('arn:aws:', 'arn:aws:', '',							 ':', ':'),
 			$queue_url
 		);
 	}
@@ -278,13 +278,13 @@ class AmazonSQS extends CFRuntime
 	 * The AddPermission action adds a permission to a queue for a specific <a href=
 	 * "http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/APIReference/Glossary.html#d0e3892">
 	 * principal</a>. This allows for sharing access to the queue.
-	 *  
+	 *
 	 * When you create a queue, you have full control access rights for the queue. Only you (as owner
 	 * of the queue) can grant or deny permissions to the queue. For more information about these
 	 * permissions, see <a href=
 	 * "http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/?acp-overview.html">
 	 * Shared Queues</a> in the Amazon SQS Developer Guide.
-	 *  
+	 *
 	 * <code>AddPermission</code> writes an SQS-generated policy. If you want to write your own
 	 * policy, use SetQueueAttributes to upload your policy. For more information about writing your
 	 * own policy, see <a href=
@@ -305,12 +305,12 @@ class AmazonSQS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['QueueUrl'] = $queue_url;
 		$opt['Label'] = $label;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'AWSAccountId' => (is_array($aws_account_id) ? $aws_account_id : array($aws_account_id))
 		)));
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'ActionName' => (is_array($action_name) ? $action_name : array($action_name))
@@ -327,13 +327,13 @@ class AmazonSQS extends CFRuntime
 	 * 	<a href=
 	 * "http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/AboutVT.html">
 	 * Visibility Timeout</a> in the Amazon SQS Developer Guide.)
-	 *  
+	 *
 	 * For example, let's say you have a message and its default message visibility timeout is 30
 	 * minutes. You could call <code>ChangeMessageVisiblity</code> with a value of two hours and the
 	 * effective timeout would be two hours and 30 minutes. When that time comes near you could again
 	 * extend the time out by calling ChangeMessageVisiblity, but this time the maximum allowed
 	 * timeout would be 9 hours and 30 minutes.
-	 * 
+	 *
 	 * <p class="important">
 	 * If you attempt to set the <code>VisibilityTimeout</code> to an amount more than the maximum
 	 * time left, Amazon SQS returns an error. It will not automatically recalculate and increase the
@@ -361,7 +361,7 @@ class AmazonSQS extends CFRuntime
 		$opt['QueueUrl'] = $queue_url;
 		$opt['ReceiptHandle'] = $receipt_handle;
 		$opt['VisibilityTimeout'] = $visibility_timeout;
-		
+
 		return $this->authenticate('ChangeMessageVisibility', $opt);
 	}
 
@@ -387,7 +387,7 @@ class AmazonSQS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['QueueUrl'] = $queue_url;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'ChangeMessageVisibilityBatchRequestEntry' => (is_array($change_message_visibility_batch_request_entry) ? $change_message_visibility_batch_request_entry : array($change_message_visibility_batch_request_entry))
@@ -400,11 +400,11 @@ class AmazonSQS extends CFRuntime
 	 * The <code>CreateQueue</code> action creates a new queue, or returns the URL of an existing one.
 	 * When you request <code>CreateQueue</code>, you provide a name for the queue. To successfully
 	 * create a new queue, you must provide a name that is unique within the scope of your own queues.
-	 *  
+	 *
 	 * You may pass one or more attributes in the request. If you do not provide a value for any
 	 * attribute, the queue will have the default value for that attribute. Permitted attributes are
 	 * the same that can be set using <code>SetQueueAttributes</code>.
-	 *  
+	 *
 	 * If you provide the name of an existing queue, a new queue isn't created. If the values of
 	 * attributes provided with the request match up with those on the existing queue, the queue URL
 	 * is returned. Otherwise, a <code>QueueNameExists</code> error is returned.
@@ -425,7 +425,7 @@ class AmazonSQS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['QueueName'] = $queue_name;
-		
+
 		// Optional map (non-list)
 		if (isset($opt['Attribute']))
 		{
@@ -455,7 +455,7 @@ class AmazonSQS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['QueueUrl'] = $queue_url;
 		$opt['ReceiptHandle'] = $receipt_handle;
-		
+
 		return $this->authenticate('DeleteMessage', $opt);
 	}
 
@@ -480,7 +480,7 @@ class AmazonSQS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['QueueUrl'] = $queue_url;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'DeleteMessageBatchRequestEntry' => (is_array($delete_message_batch_request_entry) ? $delete_message_batch_request_entry : array($delete_message_batch_request_entry))
@@ -492,7 +492,7 @@ class AmazonSQS extends CFRuntime
 	/**
 	 * This action unconditionally deletes the queue specified by the queue URL. Use this operation
 	 * WITH CARE! The queue is deleted even if it is NOT empty.
-	 *  
+	 *
 	 * Once a queue has been deleted, the queue name is unavailable for use with new queues for 60
 	 * seconds.
 	 *
@@ -506,13 +506,13 @@ class AmazonSQS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['QueueUrl'] = $queue_url;
-		
+
 		return $this->authenticate('DeleteQueue', $opt);
 	}
 
 	/**
 	 * Gets attributes for the specified queue. The following attributes are supported:
-	 * 
+	 *
 	 * <ul>
 	 * 	<li><code>All</code> - returns all values.</li>
 	 * 	<li><code>ApproximateNumberOfMessages</code> - returns the approximate number of visible
@@ -552,7 +552,7 @@ class AmazonSQS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['QueueUrl'] = $queue_url;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['AttributeName']))
 		{
@@ -579,7 +579,7 @@ class AmazonSQS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['QueueName'] = $queue_name;
-		
+
 		return $this->authenticate('GetQueueUrl', $opt);
 	}
 
@@ -595,7 +595,7 @@ class AmazonSQS extends CFRuntime
 	public function list_queues($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListQueues', $opt);
 	}
 
@@ -606,12 +606,12 @@ class AmazonSQS extends CFRuntime
 	 * returned on subsequent <code>ReceiveMessage</code> requests for the duration of the
 	 * <code>VisibilityTimeout</code>. If you do not specify a <code>VisibilityTimeout</code> in the
 	 * request, the overall visibility timeout for the queue is used for the returned messages.
-	 *  
+	 *
 	 * If a message is available in the queue, the call will return immediately. Otherwise, it will
 	 * wait up to <code>WaitTimeSeconds</code> for a message to arrive. If you do not specify
 	 * <code>WaitTimeSeconds</code> in the request, the queue attribute ReceiveMessageWaitTimeSeconds
 	 * is used to determine how long to wait.
-	 *  
+	 *
 	 * You could ask for additional information about each message through the attributes. Attributes
 	 * that can be requested are <code>[SenderId, ApproximateFirstReceiveTimestamp,
 	 * ApproximateReceiveCount, SentTimestamp]</code>.
@@ -630,7 +630,7 @@ class AmazonSQS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['QueueUrl'] = $queue_url;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['AttributeName']))
 		{
@@ -660,7 +660,7 @@ class AmazonSQS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['QueueUrl'] = $queue_url;
 		$opt['Label'] = $label;
-		
+
 		return $this->authenticate('RemovePermission', $opt);
 	}
 
@@ -680,7 +680,7 @@ class AmazonSQS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['QueueUrl'] = $queue_url;
 		$opt['MessageBody'] = $message_body;
-		
+
 		return $this->authenticate('SendMessage', $opt);
 	}
 
@@ -706,7 +706,7 @@ class AmazonSQS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['QueueUrl'] = $queue_url;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'SendMessageBatchRequestEntry' => (is_array($send_message_batch_request_entry) ? $send_message_batch_request_entry : array($send_message_batch_request_entry))
@@ -736,7 +736,7 @@ class AmazonSQS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['QueueUrl'] = $queue_url;
-		
+
 		// Required map (non-list)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Attribute' => (is_array($attribute) ? $attribute : array($attribute))

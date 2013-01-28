@@ -145,7 +145,7 @@ $dynamodb = new AmazonDynamoDB();
 
 // Register the DynamoDB Session Handler.
 $handler = $dynamodb->register_session_handler(array(
-    'table_name' => 'my-sessions-table'
+		'table_name' => 'my-sessions-table'
 ));</pre>
 		<p>Before you can use the session handler, you need to create a table to store the sessions in. This can be done through the <a href="https://console.aws.amazon.com/dynamodb/home">AWS Console for Amazon DynamoDB</a>, or using the session handler class (which you must configure with the table name like in the example above).</p>
 		<pre>// Create a table for session storage with default settings.
@@ -163,8 +163,8 @@ $_SESSION['role'] = 'admin';
 // REMEMBER: You should close the session ASAP to release the session lock.
 session_write_close();</pre>
 
-        <h3>Removing expired sessions</h3>
-        <p>The session handler ties into PHP's native session garbage collection functionality, so expired sessions will be deleted periodically and automatically based on how you configure PHP to do the garbage collection. See the PHP manual for the following PHP INI settings: <a href="http://www.php.net/manual/en/session.configuration.php#ini.session.gc-probability">session.gc_probability</a>, <a href="http://www.php.net/manual/en/session.configuration.php#ini.session.gc-divisor">session.gc_divisor</a>, and <a href="http://www.php.net/manual/en/session.configuration.php#ini.session.gc-maxlifetime">session.gc_maxlifetime</a>. You may also manually call the <code>DynamoDBSessionHandler::garbage_collect()</code> to clean up the expired sessions.</p>
+				<h3>Removing expired sessions</h3>
+				<p>The session handler ties into PHP's native session garbage collection functionality, so expired sessions will be deleted periodically and automatically based on how you configure PHP to do the garbage collection. See the PHP manual for the following PHP INI settings: <a href="http://www.php.net/manual/en/session.configuration.php#ini.session.gc-probability">session.gc_probability</a>, <a href="http://www.php.net/manual/en/session.configuration.php#ini.session.gc-divisor">session.gc_divisor</a>, and <a href="http://www.php.net/manual/en/session.configuration.php#ini.session.gc-maxlifetime">session.gc_maxlifetime</a>. You may also manually call the <code>DynamoDBSessionHandler::garbage_collect()</code> to clean up the expired sessions.</p>
 
 		<h2 id="configuration">Configuring the DynamoDB Session Handler</h2>
 		<p>You may configure the behavior of the session handler using a the following settings:</p>
@@ -197,14 +197,14 @@ session_write_close();</pre>
 		<p>To configure the Session Handle, you must pass the configuration data into the constructor. (<strong>Note</strong>: The values used below are actually the default settings.)</p>
 		<pre>$dynamodb = new AmazonDynamoDB();
 $handler = $dynamodb->register_session_handler(array(
-    'table_name'           => 'sessions',
-    'hash_key'             => 'id',
-    'session_lifetime'     => 0,
-    'consistent_reads'     => true,
-    'session_locking'      => true,
-    'max_lock_wait_time'   => 15,
-    'min_lock_retry_utime' => 5000,
-    'max_lock_retry_utime' => 50000,
+		'table_name'					 => 'sessions',
+		'hash_key'						 => 'id',
+		'session_lifetime'		 => 0,
+		'consistent_reads'		 => true,
+		'session_locking'			=> true,
+		'max_lock_wait_time'	 => 15,
+		'min_lock_retry_utime' => 5000,
+		'max_lock_retry_utime' => 50000,
 ));</pre>
 
 		<h2 id="session_locking">Session locking</h2>

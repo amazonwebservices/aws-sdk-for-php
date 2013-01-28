@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -33,18 +33,18 @@ class AuthV4Query extends Signer implements Signable
 	 */
 	protected static $endpoint_map = array(
 		// Amazon Simple Email Service (SES)
-		'email.us-east-1.amazonaws.com'      => array('service' => 'ses', 'region' => 'us-east-1'),
+		'email.us-east-1.amazonaws.com'			=> array('service' => 'ses', 'region' => 'us-east-1'),
 
 		// Amazon Simple Queue Service (SQS)
-		'queue.amazonaws.com'                => array('service' => 'sqs', 'region' => 'us-east-1'),
-		'us-west-1.queue.amazonaws.com'      => array('service' => 'sqs', 'region' => 'us-west-1'),
-		'us-west-2.queue.amazonaws.com'      => array('service' => 'sqs', 'region' => 'us-west-2'),
-		'eu-west-1.queue.amazonaws.com'      => array('service' => 'sqs', 'region' => 'eu-west-1'),
+		'queue.amazonaws.com'								=> array('service' => 'sqs', 'region' => 'us-east-1'),
+		'us-west-1.queue.amazonaws.com'			=> array('service' => 'sqs', 'region' => 'us-west-1'),
+		'us-west-2.queue.amazonaws.com'			=> array('service' => 'sqs', 'region' => 'us-west-2'),
+		'eu-west-1.queue.amazonaws.com'			=> array('service' => 'sqs', 'region' => 'eu-west-1'),
 		'ap-southeast-1.queue.amazonaws.com' => array('service' => 'sqs', 'region' => 'ap-southeast-1'),
 		'ap-southeast-2.queue.amazonaws.com' => array('service' => 'sqs', 'region' => 'ap-southeast-2'),
 		'ap-northeast-1.queue.amazonaws.com' => array('service' => 'sqs', 'region' => 'ap-northeast-1'),
-		'sa-east-1.queue.amazonaws.com'      => array('service' => 'sqs', 'region' => 'sa-east-1'),
-		'us-gov-west-1.queue.amazonaws.com'  => array('service' => 'sqs', 'region' => 'us-gov-west-1'),
+		'sa-east-1.queue.amazonaws.com'			=> array('service' => 'sqs', 'region' => 'sa-east-1'),
+		'us-gov-west-1.queue.amazonaws.com'	=> array('service' => 'sqs', 'region' => 'us-gov-west-1'),
 	);
 
 	/**
@@ -210,11 +210,11 @@ class AuthV4Query extends Signer implements Signable
 	 */
 	protected function signature($datetime)
 	{
-		$k_date        = $this->hmac('AWS4' . $this->secret_key, substr($datetime, 0, 8));
-		$k_region      = $this->hmac($k_date, $this->region());
-		$k_service     = $this->hmac($k_region, $this->service());
+		$k_date				= $this->hmac('AWS4' . $this->secret_key, substr($datetime, 0, 8));
+		$k_region			= $this->hmac($k_date, $this->region());
+		$k_service		 = $this->hmac($k_region, $this->service());
 		$k_credentials = $this->hmac($k_service, 'aws4_request');
-		$signature     = $this->hmac($k_credentials, $this->string_to_sign($datetime));
+		$signature		 = $this->hmac($k_credentials, $this->string_to_sign($datetime));
 
 		return $signature;
 	}

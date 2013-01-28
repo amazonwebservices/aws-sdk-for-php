@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -19,14 +19,14 @@
 	In order to run this sample, I'll assume a few things:
 
 	* You already have a valid Amazon Web Services developer account, and are
-	  signed up to use Amazon SimpleDB <http://aws.amazon.com/simpledb>.
+		signed up to use Amazon SimpleDB <http://aws.amazon.com/simpledb>.
 
 	* You already understand the fundamentals of object-oriented PHP.
 
 	* You've verified that your PHP environment passes the SDK Compatibility Test.
 
 	* You've already added your credentials to your config.inc.php file, as per the
-	  instructions in the Getting Started Guide.
+		instructions in the Getting Started Guide.
 
 	TO RUN:
 	* Run this file on your web server by loading it in your browser. It will generate HTML output.
@@ -64,42 +64,42 @@
 		// Add a batch of item-key-values to your domain
 		$add_attributes = $sdb->batch_put_attributes($domain, array(
 			'Item_01' => array(
-				'Category'    => 'Clothes',
+				'Category'		=> 'Clothes',
 				'Subcategory' => 'Sweater',
-				'Name'        => 'Cathair Sweater',
-				'Color'       => 'Siamese',
-				'Size'        => array('Small', 'Medium', 'Large')
+				'Name'				=> 'Cathair Sweater',
+				'Color'			 => 'Siamese',
+				'Size'				=> array('Small', 'Medium', 'Large')
 			),
 			'Item_02' => array(
-				'Category'    => 'Clothes',
+				'Category'		=> 'Clothes',
 				'Subcategory' => 'Pants',
-				'Name'        => 'Designer Jeans',
-				'Color'       => 'Paisley Acid Wash',
-				'Size'        => array('30x32', '32x32', '32x34')
+				'Name'				=> 'Designer Jeans',
+				'Color'			 => 'Paisley Acid Wash',
+				'Size'				=> array('30x32', '32x32', '32x34')
 			),
 			'Item_03' => array(
-				'Category'    => 'Clothes',
+				'Category'		=> 'Clothes',
 				'Subcategory' => 'Pants',
-				'Name'        => 'Sweatpants',
-				'Color'       => array('Blue', 'Yellow', 'Pink'),
-				'Size'        => 'Large',
-				'Year'        => array('2006', '2007')
+				'Name'				=> 'Sweatpants',
+				'Color'			 => array('Blue', 'Yellow', 'Pink'),
+				'Size'				=> 'Large',
+				'Year'				=> array('2006', '2007')
 			),
 			'Item_04' => array(
-				'Category'    => 'Car Parts',
+				'Category'		=> 'Car Parts',
 				'Subcategory' => 'Engine',
-				'Name'        => 'Turbos',
-				'Make'        => 'Audi',
-				'Model'       => 'S4',
-				'Year'        => array('2000', '2001', '2002')
+				'Name'				=> 'Turbos',
+				'Make'				=> 'Audi',
+				'Model'			 => 'S4',
+				'Year'				=> array('2000', '2001', '2002')
 			),
 			'Item_05' => array(
-				'Category'    => 'Car Parts',
+				'Category'		=> 'Car Parts',
 				'Subcategory' => 'Emissions',
-				'Name'        => 'O2 Sensor',
-				'Make'        => 'Audi',
-				'Model'       => 'S4',
-				'Year'        => array('2000', '2001', '2002')
+				'Name'				=> 'O2 Sensor',
+				'Make'				=> 'Audi',
+				'Model'			 => 'S4',
+				'Year'				=> array('2000', '2001', '2002')
 			),
 		));
 

@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -476,18 +476,18 @@ class AmazonS3 extends CFRuntime
 		$this->api_version = '2006-03-01';
 		$this->hostname = self::DEFAULT_URL;
 
-		$this->base_acp_xml             = '<?xml version="1.0" encoding="UTF-8"?><AccessControlPolicy xmlns="http://s3.amazonaws.com/doc/latest/"/>';
+		$this->base_acp_xml						 = '<?xml version="1.0" encoding="UTF-8"?><AccessControlPolicy xmlns="http://s3.amazonaws.com/doc/latest/"/>';
 		$this->base_location_constraint = '<?xml version="1.0" encoding="UTF-8"?><CreateBucketConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"><LocationConstraint/></CreateBucketConfiguration>';
-		$this->base_logging_xml         = '<?xml version="1.0" encoding="utf-8"?><BucketLoggingStatus xmlns="http://doc.s3.amazonaws.com/' . $this->api_version . '"/>';
-		$this->base_notification_xml    = '<?xml version="1.0" encoding="utf-8"?><NotificationConfiguration/>';
-		$this->base_versioning_xml      = '<?xml version="1.0" encoding="utf-8"?><VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"/>';
-		$this->complete_mpu_xml         = '<?xml version="1.0" encoding="utf-8"?><CompleteMultipartUpload/>';
-		$this->website_config_xml       = '<?xml version="1.0" encoding="utf-8"?><WebsiteConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"><IndexDocument><Suffix>index.html</Suffix></IndexDocument><ErrorDocument><Key>error.html</Key></ErrorDocument></WebsiteConfiguration>';
-		$this->multi_object_delete_xml  = '<?xml version="1.0" encoding="utf-8"?><Delete/>';
-		$this->object_expiration_xml    = '<?xml version="1.0" encoding="utf-8"?><LifecycleConfiguration/>';
-		$this->bucket_tagging_xml       = '<?xml version="1.0" encoding="utf-8"?><Tagging><TagSet/></Tagging>';
-		$this->cors_config_xml          = '<?xml version="1.0" encoding="utf-8"?><CORSConfiguration />';
-		$this->restore_request_xml      = '<?xml version="1.0" encoding="utf-8"?><RestoreRequest xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '"/>';
+		$this->base_logging_xml				 = '<?xml version="1.0" encoding="utf-8"?><BucketLoggingStatus xmlns="http://doc.s3.amazonaws.com/' . $this->api_version . '"/>';
+		$this->base_notification_xml		= '<?xml version="1.0" encoding="utf-8"?><NotificationConfiguration/>';
+		$this->base_versioning_xml			= '<?xml version="1.0" encoding="utf-8"?><VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"/>';
+		$this->complete_mpu_xml				 = '<?xml version="1.0" encoding="utf-8"?><CompleteMultipartUpload/>';
+		$this->website_config_xml			 = '<?xml version="1.0" encoding="utf-8"?><WebsiteConfiguration xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '/"><IndexDocument><Suffix>index.html</Suffix></IndexDocument><ErrorDocument><Key>error.html</Key></ErrorDocument></WebsiteConfiguration>';
+		$this->multi_object_delete_xml	= '<?xml version="1.0" encoding="utf-8"?><Delete/>';
+		$this->object_expiration_xml		= '<?xml version="1.0" encoding="utf-8"?><LifecycleConfiguration/>';
+		$this->bucket_tagging_xml			 = '<?xml version="1.0" encoding="utf-8"?><Tagging><TagSet/></Tagging>';
+		$this->cors_config_xml					= '<?xml version="1.0" encoding="utf-8"?><CORSConfiguration />';
+		$this->restore_request_xml			= '<?xml version="1.0" encoding="utf-8"?><RestoreRequest xmlns="http://s3.amazonaws.com/doc/' . $this->api_version . '"/>';
 
 		parent::__construct($options);
 	}
@@ -602,7 +602,7 @@ class AmazonS3 extends CFRuntime
 		$scheme = $this->use_ssl ? 'https://' : 'http://';
 		if ($bucket_name_may_cause_ssl_wildcard_failures || $this->resource_prefix || $this->path_style)
 		{
-            // Use bucket-in-path method
+						// Use bucket-in-path method
 			$hostname = $this->hostname . $this->resource_prefix . (($bucket === '' || $this->resource_prefix === '/' . $bucket) ? '' : ('/' . $bucket));
 		}
 		else
@@ -1010,15 +1010,15 @@ class AmazonS3 extends CFRuntime
 		if ($bucket === '') return true;
 
 		if (
-			($bucket === null || $bucket === false) ||                  // Must not be null or false
-			preg_match('/[^(a-z0-9\-\.)]/', $bucket) ||                 // Must be in the lowercase Roman alphabet, period or hyphen
-			!preg_match('/^([a-z]|\d)/', $bucket) ||                    // Must start with a number or letter
-			!(strlen($bucket) >= 3 && strlen($bucket) <= 63) ||         // Must be between 3 and 63 characters long
-			(strpos($bucket, '..') !== false) ||                        // Bucket names cannot contain two, adjacent periods
-			(strpos($bucket, '-.') !== false) ||                        // Bucket names cannot contain dashes next to periods
-			(strpos($bucket, '.-') !== false) ||                        // Bucket names cannot contain dashes next to periods
-			preg_match('/(-|\.)$/', $bucket) ||                         // Bucket names should not end with a dash or period
-			preg_match('/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/', $bucket)    // Must not be formatted as an IP address
+			($bucket === null || $bucket === false) ||									// Must not be null or false
+			preg_match('/[^(a-z0-9\-\.)]/', $bucket) ||								 // Must be in the lowercase Roman alphabet, period or hyphen
+			!preg_match('/^([a-z]|\d)/', $bucket) ||										// Must start with a number or letter
+			!(strlen($bucket) >= 3 && strlen($bucket) <= 63) ||				 // Must be between 3 and 63 characters long
+			(strpos($bucket, '..') !== false) ||												// Bucket names cannot contain two, adjacent periods
+			(strpos($bucket, '-.') !== false) ||												// Bucket names cannot contain dashes next to periods
+			(strpos($bucket, '.-') !== false) ||												// Bucket names cannot contain dashes next to periods
+			preg_match('/(-|\.)$/', $bucket) ||												 // Bucket names should not end with a dash or period
+			preg_match('/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/', $bucket)		// Must not be formatted as an IP address
 		) return false;
 
 		return true;
@@ -1038,11 +1038,11 @@ class AmazonS3 extends CFRuntime
 
 		// Validate
 		if (
-			($bucket === null || $bucket === false) ||                  // Must not be null or false
-			preg_match('/[^(a-z0-9_\-\.)]/i', $bucket) ||               // Must be in the Roman alphabet, period, hyphen or underscore
-			!preg_match('/^([a-z]|\d)/i', $bucket) ||                   // Must start with a number or letter
-			!(strlen($bucket) >= 3 && strlen($bucket) <= 255) ||        // Must be between 3 and 255 characters long
-			preg_match('/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/', $bucket)    // Must not be formatted as an IP address
+			($bucket === null || $bucket === false) ||									// Must not be null or false
+			preg_match('/[^(a-z0-9_\-\.)]/i', $bucket) ||							 // Must be in the Roman alphabet, period, hyphen or underscore
+			!preg_match('/^([a-z]|\d)/i', $bucket) ||									 // Must start with a number or letter
+			!(strlen($bucket) >= 3 && strlen($bucket) <= 255) ||				// Must be between 3 and 255 characters long
+			preg_match('/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/', $bucket)		// Must not be formatted as an IP address
 		) return false;
 
 		return true;
@@ -1177,7 +1177,7 @@ class AmazonS3 extends CFRuntime
 				$opt['body'] = '';
 				break;
 
-			case self::REGION_EU_W1:    // Ireland
+			case self::REGION_EU_W1:		// Ireland
 				$xml->LocationConstraint = 'EU';
 				$opt['body'] = $xml->asXML();
 				break;
@@ -2062,8 +2062,8 @@ class AmazonS3 extends CFRuntime
 			// Handle the IDs
 			switch ($user['id'])
 			{
-				case self::USERS_AUTH:    // Authorized Users
-				case self::USERS_ALL:     // All Users
+				case self::USERS_AUTH:		// Authorized Users
+				case self::USERS_ALL:		 // All Users
 				case self::USERS_LOGGING: // The Logging User
 					$headers[$permission][] = 'uri="' . $user['id'] . '"';
 					break;
@@ -2773,14 +2773,14 @@ class AmazonS3 extends CFRuntime
 		}
 
 		$data = array(
-			'ACL'          => array(),
-			'ContentType'  => null,
-			'ETag'         => null,
-			'Headers'      => null,
-			'Key'          => null,
+			'ACL'					=> array(),
+			'ContentType'	=> null,
+			'ETag'				 => null,
+			'Headers'			=> null,
+			'Key'					=> null,
 			'LastModified' => null,
-			'Owner'        => array(),
-			'Size'         => null,
+			'Owner'				=> array(),
+			'Size'				 => null,
 			'StorageClass' => null,
 		);
 
@@ -4002,13 +4002,13 @@ class AmazonS3 extends CFRuntime
 	 * 			<li><code>id</code> - <code>string</code> - Optional - Unique identifier for the rule. The value cannot be longer than 255 characters.</li>
 	 * 			<li><code>prefix</code> - <code>string</code> - Required - The Amazon S3 object prefix which targets the file(s) for expiration.</li>
 	 * 			<li><code>expiration</code> - <code>array</code> - Optional - The container for the unit of measurement by which the expiration time is calculated. At least one action (either <code>transition</code> or <code>expiration</code>) is required within one lifecycle rule. <ul>
-	 *     			<li><code>date</code> - <code>string</code> - Conditionally Required - The timestamp for when the targetted objects are to be moved or expired from the bucket. Should be in ISO 8601 Format. HH:MM:SS will be enforced as midnight GMT/UTC.</li>
+	 *		 			<li><code>date</code> - <code>string</code> - Conditionally Required - The timestamp for when the targetted objects are to be moved or expired from the bucket. Should be in ISO 8601 Format. HH:MM:SS will be enforced as midnight GMT/UTC.</li>
 	 * 				<li><code>days</code> - <code>integer</code> - Conditionally Required - The number of days until the targetted objects are to be moved or expired from the bucket. Must be a positive integer.</li>
 	 * 			</ul></li>
 	 * 			<li><code>transition</code> - <code>array</code> - Optional - The container for the element that describes a transition action. At least one action (either <code>transition</code> or <code>expiration</code>) is required within one lifecycle rule. <ul>
-	 *     			<li><code>date</code> - <code>string</code> - Conditionally Required - The timestamp for when the targetted objects are to be moved or expired from the bucket. Should be in ISO 8601 Format. HH:MM:SS will be enforced as midnight GMT/UTC.</li>
+	 *		 			<li><code>date</code> - <code>string</code> - Conditionally Required - The timestamp for when the targetted objects are to be moved or expired from the bucket. Should be in ISO 8601 Format. HH:MM:SS will be enforced as midnight GMT/UTC.</li>
 	 * 				<li><code>days</code> - <code>integer</code> - Conditionally Required - The number of days until the targetted objects are to be moved or expired from the bucket. Must be a positive integer.</li>
-	 *     			<li><code>storage</code> - <code>string</code> - Required - The storage setting of an object. [Allowed values: <code>AmazonS3::STORAGE_STANDARD</code>, <code>AmazonS3::STORAGE_REDUCED</code>, <code>STORAGE_GLACIER</code>]. The default value is <code>STORAGE_STANDARD</code>.</li>
+	 *		 			<li><code>storage</code> - <code>string</code> - Required - The storage setting of an object. [Allowed values: <code>AmazonS3::STORAGE_STANDARD</code>, <code>AmazonS3::STORAGE_REDUCED</code>, <code>STORAGE_GLACIER</code>]. The default value is <code>STORAGE_STANDARD</code>.</li>
 	 * 			</ul></li>
 	 * 			<li><code>enabled</code> - <code>boolean</code> - Optional - Whether or not to enable this rule-set. A value of <code>true</code> enables the rule-set. A value of <code>false</code> disables the rule-set. The default value is <code>true</code>.</li>
 	 * 		</ul></li>

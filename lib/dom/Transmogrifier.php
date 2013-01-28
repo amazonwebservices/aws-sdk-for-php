@@ -34,7 +34,7 @@ class Transmogrifier
 	// CONSTANTS
 
 	const ATTRIBUTES = '__attributes__';
-	const CONTENT    = '__content__';
+	const CONTENT		= '__content__';
 
 
 	/******************************************************************************/
@@ -43,9 +43,9 @@ class Transmogrifier
 	/**
 	 * Public method for converting an array into an XML DOMDocument object.
 	 *
-	 * @param  array  $source      The source array to convert into an XML document.
-	 * @param  string $rootTagName The name to assign to the root element of the XML document. The default value is "root".
-	 * @return string              The XML document as a string.
+	 * @param	array	$source			The source array to convert into an XML document.
+	 * @param	string $rootTagName The name to assign to the root element of the XML document. The default value is "root".
+	 * @return string							The XML document as a string.
 	 */
 	public static function to_dom(array $source, $rootTagName = 'root')
 	{
@@ -65,9 +65,9 @@ class Transmogrifier
 	/**
 	 * Public method for converting an array into an XML document.
 	 *
-	 * @param  array  $source      The source array to convert into an XML document.
-	 * @param  string $rootTagName The name to assign to the root element of the XML document. The default value is "root".
-	 * @return string              The XML document as a string.
+	 * @param	array	$source			The source array to convert into an XML document.
+	 * @param	string $rootTagName The name to assign to the root element of the XML document. The default value is "root".
+	 * @return string							The XML document as a string.
 	 */
 	public static function to_xml(array $source, $rootTagName = 'root')
 	{
@@ -85,10 +85,10 @@ class Transmogrifier
 	/**
 	 * Recursively iterates over each child of the array to produce an XML structure.
 	 *
-	 * @param  mixed               $source   The content node that is being evaluated.
-	 * @param  string              $tagName  The name of the current element.
-	 * @param  DOMDocument         $document The parent-most DOMDocument element that we're writing to.
-	 * @return DOMDocumentFragment           A DOM document fragment that can be appended to a parent DOM element.
+	 * @param	mixed							 $source	 The content node that is being evaluated.
+	 * @param	string							$tagName	The name of the current element.
+	 * @param	DOMDocument				 $document The parent-most DOMDocument element that we're writing to.
+	 * @return DOMDocumentFragment					 A DOM document fragment that can be appended to a parent DOM element.
 	 */
 	protected static function create_dom_element_from_array($source, $tagName, DOMDocument $document, $parent = null)
 	{
@@ -181,10 +181,10 @@ class Transmogrifier
 	/**
 	 * Handle nodes that are only content.
 	 *
-	 * @param  mixed               $content  The content node to handle.
-	 * @param  DOMDocument         $document The parent-most DOMDocument element that we're writing to.
-	 * @param  DOMElement          $element  The parent node of the content to mark as encoded.
-	 * @return DOMDocumentFragment           A DOM document fragment that can be appended to a parent DOM element.
+	 * @param	mixed							 $content	The content node to handle.
+	 * @param	DOMDocument				 $document The parent-most DOMDocument element that we're writing to.
+	 * @param	DOMElement					$element	The parent node of the content to mark as encoded.
+	 * @return DOMDocumentFragment					 A DOM document fragment that can be appended to a parent DOM element.
 	 */
 	protected static function handle_content($content, DOMDocument $document, DOMElement $element)
 	{
@@ -230,8 +230,8 @@ class Transmogrifier
 	 * Clean-up the duplicate nodes caused by not being able to reference
 	 * grandparent nodes during the recursion flow.
 	 *
-	 * @param  DOMDocument $document The XML document to clean-up.
-	 * @return DOMDocument           The original XML document.
+	 * @param	DOMDocument $document The XML document to clean-up.
+	 * @return DOMDocument					 The original XML document.
 	 */
 	protected static function cleanup(DOMDocument $document)
 	{
@@ -276,8 +276,8 @@ class Transmogrifier
 	/**
 	 * Method that checks to see if the array is indexed.
 	 *
-	 * @param  array   $array The array to test.
-	 * @return boolean        Whether or not the array is indexed. A value of true means that the array is indexed. A value of false means that the array is associative.
+	 * @param	array	 $array The array to test.
+	 * @return boolean				Whether or not the array is indexed. A value of true means that the array is indexed. A value of false means that the array is associative.
 	 */
 	protected static function is_list(array $array)
 	{
@@ -297,8 +297,8 @@ class Transmogrifier
 	/**
 	 * Method that checks to see if the array is associative.
 	 *
-	 * @param  array   $array The array to test.
-	 * @return boolean        Whether or not the array is associative. A value of true means that the array is associative. A value of false means that the array is indexed.
+	 * @param	array	 $array The array to test.
+	 * @return boolean				Whether or not the array is associative. A value of true means that the array is associative. A value of false means that the array is indexed.
 	 */
 	protected static function is_hash(array $array)
 	{
