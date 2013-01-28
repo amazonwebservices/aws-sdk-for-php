@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -17,17 +17,17 @@
 /**
  * This is the AWS Elastic Beanstalk API Reference. This guide provides detailed information about
  * AWS Elastic Beanstalk actions, data types, parameters, and errors.
- *  
+ *
  * AWS Elastic Beanstalk is a tool that makes it easy for you to create, deploy, and manage
  * scalable, fault-tolerant applications running on Amazon Web Services cloud resources.
- *  
+ *
  * For more information about this product, go to the <a href=
  * "http://aws.amazon.com/elasticbeanstalk/">AWS Elastic Beanstalk</a> details page. The location
  * of the lastest AWS Elastic Beanstalk WSDL is <a href=
  * "http://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl">http://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl</a>.
- *  
+ *
  * <strong>Endpoints</strong>
- *  
+ *
  * For a list of region-specific endpoints that AWS Elastic Beanstalk supports, go to <a href=
  * "http://docs.amazonwebservices.com/general/latest/gr/rande.html#elasticbeanstalk_region">Regions
  * and Endpoints</a> in the <em>Amazon Web Services Glossary</em>.
@@ -188,14 +188,14 @@ class AmazonElasticBeanstalk extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CNAMEPrefix'] = $cnameprefix;
-		
+
 		return $this->authenticate('CheckDNSAvailability', $opt);
 	}
 
 	/**
 	 * Creates an application that has one configuration template named <code>default</code> and no
 	 * application versions.
-	 * 
+	 *
 	 * <p class="note">
 	 * The <code>default</code> configuration template is for a 32-bit version of the Amazon Linux
 	 * operating system running the Tomcat 6 application container.
@@ -212,13 +212,13 @@ class AmazonElasticBeanstalk extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
-		
+
 		return $this->authenticate('CreateApplication', $opt);
 	}
 
 	/**
 	 * Creates an application version for the specified application.
-	 * 
+	 *
 	 * <p class="note">
 	 * Once you create an application version with a specified Amazon S3 bucket and key location, you
 	 * cannot change that Amazon S3 location. If you change the Amazon S3 location, you receive an
@@ -245,7 +245,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
 		$opt['VersionLabel'] = $version_label;
-		
+
 		// Optional map (non-list)
 		if (isset($opt['SourceBundle']))
 		{
@@ -261,9 +261,9 @@ class AmazonElasticBeanstalk extends CFRuntime
 	/**
 	 * Creates a configuration template. Templates are associated with a specific application and are
 	 * used to deploy different versions of the application with the same configuration settings.
-	 *  
+	 *
 	 * Related Topics
-	 * 
+	 *
 	 * <ul>
 	 * 	<li><code>DescribeConfigurationOptions</code></li>
 	 * 	<li><code>DescribeConfigurationSettings</code></li>
@@ -298,7 +298,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
 		$opt['TemplateName'] = $template_name;
-		
+
 		// Optional map (non-list)
 		if (isset($opt['SourceConfiguration']))
 		{
@@ -307,7 +307,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 			), 'member'));
 			unset($opt['SourceConfiguration']);
 		}
-		
+
 		// Optional list + map
 		if (isset($opt['OptionSettings']))
 		{
@@ -353,7 +353,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
 		$opt['EnvironmentName'] = $environment_name;
-		
+
 		// Optional list + map
 		if (isset($opt['OptionSettings']))
 		{
@@ -362,7 +362,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 			), 'member'));
 			unset($opt['OptionSettings']);
 		}
-		
+
 		// Optional list + map
 		if (isset($opt['OptionsToRemove']))
 		{
@@ -377,7 +377,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 
 	/**
 	 * Creates the Amazon S3 storage location for the account.
-	 *  
+	 *
 	 * This location is used to store user log files.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -388,14 +388,14 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function create_storage_location($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('CreateStorageLocation', $opt);
 	}
 
 	/**
 	 * Deletes the specified application along with all associated versions and configurations. The
 	 * application versions will not be deleted from your Amazon S3 bucket.
-	 * 
+	 *
 	 * <p class="note">
 	 * You cannot delete an application that has a running environment.
 	 * </p>
@@ -411,13 +411,13 @@ class AmazonElasticBeanstalk extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
-		
+
 		return $this->authenticate('DeleteApplication', $opt);
 	}
 
 	/**
 	 * Deletes the specified version from the specified application.
-	 * 
+	 *
 	 * <p class="note">
 	 * You cannot delete an application version that is associated with a running environment.
 	 * </p>
@@ -435,13 +435,13 @@ class AmazonElasticBeanstalk extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
 		$opt['VersionLabel'] = $version_label;
-		
+
 		return $this->authenticate('DeleteApplicationVersion', $opt);
 	}
 
 	/**
 	 * Deletes the specified configuration template.
-	 * 
+	 *
 	 * <p class="note">
 	 * When you launch an environment using a configuration template, the environment gets a copy of
 	 * the template. You can delete or modify the environment's copy of the template without affecting
@@ -460,13 +460,13 @@ class AmazonElasticBeanstalk extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
 		$opt['TemplateName'] = $template_name;
-		
+
 		return $this->authenticate('DeleteConfigurationTemplate', $opt);
 	}
 
 	/**
 	 * Deletes the draft configuration associated with the running environment.
-	 *  
+	 *
 	 * Updating a running environment with any configuration changes creates a draft configuration
 	 * set. You can get the draft configuration using <code>DescribeConfigurationSettings</code> while
 	 * the update is in progress or if the update fails. The <code>DeploymentStatus</code> for the
@@ -485,7 +485,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
 		$opt['EnvironmentName'] = $environment_name;
-		
+
 		return $this->authenticate('DeleteEnvironmentConfiguration', $opt);
 	}
 
@@ -502,7 +502,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function describe_application_versions($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['VersionLabels']))
 		{
@@ -527,7 +527,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function describe_applications($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['ApplicationNames']))
 		{
@@ -564,7 +564,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function describe_configuration_options($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list + map
 		if (isset($opt['Options']))
 		{
@@ -580,14 +580,14 @@ class AmazonElasticBeanstalk extends CFRuntime
 	/**
 	 * Returns a description of the settings for the specified configuration set, that is, either a
 	 * configuration template or the configuration set associated with a running environment.
-	 *  
+	 *
 	 * When describing the settings for the configuration set associated with a running environment,
 	 * it is possible to receive two sets of setting descriptions. One is the deployed configuration
 	 * set, and the other is a draft configuration of an environment that is either in the process of
 	 * deployment or that failed to deploy.
-	 *  
+	 *
 	 * Related Topics
-	 * 
+	 *
 	 * <ul>
 	 * 	<li><code>DeleteEnvironmentConfiguration</code></li>
 	 * </ul>
@@ -604,7 +604,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
-		
+
 		return $this->authenticate('DescribeConfigurationSettings', $opt);
 	}
 
@@ -621,7 +621,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function describe_environment_resources($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeEnvironmentResources', $opt);
 	}
 
@@ -642,7 +642,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function describe_environments($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional DateTime
 		if (isset($opt['IncludedDeletedBackTo']))
 		{
@@ -657,7 +657,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 			), 'member'));
 			unset($opt['EnvironmentIds']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['EnvironmentNames']))
 		{
@@ -672,7 +672,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 
 	/**
 	 * Returns list of event descriptions matching criteria up to the last 6 weeks.
-	 * 
+	 *
 	 * <p class="note">
 	 * This action returns the most recent 1,000 events from the specified <code>NextToken</code>.
 	 * </p>
@@ -696,13 +696,13 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function describe_events($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional DateTime
 		if (isset($opt['StartTime']))
 		{
 			$opt['StartTime'] = $this->util->convert_date_to_iso8601($opt['StartTime']);
 		}
-		
+
 		// Optional DateTime
 		if (isset($opt['EndTime']))
 		{
@@ -723,7 +723,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function list_available_solution_stacks($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListAvailableSolutionStacks', $opt);
 	}
 
@@ -741,19 +741,19 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function rebuild_environment($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('RebuildEnvironment', $opt);
 	}
 
 	/**
 	 * Initiates a request to compile the specified type of information of the deployed environment.
-	 *  
+	 *
 	 * Setting the <code>InfoType</code> to <code>tail</code> compiles the last lines from the
 	 * application server log files of every Amazon EC2 instance in your environment. Use
 	 * <code>RetrieveEnvironmentInfo</code> to access the compiled information.
-	 *  
+	 *
 	 * Related Topics
-	 * 
+	 *
 	 * <ul>
 	 * 	<li><code>RetrieveEnvironmentInfo</code></li>
 	 * </ul>
@@ -770,7 +770,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['InfoType'] = $info_type;
-		
+
 		return $this->authenticate('RequestEnvironmentInfo', $opt);
 	}
 
@@ -788,15 +788,15 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function restart_app_server($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('RestartAppServer', $opt);
 	}
 
 	/**
 	 * Retrieves the compiled information from a <code>RequestEnvironmentInfo</code> request.
-	 *  
+	 *
 	 * Related Topics
-	 * 
+	 *
 	 * <ul>
 	 * 	<li><code>RequestEnvironmentInfo</code></li>
 	 * </ul>
@@ -813,7 +813,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['InfoType'] = $info_type;
-		
+
 		return $this->authenticate('RetrieveEnvironmentInfo', $opt);
 	}
 
@@ -832,7 +832,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function swap_environment_cnames($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('SwapEnvironmentCNAMEs', $opt);
 	}
 
@@ -850,13 +850,13 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function terminate_environment($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('TerminateEnvironment', $opt);
 	}
 
 	/**
 	 * Updates the specified application to have the specified properties.
-	 * 
+	 *
 	 * <p class="note">
 	 * If a property (for example, <code>description</code>) is not provided, the value remains
 	 * unchanged. To clear these properties, specify an empty string.
@@ -873,13 +873,13 @@ class AmazonElasticBeanstalk extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
-		
+
 		return $this->authenticate('UpdateApplication', $opt);
 	}
 
 	/**
 	 * Updates the specified application version to have the specified properties.
-	 * 
+	 *
 	 * <p class="note">
 	 * If a property (for example, <code>description</code>) is not provided, the value remains
 	 * unchanged. To clear properties, specify an empty string.
@@ -898,20 +898,20 @@ class AmazonElasticBeanstalk extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
 		$opt['VersionLabel'] = $version_label;
-		
+
 		return $this->authenticate('UpdateApplicationVersion', $opt);
 	}
 
 	/**
 	 * Updates the specified configuration template to have the specified properties or configuration
 	 * option values.
-	 * 
+	 *
 	 * <p class="note">
 	 * If a property (for example, <code>ApplicationName</code>) is not provided, its value remains
 	 * unchanged. To clear such properties, specify an empty string.
-	 * </p> 
+	 * </p>
 	 * Related Topics
-	 * 
+	 *
 	 * <ul>
 	 * 	<li><code>DescribeConfigurationOptions</code></li>
 	 * </ul>
@@ -942,7 +942,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
 		$opt['TemplateName'] = $template_name;
-		
+
 		// Optional list + map
 		if (isset($opt['OptionSettings']))
 		{
@@ -951,7 +951,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 			), 'member'));
 			unset($opt['OptionSettings']);
 		}
-		
+
 		// Optional list + map
 		if (isset($opt['OptionsToRemove']))
 		{
@@ -968,10 +968,10 @@ class AmazonElasticBeanstalk extends CFRuntime
 	 * Updates the environment description, deploys a new application version, updates the
 	 * configuration settings to an entirely new configuration template, or updates select
 	 * configuration option values in the running environment.
-	 *  
+	 *
 	 * Attempting to update both the release and configuration is not allowed and AWS Elastic
 	 * Beanstalk returns an <code>InvalidParameterCombination</code> error.
-	 *  
+	 *
 	 * When updating the configuration settings to a new template or individual settings, a draft
 	 * configuration is created and <code>DescribeConfigurationSettings</code> for this environment
 	 * returns two setting descriptions with different <code>DeploymentStatus</code> values.
@@ -1002,7 +1002,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	public function update_environment($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list + map
 		if (isset($opt['OptionSettings']))
 		{
@@ -1011,7 +1011,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 			), 'member'));
 			unset($opt['OptionSettings']);
 		}
-		
+
 		// Optional list + map
 		if (isset($opt['OptionsToRemove']))
 		{
@@ -1027,7 +1027,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	/**
 	 * Takes a set of configuration settings and either a configuration template or environment, and
 	 * determines whether those values are valid.
-	 *  
+	 *
 	 * This action returns a list of messages indicating any errors or warnings associated with the
 	 * selection of option values.
 	 *
@@ -1050,7 +1050,7 @@ class AmazonElasticBeanstalk extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ApplicationName'] = $application_name;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'OptionSettings' => (is_array($option_settings) ? $option_settings : array($option_settings))

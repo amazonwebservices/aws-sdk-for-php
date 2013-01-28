@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -20,14 +20,14 @@
  * about Amazon CloudWatch features and their associated API calls, go to the <a href=
  * "http://docs.amazonwebservices.com/AmazonCloudWatch/latest/DeveloperGuide">Amazon CloudWatch
  * Developer Guide</a>.
- *  
+ *
  * Amazon CloudWatch is a web service that enables you to publish, monitor, and manage various
  * metrics, as well as configure alarm actions based on data from metrics. For more information
  * about this product go to <a href=
  * "http://aws.amazon.com/cloudwatch">http://aws.amazon.com/cloudwatch</a>.
- *  
+ *
  * Use the following links to get started using the <em>Amazon CloudWatch API Reference</em>:
- * 
+ *
  * <ul>
  * 	<li><a href=
  * 	"http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_Operations.html">
@@ -207,7 +207,7 @@ class AmazonCloudWatch extends CFRuntime
 	public function delete_alarms($alarm_names, $opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'AlarmNames' => (is_array($alarm_names) ? $alarm_names : array($alarm_names))
@@ -219,7 +219,7 @@ class AmazonCloudWatch extends CFRuntime
 	/**
 	 * Retrieves history for the specified alarm. Filter alarms by date range or item type. If an
 	 * alarm name is not specified, Amazon CloudWatch returns histories for all of the owner's alarms.
-	 * 
+	 *
 	 * <p class="note">
 	 * Amazon CloudWatch retains the history of an alarm for two weeks, whether or not you delete the
 	 * alarm.
@@ -239,13 +239,13 @@ class AmazonCloudWatch extends CFRuntime
 	public function describe_alarm_history($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional DateTime
 		if (isset($opt['StartDate']))
 		{
 			$opt['StartDate'] = $this->util->convert_date_to_iso8601($opt['StartDate']);
 		}
-		
+
 		// Optional DateTime
 		if (isset($opt['EndDate']))
 		{
@@ -274,7 +274,7 @@ class AmazonCloudWatch extends CFRuntime
 	public function describe_alarms($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['AlarmNames']))
 		{
@@ -312,7 +312,7 @@ class AmazonCloudWatch extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['MetricName'] = $metric_name;
 		$opt['Namespace'] = $namespace;
-		
+
 		// Optional list + map
 		if (isset($opt['Dimensions']))
 		{
@@ -338,7 +338,7 @@ class AmazonCloudWatch extends CFRuntime
 	public function disable_alarm_actions($alarm_names, $opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'AlarmNames' => (is_array($alarm_names) ? $alarm_names : array($alarm_names))
@@ -359,7 +359,7 @@ class AmazonCloudWatch extends CFRuntime
 	public function enable_alarm_actions($alarm_names, $opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'AlarmNames' => (is_array($alarm_names) ? $alarm_names : array($alarm_names))
@@ -370,27 +370,27 @@ class AmazonCloudWatch extends CFRuntime
 
 	/**
 	 * Gets statistics for the specified metric.
-	 * 
+	 *
 	 * <p class="note">
 	 * The maximum number of data points returned from a single <code>GetMetricStatistics</code>
 	 * request is 1,440. If a request is made that generates more than 1,440 data points, Amazon
 	 * CloudWatch returns an error. In such a case, alter the request by narrowing the specified time
 	 * range or increasing the specified period. Alternatively, make multiple requests across adjacent
 	 * time ranges.
-	 * </p> 
+	 * </p>
 	 * Amazon CloudWatch aggregates data points based on the length of the <code>period</code> that
 	 * you specify. For example, if you request statistics with a one-minute granularity, Amazon
 	 * CloudWatch aggregates data points with time stamps that fall within the same one-minute period.
 	 * In such a case, the data points queried can greatly outnumber the data points returned.
-	 * 
+	 *
 	 * <p class="note">
 	 * The maximum number of data points that can be queried is 50,850; whereas the maximum number of
 	 * data points returned is 1,440.
-	 * </p> 
+	 * </p>
 	 * The following examples show various statistics allowed by the data point query maximum of
 	 * 50,850 when you call <code>GetMetricStatistics</code> on Amazon EC2 instances with detailed
 	 * (one-minute) monitoring enabled:
-	 * 
+	 *
 	 * <ul>
 	 * 	<li>Statistics for up to 400 instances for a span of one hour</li>
 	 * 	<li>Statistics for up to 35 instances over a span of 24 hours</li>
@@ -445,7 +445,7 @@ class AmazonCloudWatch extends CFRuntime
 	/**
 	 * Returns a list of valid metrics stored for the AWS account owner. Returned metrics can be used
 	 * with <code>GetMetricStatistics</code> to obtain statistical data for a given metric.
-	 * 
+	 *
 	 * <p class="note">
 	 * Up to 500 results are returned for any one call. To retrieve further results, use returned
 	 * <code>NextToken</code> values with subsequent <code>ListMetrics</code> operations.
@@ -472,7 +472,7 @@ class AmazonCloudWatch extends CFRuntime
 	public function list_metrics($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list + map
 		if (isset($opt['Dimensions']))
 		{
@@ -489,11 +489,11 @@ class AmazonCloudWatch extends CFRuntime
 	 * Creates or updates an alarm and associates it with the specified Amazon CloudWatch metric.
 	 * Optionally, this operation can associate one or more Amazon Simple Notification Service
 	 * resources with the alarm.
-	 *  
+	 *
 	 * When this operation creates an alarm, the alarm state is immediately set to
 	 * <code>INSUFFICIENT_DATA</code>. The alarm is evaluated and its <code>StateValue</code> is set
 	 * appropriately. Any actions associated with the <code>StateValue</code> is then executed.
-	 * 
+	 *
 	 * <p class="note">
 	 * When updating an existing alarm, its <code>StateValue</code> is left unchanged.
 	 * </p>
@@ -534,7 +534,7 @@ class AmazonCloudWatch extends CFRuntime
 		$opt['EvaluationPeriods'] = $evaluation_periods;
 		$opt['Threshold'] = $threshold;
 		$opt['ComparisonOperator'] = $comparison_operator;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['OKActions']))
 		{
@@ -543,7 +543,7 @@ class AmazonCloudWatch extends CFRuntime
 			), 'member'));
 			unset($opt['OKActions']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['AlarmActions']))
 		{
@@ -552,7 +552,7 @@ class AmazonCloudWatch extends CFRuntime
 			), 'member'));
 			unset($opt['AlarmActions']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['InsufficientDataActions']))
 		{
@@ -561,7 +561,7 @@ class AmazonCloudWatch extends CFRuntime
 			), 'member'));
 			unset($opt['InsufficientDataActions']);
 		}
-		
+
 		// Optional list + map
 		if (isset($opt['Dimensions']))
 		{
@@ -578,14 +578,14 @@ class AmazonCloudWatch extends CFRuntime
 	 * Publishes metric data points to Amazon CloudWatch. Amazon Cloudwatch associates the data points
 	 * with the specified metric. If the specified metric does not exist, Amazon CloudWatch creates
 	 * the metric.
-	 * 
+	 *
 	 * <p class="note">
 	 * If you create a metric with the <code>PutMetricData</code> action, allow up to fifteen minutes
 	 * for the metric to appear in calls to the <code>ListMetrics</code> action.
-	 * </p> 
+	 * </p>
 	 * The size of aPutMetricDatarequest is limited to 8 KB for HTTP GET requests and 40 KB for HTTP
 	 * POST requests.
-	 * 
+	 *
 	 * <p class="important">
 	 * Although the <code>Value</code> parameter accepts numbers of type <code>Double</code>, Amazon
 	 * CloudWatch truncates values with very large exponents. Values with base-10 exponents greater
@@ -664,7 +664,7 @@ class AmazonCloudWatch extends CFRuntime
 		$opt['AlarmName'] = $alarm_name;
 		$opt['StateValue'] = $state_value;
 		$opt['StateReason'] = $state_reason;
-		
+
 		return $this->authenticate('SetAlarmState', $opt);
 	}
 }

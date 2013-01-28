@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -30,18 +30,18 @@
 class CFHadoopBootstrap extends CFHadoopBase
 {
 	// Config file types
-	const CONFIG_SITE      = 'S';
-	const CONFIG_DEFAULT   = 'D';
-	const CONFIG_CORE      = 'C';
-	const CONFIG_HDFS      = 'H';
+	const CONFIG_SITE			= 'S';
+	const CONFIG_DEFAULT	 = 'D';
+	const CONFIG_CORE			= 'C';
+	const CONFIG_HDFS			= 'H';
 	const CONFIG_MAPREDUCE = 'M';
 
 	// Daemon types
-	const DAEMON_NAME_NODE    = 'namenode';
-	const DAEMON_DATA_NODE    = 'datanode';
-	const DAEMON_JOB_TRACKER  = 'jobtracker';
+	const DAEMON_NAME_NODE		= 'namenode';
+	const DAEMON_DATA_NODE		= 'datanode';
+	const DAEMON_JOB_TRACKER	= 'jobtracker';
 	const DAEMON_TASK_TRACKER = 'tasktracker';
-	const DAEMON_CLIENT       = 'client';
+	const DAEMON_CLIENT			 = 'client';
 
 	/**
 	 * Create a new run-if bootstrap action which lets you conditionally run bootstrap actions.
@@ -55,7 +55,7 @@ class CFHadoopBootstrap extends CFHadoopBase
 		if (!$args) $args = array();
 		$args = is_array($args) ? $args : array($args);
 
-        return self::script_runner('s3://' . self::$region . '.elasticmapreduce/bootstrap-actions/run-if', $args);
+				return self::script_runner('s3://' . self::$region . '.elasticmapreduce/bootstrap-actions/run-if', $args);
 	}
 
 	/**
@@ -84,20 +84,20 @@ class CFHadoopBootstrap extends CFHadoopBase
 			}
 		}
 
-        return self::script_runner('s3://' . self::$region . '.elasticmapreduce/bootstrap-actions/configure-hadoop', $args);
+				return self::script_runner('s3://' . self::$region . '.elasticmapreduce/bootstrap-actions/configure-hadoop', $args);
 	}
 
-    /**
-     * Create a new bootstrap action which lets you configure Hadoop's daemons. The options are written to
-     * the <code>hadoop-user-env.sh</code> file.
-     *
-     * @param string $daemon_type (Required) The Hadoop daemon to configure.
+		/**
+		 * Create a new bootstrap action which lets you configure Hadoop's daemons. The options are written to
+		 * the <code>hadoop-user-env.sh</code> file.
+		 *
+		 * @param string $daemon_type (Required) The Hadoop daemon to configure.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>HeapSize</code> - <code>integer</code> - Optional - The requested heap size of the daemon, in megabytes.</li>
 	 * 	<li><code>CLIOptions</code> - <code>string</code> - Optional - Additional Java command line arguments to pass to the daemon.</li>
 	 * 	<li><code>Replace</code> - <code>boolean</code> - Optional - Whether or not the file should be replaced. A value of <code>true</code> will replace the existing configuration file. A value of <code>false</code> will append the options to the configuration file.</li></ul>
 	 * @return array A configuration set to be provided when running a job flow.
-     */
+		 */
 	public static function daemon($daemon_type, $opt = null)
 	{
 		if (!$opt) $opt = array();
@@ -122,6 +122,6 @@ class CFHadoopBootstrap extends CFHadoopBase
 			}
 		}
 
-        return self::script_runner('s3://' . self::$region . '.elasticmapreduce/bootstrap-actions/configure-daemons', $args);
+				return self::script_runner('s3://' . self::$region . '.elasticmapreduce/bootstrap-actions/configure-daemons', $args);
 	}
 }

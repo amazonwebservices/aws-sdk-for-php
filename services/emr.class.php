@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -17,7 +17,7 @@
 /**
  * This is the <em>Amazon Elastic MapReduce API Reference</em>. This guide provides descriptions
  * and samples of the Amazon Elastic MapReduce APIs.
- *  
+ *
  * Amazon Elastic MapReduce is a web service that makes it easy to process large amounts of data
  * efficiently. Elastic MapReduce uses Hadoop processing combined with several AWS products to do
  * tasks such as web indexing, data mining, log file analysis, machine learning, scientific
@@ -189,7 +189,7 @@ class AmazonEMR extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['JobFlowId'] = $job_flow_id;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'InstanceGroups' => (is_array($instance_groups) ? $instance_groups : array($instance_groups))
@@ -201,7 +201,7 @@ class AmazonEMR extends CFRuntime
 	/**
 	 * AddJobFlowSteps adds new steps to a running job flow. A maximum of 256 steps are allowed in
 	 * each job flow.
-	 *  
+	 *
 	 * If your job flow is long-running (such as a Hive data warehouse) or complex, you may require
 	 * more than 256 steps to process your data. You can bypass the 256-step limitation in various
 	 * ways, including using the SSH shell to connect to the master node and submitting queries
@@ -210,16 +210,16 @@ class AmazonEMR extends CFRuntime
 	 * "http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/AddMoreThan256Steps.html">Add
 	 * More than 256 Steps to a Job Flow</a> in the <em>Amazon Elastic MapReduce Developer's
 	 * Guide</em>.
-	 *  
+	 *
 	 * A step specifies the location of a JAR file stored either on the master node of the job flow or
 	 * in Amazon S3. Each step is performed by the main function of the main class of the JAR file.
 	 * The main class can be specified either in the manifest of the JAR or by using the MainFunction
 	 * parameter of the step.
-	 *  
+	 *
 	 * Elastic MapReduce executes each step in the order listed. For a step to be considered complete,
 	 * the main function must exit with a zero exit code and all Hadoop jobs started while the step
 	 * was running must have completed and run successfully.
-	 *  
+	 *
 	 * You can only add steps to a job flow that is in one of the following states: STARTING,
 	 * BOOTSTRAPPING, RUNNING, or WAITING.
 	 *
@@ -252,7 +252,7 @@ class AmazonEMR extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['JobFlowId'] = $job_flow_id;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Steps' => (is_array($steps) ? $steps : array($steps))
@@ -265,19 +265,19 @@ class AmazonEMR extends CFRuntime
 	 * DescribeJobFlows returns a list of job flows that match all of the supplied parameters. The
 	 * parameters can include a list of job flow IDs, job flow states, and restrictions on job flow
 	 * creation date and time.
-	 *  
+	 *
 	 * Regardless of supplied parameters, only job flows created within the last two months are
 	 * returned.
-	 *  
+	 *
 	 * If no parameters are supplied, then job flows matching either of the following criteria are
 	 * returned:
-	 * 
+	 *
 	 * <ul>
 	 * 	<li>Job flows created and completed in the last two weeks</li>
 	 * 	<li>Job flows created within the last two months that are in one of the following states:
 	 * <code>RUNNING</code>, <code>WAITING</code>, <code>SHUTTING_DOWN</code>, <code>STARTING</code></li>
 	 * </ul>
-	 * 
+	 *
 	 * Amazon Elastic MapReduce can return a maximum of 512 job flow descriptions.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -292,13 +292,13 @@ class AmazonEMR extends CFRuntime
 	public function describe_job_flows($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional DateTime
 		if (isset($opt['CreatedAfter']))
 		{
 			$opt['CreatedAfter'] = $this->util->convert_date_to_iso8601($opt['CreatedAfter']);
 		}
-		
+
 		// Optional DateTime
 		if (isset($opt['CreatedBefore']))
 		{
@@ -313,7 +313,7 @@ class AmazonEMR extends CFRuntime
 			), 'member'));
 			unset($opt['JobFlowIds']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['JobFlowStates']))
 		{
@@ -345,7 +345,7 @@ class AmazonEMR extends CFRuntime
 	public function modify_instance_groups($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list + map
 		if (isset($opt['InstanceGroups']))
 		{
@@ -365,14 +365,14 @@ class AmazonEMR extends CFRuntime
 	 * If the <code>JobFlowInstancesConfig</code> <code>KeepJobFlowAliveWhenNoSteps</code> parameter
 	 * is set to <code>TRUE</code>, the job flow will transition to the WAITING state rather than
 	 * shutting down once the steps have completed.
-	 *  
+	 *
 	 * For additional protection, you can set the <code>JobFlowInstancesConfig</code>
 	 * <code>TerminationProtected</code> parameter to <code>TRUE</code> to lock the job flow and
 	 * prevent it from being terminated by API call, user intervention, or in the event of a job flow
 	 * error.
-	 *  
+	 *
 	 * A maximum of 256 steps are allowed in each job flow.
-	 *  
+	 *
 	 * If your job flow is long-running (such as a Hive data warehouse) or complex, you may require
 	 * more than 256 steps to process your data. You can bypass the 256-step limitation in various
 	 * ways, including using the SSH shell to connect to the master node and submitting queries
@@ -381,7 +381,7 @@ class AmazonEMR extends CFRuntime
 	 * "http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/AddMoreThan256Steps.html">Add
 	 * More than 256 Steps to a Job Flow</a> in the <em>Amazon Elastic MapReduce Developer's
 	 * Guide</em>.
-	 *  
+	 *
 	 * For long running job flows, we recommend that you periodically store your results.
 	 *
 	 * @param string $name (Required) The name of the job flow. [Constraints: The value must be between 0 and 256 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
@@ -457,7 +457,7 @@ class AmazonEMR extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['Name'] = $name;
-		
+
 		// Required map (non-list)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Instances' => (is_array($instances) ? $instances : array($instances))
@@ -471,7 +471,7 @@ class AmazonEMR extends CFRuntime
 			), 'member'));
 			unset($opt['Steps']);
 		}
-		
+
 		// Optional list + map
 		if (isset($opt['BootstrapActions']))
 		{
@@ -480,7 +480,7 @@ class AmazonEMR extends CFRuntime
 			), 'member'));
 			unset($opt['BootstrapActions']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['SupportedProducts']))
 		{
@@ -499,15 +499,15 @@ class AmazonEMR extends CFRuntime
 	 * still terminates upon successful completion of the job flow. Calling SetTerminationProtection
 	 * on a job flow is analogous to calling the Amazon EC2 DisableAPITermination API on all of the
 	 * EC2 instances in a cluster.
-	 *  
+	 *
 	 * SetTerminationProtection is used to prevent accidental termination of a job flow and to ensure
 	 * that in the event of an error, the instances will persist so you can recover any data stored in
 	 * their ephemeral instance storage.
-	 *  
+	 *
 	 * To terminate a job flow that has been locked by setting SetTerminationProtection to
 	 * <code>true</code>, you must first unlock the job flow by a subsequent call to
 	 * SetTerminationProtection in which you set the value to <code>false</code>.
-	 *  
+	 *
 	 * For more information, go to <a href=
 	 * "http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/UsingEMR_TerminationProtection.html">
 	 * Protecting a Job Flow from Termination</a> in the <em>Amazon Elastic MapReduce Developer's
@@ -524,7 +524,7 @@ class AmazonEMR extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['TerminationProtected'] = $termination_protected;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'JobFlowIds' => (is_array($job_flow_ids) ? $job_flow_ids : array($job_flow_ids))
@@ -551,7 +551,7 @@ class AmazonEMR extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['VisibleToAllUsers'] = $visible_to_all_users;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'JobFlowIds' => (is_array($job_flow_ids) ? $job_flow_ids : array($job_flow_ids))
@@ -565,7 +565,7 @@ class AmazonEMR extends CFRuntime
 	 * yet completed is canceled and the EC2 instances on which the job flow is running are stopped.
 	 * Any log files not already saved are uploaded to Amazon S3 if a LogUri was specified when the
 	 * job flow was created.
-	 *  
+	 *
 	 * The call to TerminateJobFlows is asynchronous. Depending on the configuration of the job flow,
 	 * it may take up to 5-20 minutes for the job flow to completely terminate and release allocated
 	 * resources, such as Amazon EC2 instances.
@@ -579,7 +579,7 @@ class AmazonEMR extends CFRuntime
 	public function terminate_job_flows($job_flow_ids, $opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'JobFlowIds' => (is_array($job_flow_ids) ? $job_flow_ids : array($job_flow_ids))

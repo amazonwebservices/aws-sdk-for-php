@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -19,10 +19,10 @@
  * cloud-based storage to provide seamless and secure integration between an organization's
  * on-premises IT environment and AWS's storage infrastructure. The service enables you to
  * securely upload data to the AWS cloud for cost effective backup and rapid disaster recovery.
- *  
+ *
  * Use the following links to get started using the <em>AWS Storage Gateway Service API
  * Reference</em>:
- * 
+ *
  * <ul>
  * 	<li><a href=
  * 	"http://docs.amazonwebservices.com/storagegateway/latest/userguide/AWSStorageGatewayHTTPRequestsHeaders.html">
@@ -231,7 +231,7 @@ class AmazonStorageGateway extends CFRuntime
 	 * and the gateway schedule window, an activation key, and a name for your gateway. The activation
 	 * process also associates your gateway with your account (see
 	 * <code>UpdateGatewayInformation</code>).
-	 * 
+	 *
 	 * <p class="note">
 	 * You must power on the gateway VM before you can activate your gateway.
 	 * </p>
@@ -249,7 +249,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function activate_gateway($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('ActivateGateway', $opt);
 	}
 
@@ -258,7 +258,7 @@ class AmazonStorageGateway extends CFRuntime
 	 * This operation is supported only for the gateway-cached volume architecture (see <a href=
 	 * "http://docs.amazonwebservices.com/storagegateway/latest/userguide/StorageGatewayConcepts.html">
 	 * Storage Gateway Concepts</a>).
-	 *  
+	 *
 	 * In the request, you specify the gateway Amazon Resource Name (ARN) to which you want to add
 	 * cache, and one or more disk IDs that you want to configure as cache.
 	 *
@@ -272,7 +272,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function add_cache($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		// List (non-map)
 		if (isset($opt['DiskIds']))
 		{
@@ -286,7 +286,7 @@ class AmazonStorageGateway extends CFRuntime
 	 * This operation configures one or more gateway local disks as upload buffer for a specified
 	 * gateway. This operation is supported for both the gateway-stored and gateway-cached volume
 	 * architectures.
-	 *  
+	 *
 	 * In the request, you specify the gateway Amazon Resource Name (ARN) to which you want to add
 	 * upload buffer, and one or more disk IDs that you want to configure as upload buffer.
 	 *
@@ -300,7 +300,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function add_upload_buffer($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		// List (non-map)
 		if (isset($opt['DiskIds']))
 		{
@@ -313,11 +313,11 @@ class AmazonStorageGateway extends CFRuntime
 	/**
 	 * This operation configures one or more gateway local disks as working storage for a gateway.
 	 * This operation is supported only for the gateway-stored volume architecture.
-	 * 
-	 * <p class="note"></p> 
+	 *
+	 * <p class="note"></p>
 	 * Working storage is also referred to as upload buffer. You can also use the
 	 * <code>AddUploadBuffer</code> operation to add upload buffer to a stored-volume gateway.
-	 *  
+	 *
 	 * In the request, you specify the gateway Amazon Resource Name (ARN) to which you want to add
 	 * working storage, and one or more disk IDs that you want to configure as working storage.
 	 *
@@ -331,7 +331,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function add_working_storage($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		// List (non-map)
 		if (isset($opt['DiskIds']))
 		{
@@ -344,11 +344,11 @@ class AmazonStorageGateway extends CFRuntime
 	/**
 	 * This operation creates a cached volume on a specified cached gateway. This operation is
 	 * supported only for the gateway-cached volume architecture.
-	 * 
+	 *
 	 * <p class="note">
 	 * Cache storage must be allocated to the gateway before you can create a cached volume. Use the
 	 * <code>AddCache</code> operation to add cache storage to a gateway.
-	 * </p> 
+	 * </p>
 	 * In the request, you must specify the gateway, size of the volume in bytes, the iSCSI target
 	 * name, an IP address on which to expose the target, and a unique client token. In response, AWS
 	 * Storage Gateway creates the volume and returns information about it such as the volume Amazon
@@ -369,27 +369,27 @@ class AmazonStorageGateway extends CFRuntime
 	public function create_cached_iscsi_volume($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('CreateCachediSCSIVolume', $opt);
 	}
 
 	/**
 	 * This operation initiates a snapshot of a volume.
-	 *  
+	 *
 	 * AWS Storage Gateway provides the ability to back up point-in-time snapshots of your data to
 	 * Amazon Simple Storage (S3) for durable off-site recovery, as well as import the data to an
 	 * Amazon Elastic Block Store (EBS) volume in Amazon Elastic Compute Cloud (EC2). You can take
 	 * snapshots of your gateway volume on a scheduled or ad-hoc basis. This API enables you to take
 	 * ad-hoc snapshot. For more information, see <a href="TBD">Working With Snapshots in the AWS
 	 * Storage Gateway Console</a>.
-	 *  
+	 *
 	 * In the CreateSnapshot request you identify the volume by providing its Amazon Resource Name
 	 * (ARN). You must also provide description for the snapshot. When AWS Storage Gateway takes the
 	 * snapshot of specified volume, the snapshot and description appears in the AWS Storage Gateway
 	 * Console. In response, AWS Storage Gateway returns you a snapshot ID. You can use this snapshot
 	 * ID to check the snapshot progress or later use it when you want to create a volume from a
 	 * snapshot.
-	 * 
+	 *
 	 * <p class="note">
 	 * To list or delete a snapshot, you must use the Amazon EC2 API. For more information, go to
 	 * 	<a href=
@@ -409,7 +409,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function create_snapshot($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('CreateSnapshot', $opt);
 	}
 
@@ -417,19 +417,19 @@ class AmazonStorageGateway extends CFRuntime
 	 * This operation initiates a snapshot of a gateway from a volume recovery point. This operation
 	 * is supported only for the gateway-cached volume architecture (see
 	 * <code>StorageGatewayConcepts</code>).
-	 *  
+	 *
 	 * A volume recovery point is a point in time at which all data of the volume is consistent and
 	 * from which you can create a snapshot. To get a list of volume recovery point for gateway-cached
 	 * volumes, use <code>ListVolumeRecoveryPoints</code>.
-	 *  
+	 *
 	 * In the <code>CreateSnapshotFromVolumeRecoveryPoint</code> request, you identify the volume by
 	 * providing its Amazon Resource Name (ARN). You must also provide a description for the snapshot.
 	 * When AWS Storage Gateway takes a snapshot of the specified volume, the snapshot and its
 	 * description appear in the AWS Storage Gateway console. In response, AWS Storage Gateway returns
 	 * you a snapshot ID. You can use this snapshot ID to check the snapshot progress or later use it
 	 * when you want to create a volume from a snapshot.
-	 * 
-	 * <p class="note"></p> 
+	 *
+	 * <p class="note"></p>
 	 * To list or delete a snapshot, you must use the Amazon EC2 API. For more information, go to
 	 * 	<a href=
 	 * "http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DeleteSnapshot.html">
@@ -447,18 +447,18 @@ class AmazonStorageGateway extends CFRuntime
 	public function create_snapshot_from_volume_recovery_point($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('CreateSnapshotFromVolumeRecoveryPoint', $opt);
 	}
 
 	/**
 	 * This operation creates a volume on a specified gateway. This operation is supported only for
 	 * the gateway-cached volume architecture.
-	 *  
+	 *
 	 * The size of the volume to create is inferred from the disk size. You can choose to preserve
 	 * existing data on the disk, create volume from an existing snapshot, or create an empty volume.
 	 * If you choose to create an empty gateway volume, then any existing data on the disk is erased.
-	 *  
+	 *
 	 * In the request you must specify the gateway and the disk information on which you are creating
 	 * the volume. In response, AWS Storage Gateway creates the volume and returns volume information
 	 * such as the volume Amazon Resource Name (ARN), its size, and the iSCSI target ARN that
@@ -478,7 +478,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function create_stored_iscsi_volume($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('CreateStorediSCSIVolume', $opt);
 	}
 
@@ -498,7 +498,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function delete_bandwidth_rate_limit($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DeleteBandwidthRateLimit', $opt);
 	}
 
@@ -516,7 +516,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function delete_chap_credentials($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DeleteChapCredentials', $opt);
 	}
 
@@ -524,12 +524,12 @@ class AmazonStorageGateway extends CFRuntime
 	 * This operation deletes a gateway. To specify which gateway to delete, use the Amazon Resource
 	 * Name (ARN) of the gateway in your request. The operation deletes the gateway; however, it does
 	 * not delete the gateway virtual machine (VM) from your host computer.
-	 *  
+	 *
 	 * After you delete a gateway, you cannot reactivate it. Completed snapshots of the gateway
 	 * volumes are not deleted upon deleting the gateway, however, pending snapshots will not
 	 * complete. After you delete a gateway, your next step is to remove it from your environment.
-	 * 
-	 * <p class="important"></p> 
+	 *
+	 * <p class="important"></p>
 	 * You no longer pay software charges after the gateway is deleted; however, your existing Amazon
 	 * EBS snapshots persist and you will continue to be billed for these snapshots.&Acirc;&nbsp;You
 	 * can choose to remove all remaining Amazon EBS snapshots by canceling your Amazon EC2
@@ -546,20 +546,20 @@ class AmazonStorageGateway extends CFRuntime
 	public function delete_gateway($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DeleteGateway', $opt);
 	}
 
 	/**
 	 * This operation deletes a snapshot of a volume.
-	 *  
+	 *
 	 * You can take snapshots of your gateway volumes on a scheduled or ad-hoc basis. This API enables
 	 * you to delete a snapshot schedule for a volume. For more information, see <a href=
 	 * "http://docs.amazonwebservices.com/storagegateway/latest/userguide/WorkingWithSnapshots.html">Working
 	 * with Snapshots</a>. In the <code>DeleteSnapshotSchedule</code> request, you identify the volume
 	 * by providing its Amazon Resource Name (ARN).
-	 * 
-	 * <p class="note"></p> 
+	 *
+	 * <p class="note"></p>
 	 * To list or delete a snapshot, you must use the Amazon EC2 API. For more information, go to
 	 * 	<a url=
 	 * "http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DeleteSnapshot.html">
@@ -576,7 +576,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function delete_snapshot_schedule($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DeleteSnapshotSchedule', $opt);
 	}
 
@@ -585,14 +585,14 @@ class AmazonStorageGateway extends CFRuntime
 	 * <code>CreateStorediSCSIVolume</code> API. For gateway-stored volumes, the local disk that was
 	 * configured as the storage volume is not deleted. You can reuse the local disk to create another
 	 * storage volume.
-	 *  
+	 *
 	 * Before you delete a gateway volume, make sure there are no iSCSI connections to the volume you
 	 * are deleting. You should also make sure there is no snapshot in progress. You can use the
 	 * Amazon Elastic Compute Cloud (Amazon EC2) API to query snapshots on the volume you are deleting
 	 * and check the snapshot status. For more information, go to <a href=
 	 * "http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeSnapshots.html">
 	 * DescribeSnapshots</a> in the <em>Amazon Elastic Compute Cloud API Reference</em>.
-	 *  
+	 *
 	 * In the request, you must provide the Amazon Resource Name (ARN) of the storage volume you want
 	 * to delete.
 	 *
@@ -605,14 +605,14 @@ class AmazonStorageGateway extends CFRuntime
 	public function delete_volume($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DeleteVolume', $opt);
 	}
 
 	/**
 	 * This operation returns the bandwidth rate limits of a gateway. By default, these limits are not
 	 * set, which means no bandwidth rate limiting is in effect.
-	 *  
+	 *
 	 * This operation only returns a value for a bandwidth rate limit only if the limit is set. If no
 	 * limits are set for the gateway, then this operation returns only the gateway ARN in the
 	 * response body. To specify which gateway to describe, use the Amazon Resource Name (ARN) of the
@@ -627,14 +627,14 @@ class AmazonStorageGateway extends CFRuntime
 	public function describe_bandwidth_rate_limit($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DescribeBandwidthRateLimit', $opt);
 	}
 
 	/**
 	 * This operation returns information about the cache of a gateway. This operation is supported
 	 * only for the gateway-cached volume architecture.
-	 *  
+	 *
 	 * The response includes disk IDs that are configured as cache, and it includes the amount of
 	 * cache allocated and used.
 	 *
@@ -647,14 +647,14 @@ class AmazonStorageGateway extends CFRuntime
 	public function describe_cache($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DescribeCache', $opt);
 	}
 
 	/**
 	 * This operation returns a description of the gateway volumes specified in the request. This
 	 * operation is supported only for the gateway-cached volume architecture.
-	 *  
+	 *
 	 * The list of gateway volumes in the request must be from one gateway. In the response Amazon
 	 * Storage Gateway returns volume information sorted by volume Amazon Resource Name (ARN).
 	 *
@@ -667,7 +667,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function describe_cached_iscsi_volumes($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		// List (non-map)
 		if (isset($opt['VolumeARNs']))
 		{
@@ -690,7 +690,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function describe_chap_credentials($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DescribeChapCredentials', $opt);
 	}
 
@@ -708,7 +708,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function describe_gateway_information($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DescribeGatewayInformation', $opt);
 	}
 
@@ -725,7 +725,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function describe_maintenance_start_time($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DescribeMaintenanceStartTime', $opt);
 	}
 
@@ -743,7 +743,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function describe_snapshot_schedule($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DescribeSnapshotSchedule', $opt);
 	}
 
@@ -761,7 +761,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function describe_stored_iscsi_volumes($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		// List (non-map)
 		if (isset($opt['VolumeARNs']))
 		{
@@ -774,7 +774,7 @@ class AmazonStorageGateway extends CFRuntime
 	/**
 	 * This operation returns information about the upload buffer of a gateway. This operation is
 	 * supported for both the gateway-stored and gateway-cached volume architectures.
-	 *  
+	 *
 	 * The response includes disk IDs that are configured as upload buffer space, and it includes the
 	 * amount of upload buffer space allocated and used.
 	 *
@@ -787,18 +787,18 @@ class AmazonStorageGateway extends CFRuntime
 	public function describe_upload_buffer($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DescribeUploadBuffer', $opt);
 	}
 
 	/**
 	 * This operation returns information about the working storage of a gateway. This operation is
 	 * supported only for the gateway-stored volume architecture.
-	 * 
-	 * <p class="note"></p> 
+	 *
+	 * <p class="note"></p>
 	 * Working storage is also referred to as upload buffer. You can also use the
 	 * <code>DescribeUploadBuffer</code> operation to add upload buffer to a stored-volume gateway.
-	 *  
+	 *
 	 * The response includes disk IDs that are configured as working storage, and it includes the
 	 * amount of working storage allocated and used.
 	 *
@@ -811,17 +811,17 @@ class AmazonStorageGateway extends CFRuntime
 	public function describe_working_storage($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('DescribeWorkingStorage', $opt);
 	}
 
 	/**
 	 * This operation lists gateways owned by an AWS account in a region specified in the request. The
 	 * returned list is ordered by gateway Amazon Resource Name (ARN).
-	 *  
+	 *
 	 * By default, the operation returns a maximum of 100 gateways. This operation supports pagination
 	 * that allows you to optionally reduce the number of gateways returned in a response.
-	 *  
+	 *
 	 * If you have more gateways than are returned in a response-that is, the response returns only a
 	 * truncated list of your gateways-the response contains a marker that you can specify in your
 	 * next request to fetch the next page of gateways.
@@ -836,14 +836,14 @@ class AmazonStorageGateway extends CFRuntime
 	public function list_gateways($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('ListGateways', $opt);
 	}
 
 	/**
 	 * This operation returns a list of the local disks of a gateway. To specify which gateway to
 	 * describe you use the Amazon Resource Name (ARN) of the gateway in the body of the request.
-	 *  
+	 *
 	 * The request returns all disks, specifying which are configured as working storage, stored
 	 * volume or not configured at all.
 	 *
@@ -856,14 +856,14 @@ class AmazonStorageGateway extends CFRuntime
 	public function list_local_disks($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('ListLocalDisks', $opt);
 	}
 
 	/**
 	 * This operation lists the recovery points for a specified gateway. This operation is supported
 	 * only for the gateway-cached volume architecture.
-	 *  
+	 *
 	 * Each gateway-cached volume has one recovery point. A volume recovery point is a point in time
 	 * at which all data of the volume is consistent and from which you can create a snapshot. To
 	 * create a snapshot from a volume recovery point use the
@@ -878,7 +878,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function list_volume_recovery_points($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('ListVolumeRecoveryPoints', $opt);
 	}
 
@@ -886,7 +886,7 @@ class AmazonStorageGateway extends CFRuntime
 	 * This operation lists the iSCSI stored volumes of a gateway. Results are sorted by volume ARN.
 	 * The response includes only the volume ARNs. If you want additional volume information, use the
 	 * <code>DescribeStorediSCSIVolumes</code> API.
-	 *  
+	 *
 	 * The operation supports pagination. By default, the operation returns a maximum of up to 100
 	 * volumes. You can optionally specify the <code>Limit</code> field in the body to limit the
 	 * number of volumes in the response. If the number of volumes returned in the response is
@@ -904,32 +904,32 @@ class AmazonStorageGateway extends CFRuntime
 	public function list_volumes($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('ListVolumes', $opt);
 	}
 
 	/**
 	 * This operation shuts down a gateway. To specify which gateway to shut down, use the Amazon
 	 * Resource Name (ARN) of the gateway in the body of your request.
-	 *  
+	 *
 	 * The operation shuts down the gateway service component running in the storage gateway's virtual
 	 * machine (VM) and not the VM.
-	 * 
+	 *
 	 * <p class="note">
 	 * If you want to shut down the VM, it is recommended that you first shut down the gateway
 	 * component in the VM to avoid unpredictable conditions.
-	 * </p> 
+	 * </p>
 	 * After the gateway is shutdown, you cannot call any other API except <code>StartGateway</code>,
 	 * <code>DescribeGatewayInformation</code>, and <code>ListGateways</code>. For more information,
 	 * see <code>ActivateGateway</code>. Your applications cannot read from or write to the gateway's
 	 * storage volumes, and there are no snapshots taken.
-	 * 
+	 *
 	 * <p class="note">
 	 * When you make a shutdown request, you will get a <code>200 OK</code> success response
 	 * immediately. However, it might take some time for the gateway to shut down. You can call the
 	 * <code>DescribeGatewayInformation</code> API to check the status. For more information, see
 	 * <code>ActivateGateway</code>.
-	 * </p> 
+	 * </p>
 	 * If do not intend to use the gateway again, you must delete the gateway (using
 	 * <code>DeleteGateway</code>) to no longer pay software charges associated with the gateway.
 	 *
@@ -942,7 +942,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function shutdown_gateway($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('ShutdownGateway', $opt);
 	}
 
@@ -951,13 +951,13 @@ class AmazonStorageGateway extends CFRuntime
 	 * <code>ShutdownGateway</code>). After the gateway starts, you can then make other API calls,
 	 * your applications can read from or write to the gateway's storage volumes and you will be able
 	 * to take snapshot backups.
-	 * 
+	 *
 	 * <p class="note">
 	 * When you make a request, you will get a 200 OK success response immediately. However, it might
 	 * take some time for the gateway to be ready. You should call
 	 * <code>DescribeGatewayInformation</code> and check the status before making any additional API
 	 * calls. For more information, see <code>ActivateGateway</code>.
-	 * </p> 
+	 * </p>
 	 * To specify which gateway to start, use the Amazon Resource Name (ARN) of the gateway in your
 	 * request.
 	 *
@@ -970,7 +970,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function start_gateway($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('StartGateway', $opt);
 	}
 
@@ -978,11 +978,11 @@ class AmazonStorageGateway extends CFRuntime
 	 * This operation updates the bandwidth rate limits of a gateway. You can update both the upload
 	 * and download bandwidth rate limit or specify only one of the two. If you don't set a bandwidth
 	 * rate limit, the existing rate limit remains.
-	 *  
+	 *
 	 * By default, a gateway's bandwidth rate limits are not set. If you don't set any limit, the
 	 * gateway does not have any limitations on its bandwidth usage and could potentially use the
 	 * maximum available bandwidth.
-	 *  
+	 *
 	 * To specify which gateway to update, use the Amazon Resource Name (ARN) of the gateway in your
 	 * request.
 	 *
@@ -997,7 +997,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function update_bandwidth_rate_limit($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('UpdateBandwidthRateLimit', $opt);
 	}
 
@@ -1005,8 +1005,8 @@ class AmazonStorageGateway extends CFRuntime
 	 * This operation updates the Challenge-Handshake Authentication Protocol (CHAP) credentials for a
 	 * specified iSCSI target. By default, a gateway does not have CHAP enabled; however, for added
 	 * security, you might use it.
-	 * 
-	 * <p class="important"></p> 
+	 *
+	 * <p class="important"></p>
 	 * When you update CHAP credentials, all existing connections on the target are closed and
 	 * initiators must reconnect with the new credentials.
 	 *
@@ -1022,7 +1022,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function update_chap_credentials($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('UpdateChapCredentials', $opt);
 	}
 
@@ -1042,14 +1042,14 @@ class AmazonStorageGateway extends CFRuntime
 	public function update_gateway_information($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('UpdateGatewayInformation', $opt);
 	}
 
 	/**
 	 * This operation updates the gateway virtual machine (VM) software. The request immediately
 	 * triggers the software update.
-	 * 
+	 *
 	 * <p class="note">
 	 * When you make this request, you get a <code>200 OK</code> success response immediately.
 	 * However, it might take some time for the update to complete. You can call
@@ -1075,7 +1075,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function update_gateway_software_now($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('UpdateGatewaySoftwareNow', $opt);
 	}
 
@@ -1095,16 +1095,16 @@ class AmazonStorageGateway extends CFRuntime
 	public function update_maintenance_start_time($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('UpdateMaintenanceStartTime', $opt);
 	}
 
 	/**
 	 * This operation updates a snapshot schedule configured for a gateway volume.
-	 *  
+	 *
 	 * The default snapshot schedule for volume is once every 24 hours, starting at the creation time
 	 * of the volume. You can use this API to change the shapshot schedule configured for the volume.
-	 *  
+	 *
 	 * In the request you must identify the gateway volume whose snapshot schedule you want to update,
 	 * and the schedule information, including when you want the snapshot to begin on a day and the
 	 * frequency (in hours) of snapshots.
@@ -1121,7 +1121,7 @@ class AmazonStorageGateway extends CFRuntime
 	public function update_snapshot_schedule($opt = null)
 	{
 		if (!$opt) $opt = array();
-		
+
 		return $this->authenticate('UpdateSnapshotSchedule', $opt);
 	}
 }

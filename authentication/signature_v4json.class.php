@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -196,11 +196,11 @@ class AuthV4JSON extends Signer implements Signable
 	 */
 	protected function signature($datetime)
 	{
-		$k_date        = $this->hmac('AWS4' . $this->secret_key, substr($datetime, 0, 8));
-		$k_region      = $this->hmac($k_date, $this->region());
-		$k_service     = $this->hmac($k_region, $this->service());
+		$k_date				= $this->hmac('AWS4' . $this->secret_key, substr($datetime, 0, 8));
+		$k_region			= $this->hmac($k_date, $this->region());
+		$k_service		 = $this->hmac($k_region, $this->service());
 		$k_credentials = $this->hmac($k_service, 'aws4_request');
-		$signature     = $this->hmac($k_credentials, $this->string_to_sign($datetime));
+		$signature		 = $this->hmac($k_credentials, $this->string_to_sign($datetime));
 
 		return $signature;
 	}

@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -259,7 +259,7 @@ class AmazonCloudFront extends CFRuntime
 		$headers = $request->get_response_header();
 		if ($xml) $headers['x-aws-body'] = $xml;
 
-		$data =  new $this->response_class($headers, $this->parse_callback($request->get_response_body()), $request->get_response_code());
+		$data =	new $this->response_class($headers, $this->parse_callback($request->get_response_body()), $request->get_response_code());
 
 		// Was it Amazon's fault the request failed? Retry the request until we reach $max_retries.
 		if ((integer) $request->get_response_code() === 500 || (integer) $request->get_response_code() === 503)
@@ -883,7 +883,7 @@ class AmazonCloudFront extends CFRuntime
 	 * 	<li><code>Streaming</code> - <code>boolean</code> - Optional - Whether or not this should be for a streaming distribution. A value of <code>true</code> creates a streaming distribution. A value of <code>false</code> creates a standard distribution. The default value is <code>false</code>.</li>
 	 * 	<li><code>Logging</code> - <code>array</code> - Optional - Controls whether access logs are written for the distribution. If you want to turn on access logs, include this element; if you want to turn off access logs, remove this element.</li>
 	 * 	<li><code>TrustedSigners</code> - <code>array</code> - Optional - An array of AWS account numbers for users who are trusted signers. Explicity add the value <code>Self</code> to the array to add your own account as a trusted signer.</li>
-	 * 	<li><code>RequiredProtocols</code> - <code>string<code> - Optional -  Use this element to restrict access to your distribution solely to HTTPS requests. Without this element, CloudFront can use any available protocol to serve the request.</li>
+	 * 	<li><code>RequiredProtocols</code> - <code>string<code> - Optional -	Use this element to restrict access to your distribution solely to HTTPS requests. Without this element, CloudFront can use any available protocol to serve the request.</li>
 	 * 	<li><code>CachingBehavior</code> - <code>array</code> - Optional - Determines the minimum TTL for objects in the CloudFront cache. This value specifies a lower bound for values in the headers for an object, for example, in the Cache-Control max-age directive.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -1185,7 +1185,7 @@ class AmazonCloudFront extends CFRuntime
 
 	/**
 	 * Sets the configuration for an Amazon CloudFront origin access identity (OAI). Use this when updating
-	 * the configuration. Currently, only comments may be updated.  Follow the same process as when updating
+	 * the configuration. Currently, only comments may be updated.	Follow the same process as when updating
 	 * an identity's configuration as you do when updating a distribution's configuration. For more
 	 * information, go to Updating a Distribution's Configuration in the Amazon CloudFront Developer Guide.
 	 *

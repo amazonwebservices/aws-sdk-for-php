@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -19,11 +19,11 @@
  * limited-privilege credentials for AWS Identity and Access Management (IAM) users or for users
  * that you authenticate (federated users). This guide provides descriptions of the AWS Security
  * Token Service API.
- *  
+ *
  * For more detailed information about using this service, go to <a href=
  * "http://docs.amazonwebservices.com/IAM/latest/UsingSTS/Welcome.html" target="_blank">Using
  * Temporary Security Credentials</a>.
- *  
+ *
  * For information about setting up signatures and authorization through the API, go to <a href=
  * "http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html" target=
  * "_blank">Signing AWS API Requests</a> in the <em>AWS General Reference</em>. For general
@@ -33,12 +33,12 @@
  * tokens with other AWS products, go to <a href=
  * "http://docs.amazonwebservices.com/IAM/latest/UsingSTS/UsingTokens.html">Using Temporary
  * Security Credentials to Access AWS</a> in <em>Using Temporary Security Credentials</em>.
- *  
+ *
  * If you're new to AWS and need additional technical information about a specific AWS product,
  * you can find the product'stechnical documentation at <a href=
  * "http://aws.amazon.com/documentation/" target=
  * "_blank">http://aws.amazon.com/documentation/</a>.
- *  
+ *
  * We will refer to Amazon Identity and Access Management using the abbreviated form IAM. All
  * copyrights and legal protections still apply.
  *
@@ -124,16 +124,16 @@ class AmazonSTS extends CFRuntime
 	 * The <code>AssumeRole</code> action returns a set of temporary security credentials that you can
 	 * use to access resources that are defined in the role's policy. The returned credentials consist
 	 * of an Access Key ID, a Secret Access Key, and a security token.
-	 *  
+	 *
 	 * <strong>Important:</strong> Only IAM users can assume a role. If you use AWS account
 	 * credentials to call AssumeRole, access is denied.
-	 *  
+	 *
 	 * The credentials are valid for the duration that you specified when calling
 	 * <code>AssumeRole</code>, which can be from 15 minutes to 1 hour.
-	 *  
+	 *
 	 * When you assume a role, you have the privileges that are defined in the role. You can further
 	 * restrict the privileges by passing a policy when calling <code>AssumeRole</code>.
-	 *  
+	 *
 	 * To assume a role, you must be an IAM user from a trusted entity and have permission to call
 	 * <code>AssumeRole</code>. Trusted entites are defined when the IAM role is created. Permission
 	 * to call <code>AssumeRole</code> is defined in your or your group's IAM policy.
@@ -153,7 +153,7 @@ class AmazonSTS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['RoleArn'] = $role_arn;
 		$opt['RoleSessionName'] = $role_session_name;
-		
+
 		return $this->authenticate('AssumeRole', $opt);
 	}
 
@@ -163,7 +163,7 @@ class AmazonSTS extends CFRuntime
 	 * a Secret Access Key, and a security token. Credentials created by IAM users are valid for the
 	 * specified duration, between 15 minutes and 36 hours; credentials created using account
 	 * credentials have a maximum duration of one hour.
-	 *  
+	 *
 	 * The federated user who holds these credentials has any permissions allowed by the intersection
 	 * of the specified policy and any resource or user policies that apply to the caller of the
 	 * GetFederationToken API, and any resource policies that apply to the federated user's Amazon
@@ -187,7 +187,7 @@ class AmazonSTS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['Name'] = $name;
-		
+
 		return $this->authenticate('GetFederationToken', $opt);
 	}
 
@@ -198,7 +198,7 @@ class AmazonSTS extends CFRuntime
 	 * can be between 15 minutes and 36 hours, with a default of 12 hours. The session duration for
 	 * AWS account owners is restricted to a maximum of one hour. Providing the AWS Multi-Factor
 	 * Authentication (MFA) device serial number and the token code is optional.
-	 *  
+	 *
 	 * For more information about using GetSessionToken to create temporary credentials, go to
 	 * 	<a href="http://docs.amazonwebservices.com/IAM/latest/UserGuide/CreatingSessionTokens.html"
 	 * target="_blank">Creating Temporary Credentials to Enable Access for IAM Users</a> in <em>Using
@@ -215,7 +215,7 @@ class AmazonSTS extends CFRuntime
 	public function get_session_token($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('GetSessionToken', $opt);
 	}
 }

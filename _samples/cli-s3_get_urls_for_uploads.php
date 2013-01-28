@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -19,14 +19,14 @@
 	In order to run this sample, I'll assume a few things:
 
 	* You already have a valid Amazon Web Services developer account, and are
-	  signed up to use Amazon S3 <http://aws.amazon.com/s3>.
+		signed up to use Amazon S3 <http://aws.amazon.com/s3>.
 
 	* You already understand the fundamentals of object-oriented PHP.
 
 	* You've verified that your PHP environment passes the SDK Compatibility Test.
 
 	* You've already added your credentials to your config.inc.php file, as per the
-	  instructions in the Getting Started Guide.
+		instructions in the Getting Started Guide.
 
 	TO RUN:
 	* Run this file on your web server by loading it in your browser, OR...
@@ -63,7 +63,7 @@
 	if ($create_bucket_response->isOK())
 	{
 		/* Since AWS follows an "eventual consistency" model, sleep and poll
-		   until the bucket is available. */
+			 until the bucket is available. */
 		$exists = $s3->if_bucket_exists($bucket);
 		while (!$exists)
 		{
@@ -93,28 +93,28 @@
 			$individual_filenames[] = $filename;
 
 			/* Prepare to upload the file to our new S3 bucket. Add this
-			   request to a queue that we won't execute quite yet. */
+				 request to a queue that we won't execute quite yet. */
 			$s3->batch()->create_object($bucket, $filename, array(
 				'fileUpload' => $file
 			));
 		}
 
 		/* Execute our queue of batched requests. This may take a few seconds to a
-		   few minutes depending on the size of the files and how fast your upload
-		   speeds are. */
+			 few minutes depending on the size of the files and how fast your upload
+			 speeds are. */
 		$file_upload_response = $s3->batch()->send();
 
 		/* Since a batch of requests will return multiple responses, let's
-		   make sure they ALL came back successfully using `areOK()` (singular
-		   responses use `isOK()`). */
+			 make sure they ALL came back successfully using `areOK()` (singular
+			 responses use `isOK()`). */
 		if ($file_upload_response->areOK())
 		{
 			// Loop through the individual filenames
 			foreach ($individual_filenames as $filename)
 			{
 				/* Display a URL for each of the files we uploaded. Since uploads default to
-				   private (you can choose to override this setting when uploading), we'll
-				   pre-authenticate the file URL for the next 5 minutes. */
+					 private (you can choose to override this setting when uploading), we'll
+					 pre-authenticate the file URL for the next 5 minutes. */
 				echo $s3->get_object_url($bucket, $filename, '5 minutes') . PHP_EOL . PHP_EOL;
 			}
 		}

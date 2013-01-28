@@ -13,10 +13,10 @@ PHP installed.
 For more information, please see: [PHP filesize: Return values]. A workaround is suggested in
 `AmazonS3::create_mpu_object()` [with files bigger than 2GB].
 
-   [well-known PHP issue]: http://www.google.com/search?q=php+2gb+32-bit
-   [64-bit Amazon Linux AMI]: http://aws.amazon.com/amazon-linux-ami/
-   [PHP filesize: Return values]: http://docs.php.net/manual/en/function.filesize.php#refsect1-function.filesize-returnvalues
-   [with files bigger than 2GB]: https://forums.aws.amazon.com/thread.jspa?messageID=215487#215487
+	 [well-known PHP issue]: http://www.google.com/search?q=php+2gb+32-bit
+	 [64-bit Amazon Linux AMI]: http://aws.amazon.com/amazon-linux-ami/
+	 [PHP filesize: Return values]: http://docs.php.net/manual/en/function.filesize.php#refsect1-function.filesize-returnvalues
+	 [with files bigger than 2GB]: https://forums.aws.amazon.com/thread.jspa?messageID=215487#215487
 
 
 ## Amazon S3 Buckets containing periods

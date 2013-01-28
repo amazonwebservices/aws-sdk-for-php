@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -44,7 +44,7 @@ if (function_exists('curl_version'))
 if (defined('OPENSSL_VERSION_TEXT'))
 {
 	$openssl_version = explode(' ', OPENSSL_VERSION_TEXT);
-	$user_agent .=  ' openssl/' . $openssl_version[1];
+	$user_agent .=	' openssl/' . $openssl_version[1];
 }
 define('CFRUNTIME_USERAGENT', $user_agent);
 unset($user_agent);
@@ -381,9 +381,9 @@ class CFRuntime
 			}
 			$instance_profile_credentials = $cache->response_manager(array($this, 'cache_instance_profile_credentials'), array($cache, $options));
 
-			$this->credentials->key    = $instance_profile_credentials['key'];
+			$this->credentials->key		= $instance_profile_credentials['key'];
 			$this->credentials->secret = $instance_profile_credentials['secret'];
-			$this->credentials->token  = $instance_profile_credentials['token'];
+			$this->credentials->token	= $instance_profile_credentials['token'];
 		}
 
 		// Set internal credentials after they are resolved
@@ -426,7 +426,7 @@ class CFRuntime
 	 * @param array $arguments (Required) The arguments passed to the method.
 	 * @return mixed The results of the intended method.
 	 */
-	public function  __call($name, $arguments)
+	public function	__call($name, $arguments)
 	{
 		// Convert camelCase method calls to snake_case.
 		$method_name = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $name));
@@ -685,9 +685,9 @@ class CFRuntime
 			$credentials = $response->body->GetSessionTokenResult->Credentials;
 
 			return array(
-				'key'     => (string) $credentials->AccessKeyId,
-				'secret'  => (string) $credentials->SecretAccessKey,
-				'token'   => (string) $credentials->SessionToken,
+				'key'		 => (string) $credentials->AccessKeyId,
+				'secret'	=> (string) $credentials->SecretAccessKey,
+				'token'	 => (string) $credentials->SessionToken,
 				'expires' => (string) $credentials->Expiration,
 			);
 		}
@@ -744,9 +744,9 @@ class CFRuntime
 
 						// Return the credential information
 						return array(
-							'key'     => $credentials['AccessKeyId'],
-							'secret'  => $credentials['SecretAccessKey'],
-							'token'   => $credentials['Token'],
+							'key'		 => $credentials['AccessKeyId'],
+							'secret'	=> $credentials['SecretAccessKey'],
+							'token'	 => $credentials['Token'],
 							'expires' => $credentials['Expiration'],
 						);
 					}
@@ -982,7 +982,7 @@ class CFRuntime
 		// Was it Amazon's fault the request failed? Retry the request until we reach $max_retries.
 		if (
 			(integer) $request->get_response_code() === 500 || // Internal Error (presumably transient)
-			(integer) $request->get_response_code() === 503)   // Service Unavailable (presumably transient)
+			(integer) $request->get_response_code() === 503)	 // Service Unavailable (presumably transient)
 		{
 			if ($this->redirects <= $this->max_retries)
 			{

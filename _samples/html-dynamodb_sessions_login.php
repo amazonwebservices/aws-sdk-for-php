@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -19,21 +19,21 @@
 	In order to run this sample, I'll assume a few things:
 
 	* You already have a valid Amazon Web Services developer account, and are
-	  signed up to use Amazon DynamoDB <http://aws.amazon.com/simpledb>.
+		signed up to use Amazon DynamoDB <http://aws.amazon.com/simpledb>.
 
 	* You already understand the fundamentals of object-oriented PHP.
 
 	* You've verified that your PHP environment passes the SDK Compatibility Test.
 
 	* You've already added your credentials to your config.inc.php file, as per the
-	  instructions in the Getting Started Guide.
+		instructions in the Getting Started Guide.
 
 	* You've already created a table in Amazon DynamoDB called "sessions-test" with
-	  a string primary key called "id".
+		a string primary key called "id".
 
 	TO RUN:
 	* Run this file on your web server by loading it in your browser. It will
-	  generate HTML output.
+		generate HTML output.
 */
 
 // Include the SDK
@@ -44,8 +44,8 @@ $dynamodb = new AmazonDynamoDB();
 
 // Instantiate, configure, and register the session handler
 $session_handler = $dynamodb->register_session_handler(array(
-	'table_name'       => 'sessions-test',
-	'lifetime'         => 3600,
+	'table_name'			 => 'sessions-test',
+	'lifetime'				 => 3600,
 ));
 
 // Open the session
@@ -91,65 +91,65 @@ header("Content-type: text/html; charset=utf-8");
 ?>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>PHP DynamoDB Session Handler</title>
-    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
-    <style type="text/css"></style>
-  </head>
+	<head>
+		<meta charset="utf-8">
+		<title>PHP DynamoDB Session Handler</title>
+		<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+		<style type="text/css"></style>
+	</head>
 
-  <body>
+	<body>
 
-    <div class="container">
+		<div class="container">
 
-      <br>
+			<br>
 
-      <div class="row">
-        <div class="span12">
-          <h1>DynamoDB Session Handler Demo for PHP</h1>
-        </div>
-      </div>
+			<div class="row">
+				<div class="span12">
+					<h1>DynamoDB Session Handler Demo for PHP</h1>
+				</div>
+			</div>
 
-      <br>
+			<br>
 
-      <div class="row">
-        <div class="span12">
-          <?php if (isset($_SESSION['username'])): ?>
-          <div class="well">
-            <h3>Hi, <?php echo $_SESSION['username']; ?>!</h3>
-            <p>You are logged in! You have viewed this page <strong><?php echo $_SESSION['views']; ?></strong> time(s) since you logged in.</p>
-            <br>
-            <div class="button-group">
-              <a class="btn btn-large btn-success" href="html-dynamodb_sessions_login.php"><i class="icon-refresh icon-white"></i> Refresh</a>
-              <a class="btn btn-large btn-danger" href="html-dynamodb_sessions_login.php?logout"><i class="icon-lock icon-white"></i> Logout</a>
-            </div>
-          </div>
-          <?php else: ?>
-          <form action="html-dynamodb_sessions_login.php" method="post" class="form-horizontal well">
-            <fieldset>
-              <legend>Login</legend>
-              <div class="control-group">
-                <label class="control-label" for="username">Username</label>
-                <div class="controls">
-                  <input type="text" class="input-xlarge" id="username" name="username">
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="control-label" for="password">Password</label>
-                <div class="controls">
-                  <input type="password" class="input-xlarge" id="password" name="password">
-                </div>
-              </div>
-              <div class="form-actions">
-                <button type="submit" class="btn btn-large btn-primary"><i class="icon-user icon-white"></i> Login</button>
-              </div>
-            </fieldset>
-          </form>
-          <?php endif; ?>
-        </div>
-      </div>
+			<div class="row">
+				<div class="span12">
+					<?php if (isset($_SESSION['username'])): ?>
+					<div class="well">
+						<h3>Hi, <?php echo $_SESSION['username']; ?>!</h3>
+						<p>You are logged in! You have viewed this page <strong><?php echo $_SESSION['views']; ?></strong> time(s) since you logged in.</p>
+						<br>
+						<div class="button-group">
+							<a class="btn btn-large btn-success" href="html-dynamodb_sessions_login.php"><i class="icon-refresh icon-white"></i> Refresh</a>
+							<a class="btn btn-large btn-danger" href="html-dynamodb_sessions_login.php?logout"><i class="icon-lock icon-white"></i> Logout</a>
+						</div>
+					</div>
+					<?php else: ?>
+					<form action="html-dynamodb_sessions_login.php" method="post" class="form-horizontal well">
+						<fieldset>
+							<legend>Login</legend>
+							<div class="control-group">
+								<label class="control-label" for="username">Username</label>
+								<div class="controls">
+									<input type="text" class="input-xlarge" id="username" name="username">
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="password">Password</label>
+								<div class="controls">
+									<input type="password" class="input-xlarge" id="password" name="password">
+								</div>
+							</div>
+							<div class="form-actions">
+								<button type="submit" class="btn btn-large btn-primary"><i class="icon-user icon-white"></i> Login</button>
+							</div>
+						</fieldset>
+					</form>
+					<?php endif; ?>
+				</div>
+			</div>
 
-    </div>
+		</div>
 
-  </body>
+	</body>
 </html>

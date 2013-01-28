@@ -7,7 +7,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -20,14 +20,14 @@
 	In order to run this sample, I'll assume a few things:
 
 	* You already have a valid Amazon Web Services developer account, and are
-	  signed up to use Amazon S3 <http://aws.amazon.com/s3>.
+		signed up to use Amazon S3 <http://aws.amazon.com/s3>.
 
 	* You already understand the fundamentals of object-oriented PHP.
 
 	* You've verified that your PHP environment passes the SDK Compatibility Test.
 
 	* You've already added your credentials to your config.inc.php file, as per the
-	  instructions in the Getting Started Guide.
+		instructions in the Getting Started Guide.
 
 	TO RUN:
 	* Run this file from the command line with `php cli-s3_progress_bar.php`.

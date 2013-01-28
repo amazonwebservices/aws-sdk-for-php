@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -19,22 +19,22 @@
  * availability and scalability of your application. It makes it easy for you to distribute
  * application loads between two or more EC2 instances. Elastic Load Balancing enables
  * availability through redundancy and supports traffic growth of your application.
- *  
+ *
  * This guide provides detailed information about Elastic Load Balancing actions, data types,
  * parameters, and errors.
- *  
+ *
  * Query requests are HTTP or HTTPS requests that use the HTTP verb GET or POST and a Query
  * parameter named Action or Operation. Action is used throughout this documentation, although
  * Operation is supported for backward compatibility with other AWS Query APIs.
- *  
+ *
  * This reference guide is based on the current WSDL, which is available at: <a href=
  * "elasticloadbalancing.amazonaws.com/doc/2012-06-01/ElasticLoadBalancing.wsdl">
- *  
+ *
  * For detailed information on constructing a query request using the actions, data types, and
  * parameters mentioned in this guide, go to<a href=
  * "http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/DeveloperGuide/using-query-api.html">Using
  * the Query API</a> in the <em>Elastic Load Balancing Developer Guide</em>.
- *  
+ *
  * For detailed information about Elastic Load Balancing features and their associated API calls,
  * go to <a href=
  * "http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/DeveloperGuide/UserScenarios.html">
@@ -203,7 +203,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'SecurityGroups' => (is_array($security_groups) ? $security_groups : array($security_groups))
@@ -214,7 +214,7 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 * Adds one or more subnets to the set of configured subnets in the VPC for the LoadBalancer.
-	 *  
+	 *
 	 * The Loadbalancers evenly distribute requests across all of the registered subnets.
 	 *
 	 * @param string $load_balancer_name (Required) The name associated with the LoadBalancer. The name must be unique within the client AWS account.
@@ -228,7 +228,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Subnets' => (is_array($subnets) ? $subnets : array($subnets))
@@ -259,7 +259,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		// Required map (non-list)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'HealthCheck' => (is_array($health_check) ? $health_check : array($health_check))
@@ -271,16 +271,16 @@ class AmazonELB extends CFRuntime
 	/**
 	 * Generates a stickiness policy with sticky session lifetimes that follow that of an
 	 * application-generated cookie. This policy can be associated only with HTTP/HTTPS listeners.
-	 *  
+	 *
 	 * This policy is similar to the policy created by CreateLBCookieStickinessPolicy, except that the
 	 * lifetime of the special Elastic Load Balancing cookie follows the lifetime of the
 	 * application-generated cookie specified in the policy configuration. The LoadBalancer only
 	 * inserts a new stickiness cookie when the application response includes a new application
 	 * cookie.
-	 *  
+	 *
 	 * If the application cookie is explicitly removed or expires, the session stops being sticky
 	 * until a new application cookie is issued.
-	 * 
+	 *
 	 * <p class="note">
 	 * An application client must receive and send two cookies: the application-generated cookie and
 	 * the special Elastic Load Balancing cookie named <code>AWSELB</code>. This is the default
@@ -301,7 +301,7 @@ class AmazonELB extends CFRuntime
 		$opt['LoadBalancerName'] = $load_balancer_name;
 		$opt['PolicyName'] = $policy_name;
 		$opt['CookieName'] = $cookie_name;
-		
+
 		return $this->authenticate('CreateAppCookieStickinessPolicy', $opt);
 	}
 
@@ -309,13 +309,13 @@ class AmazonELB extends CFRuntime
 	 * Generates a stickiness policy with sticky session lifetimes controlled by the lifetime of the
 	 * browser (user-agent) or a specified expiration period. This policy can be associated only with
 	 * HTTP/HTTPS listeners.
-	 *  
+	 *
 	 * When a LoadBalancer implements this policy, the LoadBalancer uses a special cookie to track the
 	 * backend server instance for each request. When the LoadBalancer receives a request, it first
 	 * checks to see if this cookie is present in the request. If so, the LoadBalancer sends the
 	 * request to the application server specified in the cookie. If not, the LoadBalancer sends the
 	 * request to a server that is chosen based on the existing load balancing algorithm.
-	 *  
+	 *
 	 * A cookie is inserted into the response for binding subsequent requests from the same user to
 	 * that server. The validity of the cookie is based on the cookie expiration time, which is
 	 * specified in the policy configuration.
@@ -333,32 +333,32 @@ class AmazonELB extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
 		$opt['PolicyName'] = $policy_name;
-		
+
 		return $this->authenticate('CreateLBCookieStickinessPolicy', $opt);
 	}
 
 	/**
 	 * Creates a new LoadBalancer.
-	 *  
+	 *
 	 * After the call has completed successfully, a new LoadBalancer is created; however, it will not
 	 * be usable until at least one instance has been registered. When the LoadBalancer creation is
 	 * completed, the client can check whether or not it is usable by using the DescribeInstanceHealth
 	 * API. The LoadBalancer is usable as soon as any registered instance is <em>InService</em>.
-	 * 
+	 *
 	 * <p class="note">
 	 * Currently, the client's quota of LoadBalancers is limited to ten per Region.
 	 * </p>
-	 * <p class="note"></p> 
+	 * <p class="note"></p>
 	 * LoadBalancer DNS names vary depending on the Region they're created in. For LoadBalancers
 	 * created in the United States, the DNS name ends with:
-	 * 
+	 *
 	 * <ul>
 	 * 	<li><em>us-east-1.elb.amazonaws.com</em> (for the US Standard Region)</li>
 	 * 	<li><em>us-west-1.elb.amazonaws.com</em> (for the Northern California Region)</li>
 	 * </ul>
-	 * 
+	 *
 	 * For LoadBalancers created in the EU (Ireland) Region, the DNS name ends with:
-	 * 
+	 *
 	 * <ul>
 	 * 	<li><em>eu-west-1.elb.amazonaws.com</em></li>
 	 * </ul>
@@ -386,7 +386,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Listeners' => (is_array($listeners) ? $listeners : array($listeners))
@@ -400,7 +400,7 @@ class AmazonELB extends CFRuntime
 			), 'member'));
 			unset($opt['AvailabilityZones']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['Subnets']))
 		{
@@ -409,7 +409,7 @@ class AmazonELB extends CFRuntime
 			), 'member'));
 			unset($opt['Subnets']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['SecurityGroups']))
 		{
@@ -446,7 +446,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Listeners' => (is_array($listeners) ? $listeners : array($listeners))
@@ -480,7 +480,7 @@ class AmazonELB extends CFRuntime
 		$opt['LoadBalancerName'] = $load_balancer_name;
 		$opt['PolicyName'] = $policy_name;
 		$opt['PolicyTypeName'] = $policy_type_name;
-		
+
 		// Optional list + map
 		if (isset($opt['PolicyAttributes']))
 		{
@@ -495,16 +495,16 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 * Deletes the specified LoadBalancer.
-	 *  
+	 *
 	 * If attempting to recreate the LoadBalancer, the client must reconfigure all the settings. The
 	 * DNS name associated with a deleted LoadBalancer will no longer be usable. Once deleted, the
 	 * name and associated DNS record of the LoadBalancer no longer exist and traffic sent to any of
 	 * its IP addresses will no longer be delivered to client instances. The client will not receive
 	 * the same DNS name even if a new LoadBalancer with same LoadBalancerName is created.
-	 *  
+	 *
 	 * To successfully call this API, the client must provide the same account credentials as were
 	 * used to create the LoadBalancer.
-	 * 
+	 *
 	 * <p class="note">
 	 * By design, if the LoadBalancer does not exist or has already been deleted, DeleteLoadBalancer
 	 * still succeeds.
@@ -520,7 +520,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		return $this->authenticate('DeleteLoadBalancer', $opt);
 	}
 
@@ -538,7 +538,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'LoadBalancerPorts' => (is_array($load_balancer_ports) ? $load_balancer_ports : array($load_balancer_ports))
@@ -563,14 +563,14 @@ class AmazonELB extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
 		$opt['PolicyName'] = $policy_name;
-		
+
 		return $this->authenticate('DeleteLoadBalancerPolicy', $opt);
 	}
 
 	/**
 	 * Deregisters instances from the LoadBalancer. Once the instance is deregistered, it will stop
 	 * receiving traffic from the LoadBalancer.
-	 *  
+	 *
 	 * In order to successfully call this API, the same account credentials as those used to create
 	 * the LoadBalancer must be provided.
 	 *
@@ -589,7 +589,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Instances' => (is_array($instances) ? $instances : array($instances))
@@ -601,7 +601,7 @@ class AmazonELB extends CFRuntime
 	/**
 	 * Returns the current state of the instances of the specified LoadBalancer. If no instances are
 	 * specified, the state of all the instances for the LoadBalancer is returned.
-	 * 
+	 *
 	 * <p class="note">
 	 * The client must have created the specified input LoadBalancer in order to retrieve this
 	 * information; the client must provide the same account credentials as those that were used to
@@ -623,7 +623,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		// Optional list + map
 		if (isset($opt['Instances']))
 		{
@@ -653,7 +653,7 @@ class AmazonELB extends CFRuntime
 	public function describe_load_balancer_policies($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['PolicyNames']))
 		{
@@ -681,7 +681,7 @@ class AmazonELB extends CFRuntime
 	public function describe_load_balancer_policy_types($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['PolicyTypeNames']))
 		{
@@ -698,7 +698,7 @@ class AmazonELB extends CFRuntime
 	 * Returns detailed configuration information for the specified LoadBalancers. If no LoadBalancers
 	 * are specified, the operation returns configuration information for all LoadBalancers created by
 	 * the caller.
-	 * 
+	 *
 	 * <p class="note">
 	 * The client must have created the specified input LoadBalancers in order to retrieve this
 	 * information; the client must provide the same account credentials as those that were used to
@@ -715,7 +715,7 @@ class AmazonELB extends CFRuntime
 	public function describe_load_balancers($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['LoadBalancerNames']))
 		{
@@ -730,7 +730,7 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 * Removes subnets from the set of configured subnets in the VPC for the LoadBalancer.
-	 *  
+	 *
 	 * After a subnet is removed all of the EndPoints registered with the LoadBalancer that are in the
 	 * removed subnet will go into the <em>OutOfService</em> state. When a subnet is removed, the
 	 * LoadBalancer will balance the traffic among the remaining routable subnets for the
@@ -747,7 +747,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Subnets' => (is_array($subnets) ? $subnets : array($subnets))
@@ -759,7 +759,7 @@ class AmazonELB extends CFRuntime
 	/**
 	 * Removes the specified EC2 Availability Zones from the set of configured Availability Zones for
 	 * the LoadBalancer.
-	 *  
+	 *
 	 * There must be at least one Availability Zone registered with a LoadBalancer at all times. A
 	 * client cannot remove all the Availability Zones from a LoadBalancer. Once an Availability Zone
 	 * is removed, all the instances registered with the LoadBalancer that are in the removed
@@ -767,7 +767,7 @@ class AmazonELB extends CFRuntime
 	 * LoadBalancer attempts to equally balance the traffic among its remaining usable Availability
 	 * Zones. Trying to remove an Availability Zone that was not associated with the LoadBalancer does
 	 * nothing.
-	 * 
+	 *
 	 * <p class="note">
 	 * In order for this call to be successful, the client must have created the LoadBalancer. The
 	 * client must provide the same account credentials as those that were used to create the
@@ -785,7 +785,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'AvailabilityZones' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
@@ -796,11 +796,11 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 * Adds one or more EC2 Availability Zones to the LoadBalancer.
-	 *  
+	 *
 	 * The LoadBalancer evenly distributes requests across all its registered Availability Zones that
 	 * contain instances. As a result, the client must ensure that its LoadBalancer is appropriately
 	 * scaled for each registered Availability Zone.
-	 * 
+	 *
 	 * <p class="note">
 	 * The new EC2 Availability Zones to be added must be in the same EC2 Region as the Availability
 	 * Zones for which the LoadBalancer was created.
@@ -817,7 +817,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'AvailabilityZones' => (is_array($availability_zones) ? $availability_zones : array($availability_zones))
@@ -828,12 +828,12 @@ class AmazonELB extends CFRuntime
 
 	/**
 	 * Adds new instances to the LoadBalancer.
-	 *  
+	 *
 	 * Once the instance is registered, it starts receiving traffic and requests from the
 	 * LoadBalancer. Any instance that is not in any of the Availability Zones registered for the
 	 * LoadBalancer will be moved to the <em>OutOfService</em> state. It will move to the
 	 * <em>InService</em> state when the Availability Zone is added to the LoadBalancer.
-	 * 
+	 *
 	 * <p class="note">
 	 * In order for this call to be successful, the client must have created the LoadBalancer. The
 	 * client must provide the same account credentials as those that were used to create the
@@ -859,7 +859,7 @@ class AmazonELB extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Instances' => (is_array($instances) ? $instances : array($instances))
@@ -886,7 +886,7 @@ class AmazonELB extends CFRuntime
 		$opt['LoadBalancerName'] = $load_balancer_name;
 		$opt['LoadBalancerPort'] = $load_balancer_port;
 		$opt['SSLCertificateId'] = $ssl_certificate_id;
-		
+
 		return $this->authenticate('SetLoadBalancerListenerSSLCertificate', $opt);
 	}
 
@@ -910,7 +910,7 @@ class AmazonELB extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
 		$opt['InstancePort'] = $instance_port;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'PolicyNames' => (is_array($policy_names) ? $policy_names : array($policy_names))
@@ -936,7 +936,7 @@ class AmazonELB extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['LoadBalancerName'] = $load_balancer_name;
 		$opt['LoadBalancerPort'] = $load_balancer_port;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'PolicyNames' => (is_array($policy_names) ? $policy_names : array($policy_names))

@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -65,7 +65,7 @@ class CFHadoopStep extends CFHadoopBase
 		$args = is_array($args) ? $args : array($args);
 		$args = array_merge(array('--run-hive-script', '--args', '-f', $script), $args);
 
-        return self::hive_pig_script('hive', $args);
+				return self::hive_pig_script('hive', $args);
 	}
 
 	/**
@@ -93,6 +93,6 @@ class CFHadoopStep extends CFHadoopBase
 		$args = is_array($args) ? $args : array($args);
 		$args = array_merge(array('--run-pig-script', '--args', '-f', $script), $args);
 
-        return self::hive_pig_script('pig', $args);
+				return self::hive_pig_script('pig', $args);
 	}
 }

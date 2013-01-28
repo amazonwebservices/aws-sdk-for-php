@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -218,7 +218,7 @@ class CFMimeTypes
 	 */
 	public static function get_mimetype($ext)
 	{
-		$ext = strtolower($ext);  // Make sure the passed in extension is lowercase
+		$ext = strtolower($ext);	// Make sure the passed in extension is lowercase
 		return isset(self::$mime_types[$ext]) ? self::$mime_types[$ext] : 'application/octet-stream';
 	}
 }

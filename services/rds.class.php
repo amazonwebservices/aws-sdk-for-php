@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -20,7 +20,7 @@
  * resizable capacity for an industry-standard relational database and manages common database
  * administration tasks, freeing up developers to focus on what makes their applications and
  * businesses unique.
- *  
+ *
  * Amazon RDS gives you access to the capabilities of a MySQL, Oracle, or SQL Server database
  * server. This means the code, applications, and tools you already use today with your existing
  * MySQL, Oracle, or SQL Server databases work with Amazon RDS without modification. Amazon RDS
@@ -28,13 +28,13 @@
  * Instance. Amazon RDS is flexible: you can scale your database instance's compute resources and
  * storage capacity to meet your application's demand. As with all Amazon Web Services, there are
  * no up-front investments, and you pay only for the resources you use.
- *  
+ *
  * This is the <em>Amazon RDS API Reference</em>. It contains a comprehensive description of all
  * Amazon RDS Query APIs and data types. Note that this API is asynchronous and some actions may
  * require polling to determine when an action has been applied. See the parameter description to
  * determine if a change is applied immediately or on the next instance reboot or during the
  * maintenance window.
- *  
+ *
  * To get started with Amazon RDS, go to the <a href=
  * "http://docs.amazonwebservices.com/AmazonRDS/latest/GettingStartedGuide/">Amazon RDS Getting
  * Started Guide</a>. For more information on Amazon RDS concepts and usage scenarios, go to the
@@ -192,7 +192,7 @@ class AmazonRDS extends CFRuntime
 	/**
 	 * Adds metadata tags to a DB Instance. These tags can also be used with cost allocation reporting
 	 * to track cost associated with a DB Instance.
-	 *  
+	 *
 	 * For an overview on tagging DB Instances, see <a href=
 	 * "http://docs.amazonwebservices.com/AmazonRDS/latest/UserGuide/Overview.Tagging.html">DB
 	 * Instance Tags.</a>
@@ -213,7 +213,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ResourceName'] = $resource_name;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Tags' => (is_array($tags) ? $tags : array($tags))
@@ -229,12 +229,12 @@ class AmazonRDS extends CFRuntime
 	 * your database is running on the Internet. Required parameters for this API are one of CIDR
 	 * range, EC2SecurityGroupId for VPC, or (EC2SecurityGroupOwnerId and either EC2SecurityGroupName
 	 * or EC2SecurityGroupId for non-VPC).
-	 * 
+	 *
 	 * <p class="note">
 	 * You cannot authorize ingress from an EC2 security group in one Region to an Amazon RDS DB
 	 * Instance in another. You cannot authorize ingress from a VPC security group in one VPC to an
 	 * Amazon RDS DB Instance in another.
-	 * </p> 
+	 * </p>
 	 * For an overview of CIDR ranges, go to the <a href=
 	 * "http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Wikipedia Tutorial</a>.
 	 *
@@ -252,7 +252,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBSecurityGroupName'] = $db_security_group_name;
-		
+
 		return $this->authenticate('AuthorizeDBSecurityGroupIngress', $opt);
 	}
 
@@ -271,7 +271,7 @@ class AmazonRDS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['SourceDBSnapshotIdentifier'] = $source_db_snapshot_identifier;
 		$opt['TargetDBSnapshotIdentifier'] = $target_db_snapshot_identifier;
-		
+
 		return $this->authenticate('CopyDBSnapshot', $opt);
 	}
 
@@ -314,7 +314,7 @@ class AmazonRDS extends CFRuntime
 		$opt['Engine'] = $engine;
 		$opt['MasterUsername'] = $master_username;
 		$opt['MasterUserPassword'] = $master_user_password;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['DBSecurityGroups']))
 		{
@@ -329,12 +329,12 @@ class AmazonRDS extends CFRuntime
 
 	/**
 	 * Creates a DB Instance that acts as a Read Replica of a source DB Instance.
-	 *  
+	 *
 	 * All Read Replica DB Instances are created as Single-AZ deployments with backups disabled. All
 	 * other DB Instance attributes (including DB Security Groups and DB Parameter Groups) are
 	 * inherited from the source DB Instance, except as specified below.
-	 * 
-	 * <p class="important"></p> 
+	 *
+	 * <p class="important"></p>
 	 * The source DB Instance must have backup retention enabled.
 	 *
 	 * @param string $db_instance_identifier (Required) The DB Instance identifier of the Read Replica. This is the unique key that identifies a DB Instance. This parameter is stored as a lowercase string.
@@ -355,13 +355,13 @@ class AmazonRDS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DBInstanceIdentifier'] = $db_instance_identifier;
 		$opt['SourceDBInstanceIdentifier'] = $source_db_instance_identifier;
-		
+
 		return $this->authenticate('CreateDBInstanceReadReplica', $opt);
 	}
 
 	/**
 	 * Creates a new DB Parameter Group.
-	 *  
+	 *
 	 * A DB Parameter Group is initially created with the default parameters for the database engine
 	 * used by the DB Instance. To provide custom values for any of the parameters, you must modify
 	 * the group after creating it using <em>ModifyDBParameterGroup</em>. Once you've created a DB
@@ -384,7 +384,7 @@ class AmazonRDS extends CFRuntime
 		$opt['DBParameterGroupName'] = $db_parameter_group_name;
 		$opt['DBParameterGroupFamily'] = $db_parameter_group_family;
 		$opt['Description'] = $description;
-		
+
 		return $this->authenticate('CreateDBParameterGroup', $opt);
 	}
 
@@ -404,7 +404,7 @@ class AmazonRDS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DBSecurityGroupName'] = $db_security_group_name;
 		$opt['DBSecurityGroupDescription'] = $db_security_group_description;
-		
+
 		return $this->authenticate('CreateDBSecurityGroup', $opt);
 	}
 
@@ -423,7 +423,7 @@ class AmazonRDS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DBSnapshotIdentifier'] = $db_snapshot_identifier;
 		$opt['DBInstanceIdentifier'] = $db_instance_identifier;
-		
+
 		return $this->authenticate('CreateDBSnapshot', $opt);
 	}
 
@@ -444,7 +444,7 @@ class AmazonRDS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DBSubnetGroupName'] = $db_subnet_group_name;
 		$opt['DBSubnetGroupDescription'] = $db_subnet_group_description;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'SubnetIds' => (is_array($subnet_ids) ? $subnet_ids : array($subnet_ids))
@@ -472,7 +472,7 @@ class AmazonRDS extends CFRuntime
 		$opt['EngineName'] = $engine_name;
 		$opt['MajorEngineVersion'] = $major_engine_version;
 		$opt['OptionGroupDescription'] = $option_group_description;
-		
+
 		return $this->authenticate('CreateOptionGroup', $opt);
 	}
 
@@ -495,14 +495,14 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBInstanceIdentifier'] = $db_instance_identifier;
-		
+
 		return $this->authenticate('DeleteDBInstance', $opt);
 	}
 
 	/**
 	 * Deletes a specified DBParameterGroup. The DBParameterGroup cannot be associated with any RDS
 	 * instances to be deleted.
-	 * 
+	 *
 	 * <p class="note">
 	 * The specified DB Parameter Group cannot be associated with any DB Instances.
 	 * </p>
@@ -517,13 +517,13 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBParameterGroupName'] = $db_parameter_group_name;
-		
+
 		return $this->authenticate('DeleteDBParameterGroup', $opt);
 	}
 
 	/**
 	 * Deletes a DB Security Group.
-	 * 
+	 *
 	 * <p class="note">
 	 * The specified DB Security Group must not be associated with any DB Instances.
 	 * </p>
@@ -538,13 +538,13 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBSecurityGroupName'] = $db_security_group_name;
-		
+
 		return $this->authenticate('DeleteDBSecurityGroup', $opt);
 	}
 
 	/**
 	 * Deletes a DBSnapshot.
-	 * 
+	 *
 	 * <p class="note">
 	 * The DBSnapshot must be in the <code>available</code> state to be deleted.
 	 * </p>
@@ -559,13 +559,13 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBSnapshotIdentifier'] = $db_snapshot_identifier;
-		
+
 		return $this->authenticate('DeleteDBSnapshot', $opt);
 	}
 
 	/**
 	 * Deletes a DB subnet group.
-	 * 
+	 *
 	 * <p class="note">
 	 * The specified database subnet group must not be associated with any DB instances.
 	 * </p>
@@ -580,7 +580,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBSubnetGroupName'] = $db_subnet_group_name;
-		
+
 		return $this->authenticate('DeleteDBSubnetGroup', $opt);
 	}
 
@@ -597,7 +597,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['OptionGroupName'] = $option_group_name;
-		
+
 		return $this->authenticate('DeleteOptionGroup', $opt);
 	}
 
@@ -619,7 +619,7 @@ class AmazonRDS extends CFRuntime
 	public function describe_db_engine_versions($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeDBEngineVersions', $opt);
 	}
 
@@ -637,7 +637,7 @@ class AmazonRDS extends CFRuntime
 	public function describe_db_instances($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeDBInstances', $opt);
 	}
 
@@ -656,7 +656,7 @@ class AmazonRDS extends CFRuntime
 	public function describe_db_parameter_groups($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeDBParameterGroups', $opt);
 	}
 
@@ -676,14 +676,14 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBParameterGroupName'] = $db_parameter_group_name;
-		
+
 		return $this->authenticate('DescribeDBParameters', $opt);
 	}
 
 	/**
 	 * Returns a list of DBSecurityGroup descriptions. If a DBSecurityGroupName is specified, the list
 	 * will contain only the descriptions of the specified DBSecurityGroup.
-	 *  
+	 *
 	 * For an overview of CIDR ranges, go to the <a href=
 	 * "http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Wikipedia Tutorial</a>.
 	 *
@@ -698,7 +698,7 @@ class AmazonRDS extends CFRuntime
 	public function describe_db_security_groups($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeDBSecurityGroups', $opt);
 	}
 
@@ -718,14 +718,14 @@ class AmazonRDS extends CFRuntime
 	public function describe_db_snapshots($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeDBSnapshots', $opt);
 	}
 
 	/**
 	 * Returns a list of DBSubnetGroup descriptions. If a DBSubnetGroupName is specified, the list
 	 * will contain only the descriptions of the specified DBSubnetGroup.
-	 *  
+	 *
 	 * For an overview of CIDR ranges, go to the <a href=
 	 * "http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Wikipedia Tutorial</a>.
 	 *
@@ -740,7 +740,7 @@ class AmazonRDS extends CFRuntime
 	public function describe_db_subnet_groups($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeDBSubnetGroups', $opt);
 	}
 
@@ -759,7 +759,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBParameterGroupFamily'] = $db_parameter_group_family;
-		
+
 		return $this->authenticate('DescribeEngineDefaultParameters', $opt);
 	}
 
@@ -784,13 +784,13 @@ class AmazonRDS extends CFRuntime
 	public function describe_events($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional DateTime
 		if (isset($opt['StartTime']))
 		{
 			$opt['StartTime'] = $this->util->convert_date_to_iso8601($opt['StartTime']);
 		}
-		
+
 		// Optional DateTime
 		if (isset($opt['EndTime']))
 		{
@@ -816,7 +816,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['EngineName'] = $engine_name;
-		
+
 		return $this->authenticate('DescribeOptionGroupOptions', $opt);
 	}
 
@@ -836,7 +836,7 @@ class AmazonRDS extends CFRuntime
 	public function describe_option_groups($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeOptionGroups', $opt);
 	}
 
@@ -859,7 +859,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['Engine'] = $engine;
-		
+
 		return $this->authenticate('DescribeOrderableDBInstanceOptions', $opt);
 	}
 
@@ -884,7 +884,7 @@ class AmazonRDS extends CFRuntime
 	public function describe_reserved_db_instances($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeReservedDBInstances', $opt);
 	}
 
@@ -907,13 +907,13 @@ class AmazonRDS extends CFRuntime
 	public function describe_reserved_db_instances_offerings($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeReservedDBInstancesOfferings', $opt);
 	}
 
 	/**
 	 * Lists all tags on a DB Instance.
-	 *  
+	 *
 	 * For an overview on tagging DB Instances, see <a href=
 	 * "http://docs.amazonwebservices.com/AmazonRDS/latest/UserGuide/Overview.Tagging.html">DB
 	 * Instance Tags.</a>
@@ -928,14 +928,14 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ResourceName'] = $resource_name;
-		
+
 		return $this->authenticate('ListTagsForResource', $opt);
 	}
 
 	/**
 	 * Modify settings for a DB Instance. You can change one or more database configuration parameters
 	 * by specifying these parameters and the new values in the request.
-	 *  
+	 *
 	 * Some parameter changes are applied immediately while others are applied when the DB Instance is
 	 * rebooted or during the next maintenance window. See the individual parameter descriptions for
 	 * more information.
@@ -965,7 +965,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBInstanceIdentifier'] = $db_instance_identifier;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['DBSecurityGroups']))
 		{
@@ -982,15 +982,15 @@ class AmazonRDS extends CFRuntime
 	 * Modifies the parameters of a DBParameterGroup. To modify more than one parameter submit a list
 	 * of the following: ParameterName, ParameterValue, and ApplyMethod. A maximum of 20 parameters
 	 * can be modified in a single request.
-	 * 
-	 * <p class="note"></p> 
+	 *
+	 * <p class="note"></p>
 	 * The <code>apply-immediate</code> method can be used only for dynamic parameters; the
 	 * <code>pending-reboot</code> method can be used with MySQL and Oracle DB Instances for either
 	 * dynamic or static parameters. For Microsoft SQL Server DB Instances, the
 	 * <code>pending-reboot</code> method can be used only for static parameters.
 	 *
 	 * @param string $db_parameter_group_name (Required) The name of the DB Parameter Group. Constraints:<ul><li>Must be the name of an existing DB Parameter Group</li><li>Must be 1 to 255 alphanumeric characters</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul>
-	 * @param array $parameters (Required) An array of parameter names, values, and the apply method for the parameter update. At least one parameter name, value, and apply method must be supplied; subsequent arguments are optional. A maximum of 20 parameters may be modified in a single request. Valid Values (for the application method): <code>immediate | pending-reboot</code>  <p class="note">You can use the immediate value with dynamic parameters only. You can use the pending-reboot value for both dynamic and static parameters, and changes are applied when DB Instance reboots.</p> <ul>
+	 * @param array $parameters (Required) An array of parameter names, values, and the apply method for the parameter update. At least one parameter name, value, and apply method must be supplied; subsequent arguments are optional. A maximum of 20 parameters may be modified in a single request. Valid Values (for the application method): <code>immediate | pending-reboot</code>	<p class="note">You can use the immediate value with dynamic parameters only. You can use the pending-reboot value for both dynamic and static parameters, and changes are applied when DB Instance reboots.</p> <ul>
 	 * 	<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 		<li><code>ParameterName</code> - <code>string</code> - Optional - Specifies the name of the parameter.</li>
 	 * 		<li><code>ParameterValue</code> - <code>string</code> - Optional - Specifies the value of the parameter.</li>
@@ -1013,7 +1013,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBParameterGroupName'] = $db_parameter_group_name;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Parameters' => (is_array($parameters) ? $parameters : array($parameters))
@@ -1038,7 +1038,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBSubnetGroupName'] = $db_subnet_group_name;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'SubnetIds' => (is_array($subnet_ids) ? $subnet_ids : array($subnet_ids))
@@ -1056,7 +1056,7 @@ class AmazonRDS extends CFRuntime
 	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 			<li><code>OptionName</code> - <code>string</code> - Required - </li>
 	 * 			<li><code>Port</code> - <code>integer</code> - Optional - </li>
-	 * 			<li><code>DBSecurityGroupMemberships</code> - <code>string|array</code> - Optional -  Pass a string for a single value, or an indexed array for multiple values.</li>
+	 * 			<li><code>DBSecurityGroupMemberships</code> - <code>string|array</code> - Optional -	Pass a string for a single value, or an indexed array for multiple values.</li>
 	 * 		</ul></li>
 	 * 	</ul></li>
 	 * 	<li><code>OptionsToRemove</code> - <code>string|array</code> - Optional - Options in this list are removed from the Option Group. Pass a string for a single value, or an indexed array for multiple values.</li>
@@ -1069,7 +1069,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['OptionGroupName'] = $option_group_name;
-		
+
 		// Optional list + map
 		if (isset($opt['OptionsToInclude']))
 		{
@@ -1078,7 +1078,7 @@ class AmazonRDS extends CFRuntime
 			), 'member'));
 			unset($opt['OptionsToInclude']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['OptionsToRemove']))
 		{
@@ -1106,7 +1106,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBInstanceIdentifier'] = $db_instance_identifier;
-		
+
 		return $this->authenticate('PromoteReadReplica', $opt);
 	}
 
@@ -1125,7 +1125,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ReservedDBInstancesOfferingId'] = $reserved_db_instances_offering_id;
-		
+
 		return $this->authenticate('PurchaseReservedDBInstancesOffering', $opt);
 	}
 
@@ -1148,13 +1148,13 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBInstanceIdentifier'] = $db_instance_identifier;
-		
+
 		return $this->authenticate('RebootDBInstance', $opt);
 	}
 
 	/**
 	 * Removes metadata tags from a DB Instance.
-	 *  
+	 *
 	 * For an overview on tagging DB Instances, see <a href=
 	 * "http://docs.amazonwebservices.com/AmazonRDS/latest/UserGuide/Overview.Tagging.html">DB
 	 * Instance Tags.</a>
@@ -1170,7 +1170,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ResourceName'] = $resource_name;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'TagKeys' => (is_array($tag_keys) ? $tag_keys : array($tag_keys))
@@ -1212,7 +1212,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBParameterGroupName'] = $db_parameter_group_name;
-		
+
 		// Optional list + map
 		if (isset($opt['Parameters']))
 		{
@@ -1253,7 +1253,7 @@ class AmazonRDS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DBInstanceIdentifier'] = $db_instance_identifier;
 		$opt['DBSnapshotIdentifier'] = $db_snapshot_identifier;
-		
+
 		return $this->authenticate('RestoreDBInstanceFromDBSnapshot', $opt);
 	}
 
@@ -1288,7 +1288,7 @@ class AmazonRDS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['SourceDBInstanceIdentifier'] = $source_db_instance_identifier;
 		$opt['TargetDBInstanceIdentifier'] = $target_db_instance_identifier;
-		
+
 		// Optional DateTime
 		if (isset($opt['RestoreTime']))
 		{
@@ -1317,7 +1317,7 @@ class AmazonRDS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DBSecurityGroupName'] = $db_security_group_name;
-		
+
 		return $this->authenticate('RevokeDBSecurityGroupIngress', $opt);
 	}
 }

@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -97,8 +97,8 @@ class S3StreamWrapper
 		$url = parse_url($path);
 
 		return array(
-			$url['scheme'],                                       // Protocol
-			$url['host'],                                         // Bucket
+			$url['scheme'],																			 // Protocol
+			$url['host'],																				 // Bucket
 			(isset($url['path']) ? substr($url['path'], 1) : ''), // Object
 		);
 	}
@@ -232,7 +232,7 @@ class S3StreamWrapper
 
 		$copy_response = $this->client($protocol)->copy_object(
 			array('bucket' => $from_bucket_name, 'filename' => $from_object_name),
-			array('bucket' => $to_bucket_name,   'filename' => $to_object_name  )
+			array('bucket' => $to_bucket_name,	 'filename' => $to_object_name	)
 		);
 
 		if ($copy_response->isOK())
@@ -568,12 +568,12 @@ class S3StreamWrapper
 		Simulate the concept of a "directory". Nothing has an executable bit because there's no executing on S3.
 		Reference: http://docstore.mik.ua/orelly/webprog/pcook/ch19_13.htm
 
-		0100000 => type:   regular file
-		0040000 => type:   directory
-		0000400 => owner:  read permission
-		0000200 => owner:  write permission
-		0000040 => group:  read permission
-		0000020 => group:  write permission
+		0100000 => type:	 regular file
+		0040000 => type:	 directory
+		0000400 => owner:	read permission
+		0000200 => owner:	write permission
+		0000040 => group:	read permission
+		0000020 => group:	write permission
 		0000004 => others: read permission
 		0000002 => others: write permission
 		*/

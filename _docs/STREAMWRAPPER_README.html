@@ -143,14 +143,14 @@ $contents = '';
 
 if (mkdir($directory))
 {
-    if (file_put_contents($filename, 'This is some sample data.'))
-    {
-        $handle = fopen($filename, 'rb+');
-        $contents = stream_get_contents($handle);
-        fclose($handle);
-    }
+		if (file_put_contents($filename, 'This is some sample data.'))
+		{
+				$handle = fopen($filename, 'rb+');
+				$contents = stream_get_contents($handle);
+				fclose($handle);
+		}
 
-    rmdir($directory);
+		rmdir($directory);
 }
 
 echo $contents;</code></pre>

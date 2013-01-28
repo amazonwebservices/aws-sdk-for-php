@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -17,12 +17,12 @@
 /**
  * Amazon ElastiCache is a web service that makes it easier to set up, operate, and scale a
  * distributed cache in the cloud.
- *  
+ *
  * With Amazon ElastiCache, customers gain all of the benefits of a high-performance, in-memory
  * cache with far less of the administrative burden of launching and managing a distributed cache.
  * The service makes set-up, scaling, and cluster failure handling much simpler than in a
  * self-managed cache deployment.
- *  
+ *
  * In addition, through integration with Amazon CloudWatch, customers get enhanced visibility into
  * the key performance statistics associated with their cache and can receive alarms if a part of
  * their cache runs hot.
@@ -164,7 +164,7 @@ class AmazonElastiCache extends CFRuntime
 	 * Authorizes ingress to a CacheSecurityGroup using EC2 Security Groups as authorization
 	 * (therefore the application using the cache must be running on EC2 clusters). This API requires
 	 * the following parameters: EC2SecurityGroupName and EC2SecurityGroupOwnerId.
-	 * 
+	 *
 	 * <p class="note">
 	 * You cannot authorize ingress from an EC2 security group in one Region to an Amazon Cache
 	 * Cluster in another.
@@ -184,7 +184,7 @@ class AmazonElastiCache extends CFRuntime
 		$opt['CacheSecurityGroupName'] = $cache_security_group_name;
 		$opt['EC2SecurityGroupName'] = $ec2_security_group_name;
 		$opt['EC2SecurityGroupOwnerId'] = $ec2_security_group_owner_id;
-		
+
 		return $this->authenticate('AuthorizeCacheSecurityGroupIngress', $opt);
 	}
 
@@ -217,7 +217,7 @@ class AmazonElastiCache extends CFRuntime
 		$opt['NumCacheNodes'] = $num_cache_nodes;
 		$opt['CacheNodeType'] = $cache_node_type;
 		$opt['Engine'] = $engine;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['CacheSecurityGroupNames']))
 		{
@@ -226,7 +226,7 @@ class AmazonElastiCache extends CFRuntime
 			), 'member'));
 			unset($opt['CacheSecurityGroupNames']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['SecurityGroupIds']))
 		{
@@ -257,14 +257,14 @@ class AmazonElastiCache extends CFRuntime
 		$opt['CacheParameterGroupName'] = $cache_parameter_group_name;
 		$opt['CacheParameterGroupFamily'] = $cache_parameter_group_family;
 		$opt['Description'] = $description;
-		
+
 		return $this->authenticate('CreateCacheParameterGroup', $opt);
 	}
 
 	/**
 	 * Creates a new Cache Security Group. Cache Security groups control access to one or more Cache
 	 * Clusters.
-	 *  
+	 *
 	 * Only use cache security groups when you are creating a cluster outside of an Amazon Virtual
 	 * Private Cloud (VPC). Inside of a VPC, use VPC security groups.
 	 *
@@ -280,7 +280,7 @@ class AmazonElastiCache extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['CacheSecurityGroupName'] = $cache_security_group_name;
 		$opt['Description'] = $description;
-		
+
 		return $this->authenticate('CreateCacheSecurityGroup', $opt);
 	}
 
@@ -300,7 +300,7 @@ class AmazonElastiCache extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['CacheSubnetGroupName'] = $cache_subnet_group_name;
 		$opt['CacheSubnetGroupDescription'] = $cache_subnet_group_description;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'SubnetIds' => (is_array($subnet_ids) ? $subnet_ids : array($subnet_ids))
@@ -325,7 +325,7 @@ class AmazonElastiCache extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CacheClusterId'] = $cache_cluster_id;
-		
+
 		return $this->authenticate('DeleteCacheCluster', $opt);
 	}
 
@@ -343,13 +343,13 @@ class AmazonElastiCache extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CacheParameterGroupName'] = $cache_parameter_group_name;
-		
+
 		return $this->authenticate('DeleteCacheParameterGroup', $opt);
 	}
 
 	/**
 	 * Deletes a Cache Security Group.
-	 * 
+	 *
 	 * <p class="note">
 	 * The specified Cache Security Group must not be associated with any Cache Clusters.
 	 * </p>
@@ -364,13 +364,13 @@ class AmazonElastiCache extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CacheSecurityGroupName'] = $cache_security_group_name;
-		
+
 		return $this->authenticate('DeleteCacheSecurityGroup', $opt);
 	}
 
 	/**
 	 * Deletes a Cache Subnet Group.
-	 * 
+	 *
 	 * <p class="note">
 	 * The specified Cache Subnet Group must not be associated with any Cache Clusters.
 	 * </p>
@@ -385,30 +385,30 @@ class AmazonElastiCache extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CacheSubnetGroupName'] = $cache_subnet_group_name;
-		
+
 		return $this->authenticate('DeleteCacheSubnetGroup', $opt);
 	}
 
 	/**
 	 * Returns information about all provisioned Cache Clusters if no Cache Cluster identifier is
 	 * specified, or about a specific Cache Cluster if a Cache Cluster identifier is supplied.
-	 *  
+	 *
 	 * Cluster information will be returned by default. An optional <em>ShowDetails</em> flag can be
 	 * used to retrieve detailed information about the Cache Nodes associated with the Cache Cluster.
 	 * Details include the DNS address and port for the Cache Node endpoint.
-	 *  
+	 *
 	 * If the cluster is in the CREATING state, only cluster level information will be displayed until
 	 * all of the nodes are successfully provisioned.
-	 *  
+	 *
 	 * If the cluster is in the DELETING state, only cluster level information will be displayed.
-	 *  
+	 *
 	 * While adding Cache Nodes, node endpoint information and creation time for the additional nodes
 	 * will not be displayed until they are completely provisioned. The cluster lifecycle tells the
 	 * customer when new nodes are AVAILABLE.
-	 *  
+	 *
 	 * While removing existing Cache Nodes from an cluster, endpoint information for the removed nodes
 	 * will not be displayed.
-	 *  
+	 *
 	 * DescribeCacheClusters supports pagination.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -423,7 +423,7 @@ class AmazonElastiCache extends CFRuntime
 	public function describe_cache_clusters($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeCacheClusters', $opt);
 	}
 
@@ -444,7 +444,7 @@ class AmazonElastiCache extends CFRuntime
 	public function describe_cache_engine_versions($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeCacheEngineVersions', $opt);
 	}
 
@@ -463,7 +463,7 @@ class AmazonElastiCache extends CFRuntime
 	public function describe_cache_parameter_groups($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeCacheParameterGroups', $opt);
 	}
 
@@ -483,7 +483,7 @@ class AmazonElastiCache extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CacheParameterGroupName'] = $cache_parameter_group_name;
-		
+
 		return $this->authenticate('DescribeCacheParameters', $opt);
 	}
 
@@ -502,7 +502,7 @@ class AmazonElastiCache extends CFRuntime
 	public function describe_cache_security_groups($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeCacheSecurityGroups', $opt);
 	}
 
@@ -521,7 +521,7 @@ class AmazonElastiCache extends CFRuntime
 	public function describe_cache_subnet_groups($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeCacheSubnetGroups', $opt);
 	}
 
@@ -540,7 +540,7 @@ class AmazonElastiCache extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CacheParameterGroupFamily'] = $cache_parameter_group_family;
-		
+
 		return $this->authenticate('DescribeEngineDefaultParameters', $opt);
 	}
 
@@ -565,13 +565,13 @@ class AmazonElastiCache extends CFRuntime
 	public function describe_events($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional DateTime
 		if (isset($opt['StartTime']))
 		{
 			$opt['StartTime'] = $this->util->convert_date_to_iso8601($opt['StartTime']);
 		}
-		
+
 		// Optional DateTime
 		if (isset($opt['EndTime']))
 		{
@@ -601,7 +601,7 @@ class AmazonElastiCache extends CFRuntime
 	public function describe_reserved_cache_nodes($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeReservedCacheNodes', $opt);
 	}
 
@@ -623,7 +623,7 @@ class AmazonElastiCache extends CFRuntime
 	public function describe_reserved_cache_nodes_offerings($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeReservedCacheNodesOfferings', $opt);
 	}
 
@@ -652,7 +652,7 @@ class AmazonElastiCache extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CacheClusterId'] = $cache_cluster_id;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['CacheNodeIdsToRemove']))
 		{
@@ -661,7 +661,7 @@ class AmazonElastiCache extends CFRuntime
 			), 'member'));
 			unset($opt['CacheNodeIdsToRemove']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['CacheSecurityGroupNames']))
 		{
@@ -670,7 +670,7 @@ class AmazonElastiCache extends CFRuntime
 			), 'member'));
 			unset($opt['CacheSecurityGroupNames']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['SecurityGroupIds']))
 		{
@@ -704,7 +704,7 @@ class AmazonElastiCache extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CacheParameterGroupName'] = $cache_parameter_group_name;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'ParameterNameValues' => (is_array($parameter_name_values) ? $parameter_name_values : array($parameter_name_values))
@@ -728,7 +728,7 @@ class AmazonElastiCache extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CacheSubnetGroupName'] = $cache_subnet_group_name;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['SubnetIds']))
 		{
@@ -756,7 +756,7 @@ class AmazonElastiCache extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ReservedCacheNodesOfferingId'] = $reserved_cache_nodes_offering_id;
-		
+
 		return $this->authenticate('PurchaseReservedCacheNodesOffering', $opt);
 	}
 
@@ -779,7 +779,7 @@ class AmazonElastiCache extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CacheClusterId'] = $cache_cluster_id;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'CacheNodeIdsToReboot' => (is_array($cache_node_ids_to_reboot) ? $cache_node_ids_to_reboot : array($cache_node_ids_to_reboot))
@@ -810,7 +810,7 @@ class AmazonElastiCache extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['CacheParameterGroupName'] = $cache_parameter_group_name;
-		
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'ParameterNameValues' => (is_array($parameter_name_values) ? $parameter_name_values : array($parameter_name_values))
@@ -836,7 +836,7 @@ class AmazonElastiCache extends CFRuntime
 		$opt['CacheSecurityGroupName'] = $cache_security_group_name;
 		$opt['EC2SecurityGroupName'] = $ec2_security_group_name;
 		$opt['EC2SecurityGroupOwnerId'] = $ec2_security_group_owner_id;
-		
+
 		return $this->authenticate('RevokeCacheSecurityGroupIngress', $opt);
 	}
 }

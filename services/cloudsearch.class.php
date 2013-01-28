@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -105,7 +105,7 @@ class AmazonCloudSearch extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		
+
 		return $this->authenticate('CreateDomain', $opt);
 	}
 
@@ -180,7 +180,7 @@ class AmazonCloudSearch extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		
+
 		// Required map (non-list)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'IndexField' => (is_array($index_field) ? $index_field : array($index_field))
@@ -210,7 +210,7 @@ class AmazonCloudSearch extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		
+
 		// Required map (non-list)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'RankExpression' => (is_array($rank_expression) ? $rank_expression : array($rank_expression))
@@ -232,7 +232,7 @@ class AmazonCloudSearch extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		
+
 		return $this->authenticate('DeleteDomain', $opt);
 	}
 
@@ -251,7 +251,7 @@ class AmazonCloudSearch extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
 		$opt['IndexFieldName'] = $index_field_name;
-		
+
 		return $this->authenticate('DeleteIndexField', $opt);
 	}
 
@@ -270,7 +270,7 @@ class AmazonCloudSearch extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
 		$opt['RankName'] = $rank_name;
-		
+
 		return $this->authenticate('DeleteRankExpression', $opt);
 	}
 
@@ -287,7 +287,7 @@ class AmazonCloudSearch extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		
+
 		return $this->authenticate('DescribeDefaultSearchField', $opt);
 	}
 
@@ -304,7 +304,7 @@ class AmazonCloudSearch extends CFRuntime
 	public function describe_domains($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['DomainNames']))
 		{
@@ -332,7 +332,7 @@ class AmazonCloudSearch extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['FieldNames']))
 		{
@@ -360,7 +360,7 @@ class AmazonCloudSearch extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['RankNames']))
 		{
@@ -387,7 +387,7 @@ class AmazonCloudSearch extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		
+
 		return $this->authenticate('DescribeServiceAccessPolicies', $opt);
 	}
 
@@ -404,7 +404,7 @@ class AmazonCloudSearch extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		
+
 		return $this->authenticate('DescribeStemmingOptions', $opt);
 	}
 
@@ -421,7 +421,7 @@ class AmazonCloudSearch extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		
+
 		return $this->authenticate('DescribeStopwordOptions', $opt);
 	}
 
@@ -438,7 +438,7 @@ class AmazonCloudSearch extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		
+
 		return $this->authenticate('DescribeSynonymOptions', $opt);
 	}
 
@@ -458,7 +458,7 @@ class AmazonCloudSearch extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
-		
+
 		return $this->authenticate('IndexDocuments', $opt);
 	}
 
@@ -479,7 +479,7 @@ class AmazonCloudSearch extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
 		$opt['DefaultSearchField'] = $default_search_field;
-		
+
 		return $this->authenticate('UpdateDefaultSearchField', $opt);
 	}
 
@@ -499,7 +499,7 @@ class AmazonCloudSearch extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
 		$opt['AccessPolicies'] = $access_policies;
-		
+
 		return $this->authenticate('UpdateServiceAccessPolicies', $opt);
 	}
 
@@ -520,7 +520,7 @@ class AmazonCloudSearch extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
 		$opt['Stems'] = $stems;
-		
+
 		return $this->authenticate('UpdateStemmingOptions', $opt);
 	}
 
@@ -540,7 +540,7 @@ class AmazonCloudSearch extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
 		$opt['Stopwords'] = $stopwords;
-		
+
 		return $this->authenticate('UpdateStopwordOptions', $opt);
 	}
 
@@ -561,7 +561,7 @@ class AmazonCloudSearch extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['DomainName'] = $domain_name;
 		$opt['Synonyms'] = $synonyms;
-		
+
 		return $this->authenticate('UpdateSynonymOptions', $opt);
 	}
 }

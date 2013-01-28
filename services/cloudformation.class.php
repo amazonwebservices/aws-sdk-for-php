@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -20,15 +20,15 @@
  * Amazon SNS, ELB, and Auto Scaling to build highly-reliable, highly scalable, cost effective
  * applications without worrying about creating and configuring the underlying the AWS
  * infrastructure.
- *  
+ *
  * With AWS CloudFormation, you declare all of your resources and dependencies in a template file.
  * The template defines a collection of resources as a single unit called a stack. AWS
  * CloudFormation creates and deletes all member resources of the stack together and manages all
  * dependencies between the resources for you.
- *  
+ *
  * For more information about this product, go to the <a href=
  * "http://aws.amazon.com/cloudformation/">CloudFormation Product Page</a>.
- *  
+ *
  * Amazon CloudFormation makes use of other AWS products. If you need additional technical
  * information about a specific AWS product, you can find the product's technical documentation at
  * 	<a href="http://aws.amazon.com/documentation/">http://aws.amazon.com/documentation/</a>.
@@ -179,7 +179,7 @@ class AmazonCloudFormation extends CFRuntime
 	/**
 	 * Creates a stack as specified in the template. After the call completes successfully, the stack
 	 * creation starts. You can check the status of the stack via the <code>DescribeStacks</code> API.
-	 * 
+	 *
 	 * <p class="note">
 	 * Currently, the limit for stacks is 20 stacks per account per region.
 	 * </p>
@@ -213,7 +213,7 @@ class AmazonCloudFormation extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['StackName'] = $stack_name;
-		
+
 		// Optional list + map
 		if (isset($opt['Parameters']))
 		{
@@ -222,7 +222,7 @@ class AmazonCloudFormation extends CFRuntime
 			), 'member'));
 			unset($opt['Parameters']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['NotificationARNs']))
 		{
@@ -231,7 +231,7 @@ class AmazonCloudFormation extends CFRuntime
 			), 'member'));
 			unset($opt['NotificationARNs']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['Capabilities']))
 		{
@@ -240,7 +240,7 @@ class AmazonCloudFormation extends CFRuntime
 			), 'member'));
 			unset($opt['Capabilities']);
 		}
-		
+
 		// Optional list + map
 		if (isset($opt['Tags']))
 		{
@@ -268,7 +268,7 @@ class AmazonCloudFormation extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['StackName'] = $stack_name;
-		
+
 		return $this->authenticate('DeleteStack', $opt);
 	}
 
@@ -279,7 +279,7 @@ class AmazonCloudFormation extends CFRuntime
 	 * information about a stack's event history, go to the <a href=
 	 * "http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide">AWS CloudFormation User
 	 * Guide</a>.
-	 * 
+	 *
 	 * <p class="note">
 	 * Events are returned, even if the stack never existed or has been successfully deleted.
 	 * </p>
@@ -294,13 +294,13 @@ class AmazonCloudFormation extends CFRuntime
 	public function describe_stack_events($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeStackEvents', $opt);
 	}
 
 	/**
 	 * Returns a description of the specified resource in the specified stack.
-	 *  
+	 *
 	 * For deleted stacks, DescribeStackResource returns resource information for up to 90 days after
 	 * the stack has been deleted.
 	 *
@@ -316,7 +316,7 @@ class AmazonCloudFormation extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['StackName'] = $stack_name;
 		$opt['LogicalResourceId'] = $logical_resource_id;
-		
+
 		return $this->authenticate('DescribeStackResource', $opt);
 	}
 
@@ -325,23 +325,23 @@ class AmazonCloudFormation extends CFRuntime
 	 * specified, all the associated resources that are part of the stack are returned. If
 	 * <code>PhysicalResourceId</code> is specified, all the associated resources of the stack the
 	 * resource belongs to are returned.
-	 *  
+	 *
 	 * For deleted stacks, DescribeStackResources returns resource information for up to 90 days after
 	 * the stack has been deleted.
-	 *  
+	 *
 	 * If you do not provide either a stack or resource id, information for all stacks and resources
 	 * will be returned, up to a limit of 100 records.
-	 * 
-	 * <p class="note"></p> 
+	 *
+	 * <p class="note"></p>
 	 * To list more than 100 resources use <code>ListStackResources</code> instead.
-	 *  
+	 *
 	 * You can specify either <code>StackName</code> or <code>PhysicalResourceId.</code>, but not
 	 * both. In addition, you can specify <code>LogicalResourceId</code> to filter the returned
 	 * result. For more information about resources, the <code>LogicalResourceId</code> and
 	 * <code>PhysicalResourceId</code>, go to the <a href=
 	 * "http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide">AWS CloudFormation User
 	 * Guide</a>.
-	 * 
+	 *
 	 * <p class="note">
 	 * A <code>ValidationError</code> is returned if you specify both <code>StackName</code> and
 	 * <code>PhysicalResourceId</code> in the same request.
@@ -358,7 +358,7 @@ class AmazonCloudFormation extends CFRuntime
 	public function describe_stack_resources($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeStackResources', $opt);
 	}
 
@@ -376,7 +376,7 @@ class AmazonCloudFormation extends CFRuntime
 	public function describe_stacks($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeStacks', $opt);
 	}
 
@@ -400,7 +400,7 @@ class AmazonCloudFormation extends CFRuntime
 	public function estimate_template_cost($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list + map
 		if (isset($opt['Parameters']))
 		{
@@ -416,10 +416,10 @@ class AmazonCloudFormation extends CFRuntime
 	/**
 	 * Returns the template body for a specified stack name. You can get the template for running or
 	 * deleted stacks.
-	 *  
+	 *
 	 * For deleted stacks, GetTemplate returns the template for up to 90 days after the stack has been
 	 * deleted.
-	 * 
+	 *
 	 * <p class="note">
 	 * If the template does not exist, a <code>ValidationError</code> is returned.
 	 * </p>
@@ -434,13 +434,13 @@ class AmazonCloudFormation extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['StackName'] = $stack_name;
-		
+
 		return $this->authenticate('GetTemplate', $opt);
 	}
 
 	/**
 	 * Returns descriptions of all resources of the specified stack.
-	 *  
+	 *
 	 * For deleted stacks, ListStackResources returns resource information for up to 90 days after the
 	 * stack has been deleted.
 	 *
@@ -455,7 +455,7 @@ class AmazonCloudFormation extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['StackName'] = $stack_name;
-		
+
 		return $this->authenticate('ListStackResources', $opt);
 	}
 
@@ -475,7 +475,7 @@ class AmazonCloudFormation extends CFRuntime
 	public function list_stacks($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['StackStatusFilter']))
 		{
@@ -492,13 +492,13 @@ class AmazonCloudFormation extends CFRuntime
 	 * Updates a stack as specified in the template. After the call completes successfully, the stack
 	 * update starts. You can check the status of the stack via the <code>DescribeStacks</code>
 	 * action.
-	 *  
+	 *
 	 * To get a copy of the template for an existing stack, you can use the <code>GetTemplate</code>
 	 * action.
-	 *  
+	 *
 	 * Tags that were associated with this stack during creation time will still be associated with
 	 * the stack after an <code>UpdateStack</code> operation.
-	 *  
+	 *
 	 * For more information about creating an update template, updating a stack, and monitoring the
 	 * progress of the update, see <a href=
 	 * "http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks.html">
@@ -523,7 +523,7 @@ class AmazonCloudFormation extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['StackName'] = $stack_name;
-		
+
 		// Optional list + map
 		if (isset($opt['Parameters']))
 		{
@@ -532,7 +532,7 @@ class AmazonCloudFormation extends CFRuntime
 			), 'member'));
 			unset($opt['Parameters']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['Capabilities']))
 		{
@@ -558,7 +558,7 @@ class AmazonCloudFormation extends CFRuntime
 	public function validate_template($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ValidateTemplate', $opt);
 	}
 }

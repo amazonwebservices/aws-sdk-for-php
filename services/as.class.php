@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -20,19 +20,19 @@
  * calls, go to the <a href=
  * "http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/">Auto Scaling Developer
  * Guide</a>.
- *  
+ *
  * Auto Scaling is a web service designed to automatically launch or terminate Amazon Elastic
  * Compute Cloud (Amazon EC2) instances based on user-defined policies, schedules, and health
  * checks. This service is used in conjunction with Amazon CloudWatch and Elastic Load Balancing
  * services.
- *  
+ *
  * This reference is based on the current WSDL, which is available at:
- *  
+ *
  * 	<a href=
  * "http://autoscaling.amazonaws.com/doc/2011-01-01/AutoScaling.wsdl">http://autoscaling.amazonaws.com/doc/2011-01-01/AutoScaling.wsdl</a>
- *  
+ *
  * <strong>Endpoints</strong>
- *  
+ *
  * For information about this product's regions and endpoints, go to <a href=
  * "http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html">Regions and
  * Endpoints</a> in the Amazon Web Services General Reference.
@@ -188,7 +188,7 @@ class AmazonAS extends CFRuntime
 	/**
 	 * Creates a new Auto Scaling group with the specified name and other attributes. When the
 	 * creation request is completed, the Auto Scaling group is ready to be used in other calls.
-	 * 
+	 *
 	 * <p class="note">
 	 * The Auto Scaling group name must be unique within the scope of your AWS account, and under the
 	 * quota of Auto Scaling groups allowed for your account.
@@ -228,7 +228,7 @@ class AmazonAS extends CFRuntime
 		$opt['LaunchConfigurationName'] = $launch_configuration_name;
 		$opt['MinSize'] = $min_size;
 		$opt['MaxSize'] = $max_size;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['AvailabilityZones']))
 		{
@@ -237,7 +237,7 @@ class AmazonAS extends CFRuntime
 			), 'member'));
 			unset($opt['AvailabilityZones']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['LoadBalancerNames']))
 		{
@@ -246,7 +246,7 @@ class AmazonAS extends CFRuntime
 			), 'member'));
 			unset($opt['LoadBalancerNames']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['TerminationPolicies']))
 		{
@@ -255,7 +255,7 @@ class AmazonAS extends CFRuntime
 			), 'member'));
 			unset($opt['TerminationPolicies']);
 		}
-		
+
 		// Optional list + map
 		if (isset($opt['Tags']))
 		{
@@ -273,11 +273,11 @@ class AmazonAS extends CFRuntime
 	 * scope of the client's AWS account. The maximum limit of launch configurations, which by default
 	 * is 100, must not yet have been met; otherwise, the call will fail. When created, the new launch
 	 * configuration is available for immediate use.
-	 *  
+	 *
 	 * You can create a launch configuration with Amazon EC2 security groups or with Amazon VPC
 	 * security groups. However, you can't use Amazon EC2 security groups together with Amazon VPC
 	 * security groups, or vice versa.
-	 * 
+	 *
 	 * <p class="note">
 	 * At this time, Auto Scaling launch configurations don't support compressed (e.g. zipped) user
 	 * data files.
@@ -322,7 +322,7 @@ class AmazonAS extends CFRuntime
 		$opt['LaunchConfigurationName'] = $launch_configuration_name;
 		$opt['ImageId'] = $image_id;
 		$opt['InstanceType'] = $instance_type;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['SecurityGroups']))
 		{
@@ -331,7 +331,7 @@ class AmazonAS extends CFRuntime
 			), 'member'));
 			unset($opt['SecurityGroups']);
 		}
-		
+
 		// Optional list + map
 		if (isset($opt['BlockDeviceMappings']))
 		{
@@ -340,7 +340,7 @@ class AmazonAS extends CFRuntime
 			), 'member'));
 			unset($opt['BlockDeviceMappings']);
 		}
-		
+
 		// Optional map (non-list)
 		if (isset($opt['InstanceMonitoring']))
 		{
@@ -355,7 +355,7 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 * Creates new tags or updates existing tags for an Auto Scaling group.
-	 * 
+	 *
 	 * <p class="note">
 	 * A tag's definition is composed of a resource ID, resource type, key and value, and the
 	 * propagate flag. Value and the propagate flag are optional parameters. See the Request
@@ -379,7 +379,7 @@ class AmazonAS extends CFRuntime
 	public function create_or_update_tags($tags, $opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Tags' => (is_array($tags) ? $tags : array($tags))
@@ -391,7 +391,7 @@ class AmazonAS extends CFRuntime
 	/**
 	 * Deletes the specified Auto Scaling group if the group has no instances and no scaling
 	 * activities in progress.
-	 * 
+	 *
 	 * <p class="note">
 	 * To remove all instances before calling <code>DeleteAutoScalingGroup</code>, you can call
 	 * <code>UpdateAutoScalingGroup</code> to set the minimum and maximum size of the AutoScalingGroup
@@ -409,13 +409,13 @@ class AmazonAS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['AutoScalingGroupName'] = $auto_scaling_group_name;
-		
+
 		return $this->authenticate('DeleteAutoScalingGroup', $opt);
 	}
 
 	/**
 	 * Deletes the specified <code>LaunchConfiguration</code>.
-	 *  
+	 *
 	 * The specified launch configuration must not be attached to an Auto Scaling group. When this
 	 * call completes, the launch configuration is no longer available for use.
 	 *
@@ -429,7 +429,7 @@ class AmazonAS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['LaunchConfigurationName'] = $launch_configuration_name;
-		
+
 		return $this->authenticate('DeleteLaunchConfiguration', $opt);
 	}
 
@@ -448,7 +448,7 @@ class AmazonAS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['AutoScalingGroupName'] = $auto_scaling_group_name;
 		$opt['TopicARN'] = $topic_arn;
-		
+
 		return $this->authenticate('DeleteNotificationConfiguration', $opt);
 	}
 
@@ -466,7 +466,7 @@ class AmazonAS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['PolicyName'] = $policy_name;
-		
+
 		return $this->authenticate('DeletePolicy', $opt);
 	}
 
@@ -485,7 +485,7 @@ class AmazonAS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['ScheduledActionName'] = $scheduled_action_name;
-		
+
 		return $this->authenticate('DeleteScheduledAction', $opt);
 	}
 
@@ -509,7 +509,7 @@ class AmazonAS extends CFRuntime
 	public function delete_tags($tags, $opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Required list + map
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'Tags' => (is_array($tags) ? $tags : array($tags))
@@ -529,7 +529,7 @@ class AmazonAS extends CFRuntime
 	public function describe_adjustment_types($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeAdjustmentTypes', $opt);
 	}
 
@@ -537,7 +537,7 @@ class AmazonAS extends CFRuntime
 	 * Returns a full description of each Auto Scaling group in the given list. This includes all
 	 * Amazon EC2 instances that are members of the group. If a list of names is not provided, the
 	 * service returns the full details of all Auto Scaling groups.
-	 *  
+	 *
 	 * This action supports pagination by returning a token if there are more pages to retrieve. To
 	 * get the next page, call this action again with the returned token as the <code>NextToken</code>
 	 * parameter.
@@ -553,7 +553,7 @@ class AmazonAS extends CFRuntime
 	public function describe_auto_scaling_groups($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['AutoScalingGroupNames']))
 		{
@@ -570,7 +570,7 @@ class AmazonAS extends CFRuntime
 	 * Returns a description of each Auto Scaling instance in the <code>InstanceIds</code> list. If a
 	 * list is not provided, the service returns the full details of all instances up to a maximum of
 	 * 50. By default, the service returns a list of 20 items.
-	 *  
+	 *
 	 * This action supports pagination by returning a token if there are more pages to retrieve. To
 	 * get the next page, call this action again with the returned token as the <code>NextToken</code>
 	 * parameter.
@@ -586,7 +586,7 @@ class AmazonAS extends CFRuntime
 	public function describe_auto_scaling_instances($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['InstanceIds']))
 		{
@@ -610,14 +610,14 @@ class AmazonAS extends CFRuntime
 	public function describe_auto_scaling_notification_types($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeAutoScalingNotificationTypes', $opt);
 	}
 
 	/**
 	 * Returns a full description of the launch configurations, or the specified launch
 	 * configurations, if they exist.
-	 *  
+	 *
 	 * If no name is specified, then the full details of all launch configurations are returned.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
@@ -631,7 +631,7 @@ class AmazonAS extends CFRuntime
 	public function describe_launch_configurations($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['LaunchConfigurationNames']))
 		{
@@ -655,7 +655,7 @@ class AmazonAS extends CFRuntime
 	public function describe_metric_collection_types($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeMetricCollectionTypes', $opt);
 	}
 
@@ -674,7 +674,7 @@ class AmazonAS extends CFRuntime
 	public function describe_notification_configurations($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['AutoScalingGroupNames']))
 		{
@@ -704,7 +704,7 @@ class AmazonAS extends CFRuntime
 	public function describe_policies($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['PolicyNames']))
 		{
@@ -719,11 +719,11 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 * Returns the scaling activities for the specified Auto Scaling group.
-	 *  
+	 *
 	 * If the specified <code>ActivityIds</code> list is empty, all the activities from the past six
 	 * weeks are returned. Activities are sorted by completion time. Activities still in progress
 	 * appear first on the list.
-	 *  
+	 *
 	 * This action supports pagination. If the response includes a token, there are more records
 	 * available. To get the additional records, repeat the request with the response token as the
 	 * <code>NextToken</code> parameter.
@@ -740,7 +740,7 @@ class AmazonAS extends CFRuntime
 	public function describe_scaling_activities($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list (non-map)
 		if (isset($opt['ActivityIds']))
 		{
@@ -765,7 +765,7 @@ class AmazonAS extends CFRuntime
 	public function describe_scaling_process_types($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeScalingProcessTypes', $opt);
 	}
 
@@ -788,13 +788,13 @@ class AmazonAS extends CFRuntime
 	public function describe_scheduled_actions($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional DateTime
 		if (isset($opt['StartTime']))
 		{
 			$opt['StartTime'] = $this->util->convert_date_to_iso8601($opt['StartTime']);
 		}
-		
+
 		// Optional DateTime
 		if (isset($opt['EndTime']))
 		{
@@ -815,11 +815,11 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 * Lists the Auto Scaling group tags.
-	 *  
+	 *
 	 * You can use filters to limit results when describing tags. For example, you can query for tags
 	 * of a particular Auto Scaling group. You can specify multiple values for a filter. A tag must
 	 * match at least one of the specified values for it to be included in the results.
-	 *  
+	 *
 	 * You can also specify multiple filters. The result includes information for a particular tag
 	 * only if it matches all your filters. If there's no match, no special message is returned.
 	 *
@@ -839,7 +839,7 @@ class AmazonAS extends CFRuntime
 	public function describe_tags($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		// Optional list + map
 		if (isset($opt['Filters']))
 		{
@@ -863,7 +863,7 @@ class AmazonAS extends CFRuntime
 	public function describe_termination_policy_types($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('DescribeTerminationPolicyTypes', $opt);
 	}
 
@@ -883,7 +883,7 @@ class AmazonAS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['AutoScalingGroupName'] = $auto_scaling_group_name;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['Metrics']))
 		{
@@ -900,7 +900,7 @@ class AmazonAS extends CFRuntime
 	 * Enables monitoring of group metrics for the Auto Scaling group specified in
 	 * <code>AutoScalingGroupName</code>. You can specify the list of enabled metrics with the
 	 * <code>Metrics</code> parameter.
-	 *  
+	 *
 	 * Auto scaling metrics collection can be turned on only if the <code>InstanceMonitoring</code>
 	 * flag, in the Auto Scaling group's launch configuration, is set to <code>True</code>.
 	 *
@@ -917,7 +917,7 @@ class AmazonAS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['AutoScalingGroupName'] = $auto_scaling_group_name;
 		$opt['Granularity'] = $granularity;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['Metrics']))
 		{
@@ -945,7 +945,7 @@ class AmazonAS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['PolicyName'] = $policy_name;
-		
+
 		return $this->authenticate('ExecutePolicy', $opt);
 	}
 
@@ -953,7 +953,7 @@ class AmazonAS extends CFRuntime
 	 * Configures an Auto Scaling group to send notifications when specified events take place.
 	 * Subscribers to this topic can have messages for events delivered to an endpoint such as a web
 	 * server or email address.
-	 *  
+	 *
 	 * A new <code>PutNotificationConfiguration</code> overwrites an existing configuration.
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
@@ -969,7 +969,7 @@ class AmazonAS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['AutoScalingGroupName'] = $auto_scaling_group_name;
 		$opt['TopicARN'] = $topic_arn;
-		
+
 		// Required list (non-map)
 		$opt = array_merge($opt, CFComplexType::map(array(
 			'NotificationTypes' => (is_array($notification_types) ? $notification_types : array($notification_types))
@@ -1001,7 +1001,7 @@ class AmazonAS extends CFRuntime
 		$opt['PolicyName'] = $policy_name;
 		$opt['ScalingAdjustment'] = $scaling_adjustment;
 		$opt['AdjustmentType'] = $adjustment_type;
-		
+
 		return $this->authenticate('PutScalingPolicy', $opt);
 	}
 
@@ -1028,19 +1028,19 @@ class AmazonAS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['AutoScalingGroupName'] = $auto_scaling_group_name;
 		$opt['ScheduledActionName'] = $scheduled_action_name;
-		
+
 		// Optional DateTime
 		if (isset($opt['Time']))
 		{
 			$opt['Time'] = $this->util->convert_date_to_iso8601($opt['Time']);
 		}
-		
+
 		// Optional DateTime
 		if (isset($opt['StartTime']))
 		{
 			$opt['StartTime'] = $this->util->convert_date_to_iso8601($opt['StartTime']);
 		}
-		
+
 		// Optional DateTime
 		if (isset($opt['EndTime']))
 		{
@@ -1065,7 +1065,7 @@ class AmazonAS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['AutoScalingGroupName'] = $auto_scaling_group_name;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['ScalingProcesses']))
 		{
@@ -1083,11 +1083,11 @@ class AmazonAS extends CFRuntime
 	 * When reducing the size of the group, it is not possible to define which Amazon EC2 instances
 	 * will be terminated. This applies to any Auto Scaling decisions that might result in terminating
 	 * instances.
-	 *  
+	 *
 	 * There are two common use cases for <code>SetDesiredCapacity</code>: one for users of the Auto
 	 * Scaling triggering system, and another for developers who write their own triggering systems.
 	 * Both use cases relate to the concept of cooldown.
-	 *  
+	 *
 	 * In the first case, if you use the Auto Scaling triggering system,
 	 * <code>SetDesiredCapacity</code> changes the size of your Auto Scaling group without regard to
 	 * the cooldown period. This could be useful, for example, if Auto Scaling did something
@@ -1095,7 +1095,7 @@ class AmazonAS extends CFRuntime
 	 * reject requests to change the size of the group for that entire 10-minute period. The
 	 * <code>SetDesiredCapacity</code> command allows you to circumvent this restriction and change
 	 * the size of the group before the end of the cooldown period.
-	 *  
+	 *
 	 * In the second case, if you write your own triggering system, you can use
 	 * <code>SetDesiredCapacity</code> to control the size of your Auto Scaling group. If you want the
 	 * same cooldown functionality that Auto Scaling offers, you can configure
@@ -1115,7 +1115,7 @@ class AmazonAS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['AutoScalingGroupName'] = $auto_scaling_group_name;
 		$opt['DesiredCapacity'] = $desired_capacity;
-		
+
 		return $this->authenticate('SetDesiredCapacity', $opt);
 	}
 
@@ -1135,7 +1135,7 @@ class AmazonAS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['InstanceId'] = $instance_id;
 		$opt['HealthStatus'] = $health_status;
-		
+
 		return $this->authenticate('SetInstanceHealth', $opt);
 	}
 
@@ -1143,12 +1143,12 @@ class AmazonAS extends CFRuntime
 	 * Suspends Auto Scaling processes for an Auto Scaling group. To suspend specific process types,
 	 * specify them by name with the <code>ScalingProcesses.member.N</code> parameter. To suspend all
 	 * process types, omit the <code>ScalingProcesses.member.N</code> parameter.
-	 * 
-	 * <p class="important"></p> 
+	 *
+	 * <p class="important"></p>
 	 * Suspending either of the two primary process types, <code>Launch</code> or
 	 * <code>Terminate</code>, can prevent other process types from functioning properly. For more
 	 * information about processes and their dependencies, see <code>ProcessType</code>.
-	 *  
+	 *
 	 * To resume processes that have been suspended, use <code>ResumeProcesses</code>.
 	 *
 	 * @param string $auto_scaling_group_name (Required) The name or Amazon Resource Name (ARN) of the Auto Scaling group. [Constraints: The value must be between 1 and 1600 characters, and must match the following regular expression pattern: <code>[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*</code>]
@@ -1162,7 +1162,7 @@ class AmazonAS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['AutoScalingGroupName'] = $auto_scaling_group_name;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['ScalingProcesses']))
 		{
@@ -1177,7 +1177,7 @@ class AmazonAS extends CFRuntime
 
 	/**
 	 * Terminates the specified instance. Optionally, the desired group size can be adjusted.
-	 * 
+	 *
 	 * <p class="note">
 	 * This call simply registers a termination request. The termination of the instance cannot happen
 	 * immediately.
@@ -1195,25 +1195,25 @@ class AmazonAS extends CFRuntime
 		if (!$opt) $opt = array();
 		$opt['InstanceId'] = $instance_id;
 		$opt['ShouldDecrementDesiredCapacity'] = $should_decrement_desired_capacity;
-		
+
 		return $this->authenticate('TerminateInstanceInAutoScalingGroup', $opt);
 	}
 
 	/**
 	 * Updates the configuration for the specified <code>AutoScalingGroup</code>.
-	 * 
-	 * <p class="note"></p> 
+	 *
+	 * <p class="note"></p>
 	 * To update an Auto Scaling group with a launch configuration that has the
 	 * <code>InstanceMonitoring</code> flag set to <code>False</code>, you must first ensure that
 	 * collection of group metrics is disabled. Otherwise, calls to
 	 * <code>UpdateAutoScalingGroup</code> will fail. If you have previously enabled group metrics
 	 * collection, you can disable collection of all group metrics by calling
 	 * <code>DisableMetricsCollection</code>.
-	 *  
+	 *
 	 * The new settings are registered upon the completion of this call. Any launch configuration
 	 * settings take effect on any triggers after this call returns. Triggers that are currently in
 	 * progress aren't affected.
-	 * 
+	 *
 	 * <p class="note"></p>
 	 * <ul>
 	 * 	<li>If a new value is specified for <em>MinSize</em> without specifying the value for
@@ -1248,7 +1248,7 @@ class AmazonAS extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['AutoScalingGroupName'] = $auto_scaling_group_name;
-		
+
 		// Optional list (non-map)
 		if (isset($opt['AvailabilityZones']))
 		{
@@ -1257,7 +1257,7 @@ class AmazonAS extends CFRuntime
 			), 'member'));
 			unset($opt['AvailabilityZones']);
 		}
-		
+
 		// Optional list (non-map)
 		if (isset($opt['TerminationPolicies']))
 		{

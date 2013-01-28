@@ -6,7 +6,7 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *  http://aws.amazon.com/apache2.0
+ *	http://aws.amazon.com/apache2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -108,7 +108,7 @@ class AmazonImportExport extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['JobId'] = $job_id;
-		
+
 		return $this->authenticate('CancelJob', $opt);
 	}
 
@@ -133,7 +133,7 @@ class AmazonImportExport extends CFRuntime
 		$opt['JobType'] = $job_type;
 		$opt['Manifest'] = $manifest;
 		$opt['ValidateOnly'] = $validate_only;
-		
+
 		return $this->authenticate('CreateJob', $opt);
 	}
 
@@ -152,7 +152,7 @@ class AmazonImportExport extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['JobId'] = $job_id;
-		
+
 		return $this->authenticate('GetStatus', $opt);
 	}
 
@@ -172,7 +172,7 @@ class AmazonImportExport extends CFRuntime
 	public function list_jobs($opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+
 		return $this->authenticate('ListJobs', $opt);
 	}
 
@@ -198,7 +198,7 @@ class AmazonImportExport extends CFRuntime
 		$opt['Manifest'] = $manifest;
 		$opt['JobType'] = $job_type;
 		$opt['ValidateOnly'] = $validate_only;
-		
+
 		return $this->authenticate('UpdateJob', $opt);
 	}
 }
