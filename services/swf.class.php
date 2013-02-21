@@ -19,8 +19,7 @@
  * information about the Amazon SWF actions and data types.
  *  
  * For an broader overview of the Amazon SWF programming model, please go to the <a href=
- * "http://docs.amazonwebservices.com/amazonswf/latest/developerguide/">Amazon SWF Developer
- * Guide</a>.
+ * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/">Amazon SWF Developer Guide</a>.
  *  
  * This section provides an overview of Amazon SWF actions.
  *  
@@ -187,7 +186,7 @@
  * 		"CountPendingDecisionTasks">CountPendingDecisionTasks</a></li>
  * </ul>
  *
- * @version 2013.01.14
+ * @version 2013.02.21
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/simpleworkflow/ Amazon Simple Workflow
@@ -301,7 +300,31 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Constrain the following parameters by using a <code>Condition</code> element with the
+	 * appropriate keys.
+	 * 	<ul>
+	 * 		<li><code>tag</code>: String constraint. The key is <code>swf:tagFilter.tag</code>.</li>
+	 * 		<li><code>typeFilter.name</code>: String constraint. String constraint. The key is
+	 * 			<code>swf:typeFilter.name</code>.</li>
+	 * 		<li><code>typeFilter.version</code>: String constraint. String constraint. The key is
+	 * 			<code>swf:typeFilter.version</code>.</li>
+	 * 	</ul></li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain containing the workflow executions to count.</li>
@@ -344,7 +367,31 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Constrain the following parameters by using a <code>Condition</code> element with the
+	 * appropriate keys.
+	 * 	<ul>
+	 * 		<li><code>tag</code>: String constraint. The key is <code>swf:tagFilter.tag</code>.</li>
+	 * 		<li><code>typeFilter.name</code>: String constraint. String constraint. The key is
+	 * 			<code>swf:typeFilter.name</code>.</li>
+	 * 		<li><code>typeFilter.version</code>: String constraint. String constraint. The key is
+	 * 			<code>swf:typeFilter.version</code>.</li>
+	 * 	</ul></li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain containing the workflow executions to count.</li>
@@ -377,6 +424,24 @@ class AmazonSWF extends CFRuntime
 	 * Returns the estimated number of activity tasks in the specified task list. The count returned
 	 * is an approximation and is not guaranteed to be exact. If you specify a task list that no
 	 * activity task was ever scheduled in then 0 will be returned.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Use a <strong>Condition</strong> element with the <code>swf:taskList.name</code> key to
+	 * allow the action to access only certain task lists.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain that contains the task list.</li>
@@ -398,6 +463,24 @@ class AmazonSWF extends CFRuntime
 	 * Returns the estimated number of decision tasks in the specified task list. The count returned
 	 * is an approximation and is not guaranteed to be exact. If you specify a task list that no
 	 * decision task was ever scheduled in then 0 will be returned.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Use a <strong>Condition</strong> element with the <code>swf:taskList.name</code> key to
+	 * allow the action to access only certain task lists.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain that contains the task list.</li>
@@ -423,7 +506,30 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Constrain the following parameters by using a <code>Condition</code> element with the
+	 * appropriate keys.
+	 * 	<ul>
+	 * 		<li><code>activityType.name</code>: String constraint. The key is
+	 * 			<code>swf:activityType.name</code>.</li>
+	 * 		<li><code>activityType.version</code>: String constraint. The key is
+	 * 			<code>swf:activityType.version</code>.</li>
+	 * 	</ul></li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain in which the activity type is registered.</li>
@@ -451,7 +557,23 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>name</code> - <code>string</code> - Required - The name of the domain to deprecate.</li>
@@ -475,7 +597,30 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Constrain the following parameters by using a <code>Condition</code> element with the
+	 * appropriate keys.
+	 * 	<ul>
+	 * 		<li><code>workflowType.name</code>: String constraint. The key is
+	 * 			<code>swf:workflowType.name</code>.</li>
+	 * 		<li><code>workflowType.version</code>: String constraint. The key is
+	 * 			<code>swf:workflowType.version</code>.</li>
+	 * 	</ul></li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain in which the workflow type is registered.</li>
@@ -497,6 +642,30 @@ class AmazonSWF extends CFRuntime
 	/**
 	 * Returns information about the specified activity type. This includes configuration settings
 	 * provided at registration time as well as other general information about the type.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Constrain the following parameters by using a <code>Condition</code> element with the
+	 * appropriate keys.
+	 * 	<ul>
+	 * 		<li><code>activityType.name</code>: String constraint. The key is
+	 * 			<code>swf:activityType.name</code>.</li>
+	 * 		<li><code>activityType.version</code>: String constraint. The key is
+	 * 			<code>swf:activityType.version</code>.</li>
+	 * 	</ul></li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain in which the activity type is registered.</li>
@@ -517,6 +686,23 @@ class AmazonSWF extends CFRuntime
 
 	/**
 	 * Returns information about the specified domain including description and status.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>name</code> - <code>string</code> - Required - The name of the domain to describe.</li>
@@ -538,7 +724,23 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain containing the workflow execution.</li>
@@ -561,6 +763,30 @@ class AmazonSWF extends CFRuntime
 	 * Returns information about the specified <em>workflow type</em>. This includes configuration
 	 * settings specified when the type was registered and other information such as creation date,
 	 * current status, etc.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Constrain the following parameters by using a <code>Condition</code> element with the
+	 * appropriate keys.
+	 * 	<ul>
+	 * 		<li><code>workflowType.name</code>: String constraint. The key is
+	 * 			<code>swf:workflowType.name</code>.</li>
+	 * 		<li><code>workflowType.version</code>: String constraint. The key is
+	 * 			<code>swf:workflowType.version</code>.</li>
+	 * 	</ul></li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain in which this workflow type is registered.</li>
@@ -587,7 +813,23 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain containing the workflow execution.</li>
@@ -596,7 +838,7 @@ class AmazonSWF extends CFRuntime
 	 * 		<li><code>runId</code> - <code>string</code> - Required - A system generated unique identifier for the workflow execution.</li>
 	 * 	</ul></li>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If a <code>NextPageToken</code> is returned, the result has more than one pages. To get the next page, repeat the call and specify the nextPageToken with all other arguments unchanged.</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - Specifies the maximum number of history events returned in one page. The next page in the result is identified by the <code>NextPageToken</code> returned. By default 100 history events are returned in a page but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size larger than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - Specifies the maximum number of history events returned in one page. The next page in the result is identified by the <code>NextPageToken</code> returned. By default 100 history events are returned in a page but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size larger than 100. Note that the number of events may be less than the maxiumum page size, in which case, the returned page will have fewer results than the maximumPageSize specified.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the events in reverse order. By default the results are returned in ascending order of the <code>eventTimeStamp</code> of the events.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -615,13 +857,30 @@ class AmazonSWF extends CFRuntime
 	 * current status of the activity, etc. The results may be split into multiple pages. To retrieve
 	 * subsequent pages, make the call again using the <code>nextPageToken</code> returned by the
 	 * initial call.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain in which the activity types have been registered.</li>
 	 * 	<li><code>name</code> - <code>string</code> - Optional - If specified, only lists the activity types that have this name.</li>
 	 * 	<li><code>registrationStatus</code> - <code>string</code> - Required - Specifies the registration status of the activity types to list. [Allowed values: <code>REGISTERED</code>, <code>DEPRECATED</code>]</li>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If on a previous call to this method a <code>NextResultToken</code> was returned, the results have more than one page. To get the next page of results, repeat the call with the <code>nextPageToken</code> and keep all other arguments unchanged.</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100. Note that the number of types may be less than the maxiumum page size, in which case, the returned page will have fewer results than the maximumPageSize specified.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the results in reverse order. By default the results are returned in ascending alphabetical order of the <code>name</code> of the activity types.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -642,7 +901,31 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Constrain the following parameters by using a <code>Condition</code> element with the
+	 * appropriate keys.
+	 * 	<ul>
+	 * 		<li><code>tag</code>: String constraint. The key is <code>swf:tagFilter.tag</code>.</li>
+	 * 		<li><code>typeFilter.name</code>: String constraint. String constraint. The key is
+	 * 			<code>swf:typeFilter.name</code>.</li>
+	 * 		<li><code>typeFilter.version</code>: String constraint. String constraint. The key is
+	 * 			<code>swf:typeFilter.version</code>.</li>
+	 * 	</ul></li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain that contains the workflow executions to list.</li>
@@ -668,7 +951,7 @@ class AmazonSWF extends CFRuntime
 	 * 		<li><code>tag</code> - <code>string</code> - Required - Specifies the tag that must be associated with the execution for it to meet the filter criteria. This field is required.</li>
 	 * 	</ul></li>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If on a previous call to this method a <code>NextPageToken</code> was returned, the results are being paginated. To get the next page of results, repeat the call with the returned token and all other arguments unchanged.</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100. Note that the number of executions may be less than the maxiumum page size, in which case, the returned page will have fewer results than the maximumPageSize specified.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the results in reverse order. By default the results are returned in descending order of the start or the close time of the executions.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -689,12 +972,29 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains. The element must be set to <code>arn:aws:swf::AccountID:domain/*"</code>,
+	 * where &acirc;&euro;&oelig;AccountID" is the account ID, with no dashes.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If on a previous call to this method a <code>NextPageToken</code> was returned, the result has more than one page. To get the next page of results, repeat the call with the returned token and all other arguments unchanged.</li>
 	 * 	<li><code>registrationStatus</code> - <code>string</code> - Required - Specifies the registration status of the domains to list. [Allowed values: <code>REGISTERED</code>, <code>DEPRECATED</code>]</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100. Note that the number of domains may be less than the maxiumum page size, in which case, the returned page will have fewer results than the maximumPageSize specified.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the results in reverse order. By default the results are returned in ascending alphabetical order of the <code>name</code> of the domains.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -715,7 +1015,31 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * This operation is eventually consistent. The results are best effort and may not exactly
 	 * reflect recent updates and changes.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Constrain the following parameters by using a <code>Condition</code> element with the
+	 * appropriate keys.
+	 * 	<ul>
+	 * 		<li><code>tag</code>: String constraint. The key is <code>swf:tagFilter.tag</code>.</li>
+	 * 		<li><code>typeFilter.name</code>: String constraint. String constraint. The key is
+	 * 			<code>swf:typeFilter.name</code>.</li>
+	 * 		<li><code>typeFilter.version</code>: String constraint. String constraint. The key is
+	 * 			<code>swf:typeFilter.version</code>.</li>
+	 * 	</ul></li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain that contains the workflow executions to list.</li>
@@ -731,7 +1055,7 @@ class AmazonSWF extends CFRuntime
 	 * 		<li><code>tag</code> - <code>string</code> - Required - Specifies the tag that must be associated with the execution for it to meet the filter criteria. This field is required.</li>
 	 * 	</ul></li>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If on a previous call to this method a <code>NextPageToken</code> was returned, the results are being paginated. To get the next page of results, repeat the call with the returned token and all other arguments unchanged.</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100. Note that the number of executions may be less than the maxiumum page size, in which case, the returned page will have fewer results than the maximumPageSize specified.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the results in reverse order. By default the results are returned in descending order of the start time of the executions.</li>
 	 * 	<li><code>executionFilter</code> - <code>array</code> - Optional - If specified, only workflow executions matching the workflow id specified in the filter are returned. <p class="note"> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> <ul>
 	 * 		<li><code>workflowId</code> - <code>string</code> - Required - The workflowId to pass of match the criteria of this filter.</li>
@@ -750,13 +1074,30 @@ class AmazonSWF extends CFRuntime
 	/**
 	 * Returns information about workflow types in the specified domain. The results may be split into
 	 * multiple pages that can be retrieved by making the call repeatedly.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain in which the workflow types have been registered.</li>
 	 * 	<li><code>name</code> - <code>string</code> - Optional - If specified, lists the workflow type with this name.</li>
 	 * 	<li><code>registrationStatus</code> - <code>string</code> - Required - Specifies the registration status of the workflow types to list. [Allowed values: <code>REGISTERED</code>, <code>DEPRECATED</code>]</li>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If on a previous call to this method a <code>NextPageToken</code> was returned, the results are being paginated. To get the next page of results, repeat the call with the returned token and all other arguments unchanged.</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of results returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100. Note that the number of types may be less than the maxiumum page size, in which case, the returned page will have fewer results than the maximumPageSize specified.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the results in reverse order. By default the results are returned in ascending alphabetical order of the <code>name</code> of the workflow types.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -781,7 +1122,24 @@ class AmazonSWF extends CFRuntime
 	 * <p class="important">
 	 * Workers should set their client side socket timeout to at least 70 seconds (10 seconds higher
 	 * than the maximum time service may hold the poll request).
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Use a <strong>Condition</strong> element with the <code>swf:taskList.name</code> key to
+	 * allow the action to access only certain task lists.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain that contains the task lists being polled.</li>
@@ -824,7 +1182,24 @@ class AmazonSWF extends CFRuntime
 	 * <code>nextPageToken</code> returned by the initial call. Note that you do <strong>not</strong>
 	 * call <code>GetWorkflowExecutionHistory</code> with this <code>nextPageToken</code>. Instead,
 	 * call <code>PollForDecisionTask</code> again.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Use a <strong>Condition</strong> element with the <code>swf:taskList.name</code> key to
+	 * allow the action to access only certain task lists.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain containing the task lists to poll.</li>
@@ -833,7 +1208,7 @@ class AmazonSWF extends CFRuntime
 	 * 	</ul></li>
 	 * 	<li><code>identity</code> - <code>string</code> - Optional - Identity of the decider making the request, which is recorded in the DecisionTaskStarted event in the workflow history. This enables diagnostic tracing when problems arise. The form of this identity is user defined.</li>
 	 * 	<li><code>nextPageToken</code> - <code>string</code> - Optional - If on a previous call to this method a <code>NextPageToken</code> was returned, the results are being paginated. To get the next page of results, repeat the call with the returned token and all other arguments unchanged. <p class="note">The <code>nextPageToken</code> returned by this action cannot be used with <code>GetWorkflowExecutionHistory</code> to get the next page. You must call <code>PollForDecisionTask</code> again (with the <code>nextPageToken</code>) to retrieve the next page of history records. Calling <code>PollForDecisionTask</code> with a <code>nextPageToken</code> will not return a new decision task.</p> .</li>
-	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of history events returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100.</li>
+	 * 	<li><code>maximumPageSize</code> - <code>integer</code> - Optional - The maximum number of history events returned in each page. The default is 100, but the caller can override this value to a page size <em>smaller</em> than the default. You cannot specify a page size greater than 100. Note that the number of events may be less than the maxiumum page size, in which case, the returned page will have fewer results than the maximumPageSize specified.</li>
 	 * 	<li><code>reverseOrder</code> - <code>boolean</code> - Optional - When set to <code>true</code>, returns the events in reverse order. By default the results are returned in ascending order of the <code>eventTimestamp</code> of the events.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
@@ -877,7 +1252,23 @@ class AmazonSWF extends CFRuntime
 	 * If the <code>cancelRequested</code> flag returns <code>true</code>, a cancellation is being
 	 * attempted. If the worker can cancel the activity, it should respond with
 	 * <code>RespondActivityTaskCanceled</code>. Otherwise, it should ignore the cancellation request.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>taskToken</code> - <code>string</code> - Required - The <code>taskToken</code> of the <code>ActivityTask</code>. <p class="important">The <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p></li>
@@ -901,7 +1292,30 @@ class AmazonSWF extends CFRuntime
 	 * A <code>TypeAlreadyExists</code> fault is returned if the type already exists in the domain.
 	 * You cannot change any configuration settings of the type after its registration, and it must be
 	 * registered as a new version.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Constrain the following parameters by using a <code>Condition</code> element with the
+	 * appropriate keys.
+	 * 	<ul>
+	 * 		<li><code>defaultTaskList</code>: String constraint. The key is
+	 * 			<code>swf:defaultTaskList.name</code>.</li>
+	 * 		<li><code>name</code>: String constraint. The key is <code>swf:name</code>.</li>
+	 * 		<li><code>version</code>: String constraint. The key is <code>swf:version</code>.</li>
+	 * 	</ul></li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain in which this activity is to be registered.</li>
@@ -928,11 +1342,28 @@ class AmazonSWF extends CFRuntime
 
 	/**
 	 * Registers a new domain.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>You cannot use an IAM policy to control domain access for this action. The name of the
+	 * domain being registered is available as the resource of this action.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>name</code> - <code>string</code> - Required - Name of the domain to register. The name must be unique. The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (\u0000-\u001f | \u007f - \u009f). Also, it must not contain the literal string "arn".</li>
 	 * 	<li><code>description</code> - <code>string</code> - Optional - Textual description of the domain.</li>
-	 * 	<li><code>workflowExecutionRetentionPeriodInDays</code> - <code>string</code> - Required - Specifies the duration-- <strong><em>in days</em></strong> --for which the record (including the history) of workflow executions in this domain should be kept by the service. After the retention period, the workflow execution will not be available in the results of visibility calls. If a duration of <code>NONE</code> is specified, the records for workflow executions in this domain are not retained at all. The valid values are integers greater than or equal to <code>0</code>. An integer value can be used to specify the duration in seconds while <code>NONE</code> can be used to specify unlimited duration.</li>
+	 * 	<li><code>workflowExecutionRetentionPeriodInDays</code> - <code>string</code> - Required - Specifies the duration-- <strong><em>in days</em></strong> --for which the record (including the history) of workflow executions in this domain should be kept by the service. After the retention period, the workflow execution will not be available in the results of visibility calls. If a duration of <code>NONE</code> is specified, the records for workflow executions in this domain are not retained at all.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -946,12 +1377,37 @@ class AmazonSWF extends CFRuntime
 
 	/**
 	 * Registers a new <em>workflow type</em> and its configuration settings in the specified domain.
+	 *  
+	 * The retention period for the workflow history is set by the <code>RegisterDomain</code> action.
 	 * 
 	 * <p class="important">
 	 * If the type already exists, then a <code>TypeAlreadyExists</code> fault is returned. You cannot
 	 * change the configuration settings of a workflow type once it is registered and it must be
 	 * registered as a new version.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Constrain the following parameters by using a <code>Condition</code> element with the
+	 * appropriate keys.
+	 * 	<ul>
+	 * 		<li><code>defaultTaskList</code>: String constraint. The key is
+	 * 			<code>swf:defaultTaskList.name</code>.</li>
+	 * 		<li><code>name</code>: String constraint. The key is <code>swf:name</code>.</li>
+	 * 		<li><code>version</code>: String constraint. The key is <code>swf:version</code>.</li>
+	 * 	</ul></li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain in which to register the workflow type.</li>
@@ -989,7 +1445,23 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * Because this action allows the workflow to properly clean up and gracefully close, it should be
 	 * used instead of <code>TerminateWorkflowExecution</code> when possible.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain containing the workflow execution to cancel.</li>
@@ -1018,7 +1490,30 @@ class AmazonSWF extends CFRuntime
 	 * Only use this operation if the <code>canceled</code> flag of a
 	 * <code>RecordActivityTaskHeartbeat</code> request returns <code>true</code> and if the activity
 	 * can be safely undone or abandoned.
-	 * </p>
+	 * </p> 
+	 * A task is considered open from the time that it is scheduled until it is closed. Therefore a
+	 * task is reported as open while a worker is processing it. A task is closed after it has been
+	 * specified in a call to <code>RespondActivityTaskCompleted</code>, RespondActivityTaskCanceled,
+	 * <code>RespondActivityTaskFailed</code>, or the task has <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dg-basic.html#swf-dev-timeout-types">
+	 * timed out</a>.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>taskToken</code> - <code>string</code> - Required - The <code>taskToken</code> of the <code>ActivityTask</code>. <p class="important">The <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p></li>
@@ -1036,9 +1531,8 @@ class AmazonSWF extends CFRuntime
 
 	/**
 	 * Used by workers to tell the service that the <code>ActivityTask</code> identified by the
-	 * <code>taskToken</code> completed successfully with a <code>result</code> (if provided).
-	 *  
-	 * The <code>result</code> appears in the <code>ActivityTaskCompleted</code> event in the workflow
+	 * <code>taskToken</code> completed successfully with a <code>result</code> (if provided). The
+	 * <code>result</code> appears in the <code>ActivityTaskCompleted</code> event in the workflow
 	 * history.
 	 * 
 	 * <p class="important">
@@ -1046,7 +1540,30 @@ class AmazonSWF extends CFRuntime
 	 * <code>RespondActivityTaskFailed</code> instead. If the worker finds that the task is canceled
 	 * through the <code>canceled</code> flag returned by <code>RecordActivityTaskHeartbeat</code>, it
 	 * should cancel the task, clean up and then call <code>RespondActivityTaskCanceled</code>.
-	 * </p>
+	 * </p> 
+	 * A task is considered open from the time that it is scheduled until it is closed. Therefore a
+	 * task is reported as open while a worker is processing it. A task is closed after it has been
+	 * specified in a call to RespondActivityTaskCompleted, <code>RespondActivityTaskCanceled</code>,
+	 * <code>RespondActivityTaskFailed</code>, or the task has <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dg-basic.html#swf-dev-timeout-types">
+	 * timed out</a>.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>taskToken</code> - <code>string</code> - Required - The <code>taskToken</code> of the <code>ActivityTask</code>. <p class="important">The <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p></li>
@@ -1064,10 +1581,33 @@ class AmazonSWF extends CFRuntime
 
 	/**
 	 * Used by workers to tell the service that the <code>ActivityTask</code> identified by the
-	 * <code>taskToken</code> has failed with <code>reason</code> (if specified).
-	 *  
-	 * The <code>reason</code> and <code>details</code> appear in the <code>ActivityTaskFailed</code>
+	 * <code>taskToken</code> has failed with <code>reason</code> (if specified). The
+	 * <code>reason</code> and <code>details</code> appear in the <code>ActivityTaskFailed</code>
 	 * event added to the workflow history.
+	 *  
+	 * A task is considered open from the time that it is scheduled until it is closed. Therefore a
+	 * task is reported as open while a worker is processing it. A task is closed after it has been
+	 * specified in a call to <code>RespondActivityTaskCompleted</code>,
+	 * <code>RespondActivityTaskCanceled</code>, RespondActivityTaskFailed, or the task has <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dg-basic.html#swf-dev-timeout-types">
+	 * timed out</a>.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>taskToken</code> - <code>string</code> - Required - The <code>taskToken</code> of the <code>ActivityTask</code>. <p class="important">The <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p></li>
@@ -1092,6 +1632,15 @@ class AmazonSWF extends CFRuntime
 	 * A <code>DecisionTaskCompleted</code> event is added to the workflow history. The
 	 * <code>executionContext</code> specified is attached to the event in the workflow execution
 	 * history.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * If an IAM policy grants permission to use <code>RespondDecisionTaskCompleted</code>, it can
+	 * express permissions for the list of decisions in the <code>decisions</code> parameter in the
+	 * same way as for the regular API. This approach maintains a uniform conceptual model and helps
+	 * keep policies readable. For more information, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>taskToken</code> - <code>string</code> - Required - The <code>taskToken</code> from the <code>DecisionTask</code>. <p class="important">The <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p></li>
@@ -1139,7 +1688,7 @@ class AmazonSWF extends CFRuntime
 	 * 				<li><code>workflowTypeVersion</code> - <code>string</code> - Optional - </li>
 	 * 			</ul></li>
 	 * 			<li><code>recordMarkerDecisionAttributes</code> - <code>array</code> - Optional - Provides details of the <code>RecordMarker</code> decision. It is not set for other decision types. <ul>
-	 * 				<li><code>markerName</code> - <code>string</code> - Required - The name of the marker. This filed is required.</li>
+	 * 				<li><code>markerName</code> - <code>string</code> - Required - The name of the marker. This file is required.</li>
 	 * 				<li><code>details</code> - <code>string</code> - Optional - Optional details of the marker.</li>
 	 * 			</ul></li>
 	 * 			<li><code>startTimerDecisionAttributes</code> - <code>array</code> - Optional - Provides details of the <code>StartTimer</code> decision. It is not set for other decision types. <ul>
@@ -1211,7 +1760,23 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * If the specified workflow execution is not open, this method fails with
 	 * <code>UnknownResource</code>.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain containing the workflow execution to signal.</li>
@@ -1235,6 +1800,37 @@ class AmazonSWF extends CFRuntime
 	 * <code>workflowId</code> and input data.
 	 *  
 	 * This action returns the newly started workflow execution.
+	 *  
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>Constrain the following parameters by using a <code>Condition</code> element with the
+	 * appropriate keys.
+	 * 	<ul>
+	 * 		<li><code>tagList.member.0</code>: The key is <code>swf:tagList.member.0</code>.</li>
+	 * 		<li><code>tagList.member.1</code>: The key is <code>swf:tagList.member.1</code>.</li>
+	 * 		<li><code>tagList.member.2</code>: The key is <code>swf:tagList.member.2</code>.</li>
+	 * 		<li><code>tagList.member.3</code>: The key is <code>swf:tagList.member.3</code>.</li>
+	 * 		<li><code>tagList.member.4</code>: The key is <code>swf:tagList.member.4</code>.</li>
+	 * 		<li><code>taskList</code>: String constraint. The key is
+	 * 			<code>swf:taskList.name</code>.</li>
+	 * 		<li><code>name</code>: String constraint. The key is
+	 * 			<code>swf:workflowType.name</code>.</li>
+	 * 		<li><code>version</code>: String constraint. The key is
+	 * 			<code>swf:workflowType.version</code>.</li>
+	 * 	</ul></li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The name of the domain in which the workflow execution is created.</li>
@@ -1285,7 +1881,23 @@ class AmazonSWF extends CFRuntime
 	 * <p class="note">
 	 * You should consider using <code>RequestCancelWorkflowExecution</code> action instead because it
 	 * allows the workflow to gracefully close while <code>TerminateWorkflowExecution</code> does not.
-	 * </p>
+	 * </p> 
+	 * <strong>Access Control</strong>
+	 *  
+	 * You can use IAM policies to control this action's access to Amazon SWF resources as follows:
+	 * 
+	 * <ul>
+	 * 	<li>Use a <code>Resource</code> element with the domain name to limit the action to only
+	 * specified domains.</li>
+	 * 	<li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>
+	 * 	<li>You cannot use an IAM policy to constrain this action's parameters.</li>
+	 * </ul>
+	 * 
+	 * If the caller does not have sufficient permissions to invoke the action, or the parameter
+	 * values fall outside the specified constraints, the action fails by throwing
+	 * <code>OperationNotPermitted</code>. For details and example IAM policies, see <a href=
+	 * "http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to
+	 * Manage Access to Amazon SWF Workflows</a>.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>domain</code> - <code>string</code> - Required - The domain of the workflow execution to terminate.</li>
