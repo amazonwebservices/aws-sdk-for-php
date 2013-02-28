@@ -33,7 +33,7 @@
  * information about a specific AWS product, you can find the product's technical documentation at
  * 	<a href="http://aws.amazon.com/documentation/">http://aws.amazon.com/documentation/</a>.
  *
- * @version 2013.01.14
+ * @version 2013.02.27
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/cloudformation/ AWS CloudFormation
@@ -177,6 +177,28 @@ class AmazonCloudFormation extends CFRuntime
 	// SERVICE METHODS
 
 	/**
+	 * Cancels an update on the specified stack. If the call completes successfully, the stack will
+	 * roll back the update and revert to the previous stack configuration.
+	 * 
+	 * <p class="note">
+	 * Only stacks that are in the UPDATE_IN_PROGRESS state can be canceled.
+	 * </p>
+	 *
+	 * @param string $stack_name (Required) The name or the unique identifier associated with the stack.
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function cancel_update_stack($stack_name, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['StackName'] = $stack_name;
+		
+		return $this->authenticate('CancelUpdateStack', $opt);
+	}
+
+	/**
 	 * Creates a stack as specified in the template. After the call completes successfully, the stack
 	 * creation starts. You can check the status of the stack via the <code>DescribeStacks</code> API.
 	 * 
@@ -187,7 +209,7 @@ class AmazonCloudFormation extends CFRuntime
 	 * @param string $stack_name (Required) The name associated with the stack. The name must be unique within your AWS account. <p class="note">Must contain only alphanumeric characters (case sensitive) and start with an alpha character. Maximum length of the name is 255 characters.</p>
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>TemplateBody</code> - <code>string</code> - Optional - Structure containing the template body. (For more information, go to the <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide">AWS CloudFormation User Guide</a>.) Conditional: You must pass <code>TemplateBody</code> or <code>TemplateURL</code>. If both are passed, only <code>TemplateBody</code> is used.</li>
-	 * 	<li><code>TemplateURL</code> - <code>string</code> - Optional - Location of file containing the template body. The URL must point to a template located in an S3 bucket in the same region as the stack. For more information, go to the <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide">AWS CloudFormation User Guide</a>. Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</li>
+	 * 	<li><code>TemplateURL</code> - <code>string</code> - Optional - Location of file containing the template body. The URL must point to a template (max size: 307,200 bytes) located in an S3 bucket in the same region as the stack. For more information, go to the <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide">AWS CloudFormation User Guide</a>. Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</li>
 	 * 	<li><code>Parameters</code> - <code>array</code> - Optional - A list of <code>Parameter</code> structures that specify input parameters for the stack. <ul>
 	 * 		<li><code>x</code> - <code>array</code> - Optional - This represents a simple array index. <ul>
 	 * 			<li><code>ParameterKey</code> - <code>string</code> - Optional - The key associated with the parameter.</li>
@@ -323,23 +345,21 @@ class AmazonCloudFormation extends CFRuntime
 	/**
 	 * Returns AWS resource descriptions for running and deleted stacks. If <code>StackName</code> is
 	 * specified, all the associated resources that are part of the stack are returned. If
-	 * <code>PhysicalResourceId</code> is specified, all the associated resources of the stack the
+	 * <code>PhysicalResourceId</code> is specified, the associated resources of the stack that the
 	 * resource belongs to are returned.
-	 *  
-	 * For deleted stacks, DescribeStackResources returns resource information for up to 90 days after
-	 * the stack has been deleted.
-	 *  
-	 * If you do not provide either a stack or resource id, information for all stacks and resources
-	 * will be returned, up to a limit of 100 records.
 	 * 
-	 * <p class="note"></p> 
-	 * To list more than 100 resources use <code>ListStackResources</code> instead.
+	 * <p class="note">
+	 * Only the first 100 resources will be returned. If your stack has more resources than this, you
+	 * should use <code>ListStackResources</code> instead.
+	 * </p> 
+	 * For deleted stacks, <code>DescribeStackResources</code> returns resource information for up to
+	 * 90 days after the stack has been deleted.
 	 *  
-	 * You can specify either <code>StackName</code> or <code>PhysicalResourceId.</code>, but not
+	 * You must specify either <code>StackName</code> or <code>PhysicalResourceId</code>, but not
 	 * both. In addition, you can specify <code>LogicalResourceId</code> to filter the returned
 	 * result. For more information about resources, the <code>LogicalResourceId</code> and
 	 * <code>PhysicalResourceId</code>, go to the <a href=
-	 * "http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide">AWS CloudFormation User
+	 * "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide">AWS CloudFormation User
 	 * Guide</a>.
 	 * 
 	 * <p class="note">
@@ -348,9 +368,9 @@ class AmazonCloudFormation extends CFRuntime
 	 * </p>
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>StackName</code> - <code>string</code> - Optional - The name or the unique identifier associated with the stack. Default: There is no default value.</li>
+	 * 	<li><code>StackName</code> - <code>string</code> - Optional - The name or the unique identifier associated with the stack. Required: Conditional. If you do not specify <code>StackName</code>, you must specify <code>PhysicalResourceId</code>. Default: There is no default value.</li>
 	 * 	<li><code>LogicalResourceId</code> - <code>string</code> - Optional - The logical name of the resource as specified in the template. Default: There is no default value.</li>
-	 * 	<li><code>PhysicalResourceId</code> - <code>string</code> - Optional - The name or unique identifier that corresponds to a physical instance ID of a resource supported by AWS CloudFormation. For example, for an Amazon Elastic Compute Cloud (EC2) instance, <code>PhysicalResourceId</code> corresponds to the <code>InstanceId</code>. You can pass the EC2 <code>InstanceId</code> to <code>DescribeStackResources</code> to find which stack the instance belongs to and what other resources are part of the stack. Default: There is no default value.</li>
+	 * 	<li><code>PhysicalResourceId</code> - <code>string</code> - Optional - The name or unique identifier that corresponds to a physical instance ID of a resource supported by AWS CloudFormation. For example, for an Amazon Elastic Compute Cloud (EC2) instance, <code>PhysicalResourceId</code> corresponds to the <code>InstanceId</code>. You can pass the EC2 <code>InstanceId</code> to <code>DescribeStackResources</code> to find which stack the instance belongs to and what other resources are part of the stack. Required: Conditional. If you do not specify <code>PhysicalResourceId</code>, you must specify <code>StackName</code>. Default: There is no default value.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -550,7 +570,7 @@ class AmazonCloudFormation extends CFRuntime
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>TemplateBody</code> - <code>string</code> - Optional - String containing the template body. (For more information, go to the <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide">AWS CloudFormation User Guide</a>.) Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</li>
-	 * 	<li><code>TemplateURL</code> - <code>string</code> - Optional - Location of file containing the template body. The URL must point to a template located in an S3 bucket in the same region as the stack. For more information, go to the <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide">AWS CloudFormation User Guide</a>. Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</li>
+	 * 	<li><code>TemplateURL</code> - <code>string</code> - Optional - Location of file containing the template body. The URL must point to a template (max size: 307,200 bytes) located in an S3 bucket in the same region as the stack. For more information, go to the <a href="http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide">AWS CloudFormation User Guide</a>. Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
