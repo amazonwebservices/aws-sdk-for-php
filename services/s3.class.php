@@ -4176,6 +4176,7 @@ class AmazonS3 extends CFRuntime
 	{
 		if (!$opt) $opt = array();
 		$opt['verb'] = 'POST';
+                $opt['resource'] = $filename;
 		$opt['sub_resource'] = 'restore';
 		$opt['headers'] = array(
 			'Content-Type' => 'application/xml'
