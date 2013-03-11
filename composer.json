@@ -14,6 +14,9 @@
     "require":{
         "php":">=5.2.0"
     },
+    "suggest": {
+        "aws/aws-sdk-php": "You should consider upgrading to version 2 of the AWS SDK for PHP"
+    },
     "autoload":{
         "classmap": [
             "authentication/",

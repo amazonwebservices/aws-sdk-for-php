@@ -33,8 +33,8 @@ class Parser_Exception extends Exception {}
 // INTERMEDIARY CONSTANTS
 
 define('CFRUNTIME_NAME', 'aws-sdk-php');
-define('CFRUNTIME_VERSION', '1.6.0');
-define('CFRUNTIME_BUILD', '20130121120000');
+define('CFRUNTIME_VERSION', '1.6.1');
+define('CFRUNTIME_BUILD', '20130311100000');
 $user_agent = sprintf('%s/%s PHP/%s', CFRUNTIME_NAME, CFRUNTIME_VERSION, PHP_VERSION);
 if (function_exists('curl_version'))
 {

@@ -6,6 +6,7 @@ Contributions were provided under the Apache 2.0 License, as appropriate.
 
 The following people have provided ideas, support and bug fixes:
 
+* [aaronbski](https://github.com/aaronbski) (bug fixes)
 * [arech8](http://developer.amazonwebservices.com/connect/profile.jspa?userID=154435) (bug fixes)
 * [Aizat Faiz](http://aizatto.com) (bug fixes)
 * [Adam Monsen](https://github.com/meonkeys) (bug fixes)
@@ -13,6 +14,7 @@ The following people have provided ideas, support and bug fixes:
 * [Ben Lumley](http://github.com/benlumley) (bug fixes)
 * [Brady Doll](https://github.com/bradydoll) (bug fixes)
 * [Dan Stillman](https://github.com/dstillman) (bug fixes)
+* [Daniel Garcia](https://github.com/buzzedword) (feedback)
 * [Daniel Holmes](https://github.com/danielholmes) (bug fixes)
 * [David Chan](http://www.chandeeland.org) (bug fixes)
 * [derekclapham](https://github.com/derekclapham) (bug fixes)
@@ -20,10 +22,12 @@ The following people have provided ideas, support and bug fixes:
 * [Jason Ardell](http://ardell.posterous.com/) (bug fixes)
 * [Jeremy Archuleta](http://code.google.com/u/jeremy.archuleta/) (bug fixes)
 * [Jimmy Berry](http://blog.boombatower.com/) (bug fixes, patches)
-* [Jarrod Swift](https://github.com/jswift) (bg fixes)
-* [Richard Quadling](https://github.com/RichardQuadling) (bug fixes)
+* [Jarrod Swift](https://github.com/jswift) (bug fixes)
+* [nchagrass](https://github.com/nchagrass) (bug fixes)
+* [oliverholmberg](https://github.com/oliverholmberg) (bug fixes)
 * [Paul Voegler](mailto:voegler@gmx.de) (bug fixes, bug reports, patches)
 * [Peter Bowen](http://github.com/pzb) (feedback, bug reports)
+* [Richard Quadling](https://github.com/RichardQuadling) (bug fixes)
 * [Robin Speekenbrink](https://github.com/fruitl00p) (bug fixes)
 * [Roman Cambian](https://github.com/rcambien) (patches)
 * [zoxa](https://github.com/zoxa) (bug fixes)

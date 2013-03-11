@@ -1,3 +1,23 @@
+CHANGELOG for the AWS SDK for PHP 1.x
+=====================================
+
+1.6.1 (2013-03-11)
+------------------
+
+* Added support for enabling DNS Hostnames and disabling DNS Resolution (for Amazon VPC) in the Amazon EC2 client.
+* Added support for enumerating account attributes in the Amazon EC2 client.
+* Added support for copying AMIs across regions in the Amazon EC2 client.
+* Added support for event notification subscriptions in the Amazon RDS client.
+* Added support for cancelling stack updates in the AWS CloudFormation client.
+* Resolved an issue where the `restore_archived_object` method in the Amazon S3 client was not working properly.
+* Resolved an issue where in some cases the `get_object_list` method of the Amazon S3 client was causing errors.
+
+----
+
+**Note**: The formatting of the CHANGELOG below is different from that above.
+
+----
+
 # Changelog: 1.6.0
 
 Launched Monday, January 21, 2013.
