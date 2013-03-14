@@ -29,7 +29,7 @@
  *  
  * Visit <a href="http://aws.amazon.com/ec2/">http://aws.amazon.com/ec2/</a> for more information.
  *
- * @version 2013.03.08
+ * @version 2013.03.14
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/ec2/ Amazon EC2
@@ -3505,8 +3505,7 @@ class AmazonEC2 extends CFRuntime
 	 *
 	 * @param string $vpc_id (Required) 
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>EnableDnsSupport</code> - <code>string</code> - Optional - </li>
-	 * 	<li><code>EnableDnsHostnames</code> - <code>string</code> - Optional - </li>
+	 * 	<li><code>Attribute</code> - <code>string</code> - Optional -  [Allowed values: <code>enableDnsSupport</code>, <code>enableDnsHostnames</code>]</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
@@ -4365,18 +4364,19 @@ class AmazonEC2 extends CFRuntime
 	/**
 	 * 
 	 *
+	 * @param string $vpc_id (Required) 
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>VpcId</code> - <code>string</code> - Optional - </li>
 	 * 	<li><code>EnableDnsSupport.Value</code> - <code>boolean</code> - Optional - Boolean value</li>
 	 * 	<li><code>EnableDnsHostnames.Value</code> - <code>boolean</code> - Optional - Boolean value</li>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
 	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
 	 */
-	public function modify_vpc_attribute($opt = null)
+	public function modify_vpc_attribute($vpc_id, $opt = null)
 	{
 		if (!$opt) $opt = array();
-				
+		$opt['VpcId'] = $vpc_id;
+		
 		return $this->authenticate('ModifyVpcAttribute', $opt);
 	}
 
