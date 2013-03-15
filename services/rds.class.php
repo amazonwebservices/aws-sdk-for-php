@@ -1063,25 +1063,6 @@ class AmazonRDS extends CFRuntime
 	}
 
 	/**
-	 * Downloads the specified log file.
-	 *
-	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
-	 * 	<li><code>DBInstanceIdentifier</code> - <code>string</code> - Optional - The customer-assigned name of the DB Instance that contains the log files you want to list. Constraints:<ul><li>Must contain from 1 to 63 alphanumeric characters or hyphens</li><li>First character must be a letter</li><li>Cannot end with a hyphen or contain two consecutive hyphens</li></ul></li>
-	 * 	<li><code>LogFileName</code> - <code>string</code> - Optional - The name of the log file to be downloaded.</li>
-	 * 	<li><code>Marker</code> - <code>string</code> - Optional - The pagination token provided in the previous request. If this parameter is specified the response includes only records beyond the marker, up to MaxRecords.</li>
-	 * 	<li><code>NumberOfLines</code> - <code>integer</code> - Optional - The number of lines remaining to be downloaded.</li>
-	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
-	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
-	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
-	 */
-	public function download_complete_db_log_file($opt = null)
-	{
-		if (!$opt) $opt = array();
-				
-		return $this->authenticate('DownloadCompleteDBLogFile', $opt);
-	}
-
-	/**
 	 * Downloads the last line of the specified log file.
 	 *
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>

@@ -1,6 +1,13 @@
 CHANGELOG for the AWS SDK for PHP 1.x
 =====================================
 
+1.6.2 (2013-03-15)
+------------------
+
+* Added support for viewing and downloading DB log files to the Amazon RDS client.
+* Fixed an issue in the Amazon EC2 service description that was affecting the use of the new `modify_vpc_attribute` and
+  `describe_vp_attribute` operations.
+
 1.6.1 (2013-03-11)
 ------------------
 
