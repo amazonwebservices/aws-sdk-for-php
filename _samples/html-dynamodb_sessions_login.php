@@ -19,7 +19,7 @@
 	In order to run this sample, I'll assume a few things:
 
 	* You already have a valid Amazon Web Services developer account, and are
-	  signed up to use Amazon DynamoDB <http://aws.amazon.com/simpledb>.
+	  signed up to use Amazon DynamoDB <http://aws.amazon.com/dynamodb>.
 
 	* You already understand the fundamentals of object-oriented PHP.
 
