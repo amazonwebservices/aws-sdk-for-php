@@ -875,86 +875,57 @@ class RequestCore
 		{
 			set_time_limit(0);
 		}
-
 		// Skip everything if there are no handles to process.
-		if (count($handles) === 0) return array();
-
+		if (empty($handles)) return array();
 		if (!$opt) $opt = array();
 
 		// Initialize any missing options
 		$limit = isset($opt['limit']) ? $opt['limit'] : -1;
 
 		// Initialize
-		$handle_list = $handles;
 		$http = new $this->request_class();
 		$multi_handle = curl_multi_init();
-		$handles_post = array();
-		$added = count($handles);
-		$last_handle = null;
-		$count = 0;
-		$i = 0;
 
 		// Loop through the cURL handles and add as many as it set by the limit parameter.
-		while ($i < $added)
+		$i = 0;
+		foreach ($handles as $handle)
 		{
 			if ($limit > 0 && $i >= $limit) break;
-			curl_multi_add_handle($multi_handle, array_shift($handles));
+			curl_multi_add_handle($multi_handle, $handle);
 			$i++;
 		}
 
-		do
-		{
-			$active = false;
+		$active = null;
+		//execute the handles
+		do {
+	    $mrc = curl_multi_exec($multi_handle, $active);
+		} while ($mrc === CURLM_CALL_MULTI_PERFORM);
 
-			// Start executing and wait for a response.
-			while (($status = curl_multi_exec($multi_handle, $active)) === CURLM_CALL_MULTI_PERFORM)
-			{
-				// Start looking for possible responses immediately when we have to add more handles
-				if (count($handles) > 0) break;
-			}
+		$responses = array();
+		while ($active && $mrc == CURLM_OK) {
+	    curl_multi_select($multi_handle);
+      do {
+        $mrc = curl_multi_exec($multi_handle, $active);
+      } while ($mrc === CURLM_CALL_MULTI_PERFORM);
 
-			// Figure out which requests finished.
-			$to_process = array();
-
-			while ($done = curl_multi_info_read($multi_handle))
-			{
-				// Since curl_errno() isn't reliable for handles that were in multirequests, we check the 'result' of the info read, which contains the curl error number, (listed here http://curl.haxx.se/libcurl/c/libcurl-errors.html )
-				if ($done['result'] > 0)
-				{
-					throw new cURL_Multi_Exception('cURL resource: ' . (string) $done['handle'] . '; cURL error: ' . curl_error($done['handle']) . ' (cURL error code ' . $done['result'] . '). See http://curl.haxx.se/libcurl/c/libcurl-errors.html for an explanation of error codes.');
+      while ($info = curl_multi_info_read($multi_handle)){
+      	if ($info['result'] > 0)
+      	{
+					throw new cURL_Multi_Exception('cURL resource: ' . (string) $info['handle'] . '; cURL error: ' . curl_error($info['handle']) . ' (cURL error code ' . $info['result'] . '). See http://curl.haxx.se/libcurl/c/libcurl-errors.html for an explanation of error codes.');
 				}
-
-				// Because curl_multi_info_read() might return more than one message about a request, we check to see if this request is already in our array of completed requests
-				elseif (!isset($to_process[(int) $done['handle']]))
-				{
-					$to_process[(int) $done['handle']] = $done;
-				}
-			}
-
-			// Actually deal with the request
-			foreach ($to_process as $pkey => $done)
-			{
-				$response = $http->process_response($done['handle'], curl_multi_getcontent($done['handle']));
-				$key = array_search($done['handle'], $handle_list, true);
-				$handles_post[$key] = $response;
-
-				if (count($handles) > 0)
-				{
-					curl_multi_add_handle($multi_handle, array_shift($handles));
-				}
-
-				curl_multi_remove_handle($multi_handle, $done['handle']);
-				curl_close($done['handle']);
-			}
+				$key = $info['handle'];
+        $responses[(int)$key] = $http->process_response($key, curl_multi_getcontent($key));
+      }
 		}
-		while ($active || count($handles_post) < $added);
+
+		foreach ($handles as $handle)
+		{
+			curl_multi_remove_handle($multi_handle, $handle);
+		}
 
 		curl_multi_close($multi_handle);
-
-		ksort($handles_post, SORT_NUMERIC);
-		return $handles_post;
+		return $responses;
 	}
-
 
 	/*%******************************************************************************************%*/
 	// RESPONSE METHODS
