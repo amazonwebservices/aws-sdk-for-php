@@ -1,9 +1,11 @@
-# AWS SDK for PHP
+# AWS SDK for PHP - Version 1
 
 ---
 
-**NOTE:** This is the repository for version 1 of the AWS SDK for PHP. We encourage you to upgrade to the
-**AWS SDK for PHP 2**, see <http://github.com/aws/aws-sdk-php>.
+**NOTE:** This is the repository for version 1 of the AWS SDK for PHP. The SDK was rewritten and moved to
+a new repository: <http://github.com/aws/aws-sdk-php>. We encourage you to 
+[upgrade to the latest](http://docs.aws.amazon.com/aws-sdk-php-2/guide/latest/migration-guide.html) 
+version of the AWS SDK for PHP.
 
 ---
 
