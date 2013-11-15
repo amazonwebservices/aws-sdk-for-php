@@ -938,9 +938,13 @@ class AmazonELB extends CFRuntime
 		$opt['LoadBalancerPort'] = $load_balancer_port;
 		
 		// Required list (non-map)
-		$opt = array_merge($opt, CFComplexType::map(array(
-			'PolicyNames' => (is_array($policy_names) ? $policy_names : array($policy_names))
-		), 'member'));
+		if ($policy_names) {
+			$opt = array_merge($opt, CFComplexType::map(array(
+				'PolicyNames' => (is_array($policy_names) ? $policy_names : array($policy_names))
+			), ($policy_names ? 'member' : '')));
+		} else {
+			$opt['PolicyNames'] = '';
+		}
 
 		return $this->authenticate('SetLoadBalancerPoliciesOfListener', $opt);
 	}
