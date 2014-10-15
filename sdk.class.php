@@ -1467,28 +1467,28 @@ else
 	}
 	elseif (!isset($_ENV['HOME']) && !isset($_SERVER['HOME']))
 	{
-		$os = strtolower(PHP_OS);
-		if (in_array($os, array('windows', 'winnt', 'win32')))
+		$aws_os = strtolower(PHP_OS);
+		if (in_array($aws_os, array('windows', 'winnt', 'win32')))
 		{
 			$_ENV['HOME'] = false;
 		}
 		else
 		{
-			$dir = exec('(cd ~ && pwd) 2>&1', $out, $exit);
+			$aws_dir = exec('(cd ~ && pwd) 2>&1', $aws_out, $aws_exit);
 			if ($exit === 0)
 			{
-				$_ENV['HOME'] = trim($dir);
+				$_ENV['HOME'] = trim($aws_dir);
 			}
 			else
 			{
-				error_log('Failed to determine HOME directory after trying "' . $dir . '" (exit code ' . $exit . ')');
+				error_log('Failed to determine HOME directory after trying "' . $aws_dir . '" (exit code ' . $aws_exit . ')');
 				$_ENV['HOME'] = false;
 			}
 		}
 
 		if (!$_ENV['HOME'])
 		{
-			switch ($os)
+			switch ($aws_os)
 			{
 				case 'darwin':
 					$_ENV['HOME'] = '/Users/' . get_current_user();
@@ -1507,11 +1507,11 @@ else
 		}
 	}
 
-	$path = DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php';
-	if (isset($_ENV['HOME']) && file_exists($_ENV['HOME'] . $path))
+	$aws_path = DIRECTORY_SEPARATOR . '.aws' . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'config.inc.php';
+	if (isset($_ENV['HOME']) && file_exists($_ENV['HOME'] . $aws_path))
 	{
-		include_once $_ENV['HOME'] . $path;
+		include_once $_ENV['HOME'] . $aws_path;
 	}
 
-	unset($os, $dir, $out, $exit, $path);
+	unset($aws_os, $aws_dir, $aws_out, $aws_exit, $aws_path);
 }
