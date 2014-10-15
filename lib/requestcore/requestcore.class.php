@@ -790,6 +790,22 @@ class RequestCore
 		// As long as this came back as a valid resource...
 		if (is_resource($this->curl_handle))
 		{
+			if ( is_array( $this->proxy ) )
+			{
+				$proxy_response_headers = explode("\r\n\r\n", trim($this->response));
+				if ( 2 < count($proxy_response_headers) )
+				{
+					if ( 0 == strncmp( $proxy_response_headers[0], 'HTTP/', 5 )
+						&& 0 == strncmp( $proxy_response_headers[1], 'HTTP/', 5 )
+					)
+					{
+						$this->response = array_slice( $proxy_response_headers, 1, count($proxy_response_headers ) );
+						$this->response = implode( "\r\n\r\n", $this->response );
+					}
+				}
+				unset($proxy_response_headers);
+			}
+
 			// Determine what's what.
 			$header_size = curl_getinfo($this->curl_handle, CURLINFO_HEADER_SIZE);
 			$this->response_headers = substr($this->response, 0, $header_size);
