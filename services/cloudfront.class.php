@@ -1221,7 +1221,7 @@ class AmazonCloudFront extends CFRuntime
 	 *
 	 * @param string $distribution_id (Required) The distribution ID returned from <create_distribution()> or <list_distributions()>.
 	 * @param string $caller_reference (Required) A unique identifier for the request. A timestamp-appended string is recommended.
-	 * @param string|array $paths (Required) One or more paths to set for invalidation. Pass a string for a single value, or an indexed array for multiple values. values.
+	 * @param string|array $paths (Required) One or more paths to set for invalidation. Pass a string for a single value, or an indexed array for multiple values.
 	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
 	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
 	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
