@@ -14,7 +14,8 @@
  * permissions and limitations under the License.
  */
 
-if (!class_exists('SimpleXMLElementIterator')) {
+if (!class_exists('SimpleXMLElementIterator'))
+{
 	class SimpleXMLElementIterator extends SimpleXMLIterator
 	{
 	}
