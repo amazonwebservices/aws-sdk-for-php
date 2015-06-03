@@ -14,6 +14,12 @@
  * permissions and limitations under the License.
  */
 
+if (!class_exists('SimpleXMLElementIterator'))
+{
+	class SimpleXMLElementIterator extends SimpleXMLIterator
+	{
+	}
+}
 
 /*%******************************************************************************************%*/
 // CLASS
@@ -30,7 +36,7 @@
  * @link http://aws.amazon.com/php/ PHP Developer Center
  * @link http://php.net/SimpleXML SimpleXML
  */
-class CFSimpleXML extends SimpleXMLIterator
+class CFSimpleXML extends SimpleXMLElementIterator
 {
 	/**
 	 * Stores the namespace name to use in XPath queries.
