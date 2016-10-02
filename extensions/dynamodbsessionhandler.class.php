@@ -309,6 +309,22 @@ class DynamoDBSessionHandler
 				if ($item['expires'] > time())
 				{
 					$result = $item['data'];
+                                        
+                                        // The PHP serialization also contains NULL bytes in some cases.
+                                        // If so, the response is encoded as a JSON string with the
+                                        // prefix "json_encoded::" (fix for a bug, see 
+					// https://forums.aws.amazon.com/thread.jspa?threadID=94935)
+                                        //
+                                        // This special response format is neither handeled globally
+					// nor in this case.
+					//
+                                        // The follwoing code fixes this - but this is only temporary,
+                                        // because the global modification of contents with NULL bytes
+					// should also be removed globally...
+                                        if (strpos($result, 'json_encoded::') === 0)
+                                        {
+                                            $result = json_decode(substr($result, 14));
+                                        }
 				}
 				else
 				{
