@@ -1047,6 +1047,22 @@ class ResponseCore
 
 		return $this->status === $codes;
 	}
+	
+	/**
+	 * Get the error code from the response.
+	 * @see http://docs.amazonwebservices.com/amazondynamodb/latest/developerguide/ErrorHandling.html
+	 *
+	 * @return mixed false if no error else String of error code
+	 */
+	public function getErrorCode()
+	{
+		if (!empty($this->body->__type))
+		{
+			$code = explode('#',$this->body->__type,2);
+			return (isset($code[1]))?$code[1]:false;
+		}
+		else return false;
+	}
 }
 
 class cURL_Exception extends Exception {}
