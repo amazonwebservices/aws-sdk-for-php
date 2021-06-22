@@ -63,7 +63,7 @@ class CFRequest extends RequestCore
 		// Standard settings for all requests
 		$this->set_useragent(CFRUNTIME_USERAGENT);
 		$this->credentials = $credentials;
-		$this->cacert_location = ($this->credentials['certificate_authority'] ? $this->credentials['certificate_authority'] : false);
+		$this->cacert_location = ($this->credentials && $this->credentials['certificate_authority'] ? $this->credentials['certificate_authority'] : false);
 
 		if (strpos(parse_url($url, PHP_URL_HOST), 'dynamodb') === 0)
 			{
